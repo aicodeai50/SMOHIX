@@ -76,7 +76,17 @@ Add anything you use in production (same names as `.env.example`):
 | `NEXT_PUBLIC_LEMONSQUEEZY_CHECKOUT_URL` | Your Lemon checkout link. |
 | `LEMONSQUEEZY_WEBHOOK_SIGNING_SECRET` | Webhook signing secret (server only). |
 
-`PORT` is set by Railway automatically; Next.js reads it.
+`PORT`: Railway may inject this automatically. **Next.js listens on `PORT`** (see `next start --help`: default port 3000, env `PORT`).
+
+### Target port (Generate Domain / Custom Domain)
+
+The **Target port** in the Railway UI must be the **same port your app binds to** — not a random default like **8080** unless your service really listens there.
+
+1. Open **Variables** and check **`PORT`**.  
+2. If it’s missing or you want a fixed value, add **`PORT`** = **`3000`**.  
+3. When you **Generate Domain** or **Add Custom Domain** for `shynvo.app`, set **Target port** to **`3000`** (same as `PORT`).
+
+If target port ≠ listen port, you’ll get **502 / connection refused** even when the deploy is “green”.
 
 ### 3. Public URL
 
@@ -85,6 +95,7 @@ Add anything you use in production (same names as `.env.example`):
 ### 4. Custom domain `shynvo.app`
 
 **Networking** → **Custom Domain** → add **`shynvo.app`** (and **`www.shynvo.app`** if you use it).  
+Set **Target port** to **`3000`** (or whatever **`PORT`** you use in Variables).  
 At your DNS provider, add the **CNAME / ALIAS** records Railway shows.  
 The app’s **middleware** redirects `www` → apex.
 
