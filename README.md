@@ -53,25 +53,52 @@ Copy `.env.example` to `.env.local` and fill in values.
 
 Webhook URL in Lemon: `https://shynvo.app/api/webhooks/lemonsqueezy` (use your production domain).
 
-## Railway
+## Railway (deploy now)
 
-This repo includes **`railway.json`** (Railpack: `npm run build`, start `npm run start`, healthcheck `/`).
+Repo: **`Sanher50/SHYNVO`**, branch **`main`**. This project ships **`railway.json`**: Railpack runs **`npm run build`**, start **`npm run start`**, healthcheck **`/`**.
 
-### “Connected branch does not exist”
+### 1. Service → Source
 
-Railway is waiting for a **`main`** branch on GitHub that actually has commits.
+1. Open your Railway project → the **web** service (or create a service from **Empty** then attach GitHub).
+2. **Settings** → **Source** → **Connect Repo** → pick **`Sanher50/SHYNVO`**.
+3. **Branch**: **`main`**.
+4. **Root Directory**: leave **empty** (repo root is the Next app). Only set **`web`** if your GitHub layout is `SHYNVO/web/...`.
 
-1. Push this project to **`main`** (see GitHub section above). An **empty** GitHub repo has no `main` yet until the first push.
-2. In Railway → service → **Settings → Source**, confirm **Branch** = `main` (or change it to whatever branch you use, e.g. `master`, and push that branch).
+Save. Railway should start a deploy within a minute.
 
-### Root directory
+### 2. Variables (service → Variables)
 
-- If the GitHub repo root **is** this Next app (you pushed the contents of `web/`), leave **Root Directory** **empty**.
-- If the repo is a monorepo (e.g. `web/` inside the repo), set **Root Directory** to **`web`**.
+Add anything you use in production (same names as `.env.example`):
 
-### Environment variables (Railway dashboard)
+| Name | Notes |
+|------|--------|
+| `NEXT_PUBLIC_SITE_URL` | `https://shynvo.app` (optional; helps metadata when not using the default). |
+| `NEXT_PUBLIC_LEMONSQUEEZY_CHECKOUT_URL` | Your Lemon checkout link. |
+| `LEMONSQUEEZY_WEBHOOK_SIGNING_SECRET` | Webhook signing secret (server only). |
 
-Set at least: `NODE_ENV=production` (often set automatically), Lemon vars from `.env.example`, and optionally `NEXT_PUBLIC_SITE_URL=https://shynvo.app` for correct absolute URLs in previews.
+`PORT` is set by Railway automatically; Next.js reads it.
+
+### 3. Public URL
+
+**Networking** → **Generate Domain** (or use your `*.up.railway.app` URL). Open it — you should see the marketing home page.
+
+### 4. Custom domain `shynvo.app`
+
+**Networking** → **Custom Domain** → add **`shynvo.app`** (and **`www.shynvo.app`** if you use it).  
+At your DNS provider, add the **CNAME / ALIAS** records Railway shows.  
+The app’s **middleware** redirects `www` → apex.
+
+### 5. Lemon webhooks
+
+After `shynvo.app` resolves to Railway, set the Lemon webhook URL to:
+
+`https://shynvo.app/api/webhooks/lemonsqueezy`
+
+### Troubleshooting
+
+**“Connected branch does not exist”** — GitHub must have a **`main`** branch with at least one commit (push from the GitHub section above).
+
+**Build fails** — open the deploy **Build logs**; common fixes: wrong **Root Directory**, or Node version (this app expects **Node ≥ 20**; Railway/Railpack usually picks 20+ automatically).
 
 ## Stack
 
