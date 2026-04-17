@@ -12,14 +12,18 @@ export function getTrialHref(): string {
   return getCheckoutUrl() ?? "#trial";
 }
 
-/** General inquiries (sales, partnerships, hello). */
+/** General / contact (hello, partnerships, sales). */
+export const SITE_EMAIL_CONTACT = "hi@shynvo.app";
+
+/** Product, billing, and technical support. */
+export const SITE_EMAIL_SUPPORT = "support@shynvo.app";
+
 export function getGeneralMailtoHref(): string {
-  return "mailto:hi@shynvo.app?subject=Shynvo%20inquiry";
+  return `mailto:${SITE_EMAIL_CONTACT}?subject=${encodeURIComponent("Shynvo inquiry")}`;
 }
 
-/** Product / billing / technical support. */
 export function getSupportMailtoHref(): string {
-  return "mailto:support@shynvo.app?subject=Shynvo%20support";
+  return `mailto:${SITE_EMAIL_SUPPORT}?subject=${encodeURIComponent("Shynvo support")}`;
 }
 
 /** @deprecated Prefer getGeneralMailtoHref or getSupportMailtoHref */
