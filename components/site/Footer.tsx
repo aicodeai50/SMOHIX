@@ -19,7 +19,7 @@ export function Footer() {
           </p>
         </div>
         <div className="flex flex-col gap-4 md:items-end">
-          <div className="flex flex-wrap gap-6 text-sm text-muted">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted">
             <Link href="/" className="hover:text-foreground">
               Home
             </Link>
@@ -32,32 +32,25 @@ export function Footer() {
             <a href="#trust" className="hover:text-foreground">
               Security
             </a>
-            <a href={getGeneralMailtoHref()} className="hover:text-foreground">
-              Contact
-            </a>
-            <a href={getSupportMailtoHref()} className="hover:text-foreground">
-              Support
-            </a>
-          </div>
-          <p className="text-xs text-muted">
-            <span className="text-muted/80">Contact:</span>{" "}
+            <span className="hidden h-4 w-px bg-border sm:inline" aria-hidden />
             <a
               href={getGeneralMailtoHref()}
-              className="font-mono text-foreground/90 hover:text-accent"
+              className="font-mono text-xs text-foreground/90 hover:text-accent"
+              title="Contact"
             >
               {SITE_EMAIL_CONTACT}
             </a>
-            <span className="mx-2 text-muted/40" aria-hidden>
+            <span className="text-muted/40" aria-hidden>
               ·
             </span>
-            <span className="text-muted/80">Support:</span>{" "}
             <a
               href={getSupportMailtoHref()}
-              className="font-mono text-foreground/90 hover:text-accent"
+              className="font-mono text-xs text-foreground/90 hover:text-accent"
+              title="Support"
             >
               {SITE_EMAIL_SUPPORT}
             </a>
-          </p>
+          </div>
           <p className="text-xs text-muted/60">
             © {new Date().getFullYear()} Shynvo
           </p>
