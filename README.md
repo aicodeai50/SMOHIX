@@ -75,6 +75,8 @@ Add anything you use in production (same names as `.env.example`):
 | `NEXT_PUBLIC_SITE_URL` | `https://shynvo.app` (optional; helps metadata when not using the default). |
 | `NEXT_PUBLIC_LEMONSQUEEZY_CHECKOUT_URL` | Your Lemon checkout link. |
 | `LEMONSQUEEZY_WEBHOOK_SIGNING_SECRET` | Webhook signing secret (server only). |
+| `SHYNVO_REASONING_API_URL` | Your reasoning API base URL (**server only**; set in Railway, not `NEXT_PUBLIC_`). |
+| `SHYNVO_ROBOT_API_URL` | Your robot API base URL (**server only**). Used on **Settings → Connectors** for health checks. |
 
 `PORT`: Railway may inject this automatically. **Next.js listens on `PORT`** (see `next start --help`: default port 3000, env `PORT`).
 
@@ -110,6 +112,25 @@ After `shynvo.app` resolves to Railway, set the Lemon webhook URL to:
 **“Connected branch does not exist”** — GitHub must have a **`main`** branch with at least one commit (push from the GitHub section above).
 
 **Build fails** — open the deploy **Build logs**; common fixes: wrong **Root Directory**, or Node version (this app expects **Node ≥ 20**; Railway/Railpack usually picks 20+ automatically).
+
+**“Application failed to respond”** — the container is not accepting HTTP on the port Railway expects.
+
+1. **Variables:** set **`PORT=3000`** and set the custom domain **Target port** to **`3000`**.
+2. **Deploy logs:** open **Deployments** → latest → **Deploy logs** (and **Build logs**) for stack traces or exit codes.
+3. This repo uses **`npm run start`** → `next start -H 0.0.0.0` so the server listens on **all interfaces** inside the container.
+4. Healthcheck hits **`/api/health`** (lightweight JSON). If that route returns 200 but `/` fails, check page-specific errors in logs.
+
+## Connecting backends to the frontend
+
+Browsers should **not** call your Railway API URLs directly (CORS + you’d leak patterns). Use the **BFF pattern**: the Next **server** calls backends using **`SHYNVO_REASONING_API_URL`** / **`SHYNVO_ROBOT_API_URL`** (Railway Variables), and the UI calls **same-origin** routes.
+
+| Piece | Role |
+|--------|------|
+| **Railway Variables** | `SHYNVO_REASONING_API_URL`, `SHYNVO_ROBOT_API_URL` (no `NEXT_PUBLIC_`). |
+| **`GET /api/backend/status`** | JSON snapshot of both backends (server-side `fetch`). |
+| **`/settings/connectors`** | Same checks, rendered on the server. |
+| **Copilot page** | Shows live backend status strip from the server. |
+| **Next step (you implement)** | Add `POST /api/copilot/...` (or similar) that forwards the request body to your reasoning API’s real chat path, then call it from a client component with `fetch("/api/...")`. Add **auth** before exposing anything sensitive. |
 
 ## Stack
 

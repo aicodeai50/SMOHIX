@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { BackendStatus } from "@/components/copilot/BackendStatus";
 import { PageHeader } from "@/components/app/PageHeader";
 import { PlaceholderCard } from "@/components/app/PlaceholderCard";
 
@@ -7,6 +8,8 @@ export const metadata: Metadata = {
   description: "AI-assisted triage and next steps with human oversight.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default function CopilotPage() {
   return (
     <>
@@ -14,6 +17,7 @@ export default function CopilotPage() {
         title="Incident Copilot"
         description="Natural-language investigations wired to your reasoning backend. Suggested actions stay behind approval gates until you promote them."
       />
+      <BackendStatus />
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
           <PlaceholderCard title="Conversation">
