@@ -122,15 +122,50 @@ After `shynvo.app` resolves to Railway, set the Lemon webhook URL to:
 
 ## Connecting backends to the frontend
 
-Browsers should **not** call your Railway API URLs directly (CORS + you’d leak patterns). Use the **BFF pattern**: the Next **server** calls backends using **`SHYNVO_REASONING_API_URL`** / **`SHYNVO_ROBOT_API_URL`** (Railway Variables), and the UI calls **same-origin** routes.
+Browsers should **not** call your `*.up.railway.app` APIs directly (CORS, and you keep base URLs off the client). Use **same-origin** routes on this app; Next forwards to your backends using env vars.
 
-| Piece | Role |
+### Railway Variables (server only)
+
+- `SHYNVO_REASONING_API_URL` — base URL, no trailing slash (e.g. `https://your-api.up.railway.app`).
+- `SHYNVO_ROBOT_API_URL` — same for the robot service.
+
+### Reverse proxy routes (send any path)
+
+| Your frontend calls | Upstream request |
+|---------------------|------------------|
+| `GET /api/reasoning/health` | `GET {SHYNVO_REASONING_API_URL}/health` |
+| `POST /api/reasoning/v1/chat` | `POST {SHYNVO_REASONING_API_URL}/v1/chat` |
+| `GET /api/robot/docs` | `GET {SHYNVO_ROBOT_API_URL}/docs` |
+| `GET /api/robot/health` | `GET {SHYNVO_ROBOT_API_URL}/health` |
+
+Query string, method, and body are forwarded. Headers forwarded: **`Content-Type`**, **`Accept`**, **`Authorization`** (add a session/JWT check on these routes before production if the upstream is sensitive).
+
+**Examples (client or Server Component):**
+
+```ts
+// Reasoning API health
+const r = await fetch("/api/reasoning/health", { cache: "no-store" });
+
+// Robot OpenAPI docs (HTML/JSON depending on upstream)
+const docs = await fetch("/api/robot/docs", { cache: "no-store" });
+
+// POST example — path must match your backend route
+await fetch("/api/reasoning/your/path/here", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ message: "hello" }),
+});
+```
+
+Path segments cannot contain `..` or `/` (basic hardening). For public internet traffic, **add authentication** (middleware or per-route) so this is not an open relay.
+
+### Other helpers
+
+| Route | Role |
 |--------|------|
-| **Railway Variables** | `SHYNVO_REASONING_API_URL`, `SHYNVO_ROBOT_API_URL` (no `NEXT_PUBLIC_`). |
-| **`GET /api/backend/status`** | JSON snapshot of both backends (server-side `fetch`). |
-| **`/settings/connectors`** | Same checks, rendered on the server. |
-| **Copilot page** | Shows live backend status strip from the server. |
-| **Next step (you implement)** | Add `POST /api/copilot/...` (or similar) that forwards the request body to your reasoning API’s real chat path, then call it from a client component with `fetch("/api/...")`. Add **auth** before exposing anything sensitive. |
+| **`GET /api/backend/status`** | JSON snapshot of both backends (health probe). |
+| **`/settings/connectors`** | UI for the same probes. |
+| **`/copilot`** | Shows backend status from the server. |
 
 ## Stack
 
