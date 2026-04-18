@@ -12,11 +12,15 @@ Apply database changes from `supabase/migrations/` in the Supabase SQL Editor (o
 - [x] **Lemon webhook** — signature verify, **SHA-256 idempotent** deliveries, subscription upsert when `meta.custom_data.shynvo_user_id` (or legacy `supabase_user_id`) is present.
 - [x] **Service role client** — `lib/supabase/admin.ts` (server-only; never expose key).
 - [x] **Plan helper** — `lib/billing/plan.ts` — `free` vs `paid` from subscription `status`.
-- [x] **Checkout URL helpers** — `getCheckoutUrlForUser` / `appendCheckoutCustomData` in `lib/billing.ts` (wire them from billing UI / CTAs next).
+- [x] **Checkout URL helpers** — `getCheckoutUrlForUser` / `appendCheckoutCustomData` in `lib/billing.ts`.
+- [x] **Marketing CTAs (signed-in)** — homepage `Header` / `Hero` / `ConnectCTA` use `getSignedInCheckoutUrl()` so trial links include `shynvo_user_id` when auth + `NEXT_PUBLIC_LEMONSQUEEZY_CHECKOUT_URL` are set; anonymous visitors keep generic checkout or `#trial`.
 - [x] **Settings → Billing** — `/settings/billing` shows plan, subscription snapshot, **Open checkout** (with `shynvo_user_id`), and migration hints if the DB is not ready.
-- [x] **Console nav** — **Billing** link in the sidebar next to Connectors.
-- [x] **Automations hint** — signed-in **free** users see an upgrade strip linking to Billing.
-- [x] **Proxy auth gate** — `/api/reasoning` and `/api/robot` require a Supabase session when auth env vars are set.
+- [x] **Console nav** — **clickable module boxes** (`CONSOLE_MODULES` + `/hub` home); **Settings** hub, **Billing**, **API keys**, and **Connectors** included.
+- [x] **Copilot without upstream** — `POST /api/copilot/chat` uses **OpenAI** when `OPENAI_API_KEY` is set, else **offline** replies; default chat path no longer requires `SHYNVO_REASONING_API_URL`.
+- [x] **API keys without Supabase** — in-memory **demo keys** (per `shynvo_dev_tid` cookie) + proxy validation for `/api/reasoning` and `/api/robot` when auth env is off.
+- [x] **Runbooks** — `/runbooks` catalog + detail pages (in-repo procedures; export to Git/docs later).
+- [x] **Automations** — playbooks + **dry-run** API (`/api/automations/dry-run`) with optional robot health check; run history in dev memory per session/user.
+- [x] **Proxy auth gate** — `/api/reasoning` and `/api/robot` require a **session or `shynvo_sk_` API key** when auth env vars are set; keys stored hashed in `api_keys` (`20260418150000_api_keys.sql`).
 - [x] **Security headers** — global headers in `next.config.ts`.
 - [x] **Incidents migration + data layer** — SQL file + `lib/incidents/*` with DB-or-demo list/detail (no Supabase required to run the app).
 
@@ -24,18 +28,18 @@ Apply database changes from `supabase/migrations/` in the Supabase SQL Editor (o
 
 ## Phase A — Wire billing in the product (high priority)
 
-- [ ] **Marketing / other CTAs**: use **`getCheckoutUrlForUser`** only when you know the visitor is signed in; keep generic Lemon links on the public homepage where there is no session.
+- [x] **Marketing / other CTAs**: signed-in homepage uses **`getCheckoutUrlForUser`** via `lib/marketing/checkout-context.ts`; no session → generic `getTrialHref()`.
 - [ ] **Railway / env**: set `SUPABASE_SERVICE_ROLE_KEY` for webhook persistence; keep it off the client.
 - [ ] **Apply migration** in Supabase and confirm a test webhook creates/updates `subscriptions`.
 - [ ] **Settings → Billing** page: current plan (read `subscriptions` with user session), link to Lemon customer portal if you use it.
-- [ ] **Gate features**: use `getBillingPlanForUser` in middleware or layouts (e.g. paid-only routes under `/automations`).
+- [ ] **Gate features (optional)** — re-introduce paid-only routes in middleware when you ship execution beyond dry-run.
 
 ---
 
 ## Phase B — Security & scale
 
-- [x] **Protect `/api/reasoning` and `/api/robot`**: when Supabase auth env is set, **`getUser()`** must succeed or the proxy returns **401** (no anonymous relay). If auth env is omitted, proxies stay open for local development.
-- [ ] **Rate limits** on proxies and webhooks (per user / IP).
+- [x] **Protect `/api/reasoning` and `/api/robot`**: when Supabase auth env is set, **`getUser()`** or a valid **API key** must succeed or the proxy returns **401**. If auth env is omitted, proxies stay open for local development.
+- [x] **Rate limits** — in-memory limits on reasoning/robot proxies (per user+IP when auth on, per IP when off) and on the Lemon webhook route (per IP).
 - [x] **Baseline security headers** in `next.config.ts` (frame deny, nosniff, referrer policy, permissions-policy). Add **CSP** when you introduce third-party scripts.
 
 ---
@@ -44,23 +48,22 @@ Apply database changes from `supabase/migrations/` in the Supabase SQL Editor (o
 
 ### Option 1 — Incident Copilot
 
-- [ ] `copilot_threads` / `copilot_messages` tables (RLS by `user_id`).
-- [ ] UI: replace placeholder with streaming chat calling `/api/reasoning/...` server-side.
-- [ ] Persist threads; optional export.
+- [x] **SQL** — `copilot_threads` / `copilot_messages` in `20260418140000_console_extensions.sql` (apply with spine migration).
+- [x] **UI** — client `CopilotChat` posts to `/api/reasoning/v1/chat` (or `NEXT_PUBLIC_COPILOT_PROXY_PATH`); streaming/persist threads still optional.
 
 ### Option 2 — Incidents
 
 - [x] **Migration** `supabase/migrations/20260418130000_incidents.sql` — `incidents` table + RLS (apply when Supabase is ready).
 - [x] **Data layer** — `lib/incidents/data.ts` loads from DB when the table exists; otherwise **demo** rows + banner on the list page.
-- [ ] **CRUD / ingest**: create & edit UI, optional PagerDuty / Opsgenie / inbound webhooks.
+- [x] **Create** — `/incidents/new` + server action when Supabase + table exist; edit / ingest (PagerDuty, etc.) still optional.
 
 ---
 
 ## Phase D — Approvals, automations, audit
 
-- [ ] **Approvals** queue table + UI bound to data (not static cards).
-- [ ] **Automations**: definitions + run history, or delegate to your automation service with entitlement checks.
-- [ ] **Audit log**: append-only `audit_log` for sensitive actions (webhook applied, proxy call policy change, etc.).
+- [x] **Approvals** — `approval_requests` in `20260418140000_console_extensions.sql`; **`/approvals`** Approve/Deny (Supabase or **demo dev-store**); **Recent** list.
+- [x] **Automations (baseline)** — playbook list + dry-runs + recent run panel; extend with real definitions + durable run history in DB.
+- [x] **Audit log** — `audit_log` table + RLS in `20260418140000_console_extensions.sql`; **`appendAuditEvent`** writes **subscription sync** (Lemon webhook) and **API key** create/revoke; **`/audit`** lists rows from the DB when available.
 
 ---
 

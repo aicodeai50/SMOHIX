@@ -41,7 +41,7 @@ export function Footer() {
             >
               Get started
             </Link>
-            <Link href="/copilot" className="hover:text-foreground">
+            <Link href="/hub" className="hover:text-foreground">
               Console
             </Link>
             <Link href="/#modules" className="hover:text-foreground">

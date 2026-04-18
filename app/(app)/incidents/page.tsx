@@ -31,10 +31,21 @@ export default async function IncidentsPage() {
 
   return (
     <>
-      <PageHeader
-        title="Incidents"
-        description="Unified view of signals, ownership, and timeline entries. With Supabase configured and the incidents migration applied, rows load from your database."
-      />
+      <div className="mb-8 flex flex-wrap items-start justify-between gap-4">
+        <PageHeader
+          className="min-w-0 flex-1"
+          title="Incidents"
+          description="Unified view of signals, ownership, and timeline entries. With Supabase configured and the incidents migration applied, rows load from your database."
+        />
+        {hasSupabaseAuth() && userId ? (
+          <Link
+            href="/incidents/new"
+            className="inline-flex h-10 shrink-0 items-center justify-center rounded-lg bg-accent px-4 text-sm font-medium text-background hover:opacity-90"
+          >
+            New incident
+          </Link>
+        ) : null}
+      </div>
       {source === "demo" ? (
         <p className="mb-4 rounded-lg border border-border bg-surface-elevated/50 px-3 py-2 text-xs text-muted">
           Showing <span className="font-medium text-foreground/90">demo incidents</span>. After

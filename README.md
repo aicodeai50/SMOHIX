@@ -2,7 +2,7 @@
 
 Next.js app for [shynvo.app](https://shynvo.app): marketing site + console shell.
 
-**Roadmap & completion checklist:** [`docs/PLATFORM_PLAN.md`](docs/PLATFORM_PLAN.md) · **Database (Supabase):** run [`supabase/migrations/20260418120000_platform_spine.sql`](supabase/migrations/20260418120000_platform_spine.sql) then [`supabase/migrations/20260418130000_incidents.sql`](supabase/migrations/20260418130000_incidents.sql) in the SQL Editor when you wire Supabase.
+**Roadmap & completion checklist:** [`docs/PLATFORM_PLAN.md`](docs/PLATFORM_PLAN.md) · **Database (Supabase):** run migrations in order: [`20260418120000_platform_spine.sql`](supabase/migrations/20260418120000_platform_spine.sql) → [`20260418130000_incidents.sql`](supabase/migrations/20260418130000_incidents.sql) → [`20260418140000_console_extensions.sql`](supabase/migrations/20260418140000_console_extensions.sql) → [`20260418150000_api_keys.sql`](supabase/migrations/20260418150000_api_keys.sql).
 
 ## Run locally (preview UI)
 
@@ -11,7 +11,7 @@ npm install
 npm run dev
 ```
 
-Open **http://localhost:3000** (marketing) and **http://localhost:3000/copilot** (console).
+Open **http://localhost:3000** (marketing) and **http://localhost:3000/hub** (console hub — works without Supabase; Copilot uses `/api/copilot/chat` with offline or OpenAI).
 
 ## GitHub: `SHYNVO`
 
@@ -144,9 +144,9 @@ The app uses **email + password** via **`@supabase/ssr`**. Routes: **`/auth/sign
 - **Site URL:** your production origin (e.g. `https://shynvo.app`).
 - **Redirect URLs:** include `https://shynvo.app/auth/callback` and `http://localhost:3000/auth/callback` for local dev.
 
-When both public Supabase vars are set, **middleware** requires a session for **`/copilot`**, **`/incidents`**, **`/automations`**, **`/approvals`**, **`/audit`**, and **`/settings/**`**. If the vars are **omitted**, the console stays open without login (useful for local UI work).
+When both public Supabase vars are set, **middleware** requires a session for **`/hub`**, **`/copilot`**, **`/incidents`**, **`/automations`**, **`/runbooks`**, **`/approvals`**, **`/audit`**, and **`/settings/**`**. If the vars are **omitted**, the console stays open without login (useful for local UI work).
 
-**Next for billing:** map Lemon Squeezy / webhooks to the signed-in user (e.g. store `user.id` or email in your billing metadata), then gate features by tier in middleware or Server Components. **Still recommended:** add session or service checks on **`/api/reasoning`** and **`/api/robot`** before production so they are not open relays.
+**Next for billing:** map Lemon Squeezy / webhooks to the signed-in user (e.g. store `user.id` or email in your billing metadata). **Still recommended:** session or API-key checks on **`/api/reasoning`** and **`/api/robot`** when auth env is set (already implemented).
 
 ## Connecting external services to the app
 
@@ -166,7 +166,9 @@ Browsers should **not** call your `*.up.railway.app` URLs directly (CORS, and yo
 | `GET /api/robot/docs` | `GET {SHYNVO_ROBOT_API_URL}/docs` |
 | `GET /api/robot/health` | `GET {SHYNVO_ROBOT_API_URL}/health` |
 
-Query string, method, and body are forwarded. Headers forwarded: **`Content-Type`**, **`Accept`**, **`Authorization`** (add a session/JWT check on these routes before production if the upstream is sensitive).
+Query string, method, and body are forwarded. Headers forwarded: **`Content-Type`**, **`Accept`**, and **`Authorization`** only when it is **not** a Shynvo API key (`shynvo_sk_…`), so your upstream never receives Shynvo credentials.
+
+When Supabase auth env vars are set, callers must use a **browser session** or an **API key** from **Settings → API keys** (`Authorization: Bearer <key>` or `X-Shynvo-Api-Key`). Resolving keys by hash uses **`SUPABASE_SERVICE_ROLE_KEY`** on the server.
 
 **Examples (client or Server Component):**
 

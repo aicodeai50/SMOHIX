@@ -1,4 +1,10 @@
-const feed = [
+import Link from "next/link";
+
+import { getConnectorHealthRows } from "@/lib/connectors-health";
+
+type FeedRow = { time: string; kind: string; text: string };
+
+const STATIC_FEED: FeedRow[] = [
   {
     time: "14:02:11",
     kind: "approval",
@@ -8,7 +14,31 @@ const feed = [
   { time: "14:00:02", kind: "signal", text: "Latency SLO breach detected — us-east" },
 ];
 
-export function LivePanel() {
+/** Marketing operational feed — mixes live connector probes with sample stream rows. */
+export async function LivePanel() {
+  const connectors = await getConnectorHealthRows();
+  const now = new Date();
+  const stamp = now.toISOString().slice(11, 19);
+
+  const dynamic: FeedRow[] = [];
+  for (const c of connectors) {
+    if (c.ok === null) {
+      dynamic.push({
+        time: stamp,
+        kind: "signal",
+        text: `${c.name}: not configured (set env in Railway)`,
+      });
+    } else {
+      dynamic.push({
+        time: stamp,
+        kind: c.ok ? "action" : "signal",
+        text: `${c.name}: ${c.ok ? "reachable" : "unreachable"}${c.ms != null ? ` · ${c.ms}ms` : ""}`,
+      });
+    }
+  }
+
+  const feed = [...dynamic, ...STATIC_FEED].slice(0, 8);
+
   return (
     <section id="operations" className="border-b border-border py-20 sm:py-24">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
@@ -18,8 +48,8 @@ export function LivePanel() {
               Operational feed
             </h2>
             <p className="mt-3 max-w-xl text-muted">
-              A live-style panel for signals, proposed actions, and approval
-              queues — the rhythm of a modern ops floor.
+              Live connector checks from your deployment, plus sample stream rows. Open the
+              console to act on approvals and automations.
             </p>
           </div>
           <span className="inline-flex items-center gap-2 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-400">
@@ -39,7 +69,7 @@ export function LivePanel() {
             </div>
             <ul className="divide-y divide-border">
               {feed.map((row) => (
-                <li key={row.time + row.text} className="flex gap-4 px-4 py-3">
+                <li key={row.time + row.text + row.kind} className="flex gap-4 px-4 py-3">
                   <span className="shrink-0 text-muted">{row.time}</span>
                   <span
                     className={
@@ -63,31 +93,22 @@ export function LivePanel() {
               Approvals
             </h3>
             <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-4">
-              <p className="text-sm font-medium text-foreground">
-                Production change
-              </p>
+              <p className="text-sm font-medium text-foreground">Production change</p>
               <p className="mt-1 text-xs text-muted">
                 Increase DB connection limit — requires two-person rule
               </p>
-              <div className="mt-4 flex gap-2">
-                <button
-                  type="button"
-                  className="flex-1 rounded-md bg-emerald-600/90 py-2 text-xs font-medium text-white"
-                  disabled
+              <div className="mt-4">
+                <Link
+                  href="/approvals"
+                  className="inline-flex w-full items-center justify-center rounded-md bg-emerald-600/90 py-2 text-xs font-medium text-white transition-opacity hover:opacity-90"
                 >
-                  Approve
-                </button>
-                <button
-                  type="button"
-                  className="flex-1 rounded-md border border-border py-2 text-xs font-medium text-muted"
-                  disabled
-                >
-                  Deny
-                </button>
+                  Open approvals in console
+                </Link>
               </div>
             </div>
             <p className="text-xs text-muted">
-              Demo UI — wire to your approval service and audit store.
+              Approve or deny in the app — demo mode works without Supabase; database mode after
+              migration.
             </p>
           </aside>
         </div>

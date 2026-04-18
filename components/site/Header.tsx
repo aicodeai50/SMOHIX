@@ -9,8 +9,13 @@ const nav = [
   { href: "#connect", label: "Connect" },
 ];
 
-export function Header() {
-  const trialHref = getTrialHref();
+export function Header({
+  signedInCheckoutUrl,
+}: {
+  /** When set (signed-in + Lemon checkout configured), trial links use this URL so webhooks can attach `shynvo_user_id`. */
+  signedInCheckoutUrl?: string | null;
+}) {
+  const trialHref = signedInCheckoutUrl?.trim() || getTrialHref();
   return (
     <header className="sticky top-0 z-50 border-b border-border/80 bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex min-h-16 max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-3 px-4 py-3 sm:px-6 md:h-16 md:flex-nowrap md:py-0">
@@ -42,7 +47,7 @@ export function Header() {
             Get started
           </Link>
           <Link
-            href="/copilot"
+            href="/hub"
             className="hidden text-sm text-muted transition-colors hover:text-foreground md:inline"
           >
             Console
@@ -56,8 +61,11 @@ export function Header() {
           <a
             href={trialHref}
             className="hidden rounded-lg border border-border px-3 py-2 text-sm text-muted transition-colors hover:border-accent/40 hover:text-foreground xl:inline-flex"
+            {...(trialHref.startsWith("http")
+              ? { target: "_blank", rel: "noopener noreferrer" }
+              : {})}
           >
-            Start trial
+            {signedInCheckoutUrl ? "Subscribe" : "Start trial"}
           </a>
         </div>
       </div>

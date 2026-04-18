@@ -18,7 +18,15 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function BillingPage() {
+export default async function BillingPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const sp = await searchParams;
+  const upgradeHint =
+    typeof sp.upgrade === "string" ? sp.upgrade : undefined;
+
   if (!hasSupabaseAuth()) {
     return (
       <>
@@ -54,6 +62,16 @@ export default async function BillingPage() {
         title="Billing"
         description="Your plan comes from Lemon Squeezy webhooks into Shynvo. Run the SQL migration in Supabase if tables are missing."
       />
+
+      {upgradeHint === "automations" && plan === "free" && !queryError ? (
+        <div className="mb-6 rounded-lg border border-accent/30 bg-accent-dim/30 px-4 py-3 text-sm text-foreground/90">
+          <p className="font-medium text-foreground">Automations require a paid plan</p>
+          <p className="mt-1 text-muted">
+            Subscribe below (or complete your Lemon webhook setup) to unlock the Automations
+            console.
+          </p>
+        </div>
+      ) : null}
 
       {queryError ? (
         <div className="mb-6 rounded-lg border border-amber-500/25 bg-amber-500/10 px-4 py-3 text-sm text-foreground/90">

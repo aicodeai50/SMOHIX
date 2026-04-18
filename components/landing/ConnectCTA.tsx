@@ -1,8 +1,12 @@
 import Link from "next/link";
 import { getTrialHref } from "@/lib/billing";
 
-export function ConnectCTA() {
-  const trialHref = getTrialHref();
+export function ConnectCTA({
+  signedInCheckoutUrl,
+}: {
+  signedInCheckoutUrl?: string | null;
+}) {
+  const trialHref = signedInCheckoutUrl?.trim() || getTrialHref();
   return (
     <section id="connect" className="py-20 sm:py-24" aria-labelledby="connect-heading">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
@@ -49,8 +53,11 @@ export function ConnectCTA() {
               <a
                 href={trialHref}
                 className="inline-flex h-12 items-center justify-center rounded-lg border border-dashed border-border px-6 font-medium text-muted hover:border-accent/40 hover:text-foreground"
+                {...(trialHref.startsWith("http")
+                  ? { target: "_blank", rel: "noopener noreferrer" }
+                  : {})}
               >
-                Subscribe (trial)
+                {signedInCheckoutUrl ? "Subscribe (your account)" : "Subscribe (trial)"}
               </a>
             </div>
           </div>

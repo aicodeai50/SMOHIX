@@ -1,28 +1,66 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
+import { devResolveTenantFromPlainKey } from "@/lib/api-keys/dev-store";
+import {
+  extractShynvoApiKey,
+  resolveUserIdFromApiKeyPlaintext,
+} from "@/lib/api-keys/resolve";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { clientIpFromRequest, takeToken } from "@/lib/rate-limit/memory";
 
 const TIMEOUT_MS = 60_000;
+const PROXY_RATE_LIMIT = 120;
+const PROXY_RATE_WINDOW_MS = 60_000;
 
-/** When Supabase auth env is set, same-origin proxy requires a signed-in user. */
-async function denyIfProxyUnauthenticated(): Promise<NextResponse | null> {
+async function resolveProxyUserId(req: NextRequest): Promise<string | null> {
+  const supabase = await createServerSupabaseClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (user) {
+    return user.id;
+  }
+  const plain = extractShynvoApiKey(req);
+  if (!plain) {
+    return null;
+  }
+  return resolveUserIdFromApiKeyPlaintext(plain);
+}
+
+/** When Supabase auth env is set, proxy allows a session cookie or a valid `shynvo_sk_` API key. */
+async function denyIfProxyUnauthenticated(
+  req: NextRequest,
+): Promise<NextResponse | null> {
   if (!hasSupabaseAuth()) {
     return null;
   }
   try {
-    const supabase = await createServerSupabaseClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) {
+    const userId = await resolveProxyUserId(req);
+    if (!userId) {
       return NextResponse.json(
         {
           error: "Unauthorized",
-          message: "Sign in to use the reasoning and automation APIs.",
+          message:
+            "Sign in, or call with Authorization: Bearer <shynvo_sk_…> or X-Shynvo-Api-Key (see Settings → API keys). API key validation needs SUPABASE_SERVICE_ROLE_KEY on the server.",
         },
         { status: 401 },
+      );
+    }
+    const ip = clientIpFromRequest(req);
+    const rl = takeToken(
+      `proxy:${userId}:${ip}`,
+      PROXY_RATE_LIMIT,
+      PROXY_RATE_WINDOW_MS,
+    );
+    if (!rl.ok) {
+      return NextResponse.json(
+        { error: "Too_many_requests", retry_after: rl.retryAfterSec },
+        {
+          status: 429,
+          headers: { "Retry-After": String(rl.retryAfterSec) },
+        },
       );
     }
   } catch {
@@ -32,6 +70,47 @@ async function denyIfProxyUnauthenticated(): Promise<NextResponse | null> {
         message: "Could not validate session for this request.",
       },
       { status: 503 },
+    );
+  }
+  return null;
+}
+
+/** No Supabase auth: anonymous IP limit, or per-tenant limit when a valid demo API key is sent. */
+function denyIfProxyDevOrAnon(req: NextRequest): NextResponse | null {
+  if (hasSupabaseAuth()) {
+    return null;
+  }
+  const ip = clientIpFromRequest(req);
+  const plain = extractShynvoApiKey(req);
+  if (plain) {
+    const dev = devResolveTenantFromPlainKey(plain);
+    if (!dev) {
+      return NextResponse.json({ error: "Invalid or revoked API key" }, { status: 401 });
+    }
+    const rl = takeToken(
+      `proxy:dev:${dev.tenantId}:${ip}`,
+      PROXY_RATE_LIMIT,
+      PROXY_RATE_WINDOW_MS,
+    );
+    if (!rl.ok) {
+      return NextResponse.json(
+        { error: "Too_many_requests", retry_after: rl.retryAfterSec },
+        {
+          status: 429,
+          headers: { "Retry-After": String(rl.retryAfterSec) },
+        },
+      );
+    }
+    return null;
+  }
+  const rl = takeToken(`proxy:anon:${ip}`, PROXY_RATE_LIMIT, PROXY_RATE_WINDOW_MS);
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "Too_many_requests", retry_after: rl.retryAfterSec },
+      {
+        status: 429,
+        headers: { "Retry-After": String(rl.retryAfterSec) },
+      },
     );
   }
   return null;
@@ -59,10 +138,18 @@ function safeJoinPath(segments: string[] | undefined): string {
 
 function pickForwardHeaders(req: NextRequest): Headers {
   const out = new Headers();
-  const allow = ["content-type", "accept", "authorization"];
-  for (const name of allow) {
+  for (const name of ["content-type", "accept"] as const) {
     const v = req.headers.get(name);
-    if (v) out.set(name, v);
+    if (v) {
+      out.set(name, v);
+    }
+  }
+  const auth = req.headers.get("authorization");
+  if (auth?.startsWith("Bearer ")) {
+    const token = auth.slice("Bearer ".length).trim();
+    if (token && !token.startsWith("shynvo_sk_")) {
+      out.set("authorization", auth);
+    }
   }
   return out;
 }
@@ -72,7 +159,12 @@ export async function proxyToUpstream(
   req: NextRequest,
   pathSegments: string[] | undefined,
 ): Promise<NextResponse> {
-  const authDeny = await denyIfProxyUnauthenticated();
+  const devOrAnon = denyIfProxyDevOrAnon(req);
+  if (devOrAnon) {
+    return devOrAnon;
+  }
+
+  const authDeny = await denyIfProxyUnauthenticated(req);
   if (authDeny) {
     return authDeny;
   }

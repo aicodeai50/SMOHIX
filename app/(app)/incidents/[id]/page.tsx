@@ -2,13 +2,18 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
+import { updateIncidentStatusAction } from "./actions";
+
 import { PageHeader } from "@/components/app/PageHeader";
 import { PlaceholderCard } from "@/components/app/PlaceholderCard";
 import { getIncidentForUser } from "@/lib/incidents/data";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-type Props = { params: Promise<{ id: string }> };
+type Props = {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ error?: string }>;
+};
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
@@ -23,8 +28,10 @@ const timeline = [
   { t: "14:05", text: "Dry-run rollback queued — awaiting approval" },
 ];
 
-export default async function IncidentDetailPage({ params }: Props) {
+export default async function IncidentDetailPage({ params, searchParams }: Props) {
   const { id } = await params;
+  const sp = await searchParams;
+  const err = typeof sp.error === "string" ? sp.error : undefined;
 
   let userId = "";
   if (hasSupabaseAuth()) {
@@ -61,6 +68,41 @@ export default async function IncidentDetailPage({ params }: Props) {
         title={row.title}
         description={`${row.id} · ${row.severity} · ${row.status} · updated ${row.updated}`}
       />
+      {err ? (
+        <p className="mb-4 rounded-lg border border-red-500/25 bg-red-500/10 px-3 py-2 text-sm text-red-200/90">
+          {err}
+        </p>
+      ) : null}
+      {source === "database" && hasSupabaseAuth() ? (
+        <form
+          action={updateIncidentStatusAction}
+          className="mb-6 flex flex-wrap items-end gap-3 rounded-xl border border-border bg-surface/80 p-4"
+        >
+          <input type="hidden" name="id" value={row.id} />
+          <div>
+            <label htmlFor="status" className="mb-1 block text-xs font-medium text-muted">
+              Status
+            </label>
+            <select
+              id="status"
+              name="status"
+              defaultValue={row.status}
+              className="h-10 rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none ring-ring/50 focus:ring-2"
+            >
+              <option value="investigating">Investigating</option>
+              <option value="mitigated">Mitigated</option>
+              <option value="resolved">Resolved</option>
+              <option value="monitoring">Monitoring</option>
+            </select>
+          </div>
+          <button
+            type="submit"
+            className="h-10 rounded-lg bg-accent px-4 text-sm font-medium text-background hover:opacity-90"
+          >
+            Save status
+          </button>
+        </form>
+      ) : null}
       <PlaceholderCard title="Timeline">
         <ul className="space-y-3 font-mono text-sm">
           {timeline.map((item) => (

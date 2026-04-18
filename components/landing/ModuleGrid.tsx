@@ -1,18 +1,23 @@
+import Link from "next/link";
+
 const modules = [
   {
     title: "Incident Copilot",
+    href: "/copilot",
     description:
       "Guided triage, hypotheses, and next steps grounded in your signals — with human oversight at every critical decision.",
     points: ["Alert correlation", "Suggested runbooks", "Evidence trails"],
   },
   {
     title: "Automation Engine",
+    href: "/automations",
     description:
       "Execute playbooks across your stack with policy checks, dry-runs, and mandatory approvals for risky changes.",
     points: ["Approval workflows", "Environment guardrails", "Idempotent actions"],
   },
   {
     title: "Runbook Intelligence",
+    href: "/runbooks",
     description:
       "Turn static docs into living procedures: versioned steps, drift detection, and continuous improvement from outcomes.",
     points: ["Version history", "Step-level checks", "Post-incident learning"],
@@ -48,6 +53,12 @@ export function ModuleGrid() {
                   </li>
                 ))}
               </ul>
+              <Link
+                href={m.href}
+                className="mt-5 inline-flex text-sm font-medium text-accent hover:underline"
+              >
+                Open in console →
+              </Link>
             </article>
           ))}
         </div>

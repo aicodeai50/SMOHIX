@@ -1,8 +1,12 @@
 import Link from "next/link";
 import { getTrialHref } from "@/lib/billing";
 
-export function Hero() {
-  const trialHref = getTrialHref();
+export function Hero({
+  signedInCheckoutUrl,
+}: {
+  signedInCheckoutUrl?: string | null;
+}) {
+  const trialHref = signedInCheckoutUrl?.trim() || getTrialHref();
   return (
     <section className="relative overflow-hidden border-b border-border">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(56,189,248,0.15),transparent)]" />
@@ -43,8 +47,11 @@ export function Hero() {
             <a
               href={trialHref}
               className="underline-offset-4 hover:text-accent hover:underline"
+              {...(trialHref.startsWith("http")
+                ? { target: "_blank", rel: "noopener noreferrer" }
+                : {})}
             >
-              Subscribe (trial)
+              {signedInCheckoutUrl ? "Subscribe (your account)" : "Subscribe (trial)"}
             </a>
           </p>
         </div>

@@ -23,7 +23,16 @@ export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   if (!hasSupabaseAuth()) {
-    return NextResponse.next();
+    const res = NextResponse.next();
+    if (!request.cookies.get("shynvo_dev_tid")?.value) {
+      res.cookies.set("shynvo_dev_tid", globalThis.crypto.randomUUID(), {
+        path: "/",
+        maxAge: 60 * 60 * 24 * 365,
+        sameSite: "lax",
+        httpOnly: true,
+      });
+    }
+    return res;
   }
 
   const { response: sessionResponse, user } = await updateSupabaseSession(request);

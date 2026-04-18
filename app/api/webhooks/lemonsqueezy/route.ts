@@ -1,15 +1,20 @@
 import { createHash } from "node:crypto";
 
+import { appendAuditEvent } from "@/lib/audit/append";
 import { verifyLemonSqueezySignature } from "@/lib/lemonsqueezy-verify";
-import { parseWebhookJson } from "@/lib/lemonsqueezy/parse-webhook";
+import { extractShynvoUserId, parseWebhookJson } from "@/lib/lemonsqueezy/parse-webhook";
 import { syncSubscriptionFromWebhook } from "@/lib/billing/sync-lemon-subscription";
 import {
   claimWebhookDelivery,
   releaseWebhookDelivery,
 } from "@/lib/billing/webhook-delivery";
 import { createServiceSupabaseClient } from "@/lib/supabase/admin";
+import { clientIpFromRequest, takeToken } from "@/lib/rate-limit/memory";
 
 export const runtime = "nodejs";
+
+const WEBHOOK_IP_LIMIT = 60;
+const WEBHOOK_IP_WINDOW_MS = 60_000;
 
 function deliveryIdFromBody(rawBody: string): string {
   return createHash("sha256").update(rawBody, "utf8").digest("hex");
@@ -31,6 +36,18 @@ export async function POST(request: Request) {
     return Response.json(
       { error: "Webhook signing secret not configured" },
       { status: 501 },
+    );
+  }
+
+  const ip = clientIpFromRequest(request);
+  const ipRl = takeToken(`lemon_webhook:${ip}`, WEBHOOK_IP_LIMIT, WEBHOOK_IP_WINDOW_MS);
+  if (!ipRl.ok) {
+    return Response.json(
+      { error: "Too_many_requests", retry_after: ipRl.retryAfterSec },
+      {
+        status: 429,
+        headers: { "Retry-After": String(ipRl.retryAfterSec) },
+      },
     );
   }
 
@@ -92,6 +109,20 @@ export async function POST(request: Request) {
 
     if (process.env.NODE_ENV === "development") {
       console.info("[lemonsqueezy webhook]", eventName, sync);
+    }
+
+    if (sync.action === "upserted" && sync.lemon_subscription_id) {
+      const uid = extractShynvoUserId(payload.meta);
+      if (uid) {
+        await appendAuditEvent({
+          event_type: "billing.subscription_synced",
+          user_id: uid,
+          details: {
+            lemon_subscription_id: sync.lemon_subscription_id,
+            webhook_event: eventName,
+          },
+        });
+      }
     }
 
     return Response.json({

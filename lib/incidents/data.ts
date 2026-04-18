@@ -2,7 +2,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 
 import { DEMO_INCIDENTS } from "./demo";
-import type { IncidentRow, IncidentsListResult } from "./types";
+import type { IncidentRow, IncidentSeverity, IncidentsListResult } from "./types";
 
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -123,4 +123,91 @@ export async function getIncidentForUser(
     return { source: "demo", row: demo };
   }
   return null;
+}
+
+const SEVERITIES = new Set<IncidentSeverity>(["low", "medium", "high", "critical"]);
+
+const STATUSES = new Set([
+  "investigating",
+  "mitigated",
+  "resolved",
+  "monitoring",
+]);
+
+export async function updateIncidentStatusForUser(
+  userId: string,
+  id: string,
+  status: string,
+): Promise<{ ok: true } | { ok: false; reason: string }> {
+  if (!hasSupabaseAuth() || !isUuid(id)) {
+    return { ok: false, reason: "Cannot update in this environment." };
+  }
+  const s = status.trim();
+  if (!STATUSES.has(s)) {
+    return { ok: false, reason: "Invalid status." };
+  }
+  try {
+    const supabase = await createServerSupabaseClient();
+    const { error } = await supabase
+      .from("incidents")
+      .update({ status: s, updated_at: new Date().toISOString() })
+      .eq("id", id)
+      .eq("user_id", userId);
+
+    if (error) {
+      return { ok: false, reason: error.message };
+    }
+    return { ok: true };
+  } catch (e) {
+    return {
+      ok: false,
+      reason: e instanceof Error ? e.message : "Update failed.",
+    };
+  }
+}
+
+export async function createIncidentForUser(
+  userId: string,
+  input: { title: string; severity: string; status?: string },
+): Promise<{ ok: true; id: string } | { ok: false; reason: string }> {
+  if (!hasSupabaseAuth()) {
+    return { ok: false, reason: "Supabase is not configured." };
+  }
+
+  const title = input.title.trim();
+  if (!title) {
+    return { ok: false, reason: "Title is required." };
+  }
+
+  const severity = SEVERITIES.has(input.severity as IncidentSeverity)
+    ? (input.severity as IncidentSeverity)
+    : "medium";
+  const status = (input.status ?? "investigating").trim() || "investigating";
+
+  try {
+    const supabase = await createServerSupabaseClient();
+    const { data, error } = await supabase
+      .from("incidents")
+      .insert({
+        user_id: userId,
+        title,
+        severity,
+        status,
+      })
+      .select("id")
+      .single();
+
+    if (error) {
+      return { ok: false, reason: error.message };
+    }
+    if (!data?.id) {
+      return { ok: false, reason: "Insert returned no id." };
+    }
+    return { ok: true, id: data.id as string };
+  } catch (e) {
+    return {
+      ok: false,
+      reason: e instanceof Error ? e.message : "Could not create incident.",
+    };
+  }
 }
