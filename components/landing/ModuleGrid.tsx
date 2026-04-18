@@ -32,10 +32,10 @@ export function ModuleGrid() {
     <section id="modules" className="border-b border-white/[0.06] py-16 sm:py-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
-          Capabilities
+          Modules
         </h2>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
-          Copilot, automation, and runbooks — each area opens in the console on its own route.
+          Copilot, automation, and runbooks — each opens in the console on its own route.
         </p>
         <div className="mt-10 grid gap-5 md:grid-cols-3">
           {modules.map((m) => (

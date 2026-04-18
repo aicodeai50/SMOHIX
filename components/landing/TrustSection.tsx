@@ -4,20 +4,23 @@ const links = [
   {
     href: "/audit",
     title: "Audit log",
-    line: "Immutable record of billing sync, API keys, approvals, and automation events.",
-    action: "Audit log",
+    line: "Billing sync, API keys, approvals, and automation events in one append-only log.",
+    action: "View",
+    actionAria: "View audit log",
   },
   {
     href: "/approvals",
     title: "Approvals",
-    line: "Human review before high-risk changes leave the queue.",
-    action: "Approvals",
+    line: "Review and record decisions before high-risk changes proceed.",
+    action: "Open",
+    actionAria: "Open approvals",
   },
   {
     href: "/settings",
     title: "Settings",
-    line: "API keys, connectors, billing, and environment configuration.",
-    action: "Settings",
+    line: "API keys, connectors, billing, and organization options.",
+    action: "Configure",
+    actionAria: "Open settings",
   },
 ] as const;
 
@@ -29,8 +32,8 @@ export function TrustSection() {
           Governance and access
         </h2>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
-          Evidence, authorization, and credentials — separate concerns from product modules,
-          same application.
+          Evidence, authorization, and credentials — complementary to the product modules
+          above.
         </p>
 
         <div className="mt-8 rounded-lg border border-white/[0.08] bg-white/[0.02] px-5 py-1 sm:px-6">
@@ -46,6 +49,7 @@ export function TrustSection() {
                 </div>
                 <Link
                   href={item.href}
+                  aria-label={item.actionAria}
                   className="shrink-0 text-sm font-medium text-accent/95 underline-offset-4 hover:text-accent hover:underline"
                 >
                   {item.action}

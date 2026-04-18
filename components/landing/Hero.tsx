@@ -12,15 +12,12 @@ export function Hero({
     <section className="relative overflow-hidden border-b border-white/[0.06]">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(94,225,255,0.08),transparent)]" />
       <div className="relative mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
-        <p className="mb-4 text-xs font-medium uppercase tracking-widest text-muted">
-          Shynvo
-        </p>
         <h1 className="shynvo-headline max-w-3xl text-3xl font-semibold tracking-tight sm:text-4xl sm:leading-tight md:text-[2.5rem]">
           Operations control for IT teams
         </h1>
         <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted sm:text-lg">
           Incident response, guarded automation, and auditable change — in one console with
-          consistent policy and sign-in when you connect Supabase.
+          consistent policy and organization sign-in when your team enables it.
         </p>
         <div className="mt-9 flex flex-col gap-4 sm:flex-row sm:items-center">
           <Link
@@ -38,7 +35,7 @@ export function Hero({
         </div>
         <p className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted">
           <a href="#modules" className="text-foreground/90 underline-offset-4 hover:text-accent hover:underline">
-            Capabilities
+            Modules
           </a>
           <span className="text-muted/35" aria-hidden>
             ·

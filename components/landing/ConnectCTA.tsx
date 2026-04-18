@@ -20,8 +20,8 @@ export function ConnectCTA({
               Integrations and console
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-muted">
-              Reasoning and automation are accessed through the same application. Configure
-              upstream URLs and keys in Settings after sign-in.
+              Reasoning and automation are available in the same application after you sign in.
+              Integration details are managed from Settings.
             </p>
             <ul className="mt-5 space-y-2 text-sm text-muted">
               <li>

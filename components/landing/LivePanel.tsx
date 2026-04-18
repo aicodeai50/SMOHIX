@@ -1,12 +1,14 @@
 import Link from "next/link";
 
 import { getConnectorHealthRows } from "@/lib/connectors-health";
+import { hasSupabaseAuth } from "@/lib/supabase/env";
 
 type FeedRow = { time: string; kind: string; text: string };
 
-/** Live operational feed from deployment connector probes. */
+/** Operational snapshot for optional integrations (no hosting vendor names in user copy). */
 export async function LivePanel() {
   const connectors = await getConnectorHealthRows();
+  const authEnabled = hasSupabaseAuth();
   const now = new Date();
   const stamp = now.toISOString().slice(11, 19);
 
@@ -16,7 +18,7 @@ export async function LivePanel() {
       dynamic.push({
         time: stamp,
         kind: "signal",
-        text: `${c.name}: not configured (set env in Railway)`,
+        text: `${c.name}: not connected`,
       });
     } else {
       dynamic.push({
@@ -32,14 +34,16 @@ export async function LivePanel() {
   const anyUnknown = connectors.some((c) => c.ok === null);
 
   return (
-    <section id="operations" className="border-b border-white/[0.06] py-20 sm:py-24">
+    <section id="operations" className="border-b border-white/[0.06] py-16 sm:py-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
-            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Operational feed</h2>
-            <p className="mt-3 max-w-xl text-muted">
-              Live connector checks from this deployment. Use the links below to act on what you
-              see — the console is one click away.
+            <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
+              Service status
+            </h2>
+            <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted">
+              Optional integrations your administrator can enable. When nothing is connected,
+              the console still runs with built-in defaults.
             </p>
           </div>
           <span
@@ -61,17 +65,17 @@ export async function LivePanel() {
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-current opacity-80" />
               )}
             </span>
-            {anyDown ? "Check connectors" : anyUnknown ? "Partially configured" : "All probes answered"}
+            {anyDown ? "Check status" : anyUnknown ? "Optional setup" : "All services reachable"}
           </span>
         </div>
 
         <div className="mt-10 grid gap-6 lg:grid-cols-5">
-          <div className="flex flex-col rounded-xl border border-white/[0.08] bg-white/[0.02] font-mono text-sm lg:col-span-3">
+          <div className="flex flex-col rounded-lg border border-white/[0.08] bg-white/[0.02] text-sm lg:col-span-3">
             <div className="flex items-center justify-between border-b border-white/[0.06] px-4 py-3 text-xs text-muted">
-              <span>connector / health</span>
+              <span>Integration</span>
               <span>UTC</span>
             </div>
-            <ul className="min-h-[12rem] divide-y divide-white/[0.06]">
+            <ul className="min-h-[12rem] divide-y divide-white/[0.06] font-mono text-[13px]">
               {feed.map((row, i) => (
                 <li key={`${i}-${row.text}`} className="flex gap-4 px-4 py-3">
                   <span className="shrink-0 text-muted">{row.time}</span>
@@ -84,7 +88,7 @@ export async function LivePanel() {
                           : "text-muted"
                     }
                   >
-                    [{row.kind}]
+                    {row.kind === "action" ? "●" : "○"}
                   </span>
                   <span className="text-foreground/90">{row.text}</span>
                 </li>
@@ -92,38 +96,38 @@ export async function LivePanel() {
             </ul>
             <div className="flex flex-wrap gap-x-4 gap-y-2 border-t border-white/[0.06] px-4 py-3 text-xs">
               <Link href="/settings/connectors" className="font-medium text-accent hover:underline">
-                Configure connectors
+                Connectors
               </Link>
               <Link href="/hub" className="text-muted transition-colors hover:text-accent">
-                Open hub →
+                Console hub
               </Link>
             </div>
           </div>
 
-          <aside className="space-y-4 rounded-xl border border-white/[0.08] bg-white/[0.02] p-5 lg:col-span-2">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-muted">Approvals</h3>
+          <aside className="space-y-4 rounded-lg border border-white/[0.08] bg-white/[0.02] p-5 lg:col-span-2">
+            <h3 className="text-sm font-semibold text-foreground">Approvals</h3>
             <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-4">
-              <p className="text-sm font-medium text-foreground">Human-in-the-loop</p>
-              <p className="mt-1 text-xs text-muted">
-                Route risky changes through reviewers before they land in production paths.
+              <p className="text-sm font-medium text-foreground">Review queue</p>
+              <p className="mt-1 text-xs leading-relaxed text-muted">
+                High-impact changes can require reviewer approval before execution.
               </p>
               <div className="mt-4">
                 <Link
                   href="/approvals"
                   className="inline-flex w-full items-center justify-center rounded-lg bg-emerald-600/90 py-2 text-xs font-medium text-white transition-opacity hover:opacity-90"
                 >
-                  Open approvals
+                  Approvals
                 </Link>
               </div>
             </div>
-            <p className="text-xs text-muted">
-              Without Supabase, queues are session-scoped in this browser. Connect the database for
-              a shared queue — see{" "}
-              <Link href="/settings" className="text-accent hover:underline">
-                Settings
-              </Link>
-              .
-            </p>
+            {!authEnabled ? (
+              <p className="text-xs leading-relaxed text-muted">
+                Organization-wide queues require administrator sign-in to be enabled.{" "}
+                <Link href="/settings" className="text-accent hover:underline">
+                  Settings
+                </Link>
+              </p>
+            ) : null}
           </aside>
         </div>
       </div>

@@ -6,7 +6,6 @@ import {
   getGeneralMailtoHref,
   getSupportMailtoHref,
 } from "@/lib/billing";
-import { getPublicDeployRef } from "@/lib/build-stamp";
 import { marketingCta } from "@/lib/marketing-copy";
 import { Logo } from "./Logo";
 
@@ -26,7 +25,6 @@ function FooterHeading({ children }: { children: ReactNode }) {
 
 export function Footer() {
   const year = new Date().getFullYear();
-  const deployRef = getPublicDeployRef();
   return (
     <footer className="border-t border-white/[0.06] bg-surface/40">
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
@@ -113,23 +111,7 @@ export function Footer() {
               </Link>
             ))}
           </nav>
-          <p className="text-xs text-muted/60 sm:text-right">
-            All rights reserved. © {year} Shynvo
-            {deployRef ? (
-              <>
-                {" "}
-                <span className="text-muted/50" aria-hidden>
-                  ·
-                </span>{" "}
-                <span
-                  className="font-mono text-muted/80"
-                  title="Short git ref for this deployment (confirms you are on the latest build)"
-                >
-                  Build {deployRef}
-                </span>
-              </>
-            ) : null}
-          </p>
+          <p className="text-xs text-muted/60 sm:text-right">All rights reserved. © {year} Shynvo</p>
         </div>
       </div>
     </footer>
