@@ -5,22 +5,25 @@ const modules = [
     title: "Incident Copilot",
     href: "/copilot",
     description:
-      "Guided triage, hypotheses, and next steps grounded in your signals — with human oversight at every critical decision.",
+      "Guided triage and next steps from signals you connect — with human oversight on critical calls.",
     points: ["Alert correlation", "Suggested runbooks", "Evidence handoff"],
+    cta: "Open Copilot",
   },
   {
     title: "Automation Engine",
     href: "/automations",
     description:
-      "Execute playbooks across your stack with policy checks, dry-runs, and mandatory approvals for risky changes.",
+      "Playbooks with dry-runs and approvals before anything touches production paths.",
     points: ["Approval workflows", "Environment guardrails", "Idempotent actions"],
+    cta: "View automations",
   },
   {
     title: "Runbook Intelligence",
     href: "/runbooks",
     description:
-      "Turn static docs into living procedures: versioned steps, drift detection, and continuous improvement from outcomes.",
+      "Living procedures: versioned steps and checks you can evolve from real incidents.",
     points: ["Version history", "Step-level checks", "Post-incident learning"],
+    cta: "Browse runbooks",
   },
 ];
 
@@ -28,9 +31,10 @@ export function ModuleGrid() {
   return (
     <section id="modules" className="border-b border-white/[0.06] py-20 sm:py-24">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Three pillars</h2>
+        <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Product areas</h2>
         <p className="mt-3 max-w-2xl text-muted">
-          Built for enterprise IT: fast when you need speed, strict when you need safety.
+          Three surfaces in one console — each opens where that work happens. No duplicate
+          dashboards.
         </p>
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           {modules.map((m) => (
@@ -50,7 +54,7 @@ export function ModuleGrid() {
                 ))}
               </ul>
               <span className="mt-5 text-sm font-medium text-accent group-hover:underline">
-                Open in console →
+                {m.cta} →
               </span>
             </Link>
           ))}
