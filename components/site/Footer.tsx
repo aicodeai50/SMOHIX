@@ -121,8 +121,11 @@ export function Footer() {
                 <span className="text-muted/50" aria-hidden>
                   ·
                 </span>{" "}
-                <span className="font-mono text-muted/80" title="Git commit on this deploy">
-                  {deployRef}
+                <span
+                  className="font-mono text-muted/80"
+                  title="Short git ref for this deployment (confirms you are on the latest build)"
+                >
+                  Build {deployRef}
                 </span>
               </>
             ) : null}
