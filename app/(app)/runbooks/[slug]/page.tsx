@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { PageHeader } from "@/components/app/PageHeader";
@@ -22,11 +21,6 @@ export default async function RunbookDetailPage({ params }: Props) {
 
   return (
     <>
-      <div className="mb-6">
-        <Link href="/runbooks" className="text-sm text-muted hover:text-foreground">
-          ← Runbooks
-        </Link>
-      </div>
       <PageHeader
         title={r.title}
         description={`Version ${r.version} · ${r.steps} checklist steps`}

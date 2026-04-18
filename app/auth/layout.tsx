@@ -1,5 +1,7 @@
 import Link from "next/link";
+
 import { AuthHeaderNav } from "@/components/auth/AuthHeaderNav";
+import { AuthHistoryNav } from "@/components/auth/AuthHistoryNav";
 import { Logo } from "@/components/site/Logo";
 
 export default function AuthLayout({
@@ -13,7 +15,10 @@ export default function AuthLayout({
         <Link href="/" className="min-w-0 shrink text-foreground no-underline">
           <Logo />
         </Link>
-        <AuthHeaderNav />
+        <div className="flex flex-wrap items-center justify-end gap-3">
+          <AuthHistoryNav />
+          <AuthHeaderNav />
+        </div>
       </header>
       <div className="flex flex-1 flex-col items-center justify-center px-4 py-10 sm:px-6">
         <div className="w-full max-w-sm">{children}</div>

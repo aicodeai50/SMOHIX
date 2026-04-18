@@ -35,11 +35,6 @@ export default async function NewIncidentPage({
 
   return (
     <>
-      <div className="mb-6">
-        <Link href="/incidents" className="text-sm text-muted hover:text-foreground">
-          ← Incidents
-        </Link>
-      </div>
       <PageHeader
         title="New incident"
         description={

@@ -1,5 +1,7 @@
 import Link from "next/link";
+
 import { Logo } from "./Logo";
+import { MarketingHistoryNav } from "./MarketingHistoryNav";
 
 const nav = [
   { href: "#modules", label: "Modules" },
@@ -27,6 +29,7 @@ export function Header() {
           ))}
         </nav>
         <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 sm:w-auto sm:gap-3 md:flex-nowrap">
+          <MarketingHistoryNav />
           <Link
             href="/auth/sign-in"
             className="text-sm font-medium text-muted transition-colors hover:text-foreground"

@@ -99,6 +99,41 @@ export default async function OverviewPage() {
         </div>
       </div>
 
+      <section className="shynvo-glass mb-6 rounded-2xl p-5 md:p-6">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <h2 className="text-sm font-semibold text-foreground/95">Recent incidents</h2>
+          <Link href="/incidents" className="text-xs font-medium text-accent hover:underline">
+            All incidents →
+          </Link>
+        </div>
+        {incidents.length === 0 ? (
+          <p className="mt-3 text-sm text-muted">No incidents yet. Open Incidents to create one.</p>
+        ) : (
+          <ul className="mt-4 divide-y divide-white/[0.06]">
+            {incidents.slice(0, 8).map((row) => (
+              <li key={row.id} className="flex flex-wrap items-center justify-between gap-2 py-2.5 first:pt-0">
+                <Link
+                  href={`/incidents/${row.id}`}
+                  className="min-w-0 font-medium text-foreground/90 hover:text-accent"
+                >
+                  <span className="line-clamp-1">{row.title}</span>
+                </Link>
+                <span className="flex shrink-0 flex-wrap items-center gap-2 text-xs text-muted">
+                  {row.serviceName ? (
+                    <span className="rounded-md bg-white/[0.04] px-2 py-0.5 text-foreground/80">
+                      {row.serviceName}
+                    </span>
+                  ) : null}
+                  <span className="capitalize">{row.severity}</span>
+                  <span className="capitalize">{row.status}</span>
+                  <span>{row.updated}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
       <div className="grid gap-6 lg:grid-cols-2">
         <section className="shynvo-glass rounded-2xl p-5 md:p-6">
           <h2 className="text-sm font-semibold text-foreground/95">Integrations</h2>
