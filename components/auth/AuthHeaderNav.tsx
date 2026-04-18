@@ -6,32 +6,16 @@ import { usePathname } from "next/navigation";
 import { marketingCta } from "@/lib/marketing-copy";
 
 const linkClass =
-  "rounded-lg px-3 py-2 text-sm transition-colors hover:bg-surface-elevated/80 hover:text-foreground";
+  "rounded-lg px-3 py-2 text-sm font-medium text-accent transition-colors hover:bg-surface-elevated/80";
 
+/** Only on sign-in: link to sign-up. Sign-up page uses the form footer for the reverse. */
 export function AuthHeaderNav() {
   const pathname = usePathname();
-  const onSignIn = pathname.startsWith("/auth/sign-in");
-  const onSignUp = pathname.startsWith("/auth/sign-up");
+  if (!pathname.startsWith("/auth/sign-in")) return null;
 
   return (
-    <nav
-      className="flex shrink-0 items-center gap-1 sm:gap-2"
-      aria-label="Account"
-    >
-      <Link
-        href="/auth/sign-in"
-        className={`${linkClass} ${onSignIn ? "text-foreground" : "text-muted"}`}
-        aria-current={onSignIn ? "page" : undefined}
-      >
-        Sign in
-      </Link>
-      <Link
-        href="/auth/sign-up"
-        className={`${linkClass} font-medium ${onSignUp ? "bg-accent-dim text-accent" : "text-accent"}`}
-        aria-current={onSignUp ? "page" : undefined}
-      >
-        {marketingCta.signUp}
-      </Link>
-    </nav>
+    <Link href="/auth/sign-up" className={linkClass}>
+      {marketingCta.signUp}
+    </Link>
   );
 }

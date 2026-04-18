@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { marketingCta } from "@/lib/marketing-copy";
 import { Logo } from "./Logo";
 
 const nav = [
@@ -30,15 +29,9 @@ export function Header() {
         <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 sm:w-auto sm:gap-3 md:flex-nowrap">
           <Link
             href="/auth/sign-in"
-            className="text-sm text-muted transition-colors hover:text-foreground"
+            className="text-sm font-medium text-muted transition-colors hover:text-foreground"
           >
-            Sign in
-          </Link>
-          <Link
-            href="/auth/sign-up"
-            className="inline-flex rounded-lg bg-accent px-3 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-90 sm:px-4"
-          >
-            {marketingCta.signUp}
+            Account
           </Link>
           <Link
             href="/hub"

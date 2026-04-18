@@ -6,7 +6,6 @@ import {
   getGeneralMailtoHref,
   getSupportMailtoHref,
 } from "@/lib/billing";
-import { marketingCta } from "@/lib/marketing-copy";
 import { Logo } from "./Logo";
 
 const legal = [
@@ -37,7 +36,7 @@ export function Footer() {
             </p>
           </div>
 
-          <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 md:gap-10 md:text-right">
+          <div className="grid gap-8 sm:grid-cols-2 md:gap-10 md:text-right">
             <div className="space-y-3">
               <FooterHeading>Explore</FooterHeading>
               <nav className="flex flex-col gap-2 text-sm text-muted" aria-label="Site">
@@ -53,28 +52,13 @@ export function Footer() {
                 <Link href="/#trust" className="w-fit hover:text-foreground md:ml-auto">
                   Security
                 </Link>
+                <Link href="/auth/sign-in" className="w-fit hover:text-foreground md:ml-auto">
+                  Account
+                </Link>
               </nav>
             </div>
 
             <div className="space-y-3">
-              <FooterHeading>Account</FooterHeading>
-              <nav className="flex flex-col gap-2 text-sm" aria-label="Account">
-                <Link
-                  href="/auth/sign-in"
-                  className="w-fit text-muted hover:text-foreground md:ml-auto"
-                >
-                  Sign in
-                </Link>
-                <Link
-                  href="/auth/sign-up"
-                  className="w-fit font-medium text-accent hover:underline hover:underline-offset-2 md:ml-auto"
-                >
-                  {marketingCta.signUp}
-                </Link>
-              </nav>
-            </div>
-
-            <div className="space-y-3 sm:col-span-2 md:col-span-1">
               <FooterHeading>Contact</FooterHeading>
               <ul className="space-y-2 text-sm">
                 <li className="md:text-right">

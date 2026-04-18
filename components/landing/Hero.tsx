@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { getTrialHref } from "@/lib/billing";
-import { marketingCta } from "@/lib/marketing-copy";
 
 export function Hero({
   signedInCheckoutUrl,
@@ -19,18 +18,12 @@ export function Hero({
           Incident response, guarded automation, and auditable change — in one console with
           consistent policy and organization sign-in when your team enables it.
         </p>
-        <div className="mt-9 flex flex-col gap-4 sm:flex-row sm:items-center">
+        <div className="mt-9">
           <Link
-            href="/auth/sign-up"
+            href="/hub"
             className="inline-flex h-11 items-center justify-center rounded-lg bg-accent px-5 text-sm font-semibold text-background transition-opacity hover:opacity-90"
           >
-            {marketingCta.signUp}
-          </Link>
-          <Link
-            href="/auth/sign-in"
-            className="inline-flex h-11 items-center justify-center rounded-lg border border-white/[0.12] bg-white/[0.02] px-5 text-sm font-medium text-foreground transition-colors hover:border-white/[0.2]"
-          >
-            Sign in
+            Open console
           </Link>
         </div>
         <p className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted">

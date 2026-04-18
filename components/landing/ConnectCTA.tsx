@@ -44,18 +44,6 @@ export function ConnectCTA({
               >
                 {marketingCta.connectExplore}
               </Link>
-              <Link
-                href="/auth/sign-up"
-                className="inline-flex h-11 items-center justify-center rounded-lg border border-white/[0.1] bg-white/[0.02] px-5 text-sm font-medium text-foreground transition-colors hover:border-white/[0.18]"
-              >
-                {marketingCta.signUp}
-              </Link>
-              <Link
-                href="/auth/sign-in"
-                className="inline-flex h-11 items-center justify-center rounded-lg border border-white/[0.1] bg-white/[0.02] px-5 text-sm font-medium text-foreground transition-colors hover:border-white/[0.18]"
-              >
-                Sign in
-              </Link>
               <a
                 href={trialHref}
                 className="inline-flex h-11 items-center justify-center rounded-lg border border-dashed border-white/[0.12] bg-transparent px-5 text-sm font-medium text-muted transition-colors hover:border-white/[0.2] hover:text-foreground"

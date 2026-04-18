@@ -1,14 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { safeNextPath } from "@/lib/auth/redirect";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
-
-import { marketingCta } from "@/lib/marketing-copy";
 
 import { AuthCard } from "./AuthCard";
 import { PasswordField } from "./PasswordField";
@@ -98,12 +95,6 @@ export function SignInForm() {
           {loading ? "Signing in…" : "Sign in"}
         </button>
       </form>
-      <p className="mt-6 text-center text-sm text-muted">
-        New to Shynvo?{" "}
-        <Link href="/auth/sign-up" className="font-medium text-accent hover:underline">
-          {marketingCta.signUp}
-        </Link>
-      </p>
     </AuthCard>
   );
 }
