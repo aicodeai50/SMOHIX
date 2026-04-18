@@ -192,6 +192,7 @@ Path segments cannot contain `..` or `/` (basic hardening). For public internet 
 | Route | Role |
 |--------|------|
 | **`GET /api/connectors/status`** | JSON snapshot of reasoning + automation reachability (health probe). |
+| **`/settings/billing`** | Plan, Lemon checkout with `shynvo_user_id`, subscription snapshot. |
 | **`/settings/connectors`** | UI for the same probes. |
 | **`/copilot`** | Shows connection status from the server. |
 

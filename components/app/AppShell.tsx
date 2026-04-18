@@ -10,6 +10,7 @@ const nav = [
   { href: "/automations", label: "Automations" },
   { href: "/approvals", label: "Approvals" },
   { href: "/audit", label: "Audit" },
+  { href: "/settings/billing", label: "Billing" },
   { href: "/settings/connectors", label: "Connectors" },
 ];
 

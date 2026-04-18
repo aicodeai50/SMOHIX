@@ -13,12 +13,15 @@ Apply database changes from `supabase/migrations/` in the Supabase SQL Editor (o
 - [x] **Service role client** — `lib/supabase/admin.ts` (server-only; never expose key).
 - [x] **Plan helper** — `lib/billing/plan.ts` — `free` vs `paid` from subscription `status`.
 - [x] **Checkout URL helpers** — `getCheckoutUrlForUser` / `appendCheckoutCustomData` in `lib/billing.ts` (wire them from billing UI / CTAs next).
+- [x] **Settings → Billing** — `/settings/billing` shows plan, subscription snapshot, **Open checkout** (with `shynvo_user_id`), and migration hints if the DB is not ready.
+- [x] **Console nav** — **Billing** link in the sidebar next to Connectors.
+- [x] **Automations hint** — signed-in **free** users see an upgrade strip linking to Billing.
 
 ---
 
 ## Phase A — Wire billing in the product (high priority)
 
-- [ ] **Product checkout entry points**: call **`getCheckoutUrlForUser(sessionUser.id)`** from a **Settings → Billing** (or upgrade) button so only signed-in users open Lemon with `shynvo_user_id` attached.
+- [ ] **Marketing / other CTAs**: use **`getCheckoutUrlForUser`** only when you know the visitor is signed in; keep generic Lemon links on the public homepage where there is no session.
 - [ ] **Railway / env**: set `SUPABASE_SERVICE_ROLE_KEY` for webhook persistence; keep it off the client.
 - [ ] **Apply migration** in Supabase and confirm a test webhook creates/updates `subscriptions`.
 - [ ] **Settings → Billing** page: current plan (read `subscriptions` with user session), link to Lemon customer portal if you use it.
