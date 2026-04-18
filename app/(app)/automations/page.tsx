@@ -3,7 +3,7 @@ import { PageHeader } from "@/components/app/PageHeader";
 
 export const metadata: Metadata = {
   title: "Automations",
-  description: "Playbooks and execution via the automation backend.",
+  description: "Playbooks and execution via your automation service.",
 };
 
 const rows = [
@@ -26,7 +26,7 @@ export default function AutomationsPage() {
     <>
       <PageHeader
         title="Automations"
-        description="Workflows executed by your robot backend with policy checks. High-risk steps require approvals from the Approvals view."
+        description="Workflows executed by your automation service with policy checks. High-risk steps require approvals from the Approvals view."
       />
       <div className="overflow-hidden rounded-xl border border-border">
         <table className="w-full text-left text-sm">

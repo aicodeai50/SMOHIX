@@ -40,8 +40,9 @@ export async function proxyToUpstream(
 ): Promise<NextResponse> {
   const base = baseUrl(kind);
   if (!base) {
+    const label = kind === "reasoning" ? "Reasoning" : "Automation";
     return NextResponse.json(
-      { error: `${kind} backend not configured (missing env URL)` },
+      { error: `${label} service is not connected (missing URL in environment).` },
       { status: 503 },
     );
   }

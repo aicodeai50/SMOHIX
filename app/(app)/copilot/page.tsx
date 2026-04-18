@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { BackendStatus } from "@/components/copilot/BackendStatus";
+import { ConnectionStatus } from "@/components/copilot/ConnectionStatus";
 import { PageHeader } from "@/components/app/PageHeader";
 import { PlaceholderCard } from "@/components/app/PlaceholderCard";
 
@@ -15,9 +15,9 @@ export default function CopilotPage() {
     <>
       <PageHeader
         title="Incident Copilot"
-        description="Natural-language investigations wired to your reasoning backend. Suggested actions stay behind approval gates until you promote them."
+        description="Natural-language investigations wired to your reasoning service. Suggested actions stay behind approval gates until you promote them."
       />
-      <BackendStatus />
+      <ConnectionStatus />
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
           <PlaceholderCard title="Conversation">
@@ -28,7 +28,8 @@ export default function CopilotPage() {
               </p>
               <p>
                 <span className="text-muted">Copilot:</span> Correlating deploys and
-                SLOs… (connect sh-backend-api to enable live answers.)
+                SLOs… (link your reasoning service under Connectors to enable live
+                answers.)
               </p>
             </div>
             <div className="mt-6 flex gap-2">

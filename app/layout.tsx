@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     template: "%s · Shynvo",
   },
   description:
-    "Incident Copilot, safe automations with approvals, and audit-friendly IT operations. Connect reasoning and execution backends in one trusted platform.",
+    "Incident Copilot, safe automations with approvals, and audit-friendly IT operations. Connect reasoning and automation services in one trusted platform.",
   alternates: {
     canonical: siteUrl,
   },

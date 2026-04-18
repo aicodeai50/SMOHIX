@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getTrialHref } from "@/lib/billing";
 
 export function ConnectCTA() {
@@ -12,32 +13,44 @@ export function ConnectCTA() {
               id="connect-heading"
               className="text-2xl font-semibold tracking-tight sm:text-3xl"
             >
-              Connect your backends
+              Connect your services
             </h2>
             <p className="mt-3 text-muted">
-              Plug in the AI reasoning API for analysis and the robot backend for
-              execution — one control plane, consistent policies, one audit trail.
+              Link reasoning for analysis and automation for execution — one control
+              plane, consistent policies, one audit trail.
             </p>
             <ul className="mt-6 space-y-2 font-mono text-sm text-muted">
               <li>
-                <span className="text-accent">→</span> sh-backend-api (reasoning)
+                <span className="text-accent">→</span> Reasoning (Copilot)
               </li>
               <li>
-                <span className="text-accent">→</span> Robot / automation backend
+                <span className="text-accent">→</span> Automation (workflows)
               </li>
             </ul>
-            <div id="trial" className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <a
-                href={trialHref}
+            <div id="trial" className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <Link
+                href="/auth/sign-up"
                 className="inline-flex h-12 items-center justify-center rounded-lg bg-accent px-6 font-medium text-background hover:opacity-90"
               >
-                Start trial
-              </a>
-              <a
+                Get started
+              </Link>
+              <Link
+                href="/auth/sign-in"
+                className="inline-flex h-12 items-center justify-center rounded-lg border border-border px-6 font-medium text-foreground hover:border-accent/40"
+              >
+                Sign in
+              </Link>
+              <Link
                 href="/copilot"
                 className="inline-flex h-12 items-center justify-center rounded-lg border border-border px-6 font-medium text-foreground hover:border-accent/40"
               >
                 Open console
+              </Link>
+              <a
+                href={trialHref}
+                className="inline-flex h-12 items-center justify-center rounded-lg border border-dashed border-border px-6 font-medium text-muted hover:border-accent/40 hover:text-foreground"
+              >
+                Subscribe (trial)
               </a>
             </div>
           </div>

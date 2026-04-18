@@ -50,8 +50,8 @@ export async function getConnectorHealthRows(): Promise<ConnectorRow[]> {
 
   const reasoning: ConnectorRow = {
     id: "reasoning",
-    name: "sh-backend-api",
-    role: "AI reasoning & copilot",
+    name: "Reasoning",
+    role: "AI reasoning & Copilot",
     baseUrl: reasoningBase,
     ok: null,
     ms: null,
@@ -60,7 +60,7 @@ export async function getConnectorHealthRows(): Promise<ConnectorRow[]> {
 
   const robot: ConnectorRow = {
     id: "robot",
-    name: "Robot / automation backend",
+    name: "Automation",
     role: "Execution & workflows",
     baseUrl: robotBase,
     ok: null,
@@ -78,7 +78,8 @@ export async function getConnectorHealthRows(): Promise<ConnectorRow[]> {
     reasoning.ms = r.ok ? r.ms : null;
     reasoning.detail = r.snippet || r.pathUsed;
   } else {
-    reasoning.detail = "Set SHYNVO_REASONING_API_URL in Railway (Variables).";
+    reasoning.detail =
+      "Not connected — add the reasoning service URL in your deployment settings.";
   }
 
   if (robotBase) {
@@ -87,7 +88,8 @@ export async function getConnectorHealthRows(): Promise<ConnectorRow[]> {
     robot.ms = r.ok ? r.ms : null;
     robot.detail = r.snippet || r.pathUsed;
   } else {
-    robot.detail = "Set SHYNVO_ROBOT_API_URL in Railway (Variables).";
+    robot.detail =
+      "Not connected — add the automation service URL in your deployment settings.";
   }
 
   return [reasoning, robot];

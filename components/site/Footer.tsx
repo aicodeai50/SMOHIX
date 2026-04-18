@@ -32,15 +32,24 @@ export function Footer() {
             <Link href="/" className="hover:text-foreground">
               Home
             </Link>
+            <Link href="/auth/sign-in" className="hover:text-foreground">
+              Sign in
+            </Link>
+            <Link
+              href="/auth/sign-up"
+              className="font-medium text-accent hover:underline hover:underline-offset-2"
+            >
+              Get started
+            </Link>
             <Link href="/copilot" className="hover:text-foreground">
               Console
             </Link>
-            <a href="/#modules" className="hover:text-foreground">
+            <Link href="/#modules" className="hover:text-foreground">
               Modules
-            </a>
-            <a href="/#trust" className="hover:text-foreground">
+            </Link>
+            <Link href="/#trust" className="hover:text-foreground">
               Security
-            </a>
+            </Link>
             <span className="hidden h-4 w-px bg-border sm:inline" aria-hidden />
             <a
               href={getGeneralMailtoHref()}

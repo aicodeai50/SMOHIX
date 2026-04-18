@@ -4,7 +4,7 @@ import { getConnectorHealthRows } from "@/lib/connectors-health";
 
 export const metadata: Metadata = {
   title: "Connectors",
-  description: "Connect reasoning and execution backends.",
+  description: "Link reasoning and automation services to Shynvo.",
 };
 
 export const dynamic = "force-dynamic";
