@@ -32,7 +32,7 @@ export default async function AuditPage() {
     <>
       <PageHeader
         title="Audit log"
-        description="Append-only trail for billing sync, API keys, and future automation events. Export hooks can build on this table."
+        description="Append-only log for billing sync, API keys, approvals, and automation events. Export hooks can build on this table."
       />
       {source === "session" ? (
         <p className="shynvo-glass-subtle mb-4 rounded-xl px-4 py-3 text-xs leading-relaxed text-muted">

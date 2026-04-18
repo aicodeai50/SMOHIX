@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { marketingCta } from "@/lib/marketing-copy";
+
 const linkClass =
   "rounded-lg px-3 py-2 text-sm transition-colors hover:bg-surface-elevated/80 hover:text-foreground";
 
@@ -28,7 +30,7 @@ export function AuthHeaderNav() {
         className={`${linkClass} font-medium ${onSignUp ? "bg-accent-dim text-accent" : "text-accent"}`}
         aria-current={onSignUp ? "page" : undefined}
       >
-        Get started
+        {marketingCta.authNavSignup}
       </Link>
     </nav>
   );

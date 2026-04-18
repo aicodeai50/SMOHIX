@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getTrialHref } from "@/lib/billing";
+import { marketingCta } from "@/lib/marketing-copy";
 
 export function ConnectCTA({
   signedInCheckoutUrl,
@@ -22,34 +23,43 @@ export function ConnectCTA({
             </h2>
             <p className="mt-3 text-muted">
               Link reasoning for analysis and automation for execution — one control
-              plane, consistent policies, one audit trail.
+              plane with consistent policies and a tamper-evident record of changes.
             </p>
             <ul className="mt-6 space-y-2 font-mono text-sm text-muted">
               <li>
-                <span className="text-accent">→</span> Reasoning (Copilot)
+                <Link href="/copilot" className="inline-flex items-center gap-2 transition-colors hover:text-accent">
+                  <span className="text-accent">→</span>
+                  Copilot (reasoning)
+                </Link>
               </li>
               <li>
-                <span className="text-accent">→</span> Automation (workflows)
+                <Link
+                  href="/automations"
+                  className="inline-flex items-center gap-2 transition-colors hover:text-accent"
+                >
+                  <span className="text-accent">→</span>
+                  Automations (workflows)
+                </Link>
               </li>
             </ul>
             <div id="trial" className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Link
-                href="/auth/sign-up"
+                href="/hub"
                 className="inline-flex h-12 items-center justify-center rounded-xl bg-accent px-6 font-semibold text-background shadow-[0_0_28px_-8px_rgba(94,225,255,0.45)] transition-[opacity,box-shadow] hover:opacity-95 hover:shadow-[0_0_36px_-6px_rgba(94,225,255,0.55)]"
               >
-                Get started
+                {marketingCta.connectExplore}
+              </Link>
+              <Link
+                href="/auth/sign-up"
+                className="inline-flex h-12 items-center justify-center rounded-xl border border-white/[0.1] bg-white/[0.02] px-6 font-medium text-foreground transition-[border-color,box-shadow] hover:border-accent/35 hover:shadow-[0_0_24px_-12px_rgba(94,225,255,0.2)]"
+              >
+                {marketingCta.connectSignup}
               </Link>
               <Link
                 href="/auth/sign-in"
                 className="inline-flex h-12 items-center justify-center rounded-xl border border-white/[0.1] bg-white/[0.02] px-6 font-medium text-foreground transition-[border-color,box-shadow] hover:border-accent/35 hover:shadow-[0_0_24px_-12px_rgba(94,225,255,0.2)]"
               >
                 Sign in
-              </Link>
-              <Link
-                href="/copilot"
-                className="inline-flex h-12 items-center justify-center rounded-xl border border-white/[0.1] bg-white/[0.02] px-6 font-medium text-foreground transition-[border-color,box-shadow] hover:border-accent/35 hover:shadow-[0_0_24px_-12px_rgba(94,225,255,0.2)]"
-              >
-                Open console
               </Link>
               <a
                 href={trialHref}

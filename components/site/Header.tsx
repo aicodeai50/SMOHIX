@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getTrialHref } from "@/lib/billing";
+import { marketingCta } from "@/lib/marketing-copy";
 import { Logo } from "./Logo";
 
 const nav = [
@@ -9,15 +9,9 @@ const nav = [
   { href: "#connect", label: "Connect" },
 ];
 
-export function Header({
-  signedInCheckoutUrl,
-}: {
-  /** When set (signed-in + Lemon checkout configured), trial links use this URL so webhooks can attach `shynvo_user_id`. */
-  signedInCheckoutUrl?: string | null;
-}) {
-  const trialHref = signedInCheckoutUrl?.trim() || getTrialHref();
+export function Header() {
   return (
-    <header className="sticky top-0 z-50 border-b border-border/80 bg-background/80 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-background/75 backdrop-blur-xl">
       <div className="mx-auto flex min-h-16 max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-3 px-4 py-3 sm:px-6 md:h-16 md:flex-nowrap md:py-0">
         <Link href="/" className="min-w-0 shrink-0 text-foreground no-underline">
           <Logo />
@@ -42,31 +36,16 @@ export function Header({
           </Link>
           <Link
             href="/auth/sign-up"
-            className="inline-flex rounded-lg bg-accent px-3 py-2 text-sm font-medium text-background shadow-[0_0_0_1px_rgba(56,189,248,0.2)] transition-opacity hover:opacity-90 sm:px-4"
+            className="inline-flex rounded-xl bg-accent px-3 py-2 text-sm font-semibold text-background shadow-[0_0_20px_-8px_rgba(94,225,255,0.4)] transition-[opacity,box-shadow] hover:opacity-95 hover:shadow-[0_0_28px_-6px_rgba(94,225,255,0.5)] sm:px-4"
           >
-            Get started
+            {marketingCta.headerPrimary}
           </Link>
           <Link
             href="/hub"
-            className="hidden text-sm text-muted transition-colors hover:text-foreground md:inline"
+            className="hidden text-sm font-medium text-muted transition-colors hover:text-accent md:inline"
           >
             Console
           </Link>
-          <a
-            href="#connect"
-            className="hidden rounded-lg border border-border px-3 py-2 text-sm text-muted transition-colors hover:border-accent/40 hover:text-foreground lg:inline-flex"
-          >
-            Connect services
-          </a>
-          <a
-            href={trialHref}
-            className="hidden rounded-lg border border-border px-3 py-2 text-sm text-muted transition-colors hover:border-accent/40 hover:text-foreground xl:inline-flex"
-            {...(trialHref.startsWith("http")
-              ? { target: "_blank", rel: "noopener noreferrer" }
-              : {})}
-          >
-            {signedInCheckoutUrl ? "Subscribe" : "Start trial"}
-          </a>
         </div>
       </div>
     </header>

@@ -84,9 +84,11 @@ export function CopilotChat({
   }, [msgs, pending]);
 
   useEffect(() => {
-    if (persistSession) {
+    if (!persistSession) return;
+    const t = window.setTimeout(() => {
       void refreshThreads();
-    }
+    }, 0);
+    return () => window.clearTimeout(t);
   }, [persistSession, refreshThreads]);
 
   async function loadThread(id: string) {

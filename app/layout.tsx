@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     template: "%s · Shynvo",
   },
   description:
-    "Incident Copilot, safe automations with approvals, and audit-friendly IT operations. Connect reasoning and automation services in one trusted platform.",
+    "Incident Copilot, guarded automations with approvals, and defensible IT operations. Connect reasoning and automation services in one place.",
   alternates: {
     canonical: siteUrl,
   },
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     siteName: "Shynvo",
     title: "Shynvo — AI operations command center",
     description:
-      "Incident Copilot, automation engine, and runbook intelligence with approval gates and full audit trails.",
+      "Incident Copilot, automation playbooks, and runbook intelligence — approvals, API keys, and a compliance-ready activity log.",
   },
   twitter: {
     card: "summary_large_image",

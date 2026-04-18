@@ -14,7 +14,7 @@ export default async function Home() {
 
   return (
     <>
-      <Header signedInCheckoutUrl={signedInCheckoutUrl} />
+      <Header />
       <main className="flex-1">
         <Hero signedInCheckoutUrl={signedInCheckoutUrl} />
         <ModuleGrid />

@@ -39,9 +39,11 @@ export function ApiKeysPanel({
   }, []);
 
   useEffect(() => {
-    if (sessionScoped) {
+    if (!sessionScoped) return;
+    const t = window.setTimeout(() => {
       void refresh();
-    }
+    }, 0);
+    return () => window.clearTimeout(t);
   }, [sessionScoped, refresh]);
 
   async function generate() {

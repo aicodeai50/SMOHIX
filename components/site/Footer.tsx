@@ -5,6 +5,7 @@ import {
   getGeneralMailtoHref,
   getSupportMailtoHref,
 } from "@/lib/billing";
+import { marketingCta } from "@/lib/marketing-copy";
 import { Logo } from "./Logo";
 
 const legal = [
@@ -18,13 +19,13 @@ const legal = [
 export function Footer() {
   const year = new Date().getFullYear();
   return (
-    <footer className="border-t border-border bg-surface/50">
+    <footer className="border-t border-white/[0.06] bg-surface/40">
       <div className="mx-auto flex max-w-6xl flex-col gap-8 px-4 py-12 sm:px-6 md:flex-row md:items-start md:justify-between">
         <div className="space-y-2">
           <Logo />
           <p className="max-w-sm text-sm text-muted">
-            AI operations for IT teams — copilot, safe automation, and audit-ready
-            controls.
+            AI operations for IT teams — copilot, guarded automation, and
+            defensible controls.
           </p>
         </div>
         <div className="flex flex-col gap-4 md:items-end">
@@ -39,7 +40,7 @@ export function Footer() {
               href="/auth/sign-up"
               className="font-medium text-accent hover:underline hover:underline-offset-2"
             >
-              Get started
+              {marketingCta.footerSignup}
             </Link>
             <Link href="/hub" className="hover:text-foreground">
               Console

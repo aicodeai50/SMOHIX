@@ -8,6 +8,8 @@ import { safeNextPath } from "@/lib/auth/redirect";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 
+import { marketingCta } from "@/lib/marketing-copy";
+
 import { AuthCard } from "./AuthCard";
 import { PasswordField } from "./PasswordField";
 
@@ -99,7 +101,7 @@ export function SignInForm() {
       <p className="mt-6 text-center text-sm text-muted">
         No account?{" "}
         <Link href="/auth/sign-up" className="font-medium text-accent hover:underline">
-          Get started
+          {marketingCta.signInFooter}
         </Link>
       </p>
     </AuthCard>

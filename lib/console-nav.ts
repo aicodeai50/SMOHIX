@@ -52,7 +52,7 @@ export const CONSOLE_MODULES = [
   {
     href: "/audit",
     label: "Audit",
-    description: "Trail",
+    description: "Compliance log",
     icon: "≡",
     live: true,
   },

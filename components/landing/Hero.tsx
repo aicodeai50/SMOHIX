@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getTrialHref } from "@/lib/billing";
+import { marketingCta } from "@/lib/marketing-copy";
 
 export function Hero({
   signedInCheckoutUrl,
@@ -13,15 +14,15 @@ export function Hero({
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_90%_20%,rgba(129,140,248,0.1),transparent)]" />
       <div className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
         <p className="mb-5 inline-flex rounded-full border border-white/[0.1] bg-white/[0.04] px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-accent shadow-[0_0_24px_-8px_rgba(94,225,255,0.25)] backdrop-blur-sm">
-          Platform
+          Operations
         </p>
         <h1 className="shynvo-headline max-w-3xl text-4xl font-semibold tracking-tight sm:text-5xl sm:leading-[1.08]">
           AI operations command center
         </h1>
         <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted">
           Unify reasoning and execution: investigate incidents with an AI copilot,
-          ship automations with approval gates, and keep every action audit-ready
-          for your IT org.
+          ship automations behind human gates, and keep decisions defensible for
+          your IT org.
         </p>
         <div className="mt-10 flex flex-col gap-5">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -29,7 +30,7 @@ export function Hero({
               href="/auth/sign-up"
               className="inline-flex h-12 items-center justify-center rounded-xl bg-accent px-6 text-base font-semibold text-background shadow-[0_0_32px_-8px_rgba(94,225,255,0.45)] transition-[opacity,box-shadow] hover:opacity-95 hover:shadow-[0_0_40px_-6px_rgba(94,225,255,0.55)]"
             >
-              Get started
+              {marketingCta.heroPrimary}
             </Link>
             <Link
               href="/auth/sign-in"
