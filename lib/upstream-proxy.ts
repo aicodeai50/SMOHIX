@@ -1,7 +1,41 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
+import { hasSupabaseAuth } from "@/lib/supabase/env";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
+
 const TIMEOUT_MS = 60_000;
+
+/** When Supabase auth env is set, same-origin proxy requires a signed-in user. */
+async function denyIfProxyUnauthenticated(): Promise<NextResponse | null> {
+  if (!hasSupabaseAuth()) {
+    return null;
+  }
+  try {
+    const supabase = await createServerSupabaseClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      return NextResponse.json(
+        {
+          error: "Unauthorized",
+          message: "Sign in to use the reasoning and automation APIs.",
+        },
+        { status: 401 },
+      );
+    }
+  } catch {
+    return NextResponse.json(
+      {
+        error: "Auth_unavailable",
+        message: "Could not validate session for this request.",
+      },
+      { status: 503 },
+    );
+  }
+  return null;
+}
 
 function baseUrl(kind: "reasoning" | "robot"): string | null {
   const raw =
@@ -38,6 +72,11 @@ export async function proxyToUpstream(
   req: NextRequest,
   pathSegments: string[] | undefined,
 ): Promise<NextResponse> {
+  const authDeny = await denyIfProxyUnauthenticated();
+  if (authDeny) {
+    return authDeny;
+  }
+
   const base = baseUrl(kind);
   if (!base) {
     const label = kind === "reasoning" ? "Reasoning" : "Automation";

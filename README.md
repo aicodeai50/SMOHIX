@@ -2,7 +2,7 @@
 
 Next.js app for [shynvo.app](https://shynvo.app): marketing site + console shell.
 
-**Roadmap & completion checklist:** [`docs/PLATFORM_PLAN.md`](docs/PLATFORM_PLAN.md) · **Database (Supabase):** run [`supabase/migrations/20260418120000_platform_spine.sql`](supabase/migrations/20260418120000_platform_spine.sql) in the SQL Editor after creating the project.
+**Roadmap & completion checklist:** [`docs/PLATFORM_PLAN.md`](docs/PLATFORM_PLAN.md) · **Database (Supabase):** run [`supabase/migrations/20260418120000_platform_spine.sql`](supabase/migrations/20260418120000_platform_spine.sql) then [`supabase/migrations/20260418130000_incidents.sql`](supabase/migrations/20260418130000_incidents.sql) in the SQL Editor when you wire Supabase.
 
 ## Run locally (preview UI)
 

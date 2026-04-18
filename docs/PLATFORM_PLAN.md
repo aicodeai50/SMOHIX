@@ -16,6 +16,9 @@ Apply database changes from `supabase/migrations/` in the Supabase SQL Editor (o
 - [x] **Settings → Billing** — `/settings/billing` shows plan, subscription snapshot, **Open checkout** (with `shynvo_user_id`), and migration hints if the DB is not ready.
 - [x] **Console nav** — **Billing** link in the sidebar next to Connectors.
 - [x] **Automations hint** — signed-in **free** users see an upgrade strip linking to Billing.
+- [x] **Proxy auth gate** — `/api/reasoning` and `/api/robot` require a Supabase session when auth env vars are set.
+- [x] **Security headers** — global headers in `next.config.ts`.
+- [x] **Incidents migration + data layer** — SQL file + `lib/incidents/*` with DB-or-demo list/detail (no Supabase required to run the app).
 
 ---
 
@@ -31,9 +34,9 @@ Apply database changes from `supabase/migrations/` in the Supabase SQL Editor (o
 
 ## Phase B — Security & scale
 
-- [ ] **Protect `/api/reasoning` and `/api/robot`**: require Supabase session (or signed internal token); deny anonymous relay.
+- [x] **Protect `/api/reasoning` and `/api/robot`**: when Supabase auth env is set, **`getUser()`** must succeed or the proxy returns **401** (no anonymous relay). If auth env is omitted, proxies stay open for local development.
 - [ ] **Rate limits** on proxies and webhooks (per user / IP).
-- [ ] **CSP + security headers** in `next.config.ts`; tighten as you add scripts.
+- [x] **Baseline security headers** in `next.config.ts` (frame deny, nosniff, referrer policy, permissions-policy). Add **CSP** when you introduce third-party scripts.
 
 ---
 
@@ -47,8 +50,9 @@ Apply database changes from `supabase/migrations/` in the Supabase SQL Editor (o
 
 ### Option 2 — Incidents
 
-- [ ] `incidents` table + replace demo list/detail with CRUD from DB.
-- [ ] Later: ingest from PagerDuty / Opsgenie / webhooks.
+- [x] **Migration** `supabase/migrations/20260418130000_incidents.sql` — `incidents` table + RLS (apply when Supabase is ready).
+- [x] **Data layer** — `lib/incidents/data.ts` loads from DB when the table exists; otherwise **demo** rows + banner on the list page.
+- [ ] **CRUD / ingest**: create & edit UI, optional PagerDuty / Opsgenie / inbound webhooks.
 
 ---
 
