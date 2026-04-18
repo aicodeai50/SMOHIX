@@ -107,7 +107,7 @@ export default function AcceptableUsePage() {
       <p>
         If you discover a vulnerability, contact our security team with details and
         reproduction steps. Do not exploit vulnerabilities beyond what is necessary
-        to demonstrate impact. Do not access customer data without authorization.
+        to show impact. Do not access customer data without authorization.
       </p>
 
       <h2>8. Monitoring and enforcement</h2>

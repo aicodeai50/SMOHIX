@@ -1,9 +1,12 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
+import { appendAuditEvent } from "@/lib/audit/append";
 import { updateIncidentStatusForUser } from "@/lib/incidents/data";
+import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export async function updateIncidentStatusAction(formData: FormData) {
@@ -11,6 +14,22 @@ export async function updateIncidentStatusAction(formData: FormData) {
   const status = String(formData.get("status") ?? "").trim();
   if (!id || !status) {
     return;
+  }
+
+  if (!hasSupabaseAuth()) {
+    const tid = (await cookies()).get("shynvo_dev_tid")?.value ?? "anon";
+    const result = await updateIncidentStatusForUser("", id, status, {
+      devTenantKey: tid,
+    });
+    if (!result.ok) {
+      redirect(
+        `/incidents/${encodeURIComponent(id)}?error=${encodeURIComponent(result.reason)}`,
+      );
+    }
+    revalidatePath("/incidents");
+    revalidatePath(`/incidents/${id}`);
+    revalidatePath("/overview");
+    redirect(`/incidents/${id}`);
   }
 
   const supabase = await createServerSupabaseClient();
@@ -28,7 +47,14 @@ export async function updateIncidentStatusAction(formData: FormData) {
     );
   }
 
+  await appendAuditEvent({
+    event_type: "incident.status_updated",
+    user_id: user.id,
+    details: { incident_id: id, status },
+  });
+
   revalidatePath("/incidents");
   revalidatePath(`/incidents/${id}`);
+  revalidatePath("/overview");
   redirect(`/incidents/${id}`);
 }

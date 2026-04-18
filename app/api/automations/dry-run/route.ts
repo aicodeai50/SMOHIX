@@ -1,7 +1,9 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
+import { insertAutomationDryRun } from "@/lib/automations/dry-runs-db";
 import { recordDryRun } from "@/lib/automations/runs-dev";
+import { appendAuditEvent } from "@/lib/audit/append";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
@@ -13,7 +15,11 @@ function normalizeBase(url: string | undefined): string | null {
   return t.replace(/\/+$/, "");
 }
 
-async function runKeyFromRequest(req: NextRequest): Promise<string | NextResponse> {
+type RunContext =
+  | { mode: "auth"; userId: string; tenantKey: string }
+  | { mode: "dev"; tenantKey: string };
+
+async function runContextFromRequest(req: NextRequest): Promise<RunContext | NextResponse> {
   if (hasSupabaseAuth()) {
     const supabase = await createServerSupabaseClient();
     const {
@@ -22,24 +28,24 @@ async function runKeyFromRequest(req: NextRequest): Promise<string | NextRespons
     if (!user) {
       return NextResponse.json({ error: "unauthorized" }, { status: 401 });
     }
-    return `u:${user.id}`;
+    return { mode: "auth", userId: user.id, tenantKey: `u:${user.id}` };
   }
   const tid = req.cookies.get("shynvo_dev_tid")?.value;
   if (!tid) {
     return NextResponse.json(
-      { error: "missing_dev_session", message: "Reload once to obtain a demo session cookie." },
+      { error: "missing_dev_session", message: "Reload once to obtain a session cookie." },
       { status: 400 },
     );
   }
-  return tid;
+  return { mode: "dev", tenantKey: tid };
 }
 
 export async function POST(req: NextRequest) {
-  const keyRes = await runKeyFromRequest(req);
-  if (keyRes instanceof NextResponse) {
-    return keyRes;
+  const ctx = await runContextFromRequest(req);
+  if (ctx instanceof NextResponse) {
+    return ctx;
   }
-  const tenantKey = keyRes;
+  const tenantKey = ctx.tenantKey;
 
   let playbookId = "";
   try {
@@ -74,12 +80,44 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  recordDryRun(tenantKey, { playbookId, ok, detail });
+  let id = `run-${Date.now()}`;
+  let at = new Date().toISOString();
+  let persisted = false;
+
+  if (ctx.mode === "auth") {
+    const supabase = await createServerSupabaseClient();
+    const row = await insertAutomationDryRun(supabase, ctx.userId, {
+      playbookId,
+      ok,
+      detail,
+    });
+    if (row) {
+      id = row.id;
+      at = row.at;
+      persisted = true;
+    } else {
+      recordDryRun(tenantKey, { playbookId, ok, detail });
+    }
+
+    void appendAuditEvent({
+      event_type: "automation.dry_run",
+      user_id: ctx.userId,
+      details: {
+        playbook_id: playbookId,
+        ok,
+        detail: detail.slice(0, 500),
+      },
+    });
+  } else {
+    recordDryRun(tenantKey, { playbookId, ok, detail });
+  }
 
   return NextResponse.json({
     ok,
     playbookId,
     detail,
-    at: new Date().toISOString(),
+    at,
+    id,
+    persisted,
   });
 }

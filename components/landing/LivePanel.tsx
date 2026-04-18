@@ -4,17 +4,7 @@ import { getConnectorHealthRows } from "@/lib/connectors-health";
 
 type FeedRow = { time: string; kind: string; text: string };
 
-const STATIC_FEED: FeedRow[] = [
-  {
-    time: "14:02:11",
-    kind: "approval",
-    text: "Scale API tier — pending approval (SRE)",
-  },
-  { time: "14:01:44", kind: "action", text: "Dry-run: restart worker pool (staging)" },
-  { time: "14:00:02", kind: "signal", text: "Latency SLO breach detected — us-east" },
-];
-
-/** Marketing operational feed — mixes live connector probes with sample stream rows. */
+/** Live operational feed from deployment connector probes. */
 export async function LivePanel() {
   const connectors = await getConnectorHealthRows();
   const now = new Date();
@@ -37,7 +27,7 @@ export async function LivePanel() {
     }
   }
 
-  const feed = [...dynamic, ...STATIC_FEED].slice(0, 8);
+  const feed = dynamic.slice(0, 8);
 
   return (
     <section id="operations" className="border-b border-border py-20 sm:py-24">
@@ -48,8 +38,8 @@ export async function LivePanel() {
               Operational feed
             </h2>
             <p className="mt-3 max-w-xl text-muted">
-              Live connector checks from your deployment, plus sample stream rows. Open the
-              console to act on approvals and automations.
+              Live connector checks from your deployment environment. Open the console for
+              incidents, approvals, and automations.
             </p>
           </div>
           <span className="inline-flex items-center gap-2 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-400">
@@ -93,22 +83,22 @@ export async function LivePanel() {
               Approvals
             </h3>
             <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-4">
-              <p className="text-sm font-medium text-foreground">Production change</p>
+              <p className="text-sm font-medium text-foreground">Approval queue</p>
               <p className="mt-1 text-xs text-muted">
-                Increase DB connection limit — requires two-person rule
+                Create requests and approve or deny from the console.
               </p>
               <div className="mt-4">
                 <Link
                   href="/approvals"
                   className="inline-flex w-full items-center justify-center rounded-md bg-emerald-600/90 py-2 text-xs font-medium text-white transition-opacity hover:opacity-90"
                 >
-                  Open approvals in console
+                  Open approvals
                 </Link>
               </div>
             </div>
             <p className="text-xs text-muted">
-              Approve or deny in the app — demo mode works without Supabase; database mode after
-              migration.
+              Approve or deny in the app — session queues without Supabase; shared queues after you
+              connect the database.
             </p>
           </aside>
         </div>

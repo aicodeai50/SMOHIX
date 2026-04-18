@@ -69,7 +69,7 @@ export default function RefundPage() {
         need to provide a 14-day statutory right of withdrawal for distance contracts,
         with exceptions for digital content once performance begins with consent.
         Document the consent flow and “performance begins” moment in your checkout
-        UI. This section is a placeholder—verify with counsel.
+        UI. This section is a draft—verify with counsel.
       </p>
 
       <h2>6. Downgrades and mid-cycle changes</h2>

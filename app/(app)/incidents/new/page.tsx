@@ -18,16 +18,14 @@ export default async function NewIncidentPage({
 }: {
   searchParams: Promise<{ error?: string }>;
 }) {
-  if (!hasSupabaseAuth()) {
-    redirect("/incidents");
-  }
-
-  const supabase = await createServerSupabaseClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) {
-    redirect("/auth/sign-in?next=/incidents/new");
+  if (hasSupabaseAuth()) {
+    const supabase = await createServerSupabaseClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      redirect("/auth/sign-in?next=/incidents/new");
+    }
   }
 
   const { error } = await searchParams;
@@ -41,7 +39,11 @@ export default async function NewIncidentPage({
       </div>
       <PageHeader
         title="New incident"
-        description="Creates a row in your Supabase incidents table when the migration is applied."
+        description={
+          hasSupabaseAuth()
+            ? "Creates a row in your Supabase incidents table when the migration is applied."
+            : "Creates a session-scoped incident for this browser. Connect Supabase for persistent, per-account incidents."
+        }
       />
       {error ? (
         <p

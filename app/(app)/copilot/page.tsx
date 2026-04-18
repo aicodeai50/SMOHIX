@@ -5,6 +5,8 @@ import { ConnectionStatus } from "@/components/copilot/ConnectionStatus";
 import { CopilotChat } from "@/components/copilot/CopilotChat";
 import { PageHeader } from "@/components/app/PageHeader";
 import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { hasSupabaseAuth } from "@/lib/supabase/env";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   title: "Incident Copilot",
@@ -13,39 +15,68 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default function CopilotPage() {
+export default async function CopilotPage() {
+  let persistSession = false;
+  if (hasSupabaseAuth()) {
+    try {
+      const supabase = await createServerSupabaseClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      persistSession = Boolean(user);
+    } catch {
+      persistSession = false;
+    }
+  }
+
   return (
     <>
       <PageHeader
+        eyebrow="Operations"
         title="Incident Copilot"
-        description="Natural-language investigations wired to your reasoning service. Suggested actions stay behind approval gates until you promote them."
+        description="Triage and next steps in plain language. Connect OpenAI or your own reasoning service; thread history is available when you are signed in and persistence is enabled in the database."
       />
       <ConnectionStatus />
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
           <PlaceholderCard title="Conversation">
-            <CopilotChat />
+            <CopilotChat persistSession={persistSession} />
           </PlaceholderCard>
         </div>
-        <PlaceholderCard title="Suggested actions">
-          <ul className="space-y-3 text-sm text-muted">
-            <li className="flex justify-between gap-2">
-              <Link href="/approvals" className="text-foreground/90 hover:text-accent hover:underline">
-                Dry-run rollback canary
+        <PlaceholderCard title="Shortcuts">
+          <ul className="space-y-1 text-sm">
+            <li>
+              <Link
+                href="/approvals"
+                className="flex items-center justify-between gap-3 rounded-lg px-2 py-2.5 text-foreground/90 transition-colors hover:bg-surface-elevated/60 hover:text-accent"
+              >
+                <span className="font-medium">Dry-run rollback canary</span>
+                <span className="shrink-0 rounded-md bg-warning-dim px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-warning">
+                  Approval
+                </span>
               </Link>
-              <span className="font-mono text-xs text-amber-400/90">approval</span>
             </li>
-            <li className="flex justify-between gap-2">
-              <Link href="/runbooks/api-latency" className="text-foreground/90 hover:text-accent hover:underline">
-                API latency runbook
+            <li>
+              <Link
+                href="/runbooks/api-latency"
+                className="flex items-center justify-between gap-3 rounded-lg px-2 py-2.5 text-foreground/90 transition-colors hover:bg-surface-elevated/60 hover:text-accent"
+              >
+                <span className="font-medium">API latency runbook</span>
+                <span className="shrink-0 rounded-md bg-accent-dim px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-accent">
+                  Runbook
+                </span>
               </Link>
-              <span className="font-mono text-xs text-accent">runbook</span>
             </li>
-            <li className="flex justify-between gap-2">
-              <Link href="/automations" className="text-foreground/90 hover:text-accent hover:underline">
-                Playbook dry-runs
+            <li>
+              <Link
+                href="/automations"
+                className="flex items-center justify-between gap-3 rounded-lg px-2 py-2.5 text-foreground/90 transition-colors hover:bg-surface-elevated/60 hover:text-accent"
+              >
+                <span className="font-medium">Playbook dry-runs</span>
+                <span className="shrink-0 rounded-md bg-accent-dim px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-accent">
+                  Automate
+                </span>
               </Link>
-              <span className="font-mono text-xs text-accent">automate</span>
             </li>
           </ul>
         </PlaceholderCard>

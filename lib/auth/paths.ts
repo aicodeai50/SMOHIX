@@ -1,6 +1,7 @@
 /** Console routes — require a Supabase session when auth env is configured. */
 const PROTECTED_PREFIXES = [
   "/hub",
+  "/overview",
   "/copilot",
   "/incidents",
   "/automations",

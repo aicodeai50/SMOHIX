@@ -1,13 +1,18 @@
 import { NextResponse } from "next/server";
 
 import { buildOfflineReply } from "@/lib/copilot/offline-reply";
-import { completeOpenAIChat } from "@/lib/copilot/openai";
+import { completeOpenAIChat, streamOpenAIChatDeltas } from "@/lib/copilot/openai";
 
 export const runtime = "nodejs";
 
+function sseLine(obj: unknown): Uint8Array {
+  return new TextEncoder().encode(`data: ${JSON.stringify(obj)}\n\n`);
+}
+
 /**
  * Copilot chat: prefers OpenAI when OPENAI_API_KEY is set; otherwise returns offline guidance.
- * No Supabase required. Same JSON shape as many proxies: `{ message: string }`.
+ * JSON: `{ message: string }`. With `{ stream: true }`, responds with `text/event-stream`
+ * (`delta` / `done` / `error` events).
  */
 export async function POST(req: Request) {
   let body: unknown;
@@ -20,6 +25,7 @@ export async function POST(req: Request) {
   const b = body as {
     messages?: { role?: string; content?: string }[];
     message?: string;
+    stream?: boolean;
   };
 
   const messages = Array.isArray(b.messages) ? b.messages : [];
@@ -42,7 +48,44 @@ export async function POST(req: Request) {
           }))
       : [{ role: "user" as const, content: lastUser }];
 
+  const wantStream = b.stream === true;
   const key = process.env.OPENAI_API_KEY?.trim();
+
+  if (wantStream) {
+    const stream = new ReadableStream<Uint8Array>({
+      async start(controller) {
+        try {
+          if (key) {
+            for await (const delta of streamOpenAIChatDeltas(key, thread)) {
+              controller.enqueue(sseLine({ type: "delta", text: delta }));
+            }
+            controller.enqueue(sseLine({ type: "done", source: "openai" }));
+          } else {
+            const offline = buildOfflineReply(lastUser, thread);
+            controller.enqueue(sseLine({ type: "delta", text: offline }));
+            controller.enqueue(sseLine({ type: "done", source: "offline" }));
+          }
+        } catch (e) {
+          const msg = e instanceof Error ? e.message : "openai_error";
+          controller.enqueue(
+            sseLine({ type: "error", message: key ? msg : "offline_stream_failed" }),
+          );
+        } finally {
+          controller.close();
+        }
+      },
+    });
+
+    return new Response(stream, {
+      headers: {
+        "Content-Type": "text/event-stream; charset=utf-8",
+        "Cache-Control": "no-cache, no-transform",
+        Connection: "keep-alive",
+        "X-Accel-Buffering": "no",
+      },
+    });
+  }
+
   if (key) {
     try {
       const text = await completeOpenAIChat(key, thread);

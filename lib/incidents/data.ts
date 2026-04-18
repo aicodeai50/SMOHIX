@@ -1,7 +1,12 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 
-import { DEMO_INCIDENTS } from "./demo";
+import {
+  getDevIncident,
+  listDevIncidents,
+  updateDevIncidentStatus,
+} from "./dev-store";
+import { formatIncidentRelative } from "./format";
 import type { IncidentRow, IncidentSeverity, IncidentsListResult } from "./types";
 
 const UUID_RE =
@@ -9,18 +14,6 @@ const UUID_RE =
 
 function isUuid(s: string): boolean {
   return UUID_RE.test(s);
-}
-
-function formatRelative(updatedAt: string): string {
-  const t = new Date(updatedAt).getTime();
-  if (Number.isNaN(t)) return updatedAt;
-  const diff = Date.now() - t;
-  const m = Math.floor(diff / 60_000);
-  if (m < 1) return "just now";
-  if (m < 60) return `${m}m ago`;
-  const h = Math.floor(m / 60);
-  if (h < 48) return `${h}h ago`;
-  return new Date(updatedAt).toLocaleDateString();
 }
 
 function mapDbRow(r: {
@@ -35,16 +28,24 @@ function mapDbRow(r: {
     title: r.title,
     severity: r.severity as IncidentRow["severity"],
     status: r.status,
-    updated: formatRelative(r.updated_at),
+    updated: formatIncidentRelative(r.updated_at),
   };
 }
 
+function sessionRows(devTenantKey: string | null): IncidentRow[] {
+  return devTenantKey ? listDevIncidents(devTenantKey) : [];
+}
+
 /**
- * Lists incidents for the console. Uses Supabase when auth + table exist; otherwise demo rows.
+ * Lists incidents: Supabase `incidents` when auth is configured; otherwise session-scoped rows
+ * (`shynvo_dev_tid` cookie).
  */
-export async function listIncidentsForUser(userId: string): Promise<IncidentsListResult> {
+export async function listIncidentsForUser(
+  userId: string,
+  devTenantKey: string | null = null,
+): Promise<IncidentsListResult> {
   if (!hasSupabaseAuth()) {
-    return { source: "demo", rows: DEMO_INCIDENTS };
+    return { source: "session", rows: sessionRows(devTenantKey) };
   }
 
   try {
@@ -56,14 +57,7 @@ export async function listIncidentsForUser(userId: string): Promise<IncidentsLis
       .order("updated_at", { ascending: false });
 
     if (error) {
-      const missing =
-        error.code === "42P01" ||
-        error.message.toLowerCase().includes("relation") ||
-        error.message.toLowerCase().includes("does not exist");
-      if (missing) {
-        return { source: "demo", rows: DEMO_INCIDENTS };
-      }
-      return { source: "demo", rows: DEMO_INCIDENTS };
+      return { source: "database", rows: [] };
     }
 
     const rows = (data ?? []).map((r) =>
@@ -78,19 +72,27 @@ export async function listIncidentsForUser(userId: string): Promise<IncidentsLis
 
     return { source: "database", rows };
   } catch {
-    return { source: "demo", rows: DEMO_INCIDENTS };
+    return { source: "database", rows: [] };
   }
 }
 
 export type IncidentDetailResult =
   | { source: "database"; row: IncidentRow }
-  | { source: "demo"; row: IncidentRow }
+  | { source: "session"; row: IncidentRow }
   | null;
 
 export async function getIncidentForUser(
   userId: string,
   id: string,
+  devTenantKey: string | null = null,
 ): Promise<IncidentDetailResult> {
+  if (devTenantKey && id.startsWith("dev-")) {
+    const row = getDevIncident(devTenantKey, id);
+    if (row) {
+      return { source: "session", row };
+    }
+  }
+
   if (isUuid(id) && hasSupabaseAuth()) {
     try {
       const supabase = await createServerSupabaseClient();
@@ -114,14 +116,10 @@ export async function getIncidentForUser(
         };
       }
     } catch {
-      // fall through to demo
+      /* not found */
     }
   }
 
-  const demo = DEMO_INCIDENTS.find((r) => r.id === id);
-  if (demo) {
-    return { source: "demo", row: demo };
-  }
   return null;
 }
 
@@ -138,14 +136,25 @@ export async function updateIncidentStatusForUser(
   userId: string,
   id: string,
   status: string,
+  options?: { devTenantKey?: string | null },
 ): Promise<{ ok: true } | { ok: false; reason: string }> {
-  if (!hasSupabaseAuth() || !isUuid(id)) {
-    return { ok: false, reason: "Cannot update in this environment." };
-  }
   const s = status.trim();
   if (!STATUSES.has(s)) {
     return { ok: false, reason: "Invalid status." };
   }
+
+  if (!hasSupabaseAuth()) {
+    const tid = options?.devTenantKey;
+    if (tid && id.startsWith("dev-") && updateDevIncidentStatus(tid, id, s)) {
+      return { ok: true };
+    }
+    return { ok: false, reason: "Cannot update in this environment." };
+  }
+
+  if (!isUuid(id)) {
+    return { ok: false, reason: "Cannot update in this environment." };
+  }
+
   try {
     const supabase = await createServerSupabaseClient();
     const { error } = await supabase

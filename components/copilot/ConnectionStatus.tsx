@@ -12,24 +12,42 @@ export async function ConnectionStatus() {
       : "Copilot brain: offline mode (built-in) — add OPENAI_API_KEY for GPT";
 
   return (
-    <div className="mb-6 rounded-lg border border-border bg-surface/60 px-4 py-3 text-sm">
-      <p className="font-medium text-foreground">Intelligence</p>
-      <p className="mt-1 font-mono text-xs text-emerald-400/90">{brainLine}</p>
-      <p className="mt-3 font-medium text-foreground">Connections</p>
-      <ul className="mt-2 space-y-1 font-mono text-xs text-muted">
-        {rows.map((r) => (
-          <li key={r.id}>
-            <span className="text-foreground/90">{r.name}:</span>{" "}
-            {r.ok === null && "not connected"}
-            {r.ok === true && <span className="text-emerald-400/90">reachable</span>}
-            {r.ok === false && <span className="text-red-400/90">unreachable</span>}
-            {r.ms != null ? ` · ${r.ms}ms` : ""}
-          </li>
-        ))}
-      </ul>
-      <p className="mt-2 text-xs text-muted">
-        Shynvo checks these from the server when you open Copilot. Configure URLs under{" "}
-        <span className="text-foreground/80">Settings → Connectors</span>.
+    <div className="shynvo-glass mb-6 rounded-2xl px-4 py-4 text-sm md:px-5 md:py-5">
+      <div className="flex flex-col gap-4 md:flex-row md:gap-8">
+        <div className="min-w-0 flex-1">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-accent/90">
+            Model & routing
+          </p>
+          <p className="mt-1.5 text-sm leading-relaxed text-muted">{brainLine}</p>
+        </div>
+        <div className="min-w-0 flex-1 border-t border-white/[0.06] pt-4 md:border-l md:border-t-0 md:pl-8 md:pt-0">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-accent/90">
+            Integrations
+          </p>
+          <ul className="mt-2 space-y-2 text-xs">
+            {rows.map((r) => (
+              <li
+                key={r.id}
+                className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 border-b border-white/[0.05] pb-2 last:border-0 last:pb-0"
+              >
+                <span className="font-medium text-foreground/90">{r.name}</span>
+                <span className="font-mono text-[11px] text-muted">
+                  {r.ok === null && "Not configured"}
+                  {r.ok === true && (
+                    <span className="text-success">
+                      Reachable{r.ms != null ? ` · ${r.ms}ms` : ""}
+                    </span>
+                  )}
+                  {r.ok === false && <span className="text-danger">Unreachable</span>}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+      <p className="mt-4 border-t border-white/[0.06] pt-3 text-xs leading-relaxed text-muted">
+        Status is checked on the server when this page loads. Configure endpoints under{" "}
+        <span className="font-medium text-foreground/85">Settings → Connectors</span>.
       </p>
     </div>
   );

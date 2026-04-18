@@ -75,7 +75,7 @@ async function denyIfProxyUnauthenticated(
   return null;
 }
 
-/** No Supabase auth: anonymous IP limit, or per-tenant limit when a valid demo API key is sent. */
+/** No Supabase auth: anonymous IP limit, or per-tenant limit when a valid session API key is sent. */
 function denyIfProxyDevOrAnon(req: NextRequest): NextResponse | null {
   if (hasSupabaseAuth()) {
     return null;

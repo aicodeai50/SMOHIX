@@ -9,7 +9,8 @@ export type ApprovalRow = {
 };
 
 export type ApprovalsListResult = {
-  source: "database" | "demo";
+  /** `database` = `approval_requests`; `session` = in-memory per `shynvo_dev_tid`. */
+  source: "database" | "session";
   pending: ApprovalRow[];
   /** Completed decisions (newest first). */
   recent: ApprovalRow[];

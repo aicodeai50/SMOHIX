@@ -25,12 +25,12 @@ export default async function ApiKeysSettingsPage() {
       <>
         <PageHeader
           title="API keys"
-          description="Demo mode: keys are stored in server memory per browser session (cookie). They work for /api/reasoning and /api/robot while Supabase is off. Production uses Postgres + service role."
+          description="Session mode: keys are stored in server memory per browser session (cookie). They authenticate /api/reasoning and /api/robot until Supabase is connected; then keys live in Postgres."
         />
         <ApiKeysPanel
           initialKeys={initialKeys}
           serviceRoleConfigured={false}
-          demoMode
+          sessionScoped
         />
       </>
     );
@@ -72,7 +72,7 @@ export default async function ApiKeysSettingsPage() {
       <ApiKeysPanel
         initialKeys={initialKeys}
         serviceRoleConfigured={serviceRoleConfigured}
-        demoMode={false}
+        sessionScoped={false}
       />
     </>
   );

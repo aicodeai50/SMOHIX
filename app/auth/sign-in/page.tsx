@@ -9,7 +9,10 @@ export const metadata: Metadata = {
 
 function SignInFallback() {
   return (
-    <div className="h-64 animate-pulse rounded-2xl border border-border bg-surface-elevated" aria-hidden />
+    <div
+      className="shynvo-glass-subtle h-64 animate-pulse rounded-3xl"
+      aria-hidden
+    />
   );
 }
 

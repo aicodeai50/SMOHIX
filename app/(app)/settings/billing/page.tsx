@@ -3,7 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { PageHeader } from "@/components/app/PageHeader";
-import { getCheckoutUrlForUser } from "@/lib/billing";
+import { getCheckoutUrlForUser, getCustomerPortalUrl } from "@/lib/billing";
 import {
   billingPlanFromSummary,
   getSubscriptionSummary,
@@ -55,16 +55,18 @@ export default async function BillingPage({
   const { summary, error: queryError } = await getSubscriptionSummary(supabase, user.id);
   const plan = billingPlanFromSummary(summary);
   const checkoutHref = getCheckoutUrlForUser(user.id);
+  const portalHref = getCustomerPortalUrl();
 
   return (
     <>
       <PageHeader
+        eyebrow="Settings"
         title="Billing"
-        description="Your plan comes from Lemon Squeezy webhooks into Shynvo. Run the SQL migration in Supabase if tables are missing."
+        description="Plan and subscription status sync from Lemon Squeezy via webhooks. Ensure migrations are applied in Supabase so this page can read your subscription."
       />
 
       {upgradeHint === "automations" && plan === "free" && !queryError ? (
-        <div className="mb-6 rounded-lg border border-accent/30 bg-accent-dim/30 px-4 py-3 text-sm text-foreground/90">
+        <div className="mb-6 rounded-xl border border-accent/35 bg-accent/[0.08] px-4 py-3 text-sm text-foreground/90 shadow-[0_0_32px_-12px_rgba(94,225,255,0.35)] backdrop-blur-sm">
           <p className="font-medium text-foreground">Automations require a paid plan</p>
           <p className="mt-1 text-muted">
             Subscribe below (or complete your Lemon webhook setup) to unlock the Automations
@@ -74,7 +76,7 @@ export default async function BillingPage({
       ) : null}
 
       {queryError ? (
-        <div className="mb-6 rounded-lg border border-amber-500/25 bg-amber-500/10 px-4 py-3 text-sm text-foreground/90">
+        <div className="mb-6 rounded-xl border border-amber-400/25 bg-amber-500/[0.08] px-4 py-3 text-sm text-foreground/90 backdrop-blur-sm">
           <p className="font-medium">Could not read subscriptions</p>
           <p className="mt-1 font-mono text-xs text-muted">
             {queryError.message}
@@ -93,8 +95,8 @@ export default async function BillingPage({
       ) : null}
 
       <div className="max-w-xl space-y-6">
-        <div className="rounded-xl border border-border bg-surface/80 p-5">
-          <h2 className="text-sm font-medium uppercase tracking-wide text-muted">Current plan</h2>
+        <div className="shynvo-glass rounded-2xl p-5 md:p-6">
+          <h2 className="text-sm font-semibold text-foreground/95">Current plan</h2>
           <p className="mt-2 text-2xl font-semibold capitalize text-foreground">
             {plan === "paid" ? "Paid" : "Free"}
           </p>
@@ -133,8 +135,8 @@ export default async function BillingPage({
           ) : null}
         </div>
 
-        <div className="rounded-xl border border-border bg-surface/80 p-5">
-          <h2 className="text-sm font-medium uppercase tracking-wide text-muted">Upgrade</h2>
+        <div className="shynvo-glass rounded-2xl p-5 md:p-6">
+          <h2 className="text-sm font-semibold text-foreground/95">Upgrade</h2>
           <p className="mt-2 text-sm text-muted">
             Checkout includes your account id so webhooks can attach the subscription to your
             profile.
@@ -144,7 +146,7 @@ export default async function BillingPage({
               href={checkoutHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-4 inline-flex h-11 items-center justify-center rounded-lg bg-accent px-5 text-sm font-medium text-background transition-opacity hover:opacity-90"
+              className="mt-4 inline-flex h-11 items-center justify-center rounded-xl bg-accent px-5 text-sm font-semibold text-background shadow-[0_0_28px_-8px_rgba(94,225,255,0.45)] transition-[opacity,box-shadow] hover:opacity-95 hover:shadow-[0_0_36px_-6px_rgba(94,225,255,0.55)]"
             >
               Open checkout
             </a>
@@ -158,6 +160,36 @@ export default async function BillingPage({
             </p>
           )}
         </div>
+
+        {plan === "paid" && portalHref ? (
+          <div className="shynvo-glass rounded-2xl p-5 md:p-6">
+            <h2 className="text-sm font-semibold text-foreground/95">Manage subscription</h2>
+            <p className="mt-2 text-sm text-muted">
+              Open Lemon&apos;s customer portal to update payment method, view invoices, or
+              cancel.
+            </p>
+            <a
+              href={portalHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 inline-flex h-11 items-center justify-center rounded-xl border border-white/[0.1] bg-white/[0.03] px-5 text-sm font-semibold text-foreground transition-[border-color,color,box-shadow] hover:border-accent/40 hover:text-accent hover:shadow-[0_0_24px_-12px_rgba(94,225,255,0.2)]"
+            >
+              Customer portal
+            </a>
+          </div>
+        ) : plan === "paid" && !portalHref ? (
+          <div className="shynvo-glass-subtle rounded-2xl border border-dashed border-white/[0.12] p-5 md:p-6">
+            <h2 className="text-sm font-semibold text-foreground/95">Customer portal</h2>
+            <p className="mt-2 text-sm text-muted">
+              Optional: set{" "}
+              <code className="rounded bg-surface px-1 font-mono text-xs text-accent">
+                NEXT_PUBLIC_LEMONSQUEEZY_CUSTOMER_PORTAL_URL
+              </code>{" "}
+              (or <code className="font-mono text-xs">LEMONSQUEEZY_CUSTOMER_PORTAL_URL</code>) to
+              your Lemon billing portal link.
+            </p>
+          </div>
+        ) : null}
 
         <p className="text-xs text-muted">
           Billing changes in Lemon (cancel, payment method) sync via webhook. Questions?{" "}

@@ -8,5 +8,5 @@ export type AuditDisplayRow = {
 };
 
 export type AuditListResult =
-  | { source: "demo"; rows: AuditDisplayRow[] }
+  | { source: "session"; rows: AuditDisplayRow[] }
   | { source: "database"; rows: AuditDisplayRow[] };

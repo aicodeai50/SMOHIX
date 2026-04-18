@@ -39,22 +39,37 @@ export function AutomationsConsole({ initialRuns }: { initialRuns: DryRunRecord[
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ playbookId }),
       });
-      const j = (await r.json()) as { ok?: boolean; detail?: string; error?: string };
+      const j = (await r.json()) as {
+        ok?: boolean;
+        detail?: string;
+        error?: string;
+        id?: string;
+        at?: string;
+        persisted?: boolean;
+      };
       if (!r.ok) {
         setMsg(j.error ?? "Dry-run failed");
         return;
       }
       setRuns((prev) => {
         const entry: DryRunRecord = {
-          id: `run-${Date.now()}`,
+          id: j.id ?? `run-${Date.now()}`,
           playbookId,
           ok: Boolean(j.ok),
           detail: j.detail ?? "",
-          at: new Date().toISOString(),
+          at: j.at ?? new Date().toISOString(),
         };
         return [entry, ...prev].slice(0, 40);
       });
-      setMsg(j.ok ? "Dry-run recorded." : "Dry-run completed with issues — see robot health.");
+      setMsg(
+        j.persisted
+          ? j.ok
+            ? "Dry-run saved and logged to your audit trail."
+            : "Dry-run saved (issues detected) — see robot health and Audit."
+          : j.ok
+            ? "Dry-run recorded for this session."
+            : "Dry-run completed with issues — see robot health.",
+      );
     } catch (e) {
       setMsg(e instanceof Error ? e.message : "Request failed");
     } finally {
@@ -65,24 +80,24 @@ export function AutomationsConsole({ initialRuns }: { initialRuns: DryRunRecord[
   return (
     <div className="space-y-6">
       {msg ? (
-        <p className="rounded-lg border border-border bg-surface-elevated/50 px-3 py-2 text-sm text-muted">
+        <p className="shynvo-glass-subtle rounded-xl px-4 py-3 text-sm leading-relaxed text-muted">
           {msg}
         </p>
       ) : null}
-      <div className="overflow-hidden rounded-xl border border-border">
+      <div className="shynvo-table-wrap">
         <table className="w-full text-left text-sm">
-          <thead className="border-b border-border bg-surface/80 font-mono text-xs uppercase text-muted">
+          <thead className="border-b border-white/[0.06] bg-white/[0.03] font-mono text-[11px] font-medium uppercase tracking-[0.1em] text-muted">
             <tr>
-              <th className="px-4 py-3">Playbook</th>
-              <th className="px-4 py-3">Environment</th>
-              <th className="px-4 py-3">Last dry-run</th>
-              <th className="px-4 py-3">Risk</th>
-              <th className="px-4 py-3 w-36" />
+              <th className="px-4 py-3.5">Playbook</th>
+              <th className="px-4 py-3.5">Environment</th>
+              <th className="px-4 py-3.5">Last dry-run</th>
+              <th className="px-4 py-3.5">Risk</th>
+              <th className="px-4 py-3.5 w-36" />
             </tr>
           </thead>
-          <tbody className="divide-y divide-border">
+          <tbody className="divide-y divide-white/[0.05]">
             {rows.map((row) => (
-              <tr key={row.id} className="hover:bg-surface-elevated/40">
+              <tr key={row.id} className="transition-colors hover:bg-white/[0.03]">
                 <td className="px-4 py-3 font-medium text-foreground">{row.name}</td>
                 <td className="px-4 py-3 capitalize text-muted">{row.env}</td>
                 <td className="px-4 py-3 font-mono text-xs text-muted">{row.lastRun}</td>
@@ -102,7 +117,7 @@ export function AutomationsConsole({ initialRuns }: { initialRuns: DryRunRecord[
                     type="button"
                     disabled={busyId !== null}
                     onClick={() => void dryRun(row.id)}
-                    className="rounded-lg border border-border px-2 py-1 text-xs font-medium text-muted transition-colors hover:border-accent/40 hover:text-foreground disabled:opacity-50"
+                    className="rounded-lg border border-white/[0.1] bg-white/[0.02] px-2.5 py-1 text-xs font-medium text-muted transition-[border-color,background-color,color,box-shadow] hover:border-accent/35 hover:text-foreground hover:shadow-[0_0_20px_-10px_rgba(94,225,255,0.25)] disabled:opacity-50"
                   >
                     {busyId === row.id ? "Running…" : "Dry-run"}
                   </button>
@@ -113,14 +128,27 @@ export function AutomationsConsole({ initialRuns }: { initialRuns: DryRunRecord[
         </table>
       </div>
       {runs.length > 0 ? (
-        <section className="rounded-xl border border-border bg-surface/80 p-5">
-          <h2 className="text-sm font-semibold text-muted">Recent dry-runs</h2>
-          <ul className="mt-3 max-h-48 space-y-2 overflow-y-auto font-mono text-xs text-muted">
+        <section className="shynvo-glass rounded-2xl p-5 md:p-6">
+          <h2 className="text-sm font-semibold text-foreground/90">Recent dry-runs</h2>
+          <ul className="mt-3 max-h-48 space-y-2 overflow-y-auto text-xs text-muted">
             {runs.slice(0, 12).map((r) => (
-              <li key={r.id} className="flex justify-between gap-2 border-b border-border/40 pb-2">
-                <span className="text-foreground/80">{r.playbookId}</span>
-                <span className={r.ok ? "text-emerald-400/90" : "text-amber-400/90"}>
-                  {r.ok ? "ok" : "fail"}
+              <li
+                key={r.id}
+                className="flex flex-col gap-0.5 border-b border-white/[0.05] pb-2 sm:flex-row sm:items-start sm:justify-between sm:gap-2"
+              >
+                <span className="font-mono text-foreground/85">{r.playbookId}</span>
+                <span className="flex shrink-0 items-center gap-2 sm:justify-end">
+                  <span className={r.ok ? "text-emerald-400/90" : "text-amber-400/90"}>
+                    {r.ok ? "ok" : "fail"}
+                  </span>
+                  <span className="font-mono text-[10px] opacity-80">
+                    {new Date(r.at).toLocaleString(undefined, {
+                      month: "short",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </span>
                 </span>
               </li>
             ))}

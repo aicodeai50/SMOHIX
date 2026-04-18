@@ -8,13 +8,14 @@ export function Hero({
 }) {
   const trialHref = signedInCheckoutUrl?.trim() || getTrialHref();
   return (
-    <section className="relative overflow-hidden border-b border-border">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(56,189,248,0.15),transparent)]" />
+    <section className="relative overflow-hidden border-b border-white/[0.06]">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_90%_55%_at_50%_-25%,rgba(94,225,255,0.14),transparent)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_90%_20%,rgba(129,140,248,0.1),transparent)]" />
       <div className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
-        <p className="mb-4 inline-flex rounded-full border border-border bg-surface-elevated/80 px-3 py-1 text-xs font-medium uppercase tracking-wider text-accent">
+        <p className="mb-5 inline-flex rounded-full border border-white/[0.1] bg-white/[0.04] px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-accent shadow-[0_0_24px_-8px_rgba(94,225,255,0.25)] backdrop-blur-sm">
           Platform
         </p>
-        <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-foreground sm:text-5xl sm:leading-[1.1]">
+        <h1 className="shynvo-headline max-w-3xl text-4xl font-semibold tracking-tight sm:text-5xl sm:leading-[1.08]">
           AI operations command center
         </h1>
         <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted">
@@ -26,13 +27,13 @@ export function Hero({
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <Link
               href="/auth/sign-up"
-              className="inline-flex h-12 items-center justify-center rounded-lg bg-accent px-6 text-base font-medium text-background transition-opacity hover:opacity-90"
+              className="inline-flex h-12 items-center justify-center rounded-xl bg-accent px-6 text-base font-semibold text-background shadow-[0_0_32px_-8px_rgba(94,225,255,0.45)] transition-[opacity,box-shadow] hover:opacity-95 hover:shadow-[0_0_40px_-6px_rgba(94,225,255,0.55)]"
             >
               Get started
             </Link>
             <Link
               href="/auth/sign-in"
-              className="inline-flex h-12 items-center justify-center rounded-lg border border-border px-6 text-base font-medium text-foreground transition-colors hover:border-accent/40 hover:bg-surface-elevated/50"
+              className="inline-flex h-12 items-center justify-center rounded-xl border border-white/[0.12] bg-white/[0.03] px-6 text-base font-medium text-foreground backdrop-blur-sm transition-colors hover:border-accent/45 hover:bg-white/[0.06]"
             >
               Sign in
             </Link>

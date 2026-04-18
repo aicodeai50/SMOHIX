@@ -14,12 +14,12 @@ export type ApiKeyRow = {
 export function ApiKeysPanel({
   initialKeys,
   serviceRoleConfigured,
-  demoMode = false,
+  sessionScoped = false,
 }: {
   initialKeys: ApiKeyRow[];
   serviceRoleConfigured: boolean;
-  /** In-memory keys before Supabase; refresh after middleware sets the dev cookie. */
-  demoMode?: boolean;
+  /** Keys stored per browser session until Supabase auth is on. */
+  sessionScoped?: boolean;
 }) {
   const [keys, setKeys] = useState<ApiKeyRow[]>(initialKeys);
   const [label, setLabel] = useState("");
@@ -39,10 +39,10 @@ export function ApiKeysPanel({
   }, []);
 
   useEffect(() => {
-    if (demoMode) {
+    if (sessionScoped) {
       void refresh();
     }
-  }, [demoMode, refresh]);
+  }, [sessionScoped, refresh]);
 
   async function generate() {
     setBusy(true);
@@ -97,14 +97,13 @@ export function ApiKeysPanel({
 
   return (
     <div className="space-y-6">
-      {demoMode ? (
+      {sessionScoped ? (
         <p className="rounded-lg border border-cyan-500/25 bg-cyan-500/10 px-4 py-3 text-sm text-cyan-100/90">
-          <span className="font-medium text-foreground/90">Demo session.</span> Keys live in
-          server memory (scoped to your <span className="font-mono">shynvo_dev_tid</span> cookie)
-          and authenticate{" "}
-          <span className="font-mono">/api/reasoning/*</span> and{" "}
-          <span className="font-mono">/api/robot/*</span> while Supabase auth is off. They disappear
-          on deploy/restart; connect Supabase for real persistence.
+          <span className="font-medium text-foreground/90">Session-scoped keys.</span> Stored in
+          server memory for your <span className="font-mono">shynvo_dev_tid</span> cookie and used
+          to authenticate <span className="font-mono">/api/reasoning/*</span> and{" "}
+          <span className="font-mono">/api/robot/*</span> without Supabase. They do not survive
+          deploy or cold start; connect Supabase for durable keys.
         </p>
       ) : !serviceRoleConfigured ? (
         <p className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-100/90">

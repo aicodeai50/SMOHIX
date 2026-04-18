@@ -1,7 +1,6 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 
-import { DEMO_AUDIT } from "./demo";
 import type { AuditDisplayRow, AuditListResult } from "./types";
 
 function shorten(s: string, max: number): string {
@@ -38,13 +37,13 @@ function mapRow(r: {
 }
 
 /**
- * Lists audit entries for the signed-in user when Supabase + `audit_log` exist; otherwise demo rows.
+ * Lists audit entries from `audit_log` for the signed-in user. Without auth, returns an empty session view.
  */
 export async function listAuditEntriesForUser(
   userId: string | null,
 ): Promise<AuditListResult> {
   if (!hasSupabaseAuth() || !userId) {
-    return { source: "demo", rows: DEMO_AUDIT };
+    return { source: "session", rows: [] };
   }
 
   try {
@@ -57,14 +56,7 @@ export async function listAuditEntriesForUser(
       .limit(100);
 
     if (error) {
-      const missing =
-        error.code === "42P01" ||
-        error.message.toLowerCase().includes("relation") ||
-        error.message.toLowerCase().includes("does not exist");
-      if (missing) {
-        return { source: "demo", rows: DEMO_AUDIT };
-      }
-      return { source: "demo", rows: DEMO_AUDIT };
+      return { source: "database", rows: [] };
     }
 
     const rows = (data ?? []).map((r) =>
@@ -79,6 +71,6 @@ export async function listAuditEntriesForUser(
 
     return { source: "database", rows };
   } catch {
-    return { source: "demo", rows: DEMO_AUDIT };
+    return { source: "database", rows: [] };
   }
 }

@@ -14,15 +14,16 @@ Apply database changes from `supabase/migrations/` in the Supabase SQL Editor (o
 - [x] **Plan helper** — `lib/billing/plan.ts` — `free` vs `paid` from subscription `status`.
 - [x] **Checkout URL helpers** — `getCheckoutUrlForUser` / `appendCheckoutCustomData` in `lib/billing.ts`.
 - [x] **Marketing CTAs (signed-in)** — homepage `Header` / `Hero` / `ConnectCTA` use `getSignedInCheckoutUrl()` so trial links include `shynvo_user_id` when auth + `NEXT_PUBLIC_LEMONSQUEEZY_CHECKOUT_URL` are set; anonymous visitors keep generic checkout or `#trial`.
+- [x] **Lemon customer portal link** — optional `NEXT_PUBLIC_LEMONSQUEEZY_CUSTOMER_PORTAL_URL` / `LEMONSQUEEZY_CUSTOMER_PORTAL_URL`; **Billing** shows **Customer portal** when plan reads as paid.
 - [x] **Settings → Billing** — `/settings/billing` shows plan, subscription snapshot, **Open checkout** (with `shynvo_user_id`), and migration hints if the DB is not ready.
 - [x] **Console nav** — **clickable module boxes** (`CONSOLE_MODULES` + `/hub` home); **Settings** hub, **Billing**, **API keys**, and **Connectors** included.
 - [x] **Copilot without upstream** — `POST /api/copilot/chat` uses **OpenAI** when `OPENAI_API_KEY` is set, else **offline** replies; default chat path no longer requires `SHYNVO_REASONING_API_URL`.
-- [x] **API keys without Supabase** — in-memory **demo keys** (per `shynvo_dev_tid` cookie) + proxy validation for `/api/reasoning` and `/api/robot` when auth env is off.
+- [x] **API keys without Supabase** — **session-scoped keys** in server memory (per `shynvo_dev_tid` cookie) + proxy validation for `/api/reasoning` and `/api/robot` when auth env is off; Postgres-backed keys when auth is on.
 - [x] **Runbooks** — `/runbooks` catalog + detail pages (in-repo procedures; export to Git/docs later).
-- [x] **Automations** — playbooks + **dry-run** API (`/api/automations/dry-run`) with optional robot health check; run history in dev memory per session/user.
+- [x] **Automations** — playbooks + **dry-run** API (`/api/automations/dry-run`) with optional robot health check; run history in session memory or Supabase (`automation_dry_runs`) when signed in.
 - [x] **Proxy auth gate** — `/api/reasoning` and `/api/robot` require a **session or `shynvo_sk_` API key** when auth env vars are set; keys stored hashed in `api_keys` (`20260418150000_api_keys.sql`).
 - [x] **Security headers** — global headers in `next.config.ts`.
-- [x] **Incidents migration + data layer** — SQL file + `lib/incidents/*` with DB-or-demo list/detail (no Supabase required to run the app).
+- [x] **Incidents migration + data layer** — SQL file + `lib/incidents/*`: **database** rows when Supabase + table are used; **session-scoped** incidents (same cookie) when auth env is off—only user-created rows, no seeded data.
 
 ---
 
@@ -49,21 +50,23 @@ Apply database changes from `supabase/migrations/` in the Supabase SQL Editor (o
 ### Option 1 — Incident Copilot
 
 - [x] **SQL** — `copilot_threads` / `copilot_messages` in `20260418140000_console_extensions.sql` (apply with spine migration).
-- [x] **UI** — client `CopilotChat` posts to `/api/reasoning/v1/chat` (or `NEXT_PUBLIC_COPILOT_PROXY_PATH`); streaming/persist threads still optional.
+- [x] **UI** — `CopilotChat` posts to `/api/copilot/chat` (or override); **thread sidebar + persist** to `copilot_threads` / `copilot_messages` when signed in and migration applied (`/api/copilot/threads`, `/api/copilot/threads/[id]/messages`).
+- [x] **Copilot streaming** — SSE from `/api/copilot/chat` when `stream: true` (built-in route).
 
 ### Option 2 — Incidents
 
 - [x] **Migration** `supabase/migrations/20260418130000_incidents.sql` — `incidents` table + RLS (apply when Supabase is ready).
-- [x] **Data layer** — `lib/incidents/data.ts` loads from DB when the table exists; otherwise **demo** rows + banner on the list page.
-- [x] **Create** — `/incidents/new` + server action when Supabase + table exist; edit / ingest (PagerDuty, etc.) still optional.
+- [x] **Data layer** — `lib/incidents/data.ts` loads from DB when authenticated and the table responds; **session** path lists only user-created incidents for the browser session when auth env is off; banner explains migration/sign-in.
+- [x] **Create** — `/incidents/new` + server action (Supabase insert or session store); edit / ingest (PagerDuty, etc.) still optional.
+- [x] **Incident timeline** — session incidents append events on open + status change (`timeline-dev`); database incidents list `audit_log` rows for `incident.status_updated` matching the incident id.
 
 ---
 
 ## Phase D — Approvals, automations, audit
 
-- [x] **Approvals** — `approval_requests` in `20260418140000_console_extensions.sql`; **`/approvals`** Approve/Deny (Supabase or **demo dev-store**); **Recent** list.
-- [x] **Automations (baseline)** — playbook list + dry-runs + recent run panel; extend with real definitions + durable run history in DB.
-- [x] **Audit log** — `audit_log` table + RLS in `20260418140000_console_extensions.sql`; **`appendAuditEvent`** writes **subscription sync** (Lemon webhook) and **API key** create/revoke; **`/audit`** lists rows from the DB when available.
+- [x] **Approvals** — `approval_requests` in `20260418140000_console_extensions.sql`; **`/approvals`** includes **New approval request** (console form) + Approve/Deny; Postgres when signed in, or **session dev-store** when auth env is off; **`approval.requested`** audit event on DB create; **Recent** list.
+- [x] **Automations (baseline)** — playbook list + dry-runs + recent run panel; durable run history in DB when migration `20260418160000_automation_dry_runs.sql` is applied.
+- [x] **Audit log** — `audit_log` table + RLS in `20260418140000_console_extensions.sql`; **`appendAuditEvent`** writes **subscription sync** (Lemon webhook), **API key** create/revoke, **incident.status_updated**, **automation.dry_run**; **`/audit`** lists rows from the DB for the signed-in user (empty until events exist).
 
 ---
 
@@ -72,7 +75,7 @@ Apply database changes from `supabase/migrations/` in the Supabase SQL Editor (o
 - [ ] Transactional email (e.g. Resend) for billing and security notices.
 - [ ] Error tracking (e.g. Sentry) on Next + structured logs for webhooks.
 - [ ] E2E tests (Playwright): sign-in → checkout metadata → webhook path (staging).
-- [ ] Replace legal placeholders with counsel-reviewed copy before broad launch.
+- [ ] Replace draft legal pages with counsel-reviewed copy before broad launch.
 
 ---
 

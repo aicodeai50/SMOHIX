@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -16,6 +17,7 @@ export const dynamic = "force-dynamic";
 
 export default async function IncidentsPage() {
   let userId: string | null = null;
+  let devTenantKey: string | null = null;
   if (hasSupabaseAuth()) {
     const supabase = await createServerSupabaseClient();
     const {
@@ -25,9 +27,11 @@ export default async function IncidentsPage() {
       redirect("/auth/sign-in?next=/incidents");
     }
     userId = user.id;
+  } else {
+    devTenantKey = (await cookies()).get("shynvo_dev_tid")?.value ?? "anon";
   }
 
-  const { source, rows } = await listIncidentsForUser(userId ?? "");
+  const { source, rows } = await listIncidentsForUser(userId ?? "", devTenantKey);
 
   return (
     <>
@@ -37,46 +41,46 @@ export default async function IncidentsPage() {
           title="Incidents"
           description="Unified view of signals, ownership, and timeline entries. With Supabase configured and the incidents migration applied, rows load from your database."
         />
-        {hasSupabaseAuth() && userId ? (
-          <Link
-            href="/incidents/new"
-            className="inline-flex h-10 shrink-0 items-center justify-center rounded-lg bg-accent px-4 text-sm font-medium text-background hover:opacity-90"
-          >
-            New incident
-          </Link>
-        ) : null}
+        <Link
+          href="/incidents/new"
+          className="inline-flex h-10 shrink-0 items-center justify-center rounded-xl bg-accent px-5 text-sm font-semibold text-background shadow-[0_0_28px_-8px_rgba(94,225,255,0.45)] transition-[opacity,box-shadow] hover:opacity-95 hover:shadow-[0_0_36px_-6px_rgba(94,225,255,0.55)]"
+        >
+          New incident
+        </Link>
       </div>
-      {source === "demo" ? (
-        <p className="mb-4 rounded-lg border border-border bg-surface-elevated/50 px-3 py-2 text-xs text-muted">
-          Showing <span className="font-medium text-foreground/90">demo incidents</span>. After
-          Supabase is set up, run{" "}
+      {source === "session" ? (
+        <p className="shynvo-glass-subtle mb-4 rounded-xl px-4 py-3 text-xs leading-relaxed text-muted">
+          Incidents are scoped to this browser session until Supabase is connected. Run{" "}
           <code className="rounded bg-surface px-1 font-mono text-accent">
             supabase/migrations/20260418130000_incidents.sql
           </code>{" "}
-          to use real data.
+          and sign in for account-wide, persistent incidents.
         </p>
       ) : null}
-      <div className="overflow-hidden rounded-xl border border-border">
+      <div className="shynvo-table-wrap">
         <table className="w-full text-left text-sm">
-          <thead className="border-b border-border bg-surface/80 font-mono text-xs uppercase text-muted">
+          <thead className="border-b border-white/[0.06] bg-white/[0.03] font-mono text-[11px] font-medium uppercase tracking-[0.1em] text-muted">
             <tr>
-              <th className="px-4 py-3">Id</th>
-              <th className="px-4 py-3">Title</th>
-              <th className="px-4 py-3">Severity</th>
-              <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3">Updated</th>
+              <th className="px-4 py-3.5">Id</th>
+              <th className="px-4 py-3.5">Title</th>
+              <th className="px-4 py-3.5">Severity</th>
+              <th className="px-4 py-3.5">Status</th>
+              <th className="px-4 py-3.5">Updated</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-border">
+          <tbody className="divide-y divide-white/[0.05]">
             {rows.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-sm text-muted">
+                <td colSpan={5} className="px-4 py-12 text-center text-sm text-muted">
                   No incidents yet.
                 </td>
               </tr>
             ) : (
               rows.map((row) => (
-                <tr key={row.id} className="hover:bg-surface-elevated/40">
+                <tr
+                  key={row.id}
+                  className="transition-colors hover:bg-white/[0.03]"
+                >
                   <td className="px-4 py-3 font-mono text-xs text-accent">
                     <Link href={`/incidents/${row.id}`} className="hover:underline">
                       {row.id}

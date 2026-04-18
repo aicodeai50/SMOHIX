@@ -12,8 +12,10 @@ export default async function AuthErrorPage({
 }) {
   const { reason } = await searchParams;
   return (
-    <div className="rounded-2xl border border-border bg-surface-elevated p-8 shadow-[0_0_0_1px_rgba(56,189,248,0.06)]">
-      <h1 className="text-lg font-semibold tracking-tight">Something went wrong</h1>
+    <div className="shynvo-glass rounded-3xl p-8 md:p-10">
+      <h1 className="shynvo-headline text-lg font-semibold tracking-tight md:text-xl">
+        Something went wrong
+      </h1>
       <p className="mt-2 text-sm text-muted">
         {reason === "callback"
           ? "We could not complete sign-in from your link. The link may have expired — try signing in again."
@@ -22,19 +24,19 @@ export default async function AuthErrorPage({
       <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
         <Link
           href="/auth/sign-in"
-          className="inline-flex h-10 items-center justify-center rounded-lg bg-accent px-4 text-sm font-medium text-background hover:opacity-90"
+          className="inline-flex h-10 items-center justify-center rounded-xl bg-accent px-5 text-sm font-semibold text-background shadow-[0_0_24px_-8px_rgba(94,225,255,0.4)] transition-[opacity,box-shadow] hover:opacity-95 hover:shadow-[0_0_32px_-6px_rgba(94,225,255,0.5)]"
         >
           Sign in
         </Link>
         <Link
           href="/auth/sign-up"
-          className="inline-flex h-10 items-center justify-center rounded-lg border border-border px-4 text-sm font-medium text-foreground hover:border-accent/40"
+          className="inline-flex h-10 items-center justify-center rounded-xl border border-white/[0.1] bg-white/[0.02] px-5 text-sm font-medium text-foreground transition-[border-color,box-shadow] hover:border-accent/35 hover:shadow-[0_0_20px_-10px_rgba(94,225,255,0.2)]"
         >
           Get started
         </Link>
         <Link
           href="/"
-          className="inline-flex h-10 items-center justify-center rounded-lg border border-border px-4 text-sm text-muted hover:border-accent/40 hover:text-foreground"
+          className="inline-flex h-10 items-center justify-center rounded-xl border border-white/[0.08] px-5 text-sm text-muted transition-[border-color,color] hover:border-accent/30 hover:text-foreground"
         >
           Home
         </Link>

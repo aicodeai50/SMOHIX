@@ -36,6 +36,17 @@ export function getCheckoutUrlForUser(userId: string): string | undefined {
   return appendCheckoutCustomData(base, { shynvo_user_id: userId });
 }
 
+/**
+ * Lemon Squeezy **Customer portal** (manage payment method, cancel, invoices).
+ * Paste the URL from Lemon → Settings → Customer portal (or your hosted billing link).
+ * Prefer `NEXT_PUBLIC_*` if you need it client-side; server reads both.
+ */
+export function getCustomerPortalUrl(): string | undefined {
+  const pub = process.env.NEXT_PUBLIC_LEMONSQUEEZY_CUSTOMER_PORTAL_URL?.trim();
+  const srv = process.env.LEMONSQUEEZY_CUSTOMER_PORTAL_URL?.trim();
+  return pub || srv || undefined;
+}
+
 /** General / contact (hello, partnerships, sales). */
 export const SITE_EMAIL_CONTACT = "hi@shynvo.app";
 

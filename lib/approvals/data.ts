@@ -1,8 +1,7 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 
-import { DEMO_PENDING } from "./demo";
-import { devListApprovals } from "./dev-store";
+import { devCreateApproval, devListApprovals } from "./dev-store";
 import type { ApprovalRow, ApprovalsListResult } from "./types";
 
 function mapRow(r: {
@@ -23,7 +22,7 @@ function mapRow(r: {
 
 export type ListApprovalsParams = {
   userId: string;
-  /** When Supabase auth is off, scope demo approvals to this browser session. */
+  /** When Supabase auth is off, scope queue to this browser session. */
   devTenantId?: string | null;
 };
 
@@ -37,9 +36,9 @@ export async function listApprovalsForUser(
   if (!hasSupabaseAuth()) {
     if (devTenantId) {
       const { pending, recent } = devListApprovals(devTenantId);
-      return { source: "demo", pending, recent };
+      return { source: "session", pending, recent };
     }
-    return { source: "demo", pending: DEMO_PENDING, recent: [] };
+    return { source: "session", pending: [], recent: [] };
   }
 
   try {
@@ -60,15 +59,7 @@ export async function listApprovalsForUser(
       .limit(20);
 
     if (pendErr || recentErr) {
-      const err = pendErr ?? recentErr;
-      const missing =
-        err?.code === "42P01" ||
-        err?.message.toLowerCase().includes("relation") ||
-        err?.message.toLowerCase().includes("does not exist");
-      if (missing) {
-        return { source: "demo", pending: DEMO_PENDING, recent: [] };
-      }
-      return { source: "demo", pending: DEMO_PENDING, recent: [] };
+      return { source: "database", pending: [], recent: [] };
     }
 
     const pending = (pendData ?? []).map((r) =>
@@ -93,6 +84,62 @@ export async function listApprovalsForUser(
 
     return { source: "database", pending, recent };
   } catch {
-    return { source: "demo", pending: DEMO_PENDING, recent: [] };
+    return { source: "database", pending: [], recent: [] };
+  }
+}
+
+export async function createApprovalRequest(input: {
+  userId: string;
+  devTenantId: string | null;
+  actionLabel: string;
+  requestedBy: string;
+  policyHint: string;
+}): Promise<{ ok: true; id: string } | { ok: false; reason: string }> {
+  const action = input.actionLabel.trim();
+  if (!action) {
+    return { ok: false, reason: "Describe the change or action that needs approval." };
+  }
+
+  const rb = input.requestedBy.trim();
+  const pol = input.policyHint.trim();
+
+  if (!hasSupabaseAuth()) {
+    const tid = input.devTenantId;
+    if (!tid) {
+      return { ok: false, reason: "No browser session." };
+    }
+    const id = devCreateApproval(tid, {
+      action,
+      requestedBy: rb || "Console",
+      policy: pol || "—",
+    });
+    return { ok: true, id };
+  }
+
+  try {
+    const supabase = await createServerSupabaseClient();
+    const { data, error } = await supabase
+      .from("approval_requests")
+      .insert({
+        user_id: input.userId,
+        action_label: action,
+        requested_by: rb || null,
+        policy_hint: pol || null,
+      })
+      .select("id")
+      .single();
+
+    if (error) {
+      return { ok: false, reason: error.message };
+    }
+    if (!data?.id) {
+      return { ok: false, reason: "Insert returned no id." };
+    }
+    return { ok: true, id: data.id as string };
+  } catch (e) {
+    return {
+      ok: false,
+      reason: e instanceof Error ? e.message : "Could not create approval request.",
+    };
   }
 }

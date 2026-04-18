@@ -20,7 +20,7 @@ export async function DELETE(req: NextRequest, { params }: Ctx) {
     const tid = req.cookies.get("shynvo_dev_tid")?.value;
     if (!tid) {
       return NextResponse.json(
-        { error: "missing_dev_session", message: "Reload the page to pick up a demo session." },
+        { error: "missing_dev_session", message: "Reload the page to pick up a browser session." },
         { status: 400 },
       );
     }
@@ -28,7 +28,7 @@ export async function DELETE(req: NextRequest, { params }: Ctx) {
     if (!ok) {
       return NextResponse.json({ error: "not_found_or_already_revoked" }, { status: 404 });
     }
-    return NextResponse.json({ ok: true, id, mode: "demo" as const });
+    return NextResponse.json({ ok: true, id, mode: "session" as const });
   }
 
   const supabase = await createServerSupabaseClient();

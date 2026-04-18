@@ -9,6 +9,7 @@ export type IncidentRow = {
 };
 
 export type IncidentsListResult = {
-  source: "database" | "demo";
+  /** `database` = Supabase `incidents` table; `session` = browser session store (no auth). */
+  source: "database" | "session";
   rows: IncidentRow[];
 };

@@ -78,7 +78,7 @@ export function devRevokeKey(tenantId: string, id: string): boolean {
   return true;
 }
 
-/** Resolve demo API key to tenant for proxy rate limits when Supabase auth is off. */
+/** Resolve session API key to tenant for proxy rate limits when Supabase auth is off. */
 export function devResolveTenantFromPlainKey(plain: string): {
   tenantId: string;
 } | null {

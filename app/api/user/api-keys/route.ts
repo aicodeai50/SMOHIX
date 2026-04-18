@@ -26,11 +26,11 @@ export async function GET(req: NextRequest) {
     const tid = devTenantOr400(req);
     if (!tid) {
       return NextResponse.json(
-        { error: "missing_dev_session", message: "Reload the page to pick up a demo session." },
+        { error: "missing_dev_session", message: "Reload the page to pick up a browser session." },
         { status: 400 },
       );
     }
-    return NextResponse.json({ keys: devListKeys(tid), mode: "demo" as const });
+    return NextResponse.json({ keys: devListKeys(tid), mode: "session" as const });
   }
 
   const supabase = await createServerSupabaseClient();
@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
     const tid = devTenantOr400(req);
     if (!tid) {
       return NextResponse.json(
-        { error: "missing_dev_session", message: "Reload the page to pick up a demo session." },
+        { error: "missing_dev_session", message: "Reload the page to pick up a browser session." },
         { status: 400 },
       );
     }
@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       ...row,
       key: plain,
-      mode: "demo" as const,
+      mode: "session" as const,
     });
   }
 
