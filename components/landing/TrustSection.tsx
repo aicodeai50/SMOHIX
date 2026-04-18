@@ -4,51 +4,51 @@ const links = [
   {
     href: "/audit",
     title: "Audit log",
-    line: "Who changed what, when — subscription sync, keys, approvals.",
-    action: "View audit log",
+    line: "Immutable record of billing sync, API keys, approvals, and automation events.",
+    action: "Audit log",
   },
   {
     href: "/approvals",
     title: "Approvals",
-    line: "Human gates before high-risk automation or policy overrides.",
-    action: "Open approvals",
+    line: "Human review before high-risk changes leave the queue.",
+    action: "Approvals",
   },
   {
     href: "/settings",
-    title: "Settings hub",
-    line: "API keys, connectors, billing — one place for credentials and env.",
-    action: "Open settings",
+    title: "Settings",
+    line: "API keys, connectors, billing, and environment configuration.",
+    action: "Settings",
   },
 ] as const;
 
 export function TrustSection() {
   return (
-    <section id="trust" className="border-b border-white/[0.06] py-20 sm:py-24">
+    <section id="trust" className="border-b border-white/[0.06] py-16 sm:py-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-          Governance, not a second product tour
+        <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
+          Governance and access
         </h2>
-        <p className="mt-3 max-w-2xl text-muted">
-          Different job from the pillars above: evidence, gates, and access. Same console —
-          different routes, no copy-paste cards.
+        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
+          Evidence, authorization, and credentials — separate concerns from product modules,
+          same application.
         </p>
 
-        <div className="mt-10 rounded-2xl border border-white/[0.08] bg-white/[0.02] px-5 py-6 sm:px-8 sm:py-8">
+        <div className="mt-8 rounded-lg border border-white/[0.08] bg-white/[0.02] px-5 py-1 sm:px-6">
           <ul className="divide-y divide-white/[0.06]">
             {links.map((item) => (
               <li
                 key={item.href}
-                className="flex flex-col gap-2 py-5 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between sm:gap-6"
+                className="flex flex-col gap-2 py-4 first:pt-3 last:pb-3 sm:flex-row sm:items-center sm:justify-between sm:gap-8"
               >
                 <div className="min-w-0 sm:flex-1">
-                  <p className="text-sm font-semibold text-foreground">{item.title}</p>
-                  <p className="mt-1 text-sm text-muted">{item.line}</p>
+                  <p className="text-sm font-medium text-foreground">{item.title}</p>
+                  <p className="mt-0.5 text-sm text-muted">{item.line}</p>
                 </div>
                 <Link
                   href={item.href}
-                  className="shrink-0 text-sm font-medium text-accent underline-offset-4 hover:underline"
+                  className="shrink-0 text-sm font-medium text-accent/95 underline-offset-4 hover:text-accent hover:underline"
                 >
-                  {item.action} →
+                  {item.action}
                 </Link>
               </li>
             ))}

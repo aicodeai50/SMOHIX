@@ -99,9 +99,9 @@ export function SignInForm() {
         </button>
       </form>
       <p className="mt-6 text-center text-sm text-muted">
-        No account?{" "}
+        New to Shynvo?{" "}
         <Link href="/auth/sign-up" className="font-medium text-accent hover:underline">
-          {marketingCta.signInFooter}
+          {marketingCta.signUp}
         </Link>
       </p>
     </AuthCard>

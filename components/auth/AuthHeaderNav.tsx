@@ -30,7 +30,7 @@ export function AuthHeaderNav() {
         className={`${linkClass} font-medium ${onSignUp ? "bg-accent-dim text-accent" : "text-accent"}`}
         aria-current={onSignUp ? "page" : undefined}
       >
-        {marketingCta.authNavSignup}
+        {marketingCta.signUp}
       </Link>
     </nav>
   );

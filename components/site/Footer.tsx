@@ -71,7 +71,7 @@ export function Footer() {
                   href="/auth/sign-up"
                   className="w-fit font-medium text-accent hover:underline hover:underline-offset-2 md:ml-auto"
                 >
-                  {marketingCta.footerSignup}
+                  {marketingCta.signUp}
                 </Link>
               </nav>
             </div>

@@ -1,6 +1,6 @@
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
-import { EnvHonestyBanner } from "@/components/landing/EnvHonestyBanner";
+import { EnvStatusStrip } from "@/components/landing/EnvStatusStrip";
 import { Hero } from "@/components/landing/Hero";
 import { ModuleGrid } from "@/components/landing/ModuleGrid";
 import { LivePanel } from "@/components/landing/LivePanel";
@@ -18,7 +18,7 @@ export default async function Home() {
       <Header />
       <main className="flex-1">
         <Hero signedInCheckoutUrl={signedInCheckoutUrl} />
-        <EnvHonestyBanner />
+        <EnvStatusStrip />
         <ModuleGrid />
         <LivePanel />
         <TrustSection />

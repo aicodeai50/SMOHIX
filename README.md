@@ -135,7 +135,7 @@ After `shynvo.app` resolves to Railway, set the Lemon webhook URL to:
 
 ### Supabase (auth)
 
-The app uses **email + password** via **`@supabase/ssr`**. Routes: **`/auth/sign-up`** (Get started), **`/auth/sign-in`**, **`/auth/callback`** (email confirmation), **`POST /auth/sign-out`**.
+The app uses **email + password** via **`@supabase/ssr`**. Routes: **`/auth/sign-up`**, **`/auth/sign-in`**, **`/auth/callback`** (email confirmation), **`POST /auth/sign-out`**.
 
 **Variables** (Railway + `.env.local`): **`NEXT_PUBLIC_SUPABASE_URL`**, **`NEXT_PUBLIC_SUPABASE_ANON_KEY`**. Optional server-only **`SUPABASE_SERVICE_ROLE_KEY`** for admin tasks (never expose to the client).
 

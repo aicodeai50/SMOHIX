@@ -34,7 +34,7 @@ export default async function AuthErrorPage({
           href="/auth/sign-up"
           className="inline-flex h-10 items-center justify-center rounded-xl border border-white/[0.1] bg-white/[0.02] px-5 text-sm font-medium text-foreground transition-[border-color,box-shadow] hover:border-accent/35 hover:shadow-[0_0_20px_-10px_rgba(94,225,255,0.2)]"
         >
-          {marketingCta.footerSignup}
+          {marketingCta.signUp}
         </Link>
         <Link
           href="/"

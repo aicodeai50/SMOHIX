@@ -10,53 +10,49 @@ export function Hero({
   const trialHref = signedInCheckoutUrl?.trim() || getTrialHref();
   return (
     <section className="relative overflow-hidden border-b border-white/[0.06]">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_90%_55%_at_50%_-25%,rgba(94,225,255,0.14),transparent)]" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_90%_20%,rgba(129,140,248,0.1),transparent)]" />
-      <div className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
-        <p className="mb-5 inline-flex rounded-full border border-white/[0.1] bg-white/[0.04] px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-accent shadow-[0_0_24px_-8px_rgba(94,225,255,0.25)] backdrop-blur-sm">
-          Operations
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(94,225,255,0.08),transparent)]" />
+      <div className="relative mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
+        <p className="mb-4 text-xs font-medium uppercase tracking-widest text-muted">
+          Shynvo
         </p>
-        <h1 className="shynvo-headline max-w-3xl text-4xl font-semibold tracking-tight sm:text-5xl sm:leading-[1.08]">
-          AI operations command center
+        <h1 className="shynvo-headline max-w-3xl text-3xl font-semibold tracking-tight sm:text-4xl sm:leading-tight md:text-[2.5rem]">
+          Operations control for IT teams
         </h1>
-        <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted">
-          Unify reasoning and execution: investigate incidents with an AI copilot,
-          ship automations behind human gates, and keep decisions defensible for
-          your IT org.
+        <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted sm:text-lg">
+          Incident response, guarded automation, and auditable change — in one console with
+          consistent policy and sign-in when you connect Supabase.
         </p>
-        <div className="mt-10 flex flex-col gap-5">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <Link
-              href="/auth/sign-up"
-              className="inline-flex h-12 items-center justify-center rounded-xl bg-accent px-6 text-base font-semibold text-background shadow-[0_0_32px_-8px_rgba(94,225,255,0.45)] transition-[opacity,box-shadow] hover:opacity-95 hover:shadow-[0_0_40px_-6px_rgba(94,225,255,0.55)]"
-            >
-              {marketingCta.heroPrimary}
-            </Link>
-            <Link
-              href="/auth/sign-in"
-              className="inline-flex h-12 items-center justify-center rounded-xl border border-white/[0.12] bg-white/[0.03] px-6 text-base font-medium text-foreground backdrop-blur-sm transition-colors hover:border-accent/45 hover:bg-white/[0.06]"
-            >
-              Sign in
-            </Link>
-          </div>
-          <p className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted">
-            <a href="#modules" className="text-foreground underline-offset-4 hover:text-accent hover:underline">
-              View modules
-            </a>
-            <span className="text-muted/40" aria-hidden>
-              ·
-            </span>
-            <a
-              href={trialHref}
-              className="underline-offset-4 hover:text-accent hover:underline"
-              {...(trialHref.startsWith("http")
-                ? { target: "_blank", rel: "noopener noreferrer" }
-                : {})}
-            >
-              {signedInCheckoutUrl ? "Subscribe (your account)" : "Subscribe (trial)"}
-            </a>
-          </p>
+        <div className="mt-9 flex flex-col gap-4 sm:flex-row sm:items-center">
+          <Link
+            href="/auth/sign-up"
+            className="inline-flex h-11 items-center justify-center rounded-lg bg-accent px-5 text-sm font-semibold text-background transition-opacity hover:opacity-90"
+          >
+            {marketingCta.signUp}
+          </Link>
+          <Link
+            href="/auth/sign-in"
+            className="inline-flex h-11 items-center justify-center rounded-lg border border-white/[0.12] bg-white/[0.02] px-5 text-sm font-medium text-foreground transition-colors hover:border-white/[0.2]"
+          >
+            Sign in
+          </Link>
         </div>
+        <p className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted">
+          <a href="#modules" className="text-foreground/90 underline-offset-4 hover:text-accent hover:underline">
+            Capabilities
+          </a>
+          <span className="text-muted/35" aria-hidden>
+            ·
+          </span>
+          <a
+            href={trialHref}
+            className="underline-offset-4 hover:text-accent hover:underline"
+            {...(trialHref.startsWith("http")
+              ? { target: "_blank", rel: "noopener noreferrer" }
+              : {})}
+          >
+            {signedInCheckoutUrl ? "Subscribe" : "Billing / trial"}
+          </a>
+        </p>
       </div>
     </section>
   );

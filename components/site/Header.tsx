@@ -36,9 +36,9 @@ export function Header() {
           </Link>
           <Link
             href="/auth/sign-up"
-            className="inline-flex rounded-xl bg-accent px-3 py-2 text-sm font-semibold text-background shadow-[0_0_20px_-8px_rgba(94,225,255,0.4)] transition-[opacity,box-shadow] hover:opacity-95 hover:shadow-[0_0_28px_-6px_rgba(94,225,255,0.5)] sm:px-4"
+            className="inline-flex rounded-lg bg-accent px-3 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-90 sm:px-4"
           >
-            {marketingCta.headerPrimary}
+            {marketingCta.signUp}
           </Link>
           <Link
             href="/hub"
