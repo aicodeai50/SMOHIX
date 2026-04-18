@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -58,6 +59,11 @@ export function SignInForm() {
           Session could not be restored. Try signing in again.
         </p>
       ) : null}
+      {searchParams.get("notice") === "password-updated" ? (
+        <p className="mb-4 rounded-lg border border-border bg-surface px-3 py-2 text-sm text-muted">
+          Your password was updated. Sign in with your new password.
+        </p>
+      ) : null}
       <form onSubmit={onSubmit} className="space-y-4">
         <div>
           <label htmlFor="signin-email" className="mb-1.5 block text-xs font-medium text-muted">
@@ -74,14 +80,24 @@ export function SignInForm() {
             className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none ring-ring/50 focus:ring-2"
           />
         </div>
-        <PasswordField
-          id="signin-password"
-          label="Password"
-          autoComplete="current-password"
-          value={password}
-          onChange={setPassword}
-          required
-        />
+        <div>
+          <PasswordField
+            id="signin-password"
+            label="Password"
+            autoComplete="current-password"
+            value={password}
+            onChange={setPassword}
+            required
+          />
+          <div className="-mt-1 text-right">
+            <Link
+              href="/auth/forgot-password"
+              className="text-xs font-medium text-accent hover:underline"
+            >
+              Forgot password?
+            </Link>
+          </div>
+        </div>
         {error ? (
           <p className="rounded-lg border border-border bg-surface px-3 py-2 text-sm text-red-300" role="alert">
             {error}

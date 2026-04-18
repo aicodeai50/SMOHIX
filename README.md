@@ -2,7 +2,7 @@
 
 Next.js app for [shynvo.app](https://shynvo.app): marketing site + console shell.
 
-**Roadmap & completion checklist:** [`docs/PLATFORM_PLAN.md`](docs/PLATFORM_PLAN.md) · **Database (Supabase):** run migrations in order: [`20260418120000_platform_spine.sql`](supabase/migrations/20260418120000_platform_spine.sql) → [`20260418130000_incidents.sql`](supabase/migrations/20260418130000_incidents.sql) → [`20260418140000_console_extensions.sql`](supabase/migrations/20260418140000_console_extensions.sql) → [`20260418150000_api_keys.sql`](supabase/migrations/20260418150000_api_keys.sql).
+**Roadmap & completion checklist:** [`docs/PLATFORM_PLAN.md`](docs/PLATFORM_PLAN.md) · **Database (Supabase):** run SQL migrations **in order** in the Supabase SQL editor (same filenames under [`supabase/migrations/`](supabase/migrations/)): `platform_spine` → `incidents` → `console_extensions` → `api_keys` → `automation_dry_runs` → `services_alert_ingest` (see files for exact timestamps).
 
 ## Run locally (preview UI)
 
@@ -63,6 +63,14 @@ Webhook URL in Lemon: `https://shynvo.app/api/webhooks/lemonsqueezy` (use your p
 ## Railway (deploy now)
 
 Repo: **`Sanher50/SHYNVO`**, branch **`main`**. This project ships **`railway.json`**: Railpack runs **`npm run build`**, start **`npm run start`**, healthcheck **`/api/health`** (see `app/api/health/route.ts`).
+
+**Deploy-first (smoke test before building more):**
+
+1. Push **`web/`** as the repo root (or set **Root Directory** to `web` in Railway).
+2. In **Supabase**, run all migrations in order (see top of this README) so auth, incidents, billing, services, and ingest tables exist.
+3. In **Railway → Variables**, set at least **`NEXT_PUBLIC_SUPABASE_URL`**, **`NEXT_PUBLIC_SUPABASE_ANON_KEY`**, **`SUPABASE_SERVICE_ROLE_KEY`**, and **`NEXT_PUBLIC_SITE_URL`** (your Railway URL or custom domain). Add **`OPENAI_API_KEY`** only if you want cloud Copilot in prod.
+4. In **Supabase → Authentication → URL configuration**, set **Site URL** and **Redirect URLs** to your production origin and `/auth/callback`.
+5. Deploy, then verify **`GET /api/health`** (200) and sign in → **`/hub`**. Fix **Target port** vs **`Network: 0.0.0.0:PORT`** in logs if you see 502 (see below).
 
 ### 1. Service → Source
 
@@ -144,7 +152,7 @@ The app uses **email + password** via **`@supabase/ssr`**. Routes: **`/auth/sign
 - **Site URL:** your production origin (e.g. `https://shynvo.app`).
 - **Redirect URLs:** include `https://shynvo.app/auth/callback` and `http://localhost:3000/auth/callback` for local dev.
 
-When both public Supabase vars are set, **middleware** requires a session for **`/hub`**, **`/copilot`**, **`/incidents`**, **`/automations`**, **`/runbooks`**, **`/approvals`**, **`/audit`**, and **`/settings/**`**. If the vars are **omitted**, the console stays open without login (useful for local UI work).
+When both public Supabase vars are set, **middleware** requires a session for **`/hub`**, **`/overview`**, **`/copilot`**, **`/incidents`**, **`/services`**, **`/automations`**, **`/runbooks`**, **`/approvals`**, **`/audit`**, and **`/settings/**`**. If the vars are **omitted**, the console stays open without login (useful for local UI work).
 
 **Next for billing:** map Lemon Squeezy / webhooks to the signed-in user (e.g. store `user.id` or email in your billing metadata). **Still recommended:** session or API-key checks on **`/api/reasoning`** and **`/api/robot`** when auth env is set (already implemented).
 

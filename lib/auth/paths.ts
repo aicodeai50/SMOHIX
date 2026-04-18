@@ -4,6 +4,7 @@ const PROTECTED_PREFIXES = [
   "/overview",
   "/copilot",
   "/incidents",
+  "/services",
   "/automations",
   "/runbooks",
   "/approvals",

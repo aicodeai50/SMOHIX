@@ -29,6 +29,13 @@ export const CONSOLE_MODULES = [
     live: true,
   },
   {
+    href: "/services",
+    label: "Services",
+    description: "Catalog & alerts",
+    icon: "⬡",
+    live: true,
+  },
+  {
     href: "/automations",
     label: "Automations",
     description: "Playbooks",

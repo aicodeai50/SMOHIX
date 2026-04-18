@@ -14,6 +14,7 @@ export function SignUpForm() {
   const router = useRouter();
   const configured = hasSupabaseAuth();
 
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -36,10 +37,14 @@ export function SignUpForm() {
     try {
       const supabase = createBrowserSupabaseClient();
       const redirectTo = `${window.location.origin}/auth/callback`;
+      const trimmedName = fullName.trim();
       const { data, error: signError } = await supabase.auth.signUp({
         email: email.trim(),
         password,
-        options: { emailRedirectTo: redirectTo },
+        options: {
+          emailRedirectTo: redirectTo,
+          ...(trimmedName ? { data: { full_name: trimmedName } } : {}),
+        },
       });
       if (signError) {
         setError(signError.message);
@@ -65,6 +70,21 @@ export function SignUpForm() {
       subtitle="Create a Shynvo account to use the console. Billing tiers can be added later."
     >
       <form onSubmit={onSubmit} className="space-y-4">
+        <div>
+          <label htmlFor="signup-name" className="mb-1.5 block text-xs font-medium text-muted">
+            Name
+          </label>
+          <input
+            id="signup-name"
+            name="name"
+            type="text"
+            autoComplete="name"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            placeholder="Alex Rivera"
+            className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none ring-ring/50 focus:ring-2"
+          />
+        </div>
         <div>
           <label htmlFor="signup-email" className="mb-1.5 block text-xs font-medium text-muted">
             Work email

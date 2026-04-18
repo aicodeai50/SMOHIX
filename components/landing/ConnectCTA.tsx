@@ -4,10 +4,13 @@ import { marketingCta } from "@/lib/marketing-copy";
 
 export function ConnectCTA({
   signedInCheckoutUrl,
+  signedInTeamCheckoutUrl,
 }: {
   signedInCheckoutUrl?: string | null;
+  signedInTeamCheckoutUrl?: string | null;
 }) {
   const trialHref = signedInCheckoutUrl?.trim() || getTrialHref();
+  const teamHref = signedInTeamCheckoutUrl?.trim();
   return (
     <section id="connect" className="py-16 sm:py-20" aria-labelledby="connect-heading">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
@@ -51,8 +54,18 @@ export function ConnectCTA({
                   ? { target: "_blank", rel: "noopener noreferrer" }
                   : {})}
               >
-                {signedInCheckoutUrl ? "Subscribe (your account)" : "Subscribe (trial)"}
+                {signedInCheckoutUrl ? "Subscribe — Pro" : "Subscribe (trial)"}
               </a>
+              {teamHref ? (
+                <a
+                  href={teamHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex h-11 items-center justify-center rounded-lg border border-dashed border-white/[0.12] bg-transparent px-5 text-sm font-medium text-muted transition-colors hover:border-white/[0.2] hover:text-foreground"
+                >
+                  Subscribe — Team
+                </a>
+              ) : null}
             </div>
           </div>
         </div>

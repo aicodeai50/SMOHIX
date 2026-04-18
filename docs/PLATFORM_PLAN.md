@@ -24,6 +24,7 @@ Apply database changes from `supabase/migrations/` in the Supabase SQL Editor (o
 - [x] **Proxy auth gate** — `/api/reasoning` and `/api/robot` require a **session or `shynvo_sk_` API key** when auth env vars are set; keys stored hashed in `api_keys` (`20260418150000_api_keys.sql`).
 - [x] **Security headers** — global headers in `next.config.ts`.
 - [x] **Incidents migration + data layer** — SQL file + `lib/incidents/*`: **database** rows when Supabase + table are used; **session-scoped** incidents (same cookie) when auth env is off—only user-created rows, no seeded data.
+- [x] **Services + alert ingest** — migration `20260419120000_services_alert_ingest.sql`: `services`, `alert_ingest_tokens`, incident columns `service_id`, `postmortem`, `external_ref`; **`/services`** (catalog + paid ingest UI); **`POST /api/integrations/alerts`** (Bearer ingest token); token mint **`/api/user/alert-ingest-tokens`** (paid plan); incidents list/detail wired to service + postmortem.
 
 ---
 
@@ -33,7 +34,7 @@ Apply database changes from `supabase/migrations/` in the Supabase SQL Editor (o
 - [ ] **Railway / env**: set `SUPABASE_SERVICE_ROLE_KEY` for webhook persistence; keep it off the client.
 - [ ] **Apply migration** in Supabase and confirm a test webhook creates/updates `subscriptions`.
 - [ ] **Settings → Billing** page: current plan (read `subscriptions` with user session), link to Lemon customer portal if you use it.
-- [ ] **Gate features (optional)** — re-introduce paid-only routes in middleware when you ship execution beyond dry-run.
+- [x] **Gate features** — **Automations** + **Services** (catalog + alert ingest tokens) require **paid** subscription when billing reads cleanly from `subscriptions` (same pattern as automations: free users see upgrade CTA).
 
 ---
 
@@ -70,6 +71,26 @@ Apply database changes from `supabase/migrations/` in the Supabase SQL Editor (o
 
 ---
 
+## Phase F — IT ops expansion (roadmap)
+
+**Shipped in repo**
+
+- [x] **Service catalog** — name, environment, owner hint, description; link incidents via `service_id`.
+- [x] **Alert → incident** — monitoring stacks POST JSON to `/api/integrations/alerts` with `Authorization: Bearer <shynvo_ingest_…>`; optional `dedupe_key` for idempotency; optional `service_id` / `service_name`; `summary` stored as initial **postmortem** text.
+- [x] **Postmortem field** — long-form notes on incident detail (database incidents).
+
+**Next builds (prioritized)**
+
+1. **Change / release records** — link deploys to incidents and approvals; lightweight “change calendar”.
+2. **On-call & escalation** — rotations, escalation policies, primary on incident.
+3. **Dependency / service graph** — edges between services; blast-radius view for Copilot context.
+4. **SLO & burn** — error-budget widgets; optional alert payload mapping to severity.
+5. **External ITSM sync** — Jira / Linear webhooks or API to mirror incidents both ways.
+6. **Status page** — customer-facing incident summaries from resolved/mitigated state.
+7. **Structured alert adapters** — normalize Grafana / Datadog / PagerDuty payloads to the ingest schema.
+
+---
+
 ## Phase E — Polish & operations
 
 - [ ] Transactional email (e.g. Resend) for billing and security notices.
@@ -83,6 +104,7 @@ Apply database changes from `supabase/migrations/` in the Supabase SQL Editor (o
 
 | Topic | Location |
 |--------|-----------|
+| Alert → incident | `POST /api/integrations/alerts` (Bearer ingest token; requires `SUPABASE_SERVICE_ROLE_KEY`) |
 | Webhook URL | `POST /api/webhooks/lemonsqueezy` |
 | Subscription sync | `lib/billing/sync-lemon-subscription.ts` |
 | Idempotency | `lib/billing/webhook-delivery.ts` |

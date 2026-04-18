@@ -34,7 +34,7 @@ export default async function CopilotPage() {
       <PageHeader
         eyebrow="Operations"
         title="Incident Copilot"
-        description="Triage and next steps in plain language. Connect OpenAI or your own reasoning service; thread history is available when you are signed in and persistence is enabled in the database."
+        description="Triage and next steps in plain language. Copilot drafts hypotheses, checks, and actions — you stay in control. Signed-in workspaces can keep conversation history when persistence is on."
       />
       <ConnectionStatus />
       <div className="grid gap-6 lg:grid-cols-3">
@@ -43,43 +43,52 @@ export default async function CopilotPage() {
             <CopilotChat persistSession={persistSession} />
           </PlaceholderCard>
         </div>
-        <PlaceholderCard title="Shortcuts">
-          <ul className="space-y-1 text-sm">
-            <li>
-              <Link
-                href="/approvals"
-                className="flex items-center justify-between gap-3 rounded-lg px-2 py-2.5 text-foreground/90 transition-colors hover:bg-surface-elevated/60 hover:text-accent"
-              >
-                <span className="font-medium">Dry-run rollback canary</span>
-                <span className="shrink-0 rounded-md bg-warning-dim px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-warning">
-                  Approval
-                </span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/runbooks/api-latency"
-                className="flex items-center justify-between gap-3 rounded-lg px-2 py-2.5 text-foreground/90 transition-colors hover:bg-surface-elevated/60 hover:text-accent"
-              >
-                <span className="font-medium">API latency runbook</span>
-                <span className="shrink-0 rounded-md bg-accent-dim px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-accent">
-                  Runbook
-                </span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/automations"
-                className="flex items-center justify-between gap-3 rounded-lg px-2 py-2.5 text-foreground/90 transition-colors hover:bg-surface-elevated/60 hover:text-accent"
-              >
-                <span className="font-medium">Playbook dry-runs</span>
-                <span className="shrink-0 rounded-md bg-accent-dim px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-accent">
-                  Automate
-                </span>
-              </Link>
-            </li>
-          </ul>
-        </PlaceholderCard>
+        <div className="space-y-4">
+          <PlaceholderCard title="Shortcuts">
+            <ul className="space-y-1 text-sm">
+              <li>
+                <Link
+                  href="/approvals"
+                  className="flex items-center justify-between gap-3 rounded-lg px-2 py-2.5 text-foreground/90 transition-colors hover:bg-surface-elevated/60 hover:text-accent"
+                >
+                  <span className="font-medium">Dry-run rollback canary</span>
+                  <span className="shrink-0 rounded-md bg-warning-dim px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-warning">
+                    Approval
+                  </span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/runbooks/api-latency"
+                  className="flex items-center justify-between gap-3 rounded-lg px-2 py-2.5 text-foreground/90 transition-colors hover:bg-surface-elevated/60 hover:text-accent"
+                >
+                  <span className="font-medium">API latency runbook</span>
+                  <span className="shrink-0 rounded-md bg-accent-dim px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-accent">
+                    Runbook
+                  </span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/automations"
+                  className="flex items-center justify-between gap-3 rounded-lg px-2 py-2.5 text-foreground/90 transition-colors hover:bg-surface-elevated/60 hover:text-accent"
+                >
+                  <span className="font-medium">Playbook dry-runs</span>
+                  <span className="shrink-0 rounded-md bg-accent-dim px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-accent">
+                    Automate
+                  </span>
+                </Link>
+              </li>
+            </ul>
+          </PlaceholderCard>
+          <PlaceholderCard title="On the horizon">
+            <p className="text-sm leading-relaxed text-muted">
+              Annotation-grade Copilot: structured labels on hypotheses, human-in-the-loop
+              approvals before actions, runbook citations on every suggestion, timeline
+              auto-summaries, and an audit trail tying AI output to incidents and owners.
+            </p>
+          </PlaceholderCard>
+        </div>
       </div>
     </>
   );

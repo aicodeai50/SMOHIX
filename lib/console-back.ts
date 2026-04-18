@@ -2,6 +2,7 @@ const MODULE_LABEL: Record<string, string> = {
   overview: "Overview",
   copilot: "Copilot",
   incidents: "Incidents",
+  services: "Services",
   automations: "Automations",
   runbooks: "Runbooks",
   approvals: "Approvals",

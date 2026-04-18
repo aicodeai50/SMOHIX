@@ -13,6 +13,7 @@ function noStoreHtml(response: NextResponse, pathname: string) {
     pathname.startsWith("/overview") ||
     pathname.startsWith("/copilot") ||
     pathname.startsWith("/incidents") ||
+    pathname.startsWith("/services") ||
     pathname.startsWith("/automations") ||
     pathname.startsWith("/approvals") ||
     pathname.startsWith("/audit") ||

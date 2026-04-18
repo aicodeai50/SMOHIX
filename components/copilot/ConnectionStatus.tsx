@@ -6,17 +6,17 @@ export async function ConnectionStatus() {
   const openai = Boolean(process.env.OPENAI_API_KEY?.trim());
   const reasoning = Boolean(process.env.SHYNVO_REASONING_API_URL?.trim());
   const brainLine = openai
-    ? "OpenAI: configured — GPT replies from /api/copilot/chat"
+    ? "Full cloud model — Copilot can draft rich, contextual responses."
     : reasoning
-      ? "Copilot path can target external reasoning via NEXT_PUBLIC_COPILOT_PROXY_PATH"
-      : "Copilot brain: offline mode (built-in) — add OPENAI_API_KEY for GPT";
+      ? "Extended reasoning is linked — Copilot can use your organization’s model stack."
+      : "Guided assistance — enable a cloud model in deployment settings for deeper answers.";
 
   return (
     <div className="shynvo-glass mb-6 rounded-2xl px-4 py-4 text-sm md:px-5 md:py-5">
       <div className="flex flex-col gap-4 md:flex-row md:gap-8">
         <div className="min-w-0 flex-1">
           <p className="text-xs font-semibold uppercase tracking-[0.12em] text-accent/90">
-            Model & routing
+            Assistant
           </p>
           <p className="mt-1.5 text-sm leading-relaxed text-muted">{brainLine}</p>
         </div>

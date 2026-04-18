@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { cookies } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 
-import { updateIncidentStatusAction } from "./actions";
+import { updateIncidentPostmortemAction, updateIncidentStatusAction } from "./actions";
 
 import { PageHeader } from "@/components/app/PageHeader";
 import { PlaceholderCard } from "@/components/app/PlaceholderCard";
@@ -74,8 +75,18 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
       )}
       <PageHeader
         title={row.title}
-        description={`${row.id} · ${row.severity} · ${row.status} · updated ${row.updated}`}
+        description={`${row.id} · ${row.severity} · ${row.status} · updated ${row.updated}${
+          row.serviceName ? ` · ${row.serviceName}` : ""
+        }`}
       />
+      {source === "database" && row.serviceId ? (
+        <p className="mb-4 text-sm text-muted">
+          Linked service:{" "}
+          <Link href="/services" className="font-medium text-accent hover:underline">
+            {row.serviceName ?? "Open catalog"}
+          </Link>
+        </p>
+      ) : null}
       {err ? (
         <p className="mb-4 rounded-xl border border-red-400/25 bg-red-500/[0.08] px-4 py-3 text-sm text-red-200/90 backdrop-blur-sm">
           {err}
@@ -111,6 +122,31 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
             Save status
           </button>
         </form>
+      ) : null}
+      {source === "database" && hasSupabaseAuth() ? (
+        <PlaceholderCard title="Postmortem & notes">
+          <form action={updateIncidentPostmortemAction} className="space-y-3">
+            <input type="hidden" name="id" value={row.id} />
+            <label htmlFor="postmortem" className="block text-xs font-medium text-muted">
+              Blameless summary, timeline, root cause, action items
+            </label>
+            <textarea
+              id="postmortem"
+              name="postmortem"
+              rows={10}
+              maxLength={24000}
+              defaultValue={row.postmortem ?? ""}
+              placeholder="What happened, what we learned, what we will change…"
+              className="w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 py-2.5 text-sm text-foreground outline-none ring-accent/25 focus:border-accent/40 focus:ring-2"
+            />
+            <button
+              type="submit"
+              className="h-10 rounded-xl bg-accent px-5 text-sm font-semibold text-background hover:opacity-95"
+            >
+              Save notes
+            </button>
+          </form>
+        </PlaceholderCard>
       ) : null}
       <PlaceholderCard title="Timeline">
         {timeline.length === 0 ? (

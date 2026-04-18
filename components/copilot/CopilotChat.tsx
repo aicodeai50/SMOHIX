@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { consumeCopilotSse } from "@/lib/copilot/sse-client";
 
-/** Default: built-in route (OpenAI if OPENAI_API_KEY, else offline brain). Override to hit /api/reasoning/... */
+/** Default assistant route; optional public env override for a custom JSON backend. */
 const proxyPath =
   process.env.NEXT_PUBLIC_COPILOT_PROXY_PATH?.trim() || "/api/copilot/chat";
 
@@ -51,7 +51,7 @@ function extractAssistantText(text: string, status: number): string {
 export function CopilotChat({
   persistSession = false,
 }: {
-  /** When true and user is signed in, threads/messages use Supabase (`copilot_*` tables). */
+  /** When true and the user is signed in, threads and messages persist for this workspace. */
   persistSession?: boolean;
 }) {
   const [input, setInput] = useState("");
@@ -289,11 +289,8 @@ export function CopilotChat({
             </p>
           ) : (
             <p className="mt-3 text-[10px] leading-relaxed text-muted">
-              History requires the{" "}
-              <code className="rounded bg-background/40 px-1 font-mono text-[9px] text-accent/90">
-                copilot_*
-              </code>{" "}
-              tables in Supabase.
+              If history never appears, your workspace may still be finishing data setup — check
+              Settings or try again later.
             </p>
           )}
         </aside>
@@ -317,38 +314,15 @@ export function CopilotChat({
           {msgs.length === 0 ? (
             <div className="space-y-3 text-sm leading-relaxed text-muted">
               <p className="text-foreground/85">
-                Describe a symptom, incident, or change. Shynvo routes the request through your
-                configured model and suggests next steps.
+                Describe a symptom, incident, or change. Copilot suggests checks and next steps you
+                can accept, edit, or discard.
               </p>
               {persistSession ? (
                 <p className="text-xs">
-                  Signed in: replies can be saved per thread when your database is ready.
+                  Signed in: each conversation can be saved in your thread list when persistence is
+                  enabled for this workspace.
                 </p>
               ) : null}
-              <details className="rounded-lg border border-border/80 bg-surface/40 px-3 py-2 text-xs">
-                <summary className="cursor-pointer font-medium text-foreground/80 outline-none select-none">
-                  Technical setup
-                </summary>
-                <p className="mt-2 text-muted">
-                  Endpoint{" "}
-                  <code className="rounded bg-background/50 px-1 font-mono text-accent/95">
-                    {proxyPath}
-                  </code>
-                  . Without{" "}
-                  <code className="rounded bg-background/50 px-1 font-mono text-accent/95">
-                    OPENAI_API_KEY
-                  </code>
-                  , a built-in offline model responds; add the key for GPT.                   Optional:{" "}
-                  <code className="rounded bg-background/50 px-1 font-mono text-accent/95">
-                    NEXT_PUBLIC_COPILOT_PROXY_PATH
-                  </code>{" "}
-                  for{" "}
-                  <code className="rounded bg-background/50 px-1 font-mono text-accent/95">
-                    /api/reasoning/…
-                  </code>{" "}
-                  (custom paths use one-shot JSON, not streaming).
-                </p>
-              </details>
             </div>
           ) : (
             msgs.map((m, i) => (
@@ -398,7 +372,7 @@ export function CopilotChat({
                 void send();
               }
             }}
-            placeholder="Message… (Enter to send, Shift+Enter for newline)"
+            placeholder="Describe what you're seeing…"
             className="min-h-[2.75rem] min-w-0 flex-1 resize-y rounded-xl border border-border bg-background/80 px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted/70 outline-none transition-shadow ring-ring/40 focus:ring-2"
           />
           <button

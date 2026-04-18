@@ -3,10 +3,16 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { PageHeader } from "@/components/app/PageHeader";
-import { getCheckoutUrlForUser, getCustomerPortalUrl } from "@/lib/billing";
+import {
+  getCheckoutUrlForUser,
+  getCustomerPortalUrl,
+  getTeamCheckoutUrlForUser,
+} from "@/lib/billing";
 import {
   billingPlanFromSummary,
   getSubscriptionSummary,
+  paidProductDisplayName,
+  paidProductTierFromSummary,
 } from "@/lib/billing/plan";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -54,7 +60,10 @@ export default async function BillingPage({
 
   const { summary, error: queryError } = await getSubscriptionSummary(supabase, user.id);
   const plan = billingPlanFromSummary(summary);
+  const planDisplayName = paidProductDisplayName(summary, plan);
+  const paidTier = paidProductTierFromSummary(summary, plan);
   const checkoutHref = getCheckoutUrlForUser(user.id);
+  const teamCheckoutHref = getTeamCheckoutUrlForUser(user.id);
   const portalHref = getCustomerPortalUrl();
 
   return (
@@ -62,15 +71,14 @@ export default async function BillingPage({
       <PageHeader
         eyebrow="Settings"
         title="Billing"
-        description="Plan and subscription status sync from Lemon Squeezy via webhooks. Ensure migrations are applied in Supabase so this page can read your subscription."
+        description="Plan and subscription status sync from your billing provider via webhooks. Apply database migrations so this page can read your subscription."
       />
 
       {upgradeHint === "automations" && plan === "free" && !queryError ? (
         <div className="mb-6 rounded-xl border border-accent/35 bg-accent/[0.08] px-4 py-3 text-sm text-foreground/90 shadow-[0_0_32px_-12px_rgba(94,225,255,0.35)] backdrop-blur-sm">
           <p className="font-medium text-foreground">Automations require a paid plan</p>
           <p className="mt-1 text-muted">
-            Subscribe below (or complete your Lemon webhook setup) to unlock the Automations
-            console.
+            Subscribe below (or finish billing webhook setup) to unlock the Automations console.
           </p>
         </div>
       ) : null}
@@ -97,9 +105,21 @@ export default async function BillingPage({
       <div className="max-w-xl space-y-6">
         <div className="shynvo-glass rounded-2xl p-5 md:p-6">
           <h2 className="text-sm font-semibold text-foreground/95">Current plan</h2>
-          <p className="mt-2 text-2xl font-semibold capitalize text-foreground">
-            {plan === "paid" ? "Paid" : "Free"}
-          </p>
+          <p className="mt-2 text-2xl font-semibold text-foreground">{planDisplayName}</p>
+          {plan === "paid" && paidTier === "unknown" && !queryError ? (
+            <p className="mt-2 text-xs text-muted">
+              To show <span className="text-foreground/80">Shynvo Pro</span> or{" "}
+              <span className="text-foreground/80">Shynvo Team</span> here, set{" "}
+              <code className="rounded bg-surface px-1 font-mono text-[10px] text-accent">
+                NEXT_PUBLIC_LEMONSQUEEZY_PRO_VARIANT_ID
+              </code>{" "}
+              and{" "}
+              <code className="rounded bg-surface px-1 font-mono text-[10px] text-accent">
+                NEXT_PUBLIC_LEMONSQUEEZY_TEAM_VARIANT_ID
+              </code>{" "}
+              to match your Lemon variant ids.
+            </p>
+          ) : null}
           {summary ? (
             <dl className="mt-4 space-y-2 font-mono text-xs text-muted">
               <div className="flex justify-between gap-4">
@@ -129,7 +149,7 @@ export default async function BillingPage({
             </dl>
           ) : !queryError ? (
             <p className="mt-3 text-sm text-muted">
-              No subscription on file yet. After you subscribe, Lemon will send a webhook and
+              No subscription on file yet. After you subscribe, the provider sends a webhook and
               this page will update (usually within seconds).
             </p>
           ) : null}
@@ -141,22 +161,40 @@ export default async function BillingPage({
             Checkout includes your account id so webhooks can attach the subscription to your
             profile.
           </p>
-          {checkoutHref ? (
-            <a
-              href={checkoutHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-4 inline-flex h-11 items-center justify-center rounded-xl bg-accent px-5 text-sm font-semibold text-background shadow-[0_0_28px_-8px_rgba(94,225,255,0.45)] transition-[opacity,box-shadow] hover:opacity-95 hover:shadow-[0_0_36px_-6px_rgba(94,225,255,0.55)]"
-            >
-              Open checkout
-            </a>
+          {checkoutHref || teamCheckoutHref ? (
+            <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              {checkoutHref ? (
+                <a
+                  href={checkoutHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex h-11 flex-1 items-center justify-center rounded-xl bg-accent px-5 text-sm font-semibold text-background shadow-[0_0_28px_-8px_rgba(94,225,255,0.45)] transition-[opacity,box-shadow] hover:opacity-95 hover:shadow-[0_0_36px_-6px_rgba(94,225,255,0.55)] sm:min-w-[10rem]"
+                >
+                  {teamCheckoutHref ? "Pro checkout" : "Open checkout"}
+                </a>
+              ) : null}
+              {teamCheckoutHref ? (
+                <a
+                  href={teamCheckoutHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex h-11 flex-1 items-center justify-center rounded-xl border border-white/[0.12] bg-white/[0.04] px-5 text-sm font-semibold text-foreground transition-[border-color,box-shadow] hover:border-accent/40 hover:shadow-[0_0_24px_-12px_rgba(94,225,255,0.2)] sm:min-w-[10rem]"
+                >
+                  Team checkout
+                </a>
+              ) : null}
+            </div>
           ) : (
             <p className="mt-3 text-sm text-muted">
               Set{" "}
               <code className="rounded bg-surface px-1 py-0.5 font-mono text-xs text-accent">
                 NEXT_PUBLIC_LEMONSQUEEZY_CHECKOUT_URL
               </code>{" "}
-              to your Lemon checkout link.
+              (Pro) and optionally{" "}
+              <code className="rounded bg-surface px-1 py-0.5 font-mono text-xs text-accent">
+                NEXT_PUBLIC_LEMONSQUEEZY_TEAM_CHECKOUT_URL
+              </code>{" "}
+              (Team) to your Lemon checkout links.
             </p>
           )}
         </div>
@@ -165,8 +203,7 @@ export default async function BillingPage({
           <div className="shynvo-glass rounded-2xl p-5 md:p-6">
             <h2 className="text-sm font-semibold text-foreground/95">Manage subscription</h2>
             <p className="mt-2 text-sm text-muted">
-              Open Lemon&apos;s customer portal to update payment method, view invoices, or
-              cancel.
+              Open your billing customer portal to update payment method, view invoices, or cancel.
             </p>
             <a
               href={portalHref}
@@ -186,13 +223,13 @@ export default async function BillingPage({
                 NEXT_PUBLIC_LEMONSQUEEZY_CUSTOMER_PORTAL_URL
               </code>{" "}
               (or <code className="font-mono text-xs">LEMONSQUEEZY_CUSTOMER_PORTAL_URL</code>) to
-              your Lemon billing portal link.
+              your provider&apos;s customer portal URL.
             </p>
           </div>
         ) : null}
 
         <p className="text-xs text-muted">
-          Billing changes in Lemon (cancel, payment method) sync via webhook. Questions?{" "}
+          Billing changes at your provider (cancel, payment method) sync via webhook. Questions?{" "}
           <Link
             href={encodeURI("mailto:support@shynvo.app?subject=Billing")}
             className="text-accent hover:underline"

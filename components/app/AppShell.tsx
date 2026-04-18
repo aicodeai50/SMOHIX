@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 import { getConsoleBackLink } from "@/lib/console-back";
 import { Logo } from "@/components/site/Logo";
@@ -49,40 +49,41 @@ function NavBox({
 
 function ConsoleBackBar() {
   const pathname = usePathname();
-  const router = useRouter();
   const back = getConsoleBackLink(pathname);
   if (!back) return null;
   return (
-    <div className="mb-4 flex flex-wrap items-center gap-3 border-b border-white/[0.06] pb-3 md:mb-5">
-      <button
-        type="button"
-        onClick={() => router.back()}
-        aria-label="Go back in browser history"
-        className="inline-flex items-center gap-1.5 rounded-lg border border-white/[0.08] bg-white/[0.03] px-2.5 py-1.5 text-xs font-medium text-muted transition-colors hover:border-accent/35 hover:text-foreground"
-      >
-        <span aria-hidden>←</span>
-        Back
-      </button>
+    <div className="mb-4 border-b border-white/[0.06] pb-3 md:mb-5">
       <Link
         href={back.href}
-        className="inline-flex items-center gap-1.5 text-sm font-medium text-muted transition-colors hover:text-accent"
+        className="inline-flex items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-sm font-medium text-muted transition-[border-color,background-color,color] hover:border-accent/35 hover:bg-white/[0.05] hover:text-accent"
       >
-        <span aria-hidden>←</span>
+        <span aria-hidden className="text-accent/80">
+          ←
+        </span>
         {back.label}
       </Link>
     </div>
   );
 }
 
+function accountInitial(displayName: string | null, email: string | null): string {
+  const src = (displayName ?? email ?? "?").trim();
+  const ch = src.charAt(0);
+  return ch ? ch.toUpperCase() : "?";
+}
+
 export function AppShell({
   children,
   userEmail,
+  userDisplayName,
   authEnabled,
 }: {
   children: React.ReactNode;
   userEmail: string | null;
+  userDisplayName?: string | null;
   authEnabled: boolean;
 }) {
+  const showName = userDisplayName?.trim() || null;
   return (
     <div className="flex min-h-screen flex-col">
       <aside className="sticky top-0 z-40 shrink-0 border-b border-white/[0.06] bg-[rgba(10,12,18,0.72)] backdrop-blur-xl backdrop-saturate-[1.35]">
@@ -113,12 +114,25 @@ export function AppShell({
         <div className="flex flex-wrap items-center gap-2 border-t border-white/[0.05] px-3 py-2.5 text-[11px] text-muted md:gap-3 md:px-4">
           {authEnabled && userEmail ? (
             <>
-              <span
-                className="inline-flex max-w-[min(100%,220px)] items-center truncate rounded-lg border border-border/70 bg-background/25 px-2.5 py-1 font-mono text-[10px] text-foreground/85"
+              <div
+                className="flex min-w-0 max-w-[min(100%,280px)] items-center gap-2.5 rounded-xl border border-white/[0.1] bg-gradient-to-br from-white/[0.06] to-white/[0.02] px-2.5 py-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
                 title={userEmail}
               >
-                {userEmail}
-              </span>
+                <span
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-accent/35 via-accent/15 to-violet-500/25 text-xs font-semibold tracking-tight text-foreground shadow-[0_0_20px_-6px_rgba(94,225,255,0.45)]"
+                  aria-hidden
+                >
+                  {accountInitial(showName, userEmail)}
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-xs font-semibold text-foreground/95">
+                    {showName ?? "Signed in"}
+                  </span>
+                  <span className="block truncate font-mono text-[10px] text-muted opacity-90">
+                    {userEmail}
+                  </span>
+                </span>
+              </div>
               <form action="/auth/sign-out" method="post" className="contents">
                 <button
                   type="submit"
@@ -131,12 +145,8 @@ export function AppShell({
           ) : authEnabled ? (
             <span className="text-muted">Signed out</span>
           ) : (
-            <span className="max-w-prose leading-relaxed">
-              Local mode: no Supabase auth. Copilot posts to{" "}
-              <code className="rounded bg-background/50 px-1 py-px font-mono text-[10px] text-accent/95">
-                /api/copilot/chat
-              </code>
-              .
+            <span className="max-w-prose leading-relaxed text-muted">
+              Local mode: no account sign-in. Copilot still runs with the built-in assistant.
             </span>
           )}
           <Link

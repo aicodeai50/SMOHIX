@@ -6,6 +6,14 @@ export type IncidentRow = {
   severity: IncidentSeverity;
   status: string;
   updated: string;
+  /** Present when `services` join is applied (Supabase). */
+  serviceName?: string | null;
+};
+
+/** Detail view fields (database incidents). */
+export type IncidentDetail = IncidentRow & {
+  postmortem: string | null;
+  serviceId: string | null;
 };
 
 export type IncidentsListResult = {

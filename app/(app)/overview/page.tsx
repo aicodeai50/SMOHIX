@@ -5,7 +5,6 @@ import { redirect } from "next/navigation";
 
 import { PageHeader } from "@/components/app/PageHeader";
 import { getConnectorHealthRows } from "@/lib/connectors-health";
-import { CONSOLE_MODULES } from "@/lib/console-nav";
 import { listIncidentsForUser } from "@/lib/incidents/data";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -61,7 +60,7 @@ export default async function OverviewPage() {
       <PageHeader
         eyebrow="Operations"
         title="Command center"
-        description="Snapshot of incidents, integration health, and what is configured in this deployment. Connect Supabase and Lemon Squeezy when you are ready for accounts and billing."
+        description="Snapshot of incidents, integration health, and what is configured in this deployment. Enable organization sign-in and billing when you are ready for accounts and paid features."
       />
 
       <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -86,7 +85,7 @@ export default async function OverviewPage() {
           </p>
           <p className="mt-1 text-xs text-muted">
             {connectorsConfigured === 0
-              ? "No integration URLs in env"
+              ? "No connector URLs configured"
               : "Reachable of configured"}
           </p>
         </div>
@@ -96,7 +95,7 @@ export default async function OverviewPage() {
             {setupDone}
             <span className="text-lg font-normal text-muted"> / 4</span>
           </p>
-          <p className="mt-1 text-xs text-muted">Env capabilities</p>
+          <p className="mt-1 text-xs text-muted">Workspace readiness</p>
         </div>
       </div>
 
@@ -145,10 +144,10 @@ export default async function OverviewPage() {
           <h2 className="text-sm font-semibold text-foreground/95">Deployment checklist</h2>
           <ul className="mt-4 space-y-2 text-sm">
             {[
-              { ok: setup.accounts, label: "Supabase auth & database", href: "/settings" },
-              { ok: setup.openai, label: "OpenAI (Copilot GPT)", href: "/copilot" },
-              { ok: setup.reasoning, label: "Reasoning service URL", href: "/settings/connectors" },
-              { ok: setup.robot, label: "Automation / robot URL", href: "/settings/connectors" },
+              { ok: setup.accounts, label: "Accounts & database", href: "/settings" },
+              { ok: setup.openai, label: "Copilot cloud model", href: "/copilot" },
+              { ok: setup.reasoning, label: "Extended reasoning", href: "/settings/connectors" },
+              { ok: setup.robot, label: "Automation connector", href: "/settings/connectors" },
             ].map((item) => (
               <li key={item.label}>
                 <Link
@@ -170,32 +169,11 @@ export default async function OverviewPage() {
             ))}
           </ul>
           <p className="mt-4 text-xs leading-relaxed text-muted">
-            Billing uses Lemon Squeezy webhooks after you add keys; until then billing views stay
-            inactive while the rest of the console runs on session or database data.
+            Paid plans sync through billing webhooks after you configure keys; until then billing
+            views stay inactive while the rest of the console runs on session or database data.
           </p>
         </section>
       </div>
-
-      <section className="shynvo-glass mt-8 rounded-2xl p-5 md:p-6">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <h2 className="text-sm font-semibold text-foreground/95">Jump to module</h2>
-          <Link href="/incidents" className="text-xs font-medium text-accent hover:underline">
-            All incidents →
-          </Link>
-        </div>
-        <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-          {CONSOLE_MODULES.filter((m) => m.href !== "/overview").map((m) => (
-            <Link
-              key={m.href}
-              href={m.href}
-              className="rounded-xl border border-white/[0.08] bg-white/[0.02] px-3 py-3 text-sm transition-[border-color,background-color,box-shadow] hover:border-accent/35 hover:bg-white/[0.05] hover:shadow-[0_0_24px_-12px_rgba(94,225,255,0.12)]"
-            >
-              <span className="text-foreground/90">{m.label}</span>
-              <span className="mt-0.5 block text-xs text-muted">{m.description}</span>
-            </Link>
-          ))}
-        </div>
-      </section>
     </>
   );
 }

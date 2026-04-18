@@ -16,7 +16,7 @@ export default async function ConnectorsPage() {
     <>
       <PageHeader
         title="Connectors"
-        description="URLs are read from server environment variables (Railway Variables). Health checks run on the server when you open this page."
+        description="URLs are read from server environment variables. Health checks run on the server when you open this page."
       />
       <div className="space-y-4">
         {connectors.map((c) => (

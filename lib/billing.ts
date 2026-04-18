@@ -7,6 +7,12 @@ export function getCheckoutUrl(): string | undefined {
   return url || undefined;
 }
 
+/** Optional second product (e.g. Team) — separate Lemon checkout URL. */
+export function getTeamCheckoutUrl(): string | undefined {
+  const url = process.env.NEXT_PUBLIC_LEMONSQUEEZY_TEAM_CHECKOUT_URL?.trim();
+  return url || undefined;
+}
+
 /** Primary trial CTA: Lemon checkout when configured, else in-page anchor. */
 export function getTrialHref(): string {
   return getCheckoutUrl() ?? "#trial";
@@ -32,6 +38,13 @@ export function appendCheckoutCustomData(
 /** Paid checkout URL including `shynvo_user_id` for the webhook upsert. */
 export function getCheckoutUrlForUser(userId: string): string | undefined {
   const base = getCheckoutUrl();
+  if (!base) return undefined;
+  return appendCheckoutCustomData(base, { shynvo_user_id: userId });
+}
+
+/** Team (or second tier) checkout with `shynvo_user_id` when `NEXT_PUBLIC_LEMONSQUEEZY_TEAM_CHECKOUT_URL` is set. */
+export function getTeamCheckoutUrlForUser(userId: string): string | undefined {
+  const base = getTeamCheckoutUrl();
   if (!base) return undefined;
   return appendCheckoutCustomData(base, { shynvo_user_id: userId });
 }

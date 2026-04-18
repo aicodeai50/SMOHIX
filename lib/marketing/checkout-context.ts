@@ -1,11 +1,16 @@
-import { getCheckoutUrlForUser } from "@/lib/billing";
+import { getCheckoutUrlForUser, getTeamCheckoutUrlForUser } from "@/lib/billing";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-/** Lemon checkout URL with `shynvo_user_id` when the visitor is signed in; otherwise `undefined`. */
-export async function getSignedInCheckoutUrl(): Promise<string | undefined> {
+export type SignedInCheckoutUrls = {
+  pro?: string;
+  team?: string;
+};
+
+/** Signed-in Lemon checkout URLs with `shynvo_user_id` (Pro + optional Team). */
+export async function getSignedInCheckoutUrls(): Promise<SignedInCheckoutUrls> {
   if (!hasSupabaseAuth()) {
-    return undefined;
+    return {};
   }
   try {
     const supabase = await createServerSupabaseClient();
@@ -13,10 +18,21 @@ export async function getSignedInCheckoutUrl(): Promise<string | undefined> {
       data: { user },
     } = await supabase.auth.getUser();
     if (!user) {
-      return undefined;
+      return {};
     }
-    return getCheckoutUrlForUser(user.id);
+    const pro = getCheckoutUrlForUser(user.id);
+    const team = getTeamCheckoutUrlForUser(user.id);
+    const out: SignedInCheckoutUrls = {};
+    if (pro) out.pro = pro;
+    if (team) out.team = team;
+    return out;
   } catch {
-    return undefined;
+    return {};
   }
+}
+
+/** @deprecated Prefer `getSignedInCheckoutUrls().pro` */
+export async function getSignedInCheckoutUrl(): Promise<string | undefined> {
+  const u = await getSignedInCheckoutUrls();
+  return u.pro;
 }

@@ -5,22 +5,29 @@ import { ModuleGrid } from "@/components/landing/ModuleGrid";
 import { LivePanel } from "@/components/landing/LivePanel";
 import { TrustSection } from "@/components/landing/TrustSection";
 import { ConnectCTA } from "@/components/landing/ConnectCTA";
-import { getSignedInCheckoutUrl } from "@/lib/marketing/checkout-context";
+import { getSignedInCheckoutUrls } from "@/lib/marketing/checkout-context";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const signedInCheckoutUrl = await getSignedInCheckoutUrl();
+  const { pro: signedInCheckoutUrl, team: signedInTeamCheckoutUrl } =
+    await getSignedInCheckoutUrls();
 
   return (
     <>
       <Header />
       <main className="flex-1">
-        <Hero signedInCheckoutUrl={signedInCheckoutUrl} />
+        <Hero
+          signedInCheckoutUrl={signedInCheckoutUrl}
+          signedInTeamCheckoutUrl={signedInTeamCheckoutUrl}
+        />
         <ModuleGrid />
         <LivePanel />
         <TrustSection />
-        <ConnectCTA signedInCheckoutUrl={signedInCheckoutUrl} />
+        <ConnectCTA
+          signedInCheckoutUrl={signedInCheckoutUrl}
+          signedInTeamCheckoutUrl={signedInTeamCheckoutUrl}
+        />
       </main>
       <Footer />
     </>

@@ -1,4 +1,5 @@
 import { AppShell } from "@/components/app/AppShell";
+import { getUserDisplayName } from "@/lib/auth/display-name";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
@@ -11,6 +12,7 @@ export default async function ConsoleLayout({
   children: React.ReactNode;
 }) {
   let userEmail: string | null = null;
+  let userDisplayName: string | null = null;
   const authEnabled = hasSupabaseAuth();
 
   if (authEnabled) {
@@ -20,13 +22,19 @@ export default async function ConsoleLayout({
         data: { user },
       } = await supabase.auth.getUser();
       userEmail = user?.email ?? null;
+      userDisplayName = getUserDisplayName(user);
     } catch {
       userEmail = null;
+      userDisplayName = null;
     }
   }
 
   return (
-    <AppShell userEmail={userEmail} authEnabled={authEnabled}>
+    <AppShell
+      userEmail={userEmail}
+      userDisplayName={userDisplayName}
+      authEnabled={authEnabled}
+    >
       {children}
     </AppShell>
   );

@@ -16,6 +16,7 @@ export async function createIncidentAction(formData: FormData) {
   const title = String(formData.get("title") ?? "");
   const severityRaw = String(formData.get("severity") ?? "medium");
   const status = String(formData.get("status") ?? "investigating");
+  const serviceIdRaw = String(formData.get("service_id") ?? "").trim();
   const severity = SEVERITIES.has(severityRaw as IncidentSeverity)
     ? (severityRaw as IncidentSeverity)
     : "medium";
@@ -40,7 +41,12 @@ export async function createIncidentAction(formData: FormData) {
     redirect("/auth/sign-in?next=/incidents/new");
   }
 
-  const result = await createIncidentForUser(user.id, { title, severity, status });
+  const result = await createIncidentForUser(user.id, {
+    title,
+    severity,
+    status,
+    serviceId: serviceIdRaw.length > 0 ? serviceIdRaw : null,
+  });
   if (!result.ok) {
     redirect(`/incidents/new?error=${encodeURIComponent(result.reason)}`);
   }

@@ -1,0 +1,24 @@
+import type { MetadataRoute } from "next";
+
+import { getSiteUrl } from "@/lib/site";
+
+/** Public marketing and policy routes only (console routes may require auth). */
+const PATHS: { path: string; changeFrequency: MetadataRoute.Sitemap[0]["changeFrequency"]; priority: number }[] = [
+  { path: "", changeFrequency: "weekly", priority: 1 },
+  { path: "/privacy", changeFrequency: "monthly", priority: 0.5 },
+  { path: "/terms", changeFrequency: "monthly", priority: 0.5 },
+  { path: "/cookies", changeFrequency: "monthly", priority: 0.4 },
+  { path: "/acceptable-use", changeFrequency: "monthly", priority: 0.4 },
+  { path: "/refund", changeFrequency: "monthly", priority: 0.4 },
+];
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  const base = getSiteUrl();
+  const lastModified = new Date();
+  return PATHS.map(({ path, changeFrequency, priority }) => ({
+    url: `${base}${path === "" ? "" : path}`,
+    lastModified,
+    changeFrequency,
+    priority,
+  }));
+}

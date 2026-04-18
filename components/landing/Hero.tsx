@@ -3,10 +3,13 @@ import { getTrialHref } from "@/lib/billing";
 
 export function Hero({
   signedInCheckoutUrl,
+  signedInTeamCheckoutUrl,
 }: {
   signedInCheckoutUrl?: string | null;
+  signedInTeamCheckoutUrl?: string | null;
 }) {
   const trialHref = signedInCheckoutUrl?.trim() || getTrialHref();
+  const teamHref = signedInTeamCheckoutUrl?.trim();
   return (
     <section className="relative overflow-hidden border-b border-white/[0.06]">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(94,225,255,0.08),transparent)]" />
@@ -40,8 +43,23 @@ export function Hero({
               ? { target: "_blank", rel: "noopener noreferrer" }
               : {})}
           >
-            {signedInCheckoutUrl ? "Subscribe" : "Billing / trial"}
+            {signedInCheckoutUrl ? "Subscribe (Pro)" : "Billing / trial"}
           </a>
+          {teamHref ? (
+            <>
+              <span className="text-muted/35" aria-hidden>
+                ·
+              </span>
+              <a
+                href={teamHref}
+                className="underline-offset-4 hover:text-accent hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Team checkout
+              </a>
+            </>
+          ) : null}
         </p>
       </div>
     </section>

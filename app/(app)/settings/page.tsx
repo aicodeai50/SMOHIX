@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { PageHeader } from "@/components/app/PageHeader";
+import { ProfileNameForm } from "@/components/settings/ProfileNameForm";
+import { hasSupabaseAuth } from "@/lib/supabase/env";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   title: "Settings",
@@ -12,37 +15,71 @@ const cards = [
   {
     href: "/settings/billing",
     title: "Billing",
-    description: "Plan, Lemon checkout with your account id, and subscription status.",
+    description: "Plan, checkout, and subscription status for this workspace.",
   },
   {
     href: "/settings/api-keys",
     title: "API keys",
-    description: "Generate keys for scripts calling /api/reasoning and /api/robot.",
+    description: "Keys for automation and integrations calling your deployment.",
   },
   {
     href: "/settings/connectors",
     title: "Connectors",
-    description: "Reasoning and automation service URLs and health checks.",
+    description: "Reasoning and automation endpoints plus health checks.",
+  },
+  {
+    href: "/services",
+    title: "Services",
+    description: "Service catalog and monitoring webhook ingest (subscription).",
   },
 ] as const;
 
-export default function SettingsIndexPage() {
+export default async function SettingsIndexPage() {
+  let accountEmail: string | null = null;
+  let initialFullName = "";
+
+  if (hasSupabaseAuth()) {
+    try {
+      const supabase = await createServerSupabaseClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      accountEmail = user?.email ?? null;
+      const meta = user?.user_metadata;
+      if (meta && typeof meta.full_name === "string") {
+        initialFullName = meta.full_name;
+      }
+    } catch {
+      accountEmail = null;
+      initialFullName = "";
+    }
+  }
+
   return (
     <>
       <PageHeader
         title="Settings"
-        description="Configure billing and linked services for this workspace."
+        description="Billing and service links for this workspace. Runbooks and audit live under their own modules in the rail."
       />
+      {accountEmail ? (
+        <section className="shynvo-glass mb-6 rounded-2xl p-5 md:p-6">
+          <h2 className="text-sm font-semibold text-foreground/95">Profile</h2>
+          <p className="mt-1 text-xs text-muted">
+            Your display name appears in the console rail. Clear the field to fall back to your email.
+          </p>
+          <ProfileNameForm initialFullName={initialFullName} email={accountEmail} />
+        </section>
+      ) : null}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {cards.map((c) => (
           <Link
             key={c.href}
             href={c.href}
-            className="rounded-xl border border-border bg-surface/80 p-5 transition-colors hover:border-accent/40 hover:bg-surface-elevated/40"
+            className="shynvo-glass group flex flex-col rounded-2xl p-5 transition-[border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-[0_0_40px_-14px_rgba(94,225,255,0.2)]"
           >
-            <h2 className="text-lg font-semibold text-foreground">{c.title}</h2>
-            <p className="mt-2 text-sm text-muted">{c.description}</p>
-            <span className="mt-4 inline-block text-sm font-medium text-accent">Open →</span>
+            <h2 className="text-lg font-semibold text-foreground group-hover:text-accent">{c.title}</h2>
+            <p className="mt-2 flex-1 text-sm text-muted">{c.description}</p>
+            <span className="mt-4 text-sm font-medium text-accent">Open →</span>
           </Link>
         ))}
       </div>

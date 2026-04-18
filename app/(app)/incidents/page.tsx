@@ -63,6 +63,7 @@ export default async function IncidentsPage() {
             <tr>
               <th className="px-4 py-3.5">Id</th>
               <th className="px-4 py-3.5">Title</th>
+              <th className="px-4 py-3.5">Service</th>
               <th className="px-4 py-3.5">Severity</th>
               <th className="px-4 py-3.5">Status</th>
               <th className="px-4 py-3.5">Updated</th>
@@ -71,7 +72,7 @@ export default async function IncidentsPage() {
           <tbody className="divide-y divide-white/[0.05]">
             {rows.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-4 py-12 text-center text-sm text-muted">
+                <td colSpan={6} className="px-4 py-12 text-center text-sm text-muted">
                   No incidents yet.
                 </td>
               </tr>
@@ -87,6 +88,13 @@ export default async function IncidentsPage() {
                     </Link>
                   </td>
                   <td className="px-4 py-3 text-foreground">{row.title}</td>
+                  <td className="px-4 py-3 text-muted">
+                    {row.serviceName ? (
+                      <span className="text-foreground/85">{row.serviceName}</span>
+                    ) : (
+                      "—"
+                    )}
+                  </td>
                   <td className="px-4 py-3 capitalize text-muted">{row.severity}</td>
                   <td className="px-4 py-3 capitalize text-muted">{row.status}</td>
                   <td className="px-4 py-3 text-muted">{row.updated}</td>

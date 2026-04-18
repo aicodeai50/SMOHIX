@@ -11,6 +11,9 @@ const PAID_STATUSES = new Set([
 
 export type BillingPlan = "free" | "paid";
 
+/** When paid, maps Lemon `variant_id` to a product label (optional env for clarity). */
+export type PaidProductTier = "pro" | "team" | "unknown";
+
 export type SubscriptionSummary = {
   status: string;
   renews_at: string | null;
@@ -28,6 +31,43 @@ export function billingPlanFromSummary(
     return "free";
   }
   return PAID_STATUSES.has(String(summary.status).toLowerCase()) ? "paid" : "free";
+}
+
+function envVariant(id: "pro" | "team"): string | undefined {
+  const key =
+    id === "pro"
+      ? "NEXT_PUBLIC_LEMONSQUEEZY_PRO_VARIANT_ID"
+      : "NEXT_PUBLIC_LEMONSQUEEZY_TEAM_VARIANT_ID";
+  const v = process.env[key]?.trim();
+  return v || undefined;
+}
+
+/** Uses optional public env variant ids to distinguish Pro vs Team on the Billing page. */
+export function paidProductTierFromSummary(
+  summary: SubscriptionSummary | null,
+  plan: BillingPlan,
+): PaidProductTier {
+  if (plan !== "paid" || !summary?.lemon_variant_id) {
+    return "unknown";
+  }
+  const vid = String(summary.lemon_variant_id).trim();
+  const pro = envVariant("pro");
+  const team = envVariant("team");
+  if (pro && vid === pro) return "pro";
+  if (team && vid === team) return "team";
+  return "unknown";
+}
+
+/** Short label for UI (Billing, etc.). */
+export function paidProductDisplayName(
+  summary: SubscriptionSummary | null,
+  plan: BillingPlan,
+): string {
+  if (plan === "free") return "Free";
+  const tier = paidProductTierFromSummary(summary, plan);
+  if (tier === "pro") return "Shynvo Pro";
+  if (tier === "team") return "Shynvo Team";
+  return "Paid";
 }
 
 export type SubscriptionSummaryResult = {

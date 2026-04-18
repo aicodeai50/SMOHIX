@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { insertAutomationDryRun } from "@/lib/automations/dry-runs-db";
 import { recordDryRun } from "@/lib/automations/runs-dev";
 import { appendAuditEvent } from "@/lib/audit/append";
+import { billingPlanFromSummary, getSubscriptionSummary } from "@/lib/billing/plan";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
@@ -46,6 +47,24 @@ export async function POST(req: NextRequest) {
     return ctx;
   }
   const tenantKey = ctx.tenantKey;
+
+  if (ctx.mode === "auth") {
+    const supabase = await createServerSupabaseClient();
+    const { summary, error: subscriptionError } = await getSubscriptionSummary(
+      supabase,
+      ctx.userId,
+    );
+    if (!subscriptionError && billingPlanFromSummary(summary) === "free") {
+      return NextResponse.json(
+        {
+          error: "subscription_required",
+          message: "Automations require an active subscription.",
+          billing: "/settings/billing?upgrade=automations",
+        },
+        { status: 403 },
+      );
+    }
+  }
 
   let playbookId = "";
   try {
