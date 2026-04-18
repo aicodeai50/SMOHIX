@@ -12,6 +12,30 @@ export function getTrialHref(): string {
   return getCheckoutUrl() ?? "#trial";
 }
 
+/**
+ * Append Lemon Squeezy checkout custom data so webhooks can link `subscriptions.user_id`.
+ * Pass the signed-in user’s UUID (same as `auth.users.id`).
+ * @see https://docs.lemonsqueezy.com/help/checkout/passing-custom-data
+ */
+export function appendCheckoutCustomData(
+  checkoutUrl: string,
+  entries: Record<string, string>,
+): string {
+  const u = new URL(checkoutUrl);
+  for (const [key, value] of Object.entries(entries)) {
+    if (!key || !value) continue;
+    u.searchParams.set(`checkout[custom][${key}]`, value);
+  }
+  return u.toString();
+}
+
+/** Paid checkout URL including `shynvo_user_id` for the webhook upsert. */
+export function getCheckoutUrlForUser(userId: string): string | undefined {
+  const base = getCheckoutUrl();
+  if (!base) return undefined;
+  return appendCheckoutCustomData(base, { shynvo_user_id: userId });
+}
+
 /** General / contact (hello, partnerships, sales). */
 export const SITE_EMAIL_CONTACT = "hi@shynvo.app";
 

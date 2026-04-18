@@ -2,6 +2,8 @@
 
 Next.js app for [shynvo.app](https://shynvo.app): marketing site + console shell.
 
+**Roadmap & completion checklist:** [`docs/PLATFORM_PLAN.md`](docs/PLATFORM_PLAN.md) · **Database (Supabase):** run [`supabase/migrations/20260418120000_platform_spine.sql`](supabase/migrations/20260418120000_platform_spine.sql) in the SQL Editor after creating the project.
+
 ## Run locally (preview UI)
 
 ```bash
@@ -50,10 +52,13 @@ Copy `.env.example` to `.env.local` and fill in values.
 |----------|--------|
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL (auth). |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon key (with URL, protects console routes). |
+| `SUPABASE_SERVICE_ROLE_KEY` | **Server only.** Required for Lemon webhooks to upsert `subscriptions` (never expose to the client). |
 | `NEXT_PUBLIC_LEMONSQUEEZY_CHECKOUT_URL` | Lemon product checkout link (CTAs use this when set). |
 | `LEMONSQUEEZY_WEBHOOK_SIGNING_SECRET` | Lemon webhook signing secret. |
 
 Webhook URL in Lemon: `https://shynvo.app/api/webhooks/lemonsqueezy` (use your production domain).
+
+**Checkout → user link:** paid flows should use `getCheckoutUrlForUser(userId)` from `lib/billing.ts` so Lemon sends `meta.custom_data.shynvo_user_id` and webhooks can attach rows in `public.subscriptions`.
 
 ## Railway (deploy now)
 
@@ -81,6 +86,7 @@ Add anything you use in production (same names as `.env.example`):
 | `SHYNVO_ROBOT_API_URL` | Your automation service base URL (**server only**). Used on **Settings → Connectors** for health checks. |
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL (see **Supabase (auth)** below). |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon key (set with URL above). |
+| `SUPABASE_SERVICE_ROLE_KEY` | Service role key (**server only**); required for `/api/webhooks/lemonsqueezy` to write subscriptions. |
 
 `PORT`: Railway often injects **`PORT` automatically** (commonly **`8080`** on new services). **Next.js always listens on whatever `PORT` is set to** — check your **Deploy logs** for the line `Network: http://0.0.0.0:XXXX`; that **`XXXX` is the only port** your public domain’s **Target port** must use (unless you override `PORT`).
 
