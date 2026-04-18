@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
+import { getConsoleBackLink } from "@/lib/console-back";
 import { Logo } from "@/components/site/Logo";
 import { CONSOLE_MODULES } from "@/lib/console-nav";
 
@@ -43,6 +44,33 @@ function NavBox({
       <span className="mt-1.5 text-xs font-semibold text-foreground/95">{label}</span>
       <span className="mt-0.5 text-[11px] leading-snug text-muted">{description}</span>
     </Link>
+  );
+}
+
+function ConsoleBackBar() {
+  const pathname = usePathname();
+  const router = useRouter();
+  const back = getConsoleBackLink(pathname);
+  if (!back) return null;
+  return (
+    <div className="mb-4 flex flex-wrap items-center gap-3 border-b border-white/[0.06] pb-3 md:mb-5">
+      <button
+        type="button"
+        onClick={() => router.back()}
+        aria-label="Go back in browser history"
+        className="inline-flex items-center gap-1.5 rounded-lg border border-white/[0.08] bg-white/[0.03] px-2.5 py-1.5 text-xs font-medium text-muted transition-colors hover:border-accent/35 hover:text-foreground"
+      >
+        <span aria-hidden>←</span>
+        Back
+      </button>
+      <Link
+        href={back.href}
+        className="inline-flex items-center gap-1.5 text-sm font-medium text-muted transition-colors hover:text-accent"
+      >
+        <span aria-hidden>←</span>
+        {back.label}
+      </Link>
+    </div>
   );
 }
 
@@ -121,6 +149,7 @@ export function AppShell({
       </aside>
       <div className="flex min-h-0 min-w-0 flex-1 flex-col">
         <div className="mx-auto w-full max-w-7xl flex-1 overflow-auto p-4 md:p-8 md:pb-10">
+          <ConsoleBackBar />
           {children}
         </div>
       </div>

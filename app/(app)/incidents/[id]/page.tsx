@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
-import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
 import { updateIncidentStatusAction } from "./actions";
@@ -60,14 +59,6 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
 
   return (
     <>
-      <div className="mb-6">
-        <Link
-          href="/incidents"
-          className="text-sm text-muted transition-colors hover:text-accent"
-        >
-          ← Incidents
-        </Link>
-      </div>
       {source === "session" ? (
         <p className="shynvo-glass-subtle mb-4 rounded-xl px-4 py-3 text-xs leading-relaxed text-muted">
           Session-scoped incident. The timeline below records opens and status changes from this

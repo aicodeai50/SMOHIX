@@ -6,9 +6,19 @@ import { isProtectedPath } from "@/lib/auth/paths";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { copyCookies, updateSupabaseSession } from "@/lib/supabase/middleware";
 
-/** Avoid stale HTML after deploy (CDN / browser) for marketing + auth shells. */
+/** Avoid stale HTML after deploy (CDN / browser) for marketing, auth, and console. */
 function noStoreHtml(response: NextResponse, pathname: string) {
-  if (pathname === "/" || pathname.startsWith("/auth/")) {
+  const consoleDoc =
+    pathname === "/hub" ||
+    pathname.startsWith("/overview") ||
+    pathname.startsWith("/copilot") ||
+    pathname.startsWith("/incidents") ||
+    pathname.startsWith("/automations") ||
+    pathname.startsWith("/approvals") ||
+    pathname.startsWith("/audit") ||
+    pathname.startsWith("/runbooks") ||
+    pathname.startsWith("/settings");
+  if (pathname === "/" || pathname.startsWith("/auth/") || consoleDoc) {
     response.headers.set("Cache-Control", "private, no-store, must-revalidate");
     response.headers.set("CDN-Cache-Control", "no-store");
   }

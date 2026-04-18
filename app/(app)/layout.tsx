@@ -2,6 +2,9 @@ import { AppShell } from "@/components/app/AppShell";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
+/** Always SSR console HTML so deploys and nav are not served from a stale shell cache. */
+export const dynamic = "force-dynamic";
+
 export default async function ConsoleLayout({
   children,
 }: {
