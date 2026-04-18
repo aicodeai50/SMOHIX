@@ -6,6 +6,15 @@ import { isProtectedPath } from "@/lib/auth/paths";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { copyCookies, updateSupabaseSession } from "@/lib/supabase/middleware";
 
+/** Avoid stale HTML after deploy (CDN / browser) for marketing + auth shells. */
+function noStoreHtml(response: NextResponse, pathname: string) {
+  if (pathname === "/" || pathname.startsWith("/auth/")) {
+    response.headers.set("Cache-Control", "private, no-store, must-revalidate");
+    response.headers.set("CDN-Cache-Control", "no-store");
+  }
+  return response;
+}
+
 /**
  * 1) www → apex for the primary host.
  * 2) Supabase session refresh (when env is set).
@@ -21,6 +30,7 @@ export async function middleware(request: NextRequest) {
   }
 
   const pathname = request.nextUrl.pathname;
+  const method = request.method;
 
   if (!hasSupabaseAuth()) {
     const res = NextResponse.next();
@@ -32,6 +42,7 @@ export async function middleware(request: NextRequest) {
         httpOnly: true,
       });
     }
+    if (method === "GET") noStoreHtml(res, pathname);
     return res;
   }
 
@@ -42,6 +53,7 @@ export async function middleware(request: NextRequest) {
     url.pathname = "/auth/sign-in";
     url.searchParams.set("next", `${pathname}${request.nextUrl.search}`);
     const redirect = NextResponse.redirect(url);
+    if (method === "GET") noStoreHtml(redirect, pathname);
     return copyCookies(sessionResponse, redirect);
   }
 
@@ -53,9 +65,11 @@ export async function middleware(request: NextRequest) {
     url.pathname = next;
     url.search = "";
     const redirect = NextResponse.redirect(url);
+    if (method === "GET") noStoreHtml(redirect, pathname);
     return copyCookies(sessionResponse, redirect);
   }
 
+  if (method === "GET") noStoreHtml(sessionResponse, pathname);
   return sessionResponse;
 }
 
