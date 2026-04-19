@@ -8,6 +8,13 @@ export const CONSOLE_MODULES = [
     live: true,
   },
   {
+    href: "/vision",
+    label: "Vision",
+    description: "Roadmap",
+    icon: "✦",
+    live: true,
+  },
+  {
     href: "/overview",
     label: "Overview",
     description: "Command center",

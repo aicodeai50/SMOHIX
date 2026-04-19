@@ -1,5 +1,6 @@
 const MODULE_ROOT: Record<string, string> = {
   hub: "Platform",
+  vision: "Vision",
   overview: "Overview",
   copilot: "Copilot",
   incidents: "Incidents",

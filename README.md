@@ -2,7 +2,7 @@
 
 Next.js app for [shynvo.app](https://shynvo.app): marketing site + console shell.
 
-**Roadmap & completion checklist:** [`docs/PLATFORM_PLAN.md`](docs/PLATFORM_PLAN.md) · **Database (Supabase):** run SQL migrations **in order** in the Supabase SQL editor (same filenames under [`supabase/migrations/`](supabase/migrations/)): `platform_spine` → `incidents` → `console_extensions` → `api_keys` → `automation_dry_runs` → `services_alert_ingest` (see files for exact timestamps).
+**Roadmap & completion checklist:** [`docs/PLATFORM_PLAN.md`](docs/PLATFORM_PLAN.md) · **Vision & long-term direction:** [`docs/VISION_AND_ROADMAP.md`](docs/VISION_AND_ROADMAP.md) (also **`/vision`** in the signed-in console). **Database (Supabase):** run SQL migrations **in order** in the Supabase SQL editor (same filenames under [`supabase/migrations/`](supabase/migrations/)): `platform_spine` → `incidents` → `console_extensions` → `api_keys` → `automation_dry_runs` → `services_alert_ingest` (see files for exact timestamps).
 
 ## Run locally (preview UI)
 

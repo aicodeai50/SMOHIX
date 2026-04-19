@@ -10,6 +10,7 @@ import { copyCookies, updateSupabaseSession } from "@/lib/supabase/middleware";
 function noStoreHtml(response: NextResponse, pathname: string) {
   const consoleDoc =
     pathname === "/hub" ||
+    pathname.startsWith("/vision") ||
     pathname.startsWith("/overview") ||
     pathname.startsWith("/copilot") ||
     pathname.startsWith("/incidents") ||

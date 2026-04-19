@@ -80,7 +80,11 @@ export default async function HubPage() {
       </div>
       <p className="mt-6 max-w-2xl text-pretty text-sm leading-relaxed text-muted">
         Automations, runbooks, approvals, audit, billing, connectors, and the full module rail stay
-        above — one navigation surface, no duplicate module grids.
+        above — one navigation surface, no duplicate module grids.{" "}
+        <Link href="/vision" className="font-medium text-accent hover:underline">
+          Vision & roadmap
+        </Link>{" "}
+        describes where the product is headed — from serious ops console to long-horizon autonomy.
       </p>
     </>
   );

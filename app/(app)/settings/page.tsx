@@ -13,6 +13,11 @@ export const metadata: Metadata = {
 
 const cards = [
   {
+    href: "/vision",
+    title: "Vision & roadmap",
+    description: "Product direction from ops console to long-horizon autonomy (in-app + docs).",
+  },
+  {
     href: "/settings/billing",
     title: "Billing",
     description: "Plan, checkout, and subscription status for this workspace.",

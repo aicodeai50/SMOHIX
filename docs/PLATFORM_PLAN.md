@@ -2,6 +2,8 @@
 
 This document is the **source of truth** for what “done” means beyond marketing and auth shells. Supabase **Auth** is assumed; this plan covers **data**, **billing**, **product verticals**, and **hardening**.
 
+**Product narrative & long horizon:** see **[`VISION_AND_ROADMAP.md`](./VISION_AND_ROADMAP.md)** (power roadmap + 2050-grade direction; review quarterly). In the console: **`/vision`**.
+
 Apply database changes from `supabase/migrations/` in the Supabase SQL Editor (or your usual migration pipeline).
 
 ---
@@ -79,15 +81,7 @@ Apply database changes from `supabase/migrations/` in the Supabase SQL Editor (o
 - [x] **Alert → incident** — monitoring stacks POST JSON to `/api/integrations/alerts` with `Authorization: Bearer <shynvo_ingest_…>`; optional `dedupe_key` for idempotency; optional `service_id` / `service_name`; `summary` stored as initial **postmortem** text.
 - [x] **Postmortem field** — long-form notes on incident detail (database incidents).
 
-**Next builds (prioritized)**
-
-1. **Change / release records** — link deploys to incidents and approvals; lightweight “change calendar”.
-2. **On-call & escalation** — rotations, escalation policies, primary on incident.
-3. **Dependency / service graph** — edges between services; blast-radius view for Copilot context.
-4. **SLO & burn** — error-budget widgets; optional alert payload mapping to severity.
-5. **External ITSM sync** — Jira / Linear webhooks or API to mirror incidents both ways.
-6. **Status page** — customer-facing incident summaries from resolved/mitigated state.
-7. **Structured alert adapters** — normalize Grafana / Datadog / PagerDuty payloads to the ingest schema.
+**Next builds (engineering backlog)** — expanded and maintained in **[`VISION_AND_ROADMAP.md`](./VISION_AND_ROADMAP.md)** (tracks + horizon). Short list: change calendar, on-call, service graph, SLOs, ITSM sync, status page, structured alert adapters.
 
 ---
 
@@ -104,6 +98,7 @@ Apply database changes from `supabase/migrations/` in the Supabase SQL Editor (o
 
 | Topic | Location |
 |--------|-----------|
+| Vision & roadmap (doc) | [`docs/VISION_AND_ROADMAP.md`](./VISION_AND_ROADMAP.md) · UI: **`/vision`** |
 | Alert → incident | `POST /api/integrations/alerts` (Bearer ingest token; requires `SUPABASE_SERVICE_ROLE_KEY`) |
 | Webhook URL | `POST /api/webhooks/lemonsqueezy` |
 | Subscription sync | `lib/billing/sync-lemon-subscription.ts` |
