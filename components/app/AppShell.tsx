@@ -236,7 +236,7 @@ export function AppShell({
       ) : null}
 
       {/* Desktop: fixed-width rail — main content scrolls independently in the right column */}
-      <aside className="hidden h-full w-[17.25rem] shrink-0 flex-col border-r border-white/[0.06] bg-[rgba(10,12,18,0.94)] backdrop-blur-xl backdrop-saturate-[1.35] lg:flex">
+      <aside className="hidden h-full w-[17.25rem] shrink-0 flex-col border-r border-white/[0.06] bg-[rgba(10,12,18,0.94)] shadow-[inset_-1px_0_0_rgba(94,225,255,0.05)] backdrop-blur-xl backdrop-saturate-[1.35] lg:flex">
         <div className="flex h-14 shrink-0 items-center justify-between gap-2 border-b border-white/[0.06] px-3">
           <Link
             href="/hub"
@@ -282,7 +282,7 @@ export function AppShell({
       </aside>
 
       <main className="flex min-h-0 min-w-0 flex-1 flex-col lg:overflow-hidden">
-        <div className="mx-auto flex min-h-0 w-full max-w-7xl flex-1 flex-col overflow-y-auto overscroll-contain p-4 md:p-8 md:pb-10">
+        <div className="shynvo-console-main mx-auto flex min-h-0 w-full max-w-7xl flex-1 flex-col overflow-y-auto overscroll-contain p-4 md:p-8 md:pb-10">
           <ConsoleNavPanel />
           {children}
         </div>

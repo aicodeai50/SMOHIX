@@ -87,6 +87,7 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.055),
+    inset 0 0 100px -70px rgba(94, 225, 255, 0.045),
     0 0 0 1px rgba(0, 0, 0, 0.4),
     0 32px 100px -48px rgba(0, 0, 0, 0.85);
 }
@@ -145,4 +146,46 @@ body {
 .shynvo-vision-hero > * {
   position: relative;
   z-index: 1;
+}
+
+/* ── Console main column: depth + slow ambient light (instrument-panel, not sci-fi skin) ── */
+.shynvo-console-main {
+  position: relative;
+  isolation: isolate;
+}
+
+.shynvo-console-main::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    radial-gradient(ellipse 85% 55% at 50% -25%, rgba(94, 225, 255, 0.09), transparent 52%),
+    radial-gradient(ellipse 50% 42% at 100% 100%, rgba(129, 140, 248, 0.06), transparent 48%),
+    radial-gradient(ellipse 40% 35% at 0% 85%, rgba(45, 212, 191, 0.045), transparent 46%);
+  opacity: 0.42;
+  animation: shynvo-console-ambient 32s ease-in-out infinite alternate;
+}
+
+.shynvo-console-main > * {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes shynvo-console-ambient {
+  0% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 0.52;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shynvo-console-main::before {
+    animation: none;
+    opacity: 0.38;
+  }
 }

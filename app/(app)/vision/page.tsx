@@ -117,7 +117,7 @@ export default function VisionPage() {
         ))}
       </div>
 
-      <PlaceholderCard title="Horizon — 2050-grade direction">
+      <PlaceholderCard title="Horizon — research & long-term direction">
         <p className={`text-muted ${appBody}`}>
           These ideas are <span className="font-medium text-foreground/90">research and long-term</span>{" "}
           — not a committed backlog. They inform tone, architecture, and partnerships (models, data
