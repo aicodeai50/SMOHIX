@@ -14,6 +14,18 @@ function deployCommit(): string | undefined {
   return v || undefined;
 }
 
+/** Safe Railway metadata so you can confirm a new deploy (curl /api/health). */
+function railwayDeployFingerprint(): Record<string, string> {
+  const out: Record<string, string> = {};
+  const deployment = process.env.RAILWAY_DEPLOYMENT_ID?.trim();
+  const replica = process.env.RAILWAY_REPLICA_ID?.trim();
+  const envName = process.env.RAILWAY_ENVIRONMENT_NAME?.trim();
+  if (deployment) out.railway_deployment_id = deployment;
+  if (replica) out.railway_replica_id = replica;
+  if (envName) out.railway_environment = envName;
+  return out;
+}
+
 export async function GET() {
   const commit = deployCommit();
   return NextResponse.json(
@@ -22,6 +34,7 @@ export async function GET() {
       service: "shynvo-web",
       uptime_s: Math.round(process.uptime()),
       ...(commit ? { commit } : {}),
+      ...railwayDeployFingerprint(),
     },
     {
       status: 200,

@@ -141,6 +141,15 @@ After `shynvo.app` resolves to Railway, set the Lemon webhook URL to:
 
 **`npm warn config production Use --omit=dev instead`** — harmless Railway/npm noise; not a crash.
 
+**Still seeing the old UI after a git push?**
+
+1. **Deployments** → click the **latest** deploy. If it is **FAILED** or **CRASHED**, open **Build logs** / **Deploy logs** — Railway keeps serving the **last successful** deploy until a new one goes green.
+2. **Settings → Source**: confirm **Branch** is **`main`** and the repo is **`Sanher50/SHYNVO`**. Use **Disconnect** / **Reconnect** if pushes never trigger a deploy.
+3. **Redeploy**: on the latest deployment menu, choose **Redeploy** (or **Restart** only restarts the same image — you want a **new build** when code changed). If Railway offers **Clear build cache**, use it once.
+4. **One-shot cache bust**: add variable **`NIXPACKS_NO_CACHE`** = **`1`**, redeploy, then **remove** the variable (optional; forces Nixpacks to rebuild layers).
+5. **Prove which revision is live**: `curl -sS "https://YOUR-URL.up.railway.app/api/health"` — check **`commit`** (git SHA) and **`railway_deployment_id`**. After a fresh deploy, **`uptime_s`** resets to a small number.
+6. **Browser**: hard refresh (**Ctrl+Shift+R**) or a private window — stale JS/CSS can look like an old release even when the server is new.
+
 ### Supabase (auth)
 
 The app uses **email + password** via **`@supabase/ssr`**. Routes: **`/auth/sign-up`**, **`/auth/sign-in`**, **`/auth/callback`** (email confirmation), **`POST /auth/sign-out`**.
