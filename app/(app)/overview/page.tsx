@@ -107,7 +107,17 @@ export default async function OverviewPage() {
           </Link>
         </div>
         {incidents.length === 0 ? (
-          <p className="mt-3 text-sm text-muted">No incidents yet. Open Incidents to create one.</p>
+          <p className="mt-3 text-sm text-muted">
+            No incidents yet.{" "}
+            <Link href="/incidents/new" className="font-medium text-accent hover:underline">
+              Create one
+            </Link>{" "}
+            or open{" "}
+            <Link href="/incidents" className="font-medium text-accent hover:underline">
+              Incidents
+            </Link>
+            .
+          </p>
         ) : (
           <ul className="mt-4 divide-y divide-white/[0.06]">
             {incidents.slice(0, 8).map((row) => (

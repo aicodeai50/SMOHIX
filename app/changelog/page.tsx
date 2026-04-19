@@ -14,7 +14,7 @@ const ENTRIES: { date: string; title: string; bullets: string[] }[] = [
     date: "April 2026",
     title: "Console UX and API docs",
     bullets: [
-      "Route-level loading skeletons across incidents, overview, automations, audit, approvals, services, copilot, runbooks",
+      "Route-level loading skeletons (incidents, overview, automations, audit, approvals, services, copilot, runbooks, hub, vision, new incident, runbook detail)",
       "Richer empty states (incidents, audit, services catalog, approvals) with guided CTAs",
       "Public /docs/api catalog + OpenAPI sketch from lib/docs/api-catalog",
     ],

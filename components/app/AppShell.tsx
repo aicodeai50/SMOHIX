@@ -130,12 +130,41 @@ export function AppShell({
               Local mode: no account sign-in. Copilot still runs with the built-in assistant.
             </span>
           )}
-          <Link
-            href="/"
-            className="ml-auto rounded-lg px-2.5 py-1 font-medium text-muted transition-colors hover:bg-surface-elevated/40 hover:text-foreground"
-          >
-            Website
-          </Link>
+          <div className="ml-auto flex flex-wrap items-center justify-end gap-x-2 gap-y-1 text-[11px] font-medium">
+            <Link
+              href="/docs"
+              className="rounded-lg px-2 py-1 text-muted transition-colors hover:bg-surface-elevated/40 hover:text-accent"
+            >
+              Docs
+            </Link>
+            <span className="text-muted/40" aria-hidden>
+              ·
+            </span>
+            <Link
+              href="/docs/api"
+              className="rounded-lg px-2 py-1 text-muted transition-colors hover:bg-surface-elevated/40 hover:text-accent"
+            >
+              API
+            </Link>
+            <span className="text-muted/40" aria-hidden>
+              ·
+            </span>
+            <Link
+              href="/platform"
+              className="rounded-lg px-2 py-1 text-muted transition-colors hover:bg-surface-elevated/40 hover:text-accent"
+            >
+              Platform
+            </Link>
+            <span className="text-muted/40" aria-hidden>
+              ·
+            </span>
+            <Link
+              href="/"
+              className="rounded-lg px-2.5 py-1 text-muted transition-colors hover:bg-surface-elevated/40 hover:text-foreground"
+            >
+              Website
+            </Link>
+          </div>
         </div>
       </aside>
       <div className="flex min-h-0 min-w-0 flex-1 flex-col">

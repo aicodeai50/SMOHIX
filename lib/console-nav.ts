@@ -53,7 +53,7 @@ export const CONSOLE_MODULES = [
     href: "/runbooks",
     label: "Runbooks",
     description: "Procedures",
-    icon: "📋",
+    icon: "▦",
     live: true,
   },
   {
