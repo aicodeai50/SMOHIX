@@ -25,7 +25,9 @@ export function ProfileNameForm({
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setFullName(initialFullName);
+    queueMicrotask(() => {
+      setFullName(initialFullName);
+    });
   }, [initialFullName]);
 
   async function onSubmit(e: React.FormEvent) {

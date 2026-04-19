@@ -42,7 +42,9 @@ export function AlertIngestPanel({
   }, []);
 
   useEffect(() => {
-    void refresh();
+    queueMicrotask(() => {
+      void refresh();
+    });
   }, [refresh]);
 
   async function generate() {

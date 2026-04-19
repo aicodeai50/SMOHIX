@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { AppIcon } from "@/components/icons/AppIcon";
-import { mCard, mContainer, mH2, mLede, mPanelShell, mSection } from "@/lib/marketing-layout";
+import { mCard, mContainer, mH2, mPanelShell, mSection } from "@/lib/marketing-layout";
 import { getConnectorHealthRows } from "@/lib/connectors-health";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 

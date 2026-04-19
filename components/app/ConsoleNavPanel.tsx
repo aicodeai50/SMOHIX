@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 import { AppIcon } from "@/components/icons/AppIcon";
 import { getConsoleBreadcrumbs } from "@/lib/console-breadcrumbs";
@@ -13,11 +13,7 @@ export function ConsoleNavPanel() {
   const pathname = usePathname();
   const router = useRouter();
   const crumbs = getConsoleBreadcrumbs(pathname);
-  const [jumpKey, setJumpKey] = useState(0);
-
-  useEffect(() => {
-    setJumpKey((k) => k + 1);
-  }, [pathname]);
+  const [jumpReset, setJumpReset] = useState(0);
 
   const goBack = useCallback(() => {
     router.back();
@@ -85,13 +81,13 @@ export function ConsoleNavPanel() {
           </label>
           <select
             id="console-jump"
-            key={jumpKey}
+            key={`${pathname}-${jumpReset}`}
             defaultValue=""
             onChange={(e) => {
               const v = e.target.value;
               if (v) {
                 router.push(v);
-                setJumpKey((k) => k + 1);
+                setJumpReset((k) => k + 1);
               }
             }}
             className={`h-9 max-w-[11rem] cursor-pointer rounded-lg border border-white/[0.1] bg-white/[0.04] px-2 font-medium text-foreground/90 outline-none ring-accent/25 focus:border-accent/40 focus:ring-2 sm:max-w-[14rem] ${appMeta}`}

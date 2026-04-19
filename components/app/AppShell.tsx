@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 
 import { ConsoleNavPanel } from "@/components/app/ConsoleNavPanel";
 import { AppIcon } from "@/components/icons/AppIcon";
-import type { ConsoleModuleIconName } from "@/components/icons/AppIcon";
 import { Logo } from "@/components/site/Logo";
 import { appMeta, appOverline } from "@/lib/app-typography";
 import { CONSOLE_MODULES } from "@/lib/console-nav";
@@ -129,7 +128,9 @@ export function AppShell({
   const [mobileModulesOpen, setMobileModulesOpen] = useState(false);
 
   useEffect(() => {
-    setMobileModulesOpen(false);
+    queueMicrotask(() => {
+      setMobileModulesOpen(false);
+    });
   }, [pathname]);
 
   const userBlock = authEnabled && userEmail && (

@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import "./globals.css";
 
 export default function GlobalError({
@@ -24,12 +26,12 @@ export default function GlobalError({
           >
             Try again
           </button>
-          <a
+          <Link
             href="/"
             className="inline-flex h-10 items-center justify-center rounded-lg border border-white/[0.12] px-5 text-sm text-muted transition-colors hover:border-white/[0.2] hover:text-foreground"
           >
             Home
-          </a>
+          </Link>
         </div>
       </body>
     </html>
