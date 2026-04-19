@@ -10,6 +10,7 @@ const PATHS: { path: string; changeFrequency: MetadataRoute.Sitemap[0]["changeFr
   { path: "/cookies", changeFrequency: "monthly", priority: 0.4 },
   { path: "/acceptable-use", changeFrequency: "monthly", priority: 0.4 },
   { path: "/refund", changeFrequency: "monthly", priority: 0.4 },
+  { path: "/integrations", changeFrequency: "monthly", priority: 0.65 },
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

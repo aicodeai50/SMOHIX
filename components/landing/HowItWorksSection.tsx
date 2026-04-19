@@ -1,50 +1,40 @@
 const STEPS = [
   {
     n: "1",
-    title: "Signal becomes an incident",
-    body: "Pager, webhook, or manual open — one record with severity, owner, and linked service.",
+    title: "Incident detected",
+    body: "Monitoring webhook, HTTP ingest token, or a responder opens an incident manually — one controlled record.",
   },
   {
     n: "2",
-    title: "Triage with checkpoints",
-    body: "Copilot proposes structured next steps; humans confirm before anything mutates production.",
+    title: "Shynvo loads a controlled workflow",
+    body: "Assign owner, link a service, attach a versioned runbook — everyone sees the same checklist.",
   },
   {
     n: "3",
-    title: "Runbook guides response",
-    body: "Versioned checks link from the incident so responders stay aligned under stress.",
+    title: "Suggested automation appears",
+    body: "Playbooks (and Copilot triage) propose the next mechanical step — still read-only until you promote it.",
   },
   {
     n: "4",
-    title: "Dry-run automation first",
-    body: "Playbooks simulate side effects so the team sees blast radius before execution.",
+    title: "Approval required",
+    body: "High-risk actions wait for an explicit approval record — today per workspace; scoped approver roles on the roadmap.",
   },
   {
     n: "5",
-    title: "Approval gate (when required)",
-    body: "High-risk changes wait for an explicit decision — recorded, not buried in chat.",
+    title: "Automation runs through your connectors",
+    body: "Execution only after dry-run review and policy you configure; automatic rollback hooks are roadmap, not marketing fluff.",
   },
   {
     n: "6",
-    title: "Controlled execution",
-    body: "Automation runs only through configured connectors and policies you own.",
-  },
-  {
-    n: "7",
-    title: "Append-only audit",
-    body: "Status, approvals, and automation events land in one log for review and export.",
-  },
-  {
-    n: "8",
-    title: "Close the loop",
-    body: "Postmortem notes and markdown export support blameless review and compliance handoff.",
+    title: "Everything is logged",
+    body: "Status, approvals, and automation-related events land in the activity log — plus incident export where enabled.",
   },
 ] as const;
 
 const GUARDED = [
-  "Dry-run or simulate before irreversible side effects.",
-  "Human approval where your policy says it is required — decisions are auditable.",
-  "Execution and outcomes are written to the activity log, not only console output.",
+  "Nothing irreversible runs straight from chat — dry-run or human checkpoint first.",
+  "Approvals and status transitions are written for audit, not buried in DMs.",
+  "Connectors are yours — Shynvo does not silently phone home to your cloud APIs.",
 ] as const;
 
 export function HowItWorksSection() {
@@ -62,8 +52,13 @@ export function HowItWorksSection() {
           How Shynvo runs an incident
         </h2>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
-          IT teams buy flows, not scattered features. This is the spine from signal to defensible
-          closure — Copilot, runbooks, and automation on one path.
+          Read this like a storyboard — each step maps to a real route in the console today unless
+          called out as roadmap.
+        </p>
+
+        <p className="mt-6 rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 font-mono text-[11px] leading-relaxed text-foreground/85 sm:text-xs">
+          <span className="text-muted">Example:</span> server signal → incident opens → runbook +
+          Copilot → dry-run playbook → approval recorded → execute via connector → audit + export
         </p>
 
         <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_minmax(0,20rem)] lg:items-start">
@@ -86,10 +81,10 @@ export function HowItWorksSection() {
 
           <aside className="shynvo-glass rounded-2xl p-5 sm:p-6">
             <h3 className="text-sm font-semibold uppercase tracking-wide text-accent/90">
-              Guarded automation
+              Why &ldquo;guarded&rdquo;?
             </h3>
             <p className="mt-2 text-sm leading-relaxed text-muted">
-              Not a buzzword — a contract for how change leaves the building:
+              Automation that never skips the control plane you can show in review:
             </p>
             <ul className="mt-4 space-y-3 text-sm leading-relaxed text-foreground/90">
               {GUARDED.map((line) => (
@@ -102,10 +97,6 @@ export function HowItWorksSection() {
                 </li>
               ))}
             </ul>
-            <p className="mt-5 text-xs leading-relaxed text-muted">
-              Maturity model: start with audit + approvals, add connector-backed automation when
-              your team is ready — no false promise of unsupervised self-healing.
-            </p>
           </aside>
         </div>
       </div>

@@ -4,12 +4,16 @@ import { Logo } from "./Logo";
 import { MarketingHistoryNav } from "./MarketingHistoryNav";
 
 const nav = [
-  { href: "#how-it-works", label: "How it works" },
+  { href: "#preview", label: "Product" },
+  { href: "#how-it-works", label: "Flow" },
+  { href: "#guarded-mechanics", label: "Guards" },
+  { href: "#use-cases", label: "Cases" },
+  { href: "#control", label: "Control" },
   { href: "#modules", label: "Modules" },
-  { href: "#operations", label: "Operations" },
+  { href: "#operations", label: "Ops" },
   { href: "#proof", label: "Proof" },
   { href: "#trust", label: "Trust" },
-  { href: "#connect", label: "Connect" },
+  { href: "#connect", label: "Start" },
 ];
 
 export function Header() {

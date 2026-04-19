@@ -31,8 +31,8 @@ export function Footer() {
           <div className="max-w-sm space-y-3">
             <Logo />
             <p className="text-sm leading-relaxed text-muted">
-              Approval-gated automation and auditable incident response — one console for
-              serious operations.
+              Safe automation for IT operations — incident response with approvals, dry-runs, and
+              proof in one console.
             </p>
           </div>
 
