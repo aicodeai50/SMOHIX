@@ -4,8 +4,10 @@ import { Logo } from "./Logo";
 import { MarketingHistoryNav } from "./MarketingHistoryNav";
 
 const nav = [
+  { href: "#how-it-works", label: "How it works" },
   { href: "#modules", label: "Modules" },
   { href: "#operations", label: "Operations" },
+  { href: "#proof", label: "Proof" },
   { href: "#trust", label: "Trust" },
   { href: "#connect", label: "Connect" },
 ];
@@ -17,7 +19,7 @@ export function Header() {
         <Link href="/" className="min-w-0 shrink-0 text-foreground no-underline">
           <Logo />
         </Link>
-        <nav className="hidden items-center gap-8 text-sm text-muted md:flex">
+        <nav className="hidden flex-wrap items-center justify-end gap-x-4 gap-y-1 text-sm text-muted md:flex lg:gap-x-6">
           {nav.map((item) => (
             <a
               key={item.href}
@@ -27,6 +29,9 @@ export function Header() {
               {item.label}
             </a>
           ))}
+          <Link href="/integrations" className="transition-colors hover:text-foreground">
+            Integrations
+          </Link>
         </nav>
         <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 sm:w-auto sm:gap-3 md:flex-nowrap">
           <MarketingHistoryNav />

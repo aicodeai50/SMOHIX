@@ -35,7 +35,8 @@ export function ModuleGrid() {
           Modules
         </h2>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
-          Copilot, automation, and runbooks — each opens in the console on its own route.
+          Three lenses on the same spine: triage with Copilot, change with guarded automations,
+          procedure with runbooks — each opens in the console on its own route.
         </p>
         <div className="mt-10 grid gap-5 md:grid-cols-3">
           {modules.map((m) => (

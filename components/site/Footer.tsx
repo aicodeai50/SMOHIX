@@ -31,8 +31,8 @@ export function Footer() {
           <div className="max-w-sm space-y-3">
             <Logo />
             <p className="text-sm leading-relaxed text-muted">
-              AI operations for IT teams — copilot, guarded automation, and defensible
-              controls.
+              Approval-gated automation and auditable incident response — one console for
+              serious operations.
             </p>
           </div>
 
@@ -49,8 +49,11 @@ export function Footer() {
                 <Link href="/#modules" className="w-fit hover:text-foreground md:ml-auto">
                   Modules
                 </Link>
+                <Link href="/integrations" className="w-fit hover:text-foreground md:ml-auto">
+                  Integrations
+                </Link>
                 <Link href="/#trust" className="w-fit hover:text-foreground md:ml-auto">
-                  Security
+                  Trust
                 </Link>
                 <Link href="/auth/sign-in" className="w-fit hover:text-foreground md:ml-auto">
                   Account
