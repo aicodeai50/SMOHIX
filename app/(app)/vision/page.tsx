@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { PageHeader } from "@/components/app/PageHeader";
+import { appBody, appMeta } from "@/lib/app-typography";
 import { PlaceholderCard } from "@/components/app/PlaceholderCard";
 
 export const metadata: Metadata = {
@@ -101,10 +102,10 @@ export default function VisionPage() {
       <div className="mb-6 grid gap-4 md:grid-cols-2">
         {TRACKS.map((t) => (
           <PlaceholderCard key={t.title} title={t.title}>
-            <p className="mb-3 inline-flex rounded-md bg-accent-dim/80 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-accent">
+            <p className="mb-3 inline-flex rounded-md bg-accent-dim/80 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-accent">
               {t.tag}
             </p>
-            <ul className="space-y-2.5 text-sm leading-relaxed text-muted">
+            <ul className={`space-y-2.5 text-muted ${appBody}`}>
               {t.items.map((line) => (
                 <li key={line} className="flex gap-2">
                   <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-accent/70" aria-hidden />
@@ -117,15 +118,15 @@ export default function VisionPage() {
       </div>
 
       <PlaceholderCard title="Horizon — 2050-grade direction">
-        <p className="text-sm leading-relaxed text-muted">
+        <p className={`text-muted ${appBody}`}>
           These ideas are <span className="font-medium text-foreground/90">research and long-term</span>{" "}
           — not a committed backlog. They inform tone, architecture, and partnerships (models, data
           residency, safety reviews) as Shynvo matures.
         </p>
-        <ul className="mt-4 space-y-2.5 text-sm leading-relaxed text-muted">
+        <ul className={`mt-4 space-y-2.5 text-muted ${appBody}`}>
           {HORIZON.map((h) => (
             <li key={h} className="flex gap-2 border-t border-white/[0.05] pt-3 first:border-0 first:pt-0">
-              <span className="font-mono text-xs text-accent/80" aria-hidden>
+              <span className="font-mono text-[13px] leading-relaxed text-accent/80" aria-hidden>
                 ◈
               </span>
               {h}
@@ -134,7 +135,7 @@ export default function VisionPage() {
         </ul>
       </PlaceholderCard>
 
-      <p className="mt-8 max-w-2xl text-pretty text-xs leading-relaxed text-muted">
+      <p className={`mt-8 max-w-2xl text-pretty text-muted ${appMeta}`}>
         <span className="font-medium text-foreground/85">Next spec focus (recommended):</span> incidents +
         automation + guardrails — closes the loop from signal to triage to safe action to audit. Maintainer
         copy lives in{" "}
@@ -147,7 +148,7 @@ export default function VisionPage() {
         </code>
         .
       </p>
-      <p className="mt-3 text-xs text-muted">
+      <p className={`mt-3 ${appMeta}`}>
         <Link
           href="https://github.com/Sanher50/SHYNVO/blob/main/docs/VISION_AND_ROADMAP.md"
           className="font-medium text-accent hover:underline"

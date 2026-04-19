@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { PageHeader } from "@/components/app/PageHeader";
+import { appBody, appMeta, appPanelTitle } from "@/lib/app-typography";
 import { ProfileNameForm } from "@/components/settings/ProfileNameForm";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -68,8 +69,8 @@ export default async function SettingsIndexPage() {
       />
       {accountEmail ? (
         <section className="shynvo-glass mb-6 rounded-2xl p-5 md:p-6">
-          <h2 className="text-sm font-semibold text-foreground/95">Profile</h2>
-          <p className="mt-1 text-xs text-muted">
+          <h2 className={`${appPanelTitle} text-foreground/95`}>Profile</h2>
+          <p className={`mt-1 ${appMeta}`}>
             Your display name appears in the console rail. Clear the field to fall back to your email.
           </p>
           <ProfileNameForm initialFullName={initialFullName} email={accountEmail} />
@@ -82,9 +83,9 @@ export default async function SettingsIndexPage() {
             href={c.href}
             className="shynvo-glass group flex flex-col rounded-2xl p-5 transition-[border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-[0_0_40px_-14px_rgba(94,225,255,0.2)]"
           >
-            <h2 className="text-lg font-semibold text-foreground group-hover:text-accent">{c.title}</h2>
-            <p className="mt-2 flex-1 text-sm text-muted">{c.description}</p>
-            <span className="mt-4 text-sm font-medium text-accent">Open →</span>
+            <h2 className={`${appPanelTitle} group-hover:text-accent`}>{c.title}</h2>
+            <p className={`mt-2 flex-1 text-muted ${appBody}`}>{c.description}</p>
+            <span className={`mt-4 font-medium text-accent ${appBody}`}>Open →</span>
           </Link>
         ))}
       </div>

@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ApiKeysPanel, type ApiKeyRow } from "@/components/settings/ApiKeysPanel";
 import { PageHeader } from "@/components/app/PageHeader";
+import { appBody } from "@/lib/app-typography";
 import { devListKeys } from "@/lib/api-keys/dev-store";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -63,7 +64,7 @@ export default async function ApiKeysSettingsPage() {
         description="Authenticate server-side jobs and tools to the same-origin reasoning and robot proxies without a browser session."
       />
       {listError ? (
-        <p className="mb-6 max-w-2xl rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-100/90">
+        <p className={`mb-6 max-w-2xl rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-amber-100/90 ${appBody}`}>
           Could not load keys: {listError}. If the table is missing, run{" "}
           <span className="font-mono">supabase/migrations/20260418150000_api_keys.sql</span> in
           Supabase.

@@ -19,6 +19,7 @@ import { getLatestDryRunForIncident } from "@/lib/automations/dry-runs-db";
 import type { DryRunRecord } from "@/lib/automations/runs-dev";
 import { getIncidentForUser } from "@/lib/incidents/data";
 import { listRunbooks } from "@/lib/runbooks/catalog";
+import { appBody, appLabel, appMeta, appOverline } from "@/lib/app-typography";
 import { getIncidentTimeline } from "@/lib/incidents/timeline";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -91,13 +92,13 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
   return (
     <>
       {source === "session" ? (
-        <p className="shynvo-glass-subtle mb-4 rounded-xl px-4 py-3 text-xs leading-relaxed text-muted">
+        <p className={`shynvo-glass-subtle mb-4 rounded-xl px-4 py-3 ${appMeta}`}>
           Session-scoped incident. The timeline below records opens and status changes from this
           browser session; connect Supabase and integrations for shared history and external
           events.
         </p>
       ) : (
-        <p className="shynvo-glass-subtle mb-4 rounded-xl px-4 py-3 text-xs leading-relaxed text-muted">
+        <p className={`shynvo-glass-subtle mb-4 rounded-xl px-4 py-3 ${appMeta}`}>
           Timeline entries come from your <span className="font-mono">audit_log</span> (status and
           owner/runbook updates) when the service role can append audits.
         </p>
@@ -111,11 +112,9 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
       {lastIncidentDryRun ? (
         <div className="mb-4 flex flex-col gap-3 rounded-xl border border-white/[0.1] bg-white/[0.03] px-4 py-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
           <div className="min-w-0">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted">
-              Last dry-run (this incident)
-            </p>
-            <p className="mt-1 font-mono text-sm text-foreground/90">{lastIncidentDryRun.playbookId}</p>
-            <p className="mt-0.5 text-xs text-muted">
+            <p className={appOverline}>Last dry-run (this incident)</p>
+            <p className={`mt-1 font-mono text-foreground/90 ${appBody}`}>{lastIncidentDryRun.playbookId}</p>
+            <p className={`mt-0.5 ${appMeta}`}>
               {new Date(lastIncidentDryRun.at).toLocaleString()}
             </p>
           </div>
@@ -127,7 +126,7 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
             />
             <Link
               href={automationHref}
-              className="text-xs font-medium text-accent hover:underline"
+              className={`font-medium text-accent hover:underline ${appMeta}`}
             >
               Open automations →
             </Link>
@@ -139,7 +138,7 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
           <AuditWhisperInline whisper={auditWhisper} />
         </div>
       ) : hasSupabaseAuth() && source === "database" ? (
-        <p className="mb-4 rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3 text-xs leading-relaxed text-muted">
+        <p className={`mb-4 rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3 ${appMeta}`}>
           No audit events linked to this incident yet.{" "}
           <Link href={automationHref} className="font-medium text-accent hover:underline">
             Run a contextual dry-run
@@ -148,7 +147,7 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
         </p>
       ) : null}
       {source === "database" && row.serviceId ? (
-        <p className="mb-4 text-sm text-muted">
+        <p className={`mb-4 text-muted ${appBody}`}>
           Linked service:{" "}
           <Link href="/services" className="font-medium text-accent hover:underline">
             {row.serviceName ?? "Open catalog"}
@@ -156,7 +155,7 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
         </p>
       ) : null}
       {row.runbookSlug ? (
-        <p className="mb-4 text-sm text-muted">
+        <p className={`mb-4 text-muted ${appBody}`}>
           Linked runbook:{" "}
           <Link
             href={`/runbooks/${row.runbookSlug}`}
@@ -167,18 +166,18 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
         </p>
       ) : null}
       {source === "database" && hasSupabaseAuth() ? (
-        <p className="mb-4 text-sm">
+        <p className={`mb-4 ${appBody}`}>
           <a
             href={`/api/incidents/${encodeURIComponent(row.id)}/export`}
             className="font-medium text-accent hover:underline"
           >
             Download markdown export
           </a>
-          <span className="ml-2 text-xs text-muted">for status pages or postmortem archives</span>
+          <span className={`ml-2 ${appMeta}`}>for status pages or postmortem archives</span>
         </p>
       ) : null}
       {err ? (
-        <p className="mb-4 rounded-xl border border-red-400/25 bg-red-500/[0.08] px-4 py-3 text-sm text-red-200/90 backdrop-blur-sm">
+        <p className={`mb-4 rounded-xl border border-red-400/25 bg-red-500/[0.08] px-4 py-3 text-red-200/90 backdrop-blur-sm ${appBody}`}>
           {err}
         </p>
       ) : null}
@@ -190,10 +189,10 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
           className="shynvo-glass mb-6 space-y-4 rounded-2xl p-4 md:p-5"
         >
           <input type="hidden" name="id" value={row.id} />
-          <p className="text-xs font-medium uppercase tracking-wide text-muted">Owner & runbook</p>
+          <p className={appOverline}>Owner & runbook</p>
           <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end">
             <div className="min-w-[12rem] flex-1">
-              <label htmlFor="owner_hint" className="mb-1 block text-xs font-medium text-muted">
+              <label htmlFor="owner_hint" className={`mb-1 block ${appLabel}`}>
                 Owner / on-call
               </label>
               <input
@@ -202,18 +201,18 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
                 maxLength={200}
                 defaultValue={row.ownerHint ?? ""}
                 placeholder="@oncall"
-                className="h-10 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 text-sm text-foreground outline-none ring-accent/25 focus:border-accent/40 focus:ring-2"
+                className={`h-10 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 text-foreground outline-none ring-accent/25 focus:border-accent/40 focus:ring-2 ${appBody}`}
               />
             </div>
             <div className="min-w-[14rem] flex-1">
-              <label htmlFor="runbook_slug" className="mb-1 block text-xs font-medium text-muted">
+              <label htmlFor="runbook_slug" className={`mb-1 block ${appLabel}`}>
                 Runbook
               </label>
               <select
                 id="runbook_slug"
                 name="runbook_slug"
                 defaultValue={row.runbookSlug ?? ""}
-                className="h-10 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 text-sm text-foreground outline-none ring-accent/25 focus:border-accent/40 focus:ring-2"
+                className={`h-10 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 text-foreground outline-none ring-accent/25 focus:border-accent/40 focus:ring-2 ${appBody}`}
               >
                 <option value="">— None —</option>
                 {runbooks.map((r) => (
@@ -225,7 +224,7 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
             </div>
             <button
               type="submit"
-              className="h-10 shrink-0 rounded-xl bg-accent px-5 text-sm font-semibold text-background hover:opacity-95"
+              className={`h-10 shrink-0 rounded-xl bg-accent px-5 font-semibold text-background hover:opacity-95 ${appBody}`}
             >
               Save context
             </button>
@@ -241,14 +240,14 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
         >
           <input type="hidden" name="id" value={row.id} />
           <div>
-            <label htmlFor="status" className="mb-1 block text-xs font-medium text-muted">
+            <label htmlFor="status" className={`mb-1 block ${appLabel}`}>
               Status
             </label>
             <select
               id="status"
               name="status"
               defaultValue={row.status}
-              className="h-10 rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 text-sm text-foreground outline-none ring-accent/25 focus:border-accent/40 focus:ring-2"
+              className={`h-10 rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 text-foreground outline-none ring-accent/25 focus:border-accent/40 focus:ring-2 ${appBody}`}
             >
               <option value="investigating">Investigating</option>
               <option value="mitigated">Mitigated</option>
@@ -258,7 +257,7 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
           </div>
           <button
             type="submit"
-            className="h-10 rounded-xl bg-accent px-5 text-sm font-semibold text-background shadow-[0_0_28px_-8px_rgba(94,225,255,0.45)] transition-[opacity,box-shadow] hover:opacity-95 hover:shadow-[0_0_36px_-6px_rgba(94,225,255,0.55)]"
+            className={`h-10 rounded-xl bg-accent px-5 font-semibold text-background shadow-[0_0_28px_-8px_rgba(94,225,255,0.45)] transition-[opacity,box-shadow] hover:opacity-95 hover:shadow-[0_0_36px_-6px_rgba(94,225,255,0.55)] ${appBody}`}
           >
             Save status
           </button>
@@ -268,7 +267,7 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
         <PlaceholderCard title="Postmortem & notes">
           <form action={updateIncidentPostmortemAction} className="space-y-3">
             <input type="hidden" name="id" value={row.id} />
-            <label htmlFor="postmortem" className="block text-xs font-medium text-muted">
+            <label htmlFor="postmortem" className={`block ${appLabel}`}>
               Blameless summary, timeline, root cause, action items
             </label>
             <textarea
@@ -278,11 +277,11 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
               maxLength={24000}
               defaultValue={row.postmortem ?? ""}
               placeholder="What happened, what we learned, what we will change…"
-              className="w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 py-2.5 text-sm text-foreground outline-none ring-accent/25 focus:border-accent/40 focus:ring-2"
+              className={`w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 py-2.5 text-foreground outline-none ring-accent/25 focus:border-accent/40 focus:ring-2 ${appBody}`}
             />
             <button
               type="submit"
-              className="h-10 rounded-xl bg-accent px-5 text-sm font-semibold text-background hover:opacity-95"
+              className={`h-10 rounded-xl bg-accent px-5 font-semibold text-background hover:opacity-95 ${appBody}`}
             >
               Save notes
             </button>
@@ -309,13 +308,13 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
             ]}
           />
         ) : (
-          <ul className="space-y-3 font-mono text-sm">
+          <ul className={`space-y-3 font-mono ${appBody}`}>
             {timeline.map((e, i) => (
               <li
                 key={`${e.at}-${i}-${e.label.slice(0, 24)}`}
                 className="flex gap-4 border-b border-white/[0.05] pb-3 last:border-0 last:pb-0"
               >
-                <span className="shrink-0 text-xs text-muted">{e.at} UTC</span>
+                <span className={`shrink-0 ${appMeta}`}>{e.at} UTC</span>
                 <span className="text-foreground/90">{e.label}</span>
               </li>
             ))}

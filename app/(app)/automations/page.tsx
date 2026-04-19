@@ -7,6 +7,7 @@ import { AutomationsConsole } from "@/components/automations/AutomationsConsole"
 import { GuardedAutomationIdentity } from "@/components/guardrails/GuardedAutomationIdentity";
 import { ExecutionBadge } from "@/components/guardrails/ExecutionBadge";
 import { PageHeader } from "@/components/app/PageHeader";
+import { appBody, appPanelTitle } from "@/lib/app-typography";
 import { listAutomationDryRuns } from "@/lib/automations/dry-runs-db";
 import { listDryRuns } from "@/lib/automations/runs-dev";
 import { getLatestAuditWhisper } from "@/lib/audit/whispers";
@@ -60,18 +61,18 @@ export default async function AutomationsPage({
           </div>
           <div className="shynvo-glass rounded-2xl p-6 md:p-8">
             <div className="flex flex-wrap items-center gap-2">
-              <h2 className="text-lg font-semibold text-foreground">Subscription required</h2>
+              <h2 className={`${appPanelTitle} text-foreground`}>Subscription required</h2>
               <ExecutionBadge tone="warn" title="Paid plan required for automation console">
                 Execution blocked
               </ExecutionBadge>
             </div>
-            <p className="mt-2 max-w-md text-sm leading-relaxed text-muted">
+            <p className={`mt-2 max-w-md text-muted ${appBody}`}>
               Choose a plan and complete checkout while signed in so your subscription links to
               this account. Then you can run playbooks and persist dry-run history.
             </p>
             <Link
               href="/settings/billing?upgrade=automations"
-              className="mt-5 inline-flex h-11 items-center justify-center rounded-xl bg-accent px-5 text-sm font-semibold text-background transition-opacity hover:opacity-90"
+              className={`mt-5 inline-flex h-11 items-center justify-center rounded-xl bg-accent px-5 font-semibold text-background transition-opacity hover:opacity-90 ${appBody}`}
             >
               View billing & checkout
             </Link>

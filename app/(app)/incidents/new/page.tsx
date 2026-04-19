@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { PageHeader } from "@/components/app/PageHeader";
+import { appBody, appLabel, appMeta } from "@/lib/app-typography";
 import { listRunbooks } from "@/lib/runbooks/catalog";
 import { listServicesForUser } from "@/lib/services/data";
 import { createIncidentAction } from "../actions";
@@ -47,7 +48,7 @@ export default async function NewIncidentPage({
       />
       {error ? (
         <p
-          className="mb-4 rounded-lg border border-red-500/25 bg-red-500/10 px-3 py-2 text-sm text-red-200/90"
+          className={`mb-4 rounded-lg border border-red-500/25 bg-red-500/10 px-3 py-2 text-red-200/90 ${appBody}`}
           role="alert"
         >
           {error}
@@ -55,7 +56,7 @@ export default async function NewIncidentPage({
       ) : null}
       <form action={createIncidentAction} className="max-w-lg space-y-4">
         <div>
-          <label htmlFor="title" className="mb-1.5 block text-xs font-medium text-muted">
+          <label htmlFor="title" className={`mb-1.5 block ${appLabel}`}>
             Title
           </label>
           <input
@@ -64,18 +65,18 @@ export default async function NewIncidentPage({
             required
             maxLength={500}
             placeholder="Short description for responders"
-            className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none ring-ring/50 focus:ring-2"
+            className={`h-11 w-full rounded-lg border border-border bg-background px-3 text-foreground outline-none ring-ring/50 focus:ring-2 ${appBody}`}
           />
         </div>
         {hasSupabaseAuth() && services.length > 0 ? (
           <div>
-            <label htmlFor="service_id" className="mb-1.5 block text-xs font-medium text-muted">
+            <label htmlFor="service_id" className={`mb-1.5 block ${appLabel}`}>
               Service (optional)
             </label>
             <select
               id="service_id"
               name="service_id"
-              className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none ring-ring/50 focus:ring-2"
+              className={`h-11 w-full rounded-lg border border-border bg-background px-3 text-foreground outline-none ring-ring/50 focus:ring-2 ${appBody}`}
               defaultValue=""
             >
               <option value="">— None —</option>
@@ -89,7 +90,7 @@ export default async function NewIncidentPage({
           </div>
         ) : null}
         <div>
-          <label htmlFor="owner_hint" className="mb-1.5 block text-xs font-medium text-muted">
+          <label htmlFor="owner_hint" className={`mb-1.5 block ${appLabel}`}>
             Owner / on-call (optional)
           </label>
           <input
@@ -97,17 +98,17 @@ export default async function NewIncidentPage({
             name="owner_hint"
             maxLength={200}
             placeholder="@team-platform or pager rotation"
-            className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none ring-ring/50 focus:ring-2"
+            className={`h-11 w-full rounded-lg border border-border bg-background px-3 text-foreground outline-none ring-ring/50 focus:ring-2 ${appBody}`}
           />
         </div>
         <div>
-          <label htmlFor="runbook_slug" className="mb-1.5 block text-xs font-medium text-muted">
+          <label htmlFor="runbook_slug" className={`mb-1.5 block ${appLabel}`}>
             Runbook (optional)
           </label>
           <select
             id="runbook_slug"
             name="runbook_slug"
-            className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none ring-ring/50 focus:ring-2"
+            className={`h-11 w-full rounded-lg border border-border bg-background px-3 text-foreground outline-none ring-ring/50 focus:ring-2 ${appBody}`}
             defaultValue=""
           >
             <option value="">— None —</option>
@@ -117,7 +118,7 @@ export default async function NewIncidentPage({
               </option>
             ))}
           </select>
-          <p className="mt-1.5 text-xs text-muted">
+          <p className={`mt-1.5 ${appMeta}`}>
             Links this incident to a built-in checklist. See{" "}
             <Link href="/runbooks" className="text-accent hover:underline">
               Runbooks
@@ -126,13 +127,13 @@ export default async function NewIncidentPage({
           </p>
         </div>
         <div>
-          <label htmlFor="severity" className="mb-1.5 block text-xs font-medium text-muted">
+          <label htmlFor="severity" className={`mb-1.5 block ${appLabel}`}>
             Severity
           </label>
           <select
             id="severity"
             name="severity"
-            className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none ring-ring/50 focus:ring-2"
+            className={`h-11 w-full rounded-lg border border-border bg-background px-3 text-foreground outline-none ring-ring/50 focus:ring-2 ${appBody}`}
             defaultValue="medium"
           >
             <option value="low">Low</option>
@@ -142,13 +143,13 @@ export default async function NewIncidentPage({
           </select>
         </div>
         <div>
-          <label htmlFor="status" className="mb-1.5 block text-xs font-medium text-muted">
+          <label htmlFor="status" className={`mb-1.5 block ${appLabel}`}>
             Status
           </label>
           <select
             id="status"
             name="status"
-            className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none ring-ring/50 focus:ring-2"
+            className={`h-11 w-full rounded-lg border border-border bg-background px-3 text-foreground outline-none ring-ring/50 focus:ring-2 ${appBody}`}
             defaultValue="investigating"
           >
             <option value="investigating">Investigating</option>
@@ -160,13 +161,13 @@ export default async function NewIncidentPage({
         <div className="flex gap-3 pt-2">
           <button
             type="submit"
-            className="inline-flex h-11 items-center justify-center rounded-lg bg-accent px-5 text-sm font-medium text-background hover:opacity-90"
+            className={`inline-flex h-11 items-center justify-center rounded-lg bg-accent px-5 font-medium text-background hover:opacity-90 ${appBody}`}
           >
             Create incident
           </button>
           <Link
             href="/incidents"
-            className="inline-flex h-11 items-center justify-center rounded-lg border border-border px-5 text-sm text-muted hover:text-foreground"
+            className={`inline-flex h-11 items-center justify-center rounded-lg border border-border px-5 text-muted hover:text-foreground ${appBody}`}
           >
             Cancel
           </Link>

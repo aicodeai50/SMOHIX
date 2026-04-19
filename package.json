@@ -10,6 +10,7 @@
     "verify:api-catalog": "node scripts/verify-api-catalog.mjs",
     "build": "npm run verify:api-catalog && next build",
     "start": "next start --hostname 0.0.0.0",
+    "deploy:railway": "railway up --detach",
     "lint": "eslint"
   },
   "dependencies": {

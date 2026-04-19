@@ -91,7 +91,7 @@ export default async function OverviewPage() {
           <p className={`${appMeta} font-medium`}>Connectors</p>
           <p className="mt-1 text-2xl font-semibold text-foreground">
             {connectorsUp}
-            <span className="text-lg font-normal text-muted">
+            <span className={`${appPanelTitle} font-normal text-muted`}>
               {" "}
               / {connectorsConfigured}
             </span>
@@ -149,7 +149,7 @@ export default async function OverviewPage() {
           </ul>
           <Link
             href="/settings/connectors"
-            className="mt-4 inline-block text-xs font-medium text-accent hover:underline"
+            className={`mt-4 inline-block font-medium text-accent hover:underline ${appMeta}`}
           >
             Connector settings →
           </Link>

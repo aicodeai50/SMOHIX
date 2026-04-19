@@ -5,6 +5,7 @@ import { ConnectionStatus } from "@/components/copilot/ConnectionStatus";
 import { CopilotChat } from "@/components/copilot/CopilotChat";
 import { PageHeader } from "@/components/app/PageHeader";
 import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { appBody, appMeta } from "@/lib/app-typography";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
@@ -45,14 +46,14 @@ export default async function CopilotPage() {
         </div>
         <div className="space-y-4">
           <PlaceholderCard title="Shortcuts">
-            <ul className="space-y-1 text-sm">
+            <ul className={`space-y-1 ${appBody}`}>
               <li>
                 <Link
                   href="/approvals"
                   className="flex items-center justify-between gap-3 rounded-lg px-2 py-2.5 text-foreground/90 transition-colors hover:bg-surface-elevated/60 hover:text-accent"
                 >
                   <span className="font-medium">Dry-run rollback canary</span>
-                  <span className="shrink-0 rounded-md bg-warning-dim px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-warning">
+                  <span className={`shrink-0 rounded-md bg-warning-dim px-2 py-0.5 font-semibold uppercase tracking-wide text-warning ${appMeta}`}>
                     Approval
                   </span>
                 </Link>
@@ -63,7 +64,7 @@ export default async function CopilotPage() {
                   className="flex items-center justify-between gap-3 rounded-lg px-2 py-2.5 text-foreground/90 transition-colors hover:bg-surface-elevated/60 hover:text-accent"
                 >
                   <span className="font-medium">API latency runbook</span>
-                  <span className="shrink-0 rounded-md bg-accent-dim px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-accent">
+                  <span className={`shrink-0 rounded-md bg-accent-dim px-2 py-0.5 font-semibold uppercase tracking-wide text-accent ${appMeta}`}>
                     Runbook
                   </span>
                 </Link>
@@ -74,7 +75,7 @@ export default async function CopilotPage() {
                   className="flex items-center justify-between gap-3 rounded-lg px-2 py-2.5 text-foreground/90 transition-colors hover:bg-surface-elevated/60 hover:text-accent"
                 >
                   <span className="font-medium">Playbook dry-runs</span>
-                  <span className="shrink-0 rounded-md bg-accent-dim px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-accent">
+                  <span className={`shrink-0 rounded-md bg-accent-dim px-2 py-0.5 font-semibold uppercase tracking-wide text-accent ${appMeta}`}>
                     Automate
                   </span>
                 </Link>
@@ -82,7 +83,7 @@ export default async function CopilotPage() {
             </ul>
           </PlaceholderCard>
           <PlaceholderCard title="On the horizon">
-            <p className="text-sm leading-relaxed text-muted">
+            <p className={`text-muted ${appBody}`}>
               Annotation-grade Copilot: structured labels on hypotheses, human-in-the-loop
               approvals before actions, runbook citations on every suggestion, timeline
               auto-summaries, and an audit trail tying AI output to incidents and owners.

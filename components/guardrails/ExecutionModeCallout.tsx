@@ -1,9 +1,10 @@
 import { AppIcon } from "@/components/icons/AppIcon";
+import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import { SITE_BRAND_NAME } from "@/lib/site-brand";
 
 function Row({ ok, label, detail }: { ok: boolean; label: string; detail: string }) {
   return (
-    <div className="flex gap-3 text-sm">
+    <div className={`flex gap-3 ${appBody}`}>
       <span
         className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${
           ok ? "bg-emerald-500/20 text-emerald-200/95" : "bg-white/[0.06] text-muted"
@@ -18,7 +19,7 @@ function Row({ ok, label, detail }: { ok: boolean; label: string; detail: string
       </span>
       <div className="min-w-0">
         <p className="font-medium text-foreground/90">{label}</p>
-        <p className="mt-0.5 text-xs leading-relaxed text-muted">{detail}</p>
+        <p className={`mt-0.5 ${appMeta}`}>{detail}</p>
       </div>
     </div>
   );
@@ -35,10 +36,8 @@ export function ExecutionModeCallout({
 }) {
   return (
     <div className="rounded-2xl border border-white/[0.1] bg-white/[0.03] p-5 md:p-6">
-      <h2 className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">
-        Execution mode
-      </h2>
-      <p className="mt-2 text-sm leading-relaxed text-muted">
+      <h2 className={appOverline}>Execution mode</h2>
+      <p className={`mt-2 ${appBody} text-muted`}>
         {SITE_BRAND_NAME} defaults to safe paths: prove intent with a dry-run, route destructive work
         through approvals, and keep evidence in audit.
       </p>

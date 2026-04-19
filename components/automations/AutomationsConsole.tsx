@@ -8,6 +8,7 @@ import { ExecutionBadge } from "@/components/guardrails/ExecutionBadge";
 import { ExecutionOutcomeBadge } from "@/components/guardrails/ExecutionOutcomeBadge";
 import { ExecutionModeCallout } from "@/components/guardrails/ExecutionModeCallout";
 import { GuardedAutomationIdentity } from "@/components/guardrails/GuardedAutomationIdentity";
+import { appBody, appMeta, appPanelTitle } from "@/lib/app-typography";
 import { PLAYBOOKS } from "@/lib/automations/playbooks";
 import type { AuditWhisper } from "@/lib/audit/whispers";
 import type { DryRunRecord } from "@/lib/automations/runs-dev";
@@ -121,7 +122,7 @@ export function AutomationsConsole({
           </Link>
         </p>
       ) : linkedIncidentId && !auditTrailOnDryRun ? (
-        <p className="rounded-xl border border-amber-400/20 bg-amber-500/[0.06] px-4 py-3 text-xs leading-relaxed text-muted">
+        <p className={`rounded-xl border border-amber-400/20 bg-amber-500/[0.06] px-4 py-3 ${appMeta}`}>
           Incident id is present in the URL, but linking dry-runs to audit requires signing in with
           a workspace where automations are enabled.{" "}
           <Link
@@ -139,12 +140,12 @@ export function AutomationsConsole({
         auditLogged={auditTrailOnDryRun}
       />
       {msg ? (
-        <p className="shynvo-glass-subtle rounded-xl px-4 py-3 text-sm leading-relaxed text-muted">
+        <p className={`shynvo-glass-subtle rounded-xl px-4 py-3 ${appBody} text-muted`}>
           {msg}
         </p>
       ) : null}
       <div className="shynvo-table-wrap">
-        <table className="w-full text-left text-sm">
+        <table className={`w-full text-left ${appBody}`}>
           <thead className="border-b border-white/[0.06] bg-white/[0.03] font-mono text-[11px] font-medium uppercase tracking-[0.1em] text-muted">
             <tr>
               <th className="px-4 py-3.5">Playbook</th>
@@ -165,7 +166,7 @@ export function AutomationsConsole({
                     Dry-run only
                   </ExecutionBadge>
                 </td>
-                <td className="px-4 py-3 font-mono text-xs text-muted">{row.lastRun}</td>
+                <td className={`px-4 py-3 font-mono ${appMeta}`}>{row.lastRun}</td>
                 <td className="px-4 py-3">
                   <span
                     className={
@@ -182,7 +183,7 @@ export function AutomationsConsole({
                     type="button"
                     disabled={busyId !== null}
                     onClick={() => void dryRun(row.id)}
-                    className="rounded-lg border border-white/[0.1] bg-white/[0.02] px-2.5 py-1 text-xs font-medium text-muted transition-[border-color,background-color,color,box-shadow] hover:border-accent/35 hover:text-foreground hover:shadow-[0_0_20px_-10px_rgba(94,225,255,0.25)] disabled:opacity-50"
+                    className={`rounded-lg border border-white/[0.1] bg-white/[0.02] px-2.5 py-1 font-medium text-muted transition-[border-color,background-color,color,box-shadow] hover:border-accent/35 hover:text-foreground hover:shadow-[0_0_20px_-10px_rgba(94,225,255,0.25)] disabled:opacity-50 ${appMeta}`}
                   >
                     {busyId === row.id ? "Running…" : "Dry-run"}
                   </button>
@@ -198,19 +199,19 @@ export function AutomationsConsole({
           {auditTrailOnDryRun ? (
             <Link
               href="/audit"
-              className="text-xs font-medium text-accent hover:underline"
+              className={`font-medium text-accent hover:underline ${appMeta}`}
             >
               Last runs in audit →
             </Link>
           ) : null}
         </div>
         {runs.length === 0 ? (
-          <p className="mt-4 rounded-xl border border-dashed border-white/[0.1] bg-white/[0.02] px-4 py-8 text-center text-sm text-muted">
+          <p className={`mt-4 rounded-xl border border-dashed border-white/[0.1] bg-white/[0.02] px-4 py-8 text-center ${appBody} text-muted`}>
             No dry-runs yet. Pick a playbook above and run <strong className="text-foreground/85">Dry-run</strong>{" "}
             — results persist to your audit trail when the deployment is configured for it.
           </p>
         ) : (
-          <ul className="mt-3 max-h-48 space-y-2 overflow-y-auto text-xs text-muted">
+          <ul className={`mt-3 max-h-48 space-y-2 overflow-y-auto ${appMeta}`}>
             {runs.slice(0, 12).map((r) => (
               <li
                 key={r.id}

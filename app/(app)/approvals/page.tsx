@@ -11,6 +11,7 @@ import { ExecutionModeCallout } from "@/components/guardrails/ExecutionModeCallo
 import { GuardedAutomationIdentity } from "@/components/guardrails/GuardedAutomationIdentity";
 import { listApprovalsForUser } from "@/lib/approvals/data";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
+import { appBody, appLabel, appMeta, appOverline, appPanelTitle } from "@/lib/app-typography";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
@@ -66,12 +67,12 @@ export default async function ApprovalsPage({ searchParams }: Props) {
         />
       </div>
       {createdOk ? (
-        <p className="mb-4 rounded-xl border border-emerald-400/20 bg-emerald-500/[0.08] px-4 py-3 text-sm text-emerald-100/90 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] backdrop-blur-sm">
+        <p className={`mb-4 rounded-xl border border-emerald-400/20 bg-emerald-500/[0.08] px-4 py-3 text-emerald-100/90 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] backdrop-blur-sm ${appBody}`}>
           Approval request created and is pending decision.
         </p>
       ) : null}
       {errQ ? (
-        <p className="mb-4 rounded-xl border border-red-400/25 bg-red-500/[0.08] px-4 py-3 text-xs text-red-200/90 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] backdrop-blur-sm">
+        <p className={`mb-4 rounded-xl border border-red-400/25 bg-red-500/[0.08] px-4 py-3 text-red-200/90 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] backdrop-blur-sm ${appMeta}`}>
           {errQ === "no_session" && "Reload the page so a browser session cookie is set."}
           {errQ === "not_found" && "That approval is no longer pending."}
           {errQ === "update_failed" && "Could not update (check you own this row and it is still pending)."}
@@ -79,7 +80,7 @@ export default async function ApprovalsPage({ searchParams }: Props) {
         </p>
       ) : null}
       {source === "session" ? (
-        <p className="shynvo-glass-subtle mb-4 rounded-xl px-4 py-3 text-xs leading-relaxed text-muted">
+        <p className={`shynvo-glass-subtle mb-4 rounded-xl px-4 py-3 ${appMeta}`}>
           Approvals are scoped to this browser session (server memory +{" "}
           <span className="font-mono">shynvo_dev_tid</span>). Connect Supabase and run{" "}
           <code className="rounded bg-surface px-1 font-mono text-accent">
@@ -88,19 +89,19 @@ export default async function ApprovalsPage({ searchParams }: Props) {
           for a shared <span className="font-mono">approval_requests</span> queue.
         </p>
       ) : hasSupabaseAuth() && pending.length === 0 && recent.length === 0 ? (
-        <p className="shynvo-glass-subtle mb-4 rounded-xl px-4 py-3 text-xs leading-relaxed text-muted">
+        <p className={`shynvo-glass-subtle mb-4 rounded-xl px-4 py-3 ${appMeta}`}>
           No rows in <span className="font-mono">approval_requests</span> yet. Use the form below or
           your API/automation to enqueue work.
         </p>
       ) : null}
       <section className="shynvo-glass mb-6 rounded-2xl p-5 md:p-6">
-        <h2 className="text-sm font-semibold text-foreground/95">New approval request</h2>
-        <p className="mt-1 text-xs text-muted">
+        <h2 className={`${appPanelTitle} text-foreground/95`}>New approval request</h2>
+        <p className={`mt-1 ${appMeta}`}>
           Describe the change. Optional fields help reviewers apply the right policy.
         </p>
         <form action={createApprovalRequestAction} className="mt-4 max-w-2xl space-y-4">
           <div>
-            <label htmlFor="action_label" className="mb-1.5 block text-xs font-medium text-muted">
+            <label htmlFor="action_label" className={`mb-1.5 block ${appLabel}`}>
               Action <span className="text-red-400/90">*</span>
             </label>
             <input
@@ -109,12 +110,12 @@ export default async function ApprovalsPage({ searchParams }: Props) {
               required
               maxLength={500}
               placeholder="e.g. Promote canary to production — svc/checkout"
-              className="h-11 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 text-sm text-foreground outline-none ring-accent/25 transition-[border-color,box-shadow] focus:border-accent/40 focus:ring-2"
+              className={`h-11 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 text-foreground outline-none ring-accent/25 transition-[border-color,box-shadow] focus:border-accent/40 focus:ring-2 ${appBody}`}
             />
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label htmlFor="requested_by" className="mb-1.5 block text-xs font-medium text-muted">
+              <label htmlFor="requested_by" className={`mb-1.5 block ${appLabel}`}>
                 Requested by
               </label>
               <input
@@ -122,11 +123,11 @@ export default async function ApprovalsPage({ searchParams }: Props) {
                 name="requested_by"
                 maxLength={200}
                 placeholder="Team or username"
-                className="h-11 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 text-sm text-foreground outline-none ring-accent/25 transition-[border-color,box-shadow] focus:border-accent/40 focus:ring-2"
+                className={`h-11 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 text-foreground outline-none ring-accent/25 transition-[border-color,box-shadow] focus:border-accent/40 focus:ring-2 ${appBody}`}
               />
             </div>
             <div>
-              <label htmlFor="policy_hint" className="mb-1.5 block text-xs font-medium text-muted">
+              <label htmlFor="policy_hint" className={`mb-1.5 block ${appLabel}`}>
                 Policy / risk note
               </label>
               <input
@@ -134,13 +135,13 @@ export default async function ApprovalsPage({ searchParams }: Props) {
                 name="policy_hint"
                 maxLength={500}
                 placeholder="e.g. Two-person rule, change window only"
-                className="h-11 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 text-sm text-foreground outline-none ring-accent/25 transition-[border-color,box-shadow] focus:border-accent/40 focus:ring-2"
+                className={`h-11 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 text-foreground outline-none ring-accent/25 transition-[border-color,box-shadow] focus:border-accent/40 focus:ring-2 ${appBody}`}
               />
             </div>
           </div>
           <button
             type="submit"
-            className="inline-flex h-10 items-center justify-center rounded-xl bg-accent px-5 text-sm font-semibold text-background shadow-[0_0_28px_-8px_rgba(94,225,255,0.45)] transition-[opacity,box-shadow] hover:opacity-95 hover:shadow-[0_0_36px_-6px_rgba(94,225,255,0.55)]"
+            className={`inline-flex h-10 items-center justify-center rounded-xl bg-accent px-5 font-semibold text-background shadow-[0_0_28px_-8px_rgba(94,225,255,0.45)] transition-[opacity,box-shadow] hover:opacity-95 hover:shadow-[0_0_36px_-6px_rgba(94,225,255,0.55)] ${appBody}`}
           >
             Submit request
           </button>
@@ -148,7 +149,7 @@ export default async function ApprovalsPage({ searchParams }: Props) {
       </section>
       <div className="grid gap-6 lg:grid-cols-2">
         <section className="rounded-2xl border border-amber-400/15 bg-amber-500/[0.06] p-5 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] backdrop-blur-md md:p-6">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-amber-200/90">Pending</h2>
+          <h2 className={`${appOverline} text-amber-200/90`}>Pending</h2>
           {pending.length === 0 ? (
             <div className="mt-4">
               <ConsoleEmptyState
@@ -164,14 +165,14 @@ export default async function ApprovalsPage({ searchParams }: Props) {
                   key={p.id}
                   className="rounded-xl border border-white/[0.08] bg-white/[0.03] p-4 transition-[border-color,box-shadow] hover:border-amber-400/20 hover:shadow-[0_0_24px_-14px_rgba(251,191,36,0.15)]"
                 >
-                  <p className="font-mono text-xs text-muted">{p.id}</p>
+                  <p className={`font-mono ${appMeta}`}>{p.id}</p>
                   <div className="mt-2 flex flex-wrap items-start justify-between gap-2">
-                    <p className="min-w-0 text-sm font-medium text-foreground">{p.action}</p>
+                    <p className={`min-w-0 font-medium text-foreground ${appBody}`}>{p.action}</p>
                     <ExecutionBadge tone="warn" title="Waiting for a human decision">
                       Pending approval
                     </ExecutionBadge>
                   </div>
-                  <p className="mt-1 text-xs text-muted">
+                  <p className={`mt-1 ${appMeta}`}>
                     {p.requestedBy} · {p.policy}
                   </p>
                   <div className="mt-4 flex gap-2">
@@ -180,7 +181,7 @@ export default async function ApprovalsPage({ searchParams }: Props) {
                       <input type="hidden" name="decision" value="approved" />
                       <button
                         type="submit"
-                        className="w-full rounded-md bg-emerald-600/90 py-2 text-xs font-medium text-white transition-opacity hover:opacity-90"
+                        className={`w-full rounded-md bg-emerald-600/90 py-2 font-medium text-white transition-opacity hover:opacity-90 ${appMeta}`}
                       >
                         Approve
                       </button>
@@ -190,7 +191,7 @@ export default async function ApprovalsPage({ searchParams }: Props) {
                       <input type="hidden" name="decision" value="denied" />
                       <button
                         type="submit"
-                        className="w-full rounded-lg border border-white/[0.1] bg-white/[0.02] py-2 text-xs font-medium text-foreground transition-[border-color,color] hover:border-red-400/35 hover:text-red-200"
+                        className={`w-full rounded-lg border border-white/[0.1] bg-white/[0.02] py-2 font-medium text-foreground transition-[border-color,color] hover:border-red-400/35 hover:text-red-200 ${appMeta}`}
                       >
                         Deny
                       </button>
@@ -202,7 +203,7 @@ export default async function ApprovalsPage({ searchParams }: Props) {
           )}
         </section>
         <section className="shynvo-glass rounded-2xl p-5 md:p-6">
-          <h2 className="text-sm font-semibold text-muted">Recent</h2>
+          <h2 className={`${appPanelTitle} text-muted`}>Recent</h2>
           {recent.length === 0 ? (
             <div className="mt-4">
               <ConsoleEmptyState
@@ -225,7 +226,7 @@ export default async function ApprovalsPage({ searchParams }: Props) {
                   className="rounded-xl border border-white/[0.06] bg-white/[0.02] px-3 py-2 transition-colors hover:bg-white/[0.04]"
                 >
                   <div className="flex flex-wrap items-center justify-between gap-2">
-                    <span className="text-sm text-foreground/90">{r.action}</span>
+                    <span className={`${appBody} text-foreground/90`}>{r.action}</span>
                     {r.status === "approved" ? (
                       <ExecutionBadge tone="success" title="Recorded in audit when Supabase append is enabled">
                         Approved
@@ -236,7 +237,7 @@ export default async function ApprovalsPage({ searchParams }: Props) {
                       </ExecutionBadge>
                     )}
                   </div>
-                  <p className="mt-1 font-mono text-[10px] text-muted">{r.id}</p>
+                  <p className={`mt-1 font-mono ${appMeta}`}>{r.id}</p>
                 </li>
               ))}
             </ul>

@@ -7,6 +7,7 @@ import { PageHeader } from "@/components/app/PageHeader";
 import { AuditIntentTags } from "@/components/guardrails/AuditIntentTags";
 import { listAuditEntriesForUser } from "@/lib/audit/data";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
+import { appBody, appMeta } from "@/lib/app-typography";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
@@ -38,12 +39,12 @@ export default async function AuditPage() {
         description="Append-only log for billing sync, API keys, approvals, and automation events. Export hooks can build on this table."
       />
       {source === "session" ? (
-        <p className="shynvo-glass-subtle mb-4 rounded-xl px-4 py-3 text-xs leading-relaxed text-muted">
+        <p className={`shynvo-glass-subtle mb-4 rounded-xl px-4 py-3 ${appMeta}`}>
           Sign in with Supabase auth to load your <span className="font-mono">audit_log</span>{" "}
           entries. The log records billing sync, API key changes, approvals, and other actions.
         </p>
       ) : hasSupabaseAuth() && userId && rows.length === 0 ? (
-        <p className="shynvo-glass-subtle mb-4 rounded-xl px-4 py-3 text-xs leading-relaxed text-muted">
+        <p className={`shynvo-glass-subtle mb-4 rounded-xl px-4 py-3 ${appMeta}`}>
           No events yet. Ensure{" "}
           <code className="rounded bg-surface px-1 font-mono text-accent">
             supabase/migrations/20260418140000_console_extensions.sql
@@ -82,7 +83,7 @@ export default async function AuditPage() {
         />
       ) : (
       <div className="shynvo-table-wrap">
-        <table className="w-full text-left text-sm">
+        <table className={`w-full text-left ${appBody}`}>
           <thead className="border-b border-white/[0.06] bg-white/[0.03] font-mono text-[11px] font-medium uppercase tracking-[0.1em] text-muted">
             <tr>
               <th className="px-4 py-3.5">Time (UTC)</th>
@@ -93,7 +94,7 @@ export default async function AuditPage() {
               <th className="px-4 py-3.5">Outcome</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/[0.05] font-mono text-xs">
+          <tbody className={`divide-y divide-white/[0.05] font-mono ${appMeta}`}>
             {rows.map((e) => (
                 <tr key={e.id} className="transition-colors hover:bg-white/[0.03]">
                   <td className="px-4 py-3 text-muted">{e.ts}</td>

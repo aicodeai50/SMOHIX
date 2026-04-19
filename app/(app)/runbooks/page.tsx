@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { PageHeader } from "@/components/app/PageHeader";
+import { appBody, appMeta, appPanelTitle } from "@/lib/app-typography";
 import { listRunbooks } from "@/lib/runbooks/catalog";
 
 export const metadata: Metadata = {
@@ -25,12 +26,12 @@ export default function RunbooksIndexPage() {
             href={`/runbooks/${b.slug}`}
             className="rounded-xl border border-border bg-surface/80 p-5 transition-colors hover:border-accent/40 hover:bg-surface-elevated/50"
           >
-            <p className="font-mono text-[10px] uppercase tracking-wide text-muted">
+            <p className={`font-mono uppercase tracking-wide ${appMeta}`}>
               v{b.version} · {b.steps} steps
             </p>
-            <h2 className="mt-2 text-lg font-semibold text-foreground">{b.title}</h2>
-            <p className="mt-2 text-sm text-muted">{b.summary}</p>
-            <span className="mt-4 inline-block text-sm font-medium text-accent">Open →</span>
+            <h2 className={`mt-2 ${appPanelTitle}`}>{b.title}</h2>
+            <p className={`mt-2 text-muted ${appBody}`}>{b.summary}</p>
+            <span className={`mt-4 inline-block font-medium text-accent ${appBody}`}>Open →</span>
           </Link>
         ))}
       </div>

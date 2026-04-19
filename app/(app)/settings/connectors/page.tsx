@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
+import { appBody, appMeta, appPanelTitle } from "@/lib/app-typography";
 import { getConnectorHealthRows } from "@/lib/connectors-health";
 
 export const metadata: Metadata = {
@@ -46,15 +47,15 @@ export default async function ConnectorsPage() {
             className="flex flex-col gap-4 rounded-xl border border-border bg-surface/80 p-5 sm:flex-row sm:items-start sm:justify-between"
           >
             <div className="min-w-0 flex-1">
-              <h2 className="font-semibold text-foreground">{c.name}</h2>
-              <p className="mt-1 text-sm text-muted">{c.role}</p>
+              <h2 className={appPanelTitle}>{c.name}</h2>
+              <p className={`mt-1 text-muted ${appBody}`}>{c.role}</p>
               {c.baseUrl ? (
-                <p className="mt-2 truncate font-mono text-xs text-muted" title={c.baseUrl}>
+                <p className={`mt-2 truncate font-mono ${appMeta}`} title={c.baseUrl}>
                   {c.baseUrl}
                 </p>
               ) : null}
-              <p className="mt-2 font-mono text-xs text-muted">{c.detail}</p>
-              <p className="mt-2 text-sm">
+              <p className={`mt-2 font-mono ${appMeta}`}>{c.detail}</p>
+              <p className={`mt-2 ${appBody}`}>
                 {c.ok === null && (
                   <span className="text-amber-400/90">Not configured</span>
                 )}
@@ -74,7 +75,7 @@ export default async function ConnectorsPage() {
                   href={c.baseUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-lg border border-border px-4 py-2 text-sm text-foreground transition-colors hover:border-accent/40"
+                  className={`rounded-lg border border-border px-4 py-2 text-foreground transition-colors hover:border-accent/40 ${appBody}`}
                 >
                   Open service
                 </a>
@@ -84,7 +85,7 @@ export default async function ConnectorsPage() {
                   href={`${c.baseUrl}${c.docsPath ?? "/docs"}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs text-muted hover:text-accent"
+                  className={`${appMeta} hover:text-accent`}
                 >
                   API docs →
                 </a>

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { PageHeader } from "@/components/app/PageHeader";
+import { appBody, appMeta, appPanelTitle } from "@/lib/app-typography";
 import {
   getCheckoutUrlForUser,
   getCustomerPortalUrl,
@@ -40,7 +41,7 @@ export default async function BillingPage({
           title="Billing"
           description="Connect Supabase to manage accounts and subscription state."
         />
-        <p className="max-w-xl text-sm text-muted">
+        <p className={`max-w-xl text-muted ${appBody}`}>
           Set <span className="font-mono text-foreground/90">NEXT_PUBLIC_SUPABASE_URL</span> and{" "}
           <span className="font-mono text-foreground/90">NEXT_PUBLIC_SUPABASE_ANON_KEY</span> in
           your environment, then redeploy.
@@ -75,22 +76,22 @@ export default async function BillingPage({
       />
 
       {upgradeHint === "automations" && plan === "free" && !queryError ? (
-        <div className="mb-6 rounded-xl border border-accent/35 bg-accent/[0.08] px-4 py-3 text-sm text-foreground/90 shadow-[0_0_32px_-12px_rgba(94,225,255,0.35)] backdrop-blur-sm">
+        <div className={`mb-6 rounded-xl border border-accent/35 bg-accent/[0.08] px-4 py-3 text-foreground/90 shadow-[0_0_32px_-12px_rgba(94,225,255,0.35)] backdrop-blur-sm ${appBody}`}>
           <p className="font-medium text-foreground">Automations require a paid plan</p>
-          <p className="mt-1 text-muted">
+          <p className={`mt-1 text-muted ${appMeta}`}>
             Subscribe below (or finish billing webhook setup) to unlock the Automations console.
           </p>
         </div>
       ) : null}
 
       {queryError ? (
-        <div className="mb-6 rounded-xl border border-amber-400/25 bg-amber-500/[0.08] px-4 py-3 text-sm text-foreground/90 backdrop-blur-sm">
+        <div className={`mb-6 rounded-xl border border-amber-400/25 bg-amber-500/[0.08] px-4 py-3 text-foreground/90 backdrop-blur-sm ${appBody}`}>
           <p className="font-medium">Could not read subscriptions</p>
-          <p className="mt-1 font-mono text-xs text-muted">
+          <p className={`mt-1 font-mono ${appMeta}`}>
             {queryError.message}
             {queryError.code ? ` (${queryError.code})` : ""}
           </p>
-          <p className="mt-2 text-xs text-muted">
+          <p className={`mt-2 ${appMeta}`}>
             Apply{" "}
             <code className="rounded bg-surface px-1 py-0.5 text-accent">
               supabase/migrations/20260418120000_platform_spine.sql
@@ -105,12 +106,12 @@ export default async function BillingPage({
       <div className="max-w-xl space-y-6">
         {plan === "free" && !queryError ? (
           <div className="shynvo-glass rounded-2xl border border-accent/20 bg-accent/[0.06] p-5 md:p-6 shadow-[0_0_32px_-14px_rgba(94,225,255,0.25)]">
-            <h2 className="text-sm font-semibold text-foreground/95">You&apos;re on the free tier</h2>
-            <p className="mt-2 text-sm leading-relaxed text-muted">
+            <h2 className={`${appPanelTitle} text-foreground/95`}>You&apos;re on the free tier</h2>
+            <p className={`mt-2 text-muted ${appBody}`}>
               Core console features stay available while you evaluate. Limits below are the current
               product stance; billing adjusts automatically when you subscribe.
             </p>
-            <ul className="mt-4 space-y-2 text-sm text-foreground/85">
+            <ul className={`mt-4 space-y-2 text-foreground/85 ${appBody}`}>
               <li className="flex gap-2">
                 <span className="text-accent">·</span>
                 <span>
@@ -137,7 +138,7 @@ export default async function BillingPage({
             <div className="mt-5 flex flex-wrap gap-3">
               <Link
                 href="/pricing"
-                className="inline-flex h-10 items-center justify-center rounded-xl border border-white/[0.14] bg-white/[0.04] px-4 text-sm font-medium text-foreground transition-colors hover:border-accent/40"
+                className={`inline-flex h-10 items-center justify-center rounded-xl border border-white/[0.14] bg-white/[0.04] px-4 font-medium text-foreground transition-colors hover:border-accent/40 ${appBody}`}
               >
                 View pricing
               </Link>
@@ -146,7 +147,7 @@ export default async function BillingPage({
                   href={(checkoutHref ?? teamCheckoutHref) as string}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex h-10 items-center justify-center rounded-xl bg-accent px-4 text-sm font-semibold text-background hover:opacity-95"
+                  className={`inline-flex h-10 items-center justify-center rounded-xl bg-accent px-4 font-semibold text-background hover:opacity-95 ${appBody}`}
                 >
                   Upgrade
                 </a>
@@ -156,24 +157,24 @@ export default async function BillingPage({
         ) : null}
 
         <div className="shynvo-glass rounded-2xl p-5 md:p-6">
-          <h2 className="text-sm font-semibold text-foreground/95">Current plan</h2>
+          <h2 className={`${appPanelTitle} text-foreground/95`}>Current plan</h2>
           <p className="mt-2 text-2xl font-semibold text-foreground">{planDisplayName}</p>
           {plan === "paid" && paidTier === "unknown" && !queryError ? (
-            <p className="mt-2 text-xs text-muted">
+            <p className={`mt-2 ${appMeta}`}>
               To show <span className="text-foreground/80">Shynvo Pro</span> or{" "}
               <span className="text-foreground/80">Shynvo Team</span> here, set{" "}
-              <code className="rounded bg-surface px-1 font-mono text-[10px] text-accent">
+              <code className={`rounded bg-surface px-1 font-mono text-accent ${appMeta}`}>
                 NEXT_PUBLIC_LEMONSQUEEZY_PRO_VARIANT_ID
               </code>{" "}
               and{" "}
-              <code className="rounded bg-surface px-1 font-mono text-[10px] text-accent">
+              <code className={`rounded bg-surface px-1 font-mono text-accent ${appMeta}`}>
                 NEXT_PUBLIC_LEMONSQUEEZY_TEAM_VARIANT_ID
               </code>{" "}
               to match your Lemon variant ids.
             </p>
           ) : null}
           {summary ? (
-            <dl className="mt-4 space-y-2 font-mono text-xs text-muted">
+            <dl className={`mt-4 space-y-2 font-mono ${appMeta}`}>
               <div className="flex justify-between gap-4">
                 <dt>Status</dt>
                 <dd className="text-foreground/90">{summary.status}</dd>
@@ -200,7 +201,7 @@ export default async function BillingPage({
               ) : null}
             </dl>
           ) : !queryError ? (
-            <p className="mt-3 text-sm text-muted">
+            <p className={`mt-3 text-muted ${appBody}`}>
               No subscription on file yet. After you subscribe, the provider sends a webhook and
               this page will update (usually within seconds).
             </p>
@@ -208,8 +209,8 @@ export default async function BillingPage({
         </div>
 
         <div className="shynvo-glass rounded-2xl p-5 md:p-6">
-          <h2 className="text-sm font-semibold text-foreground/95">Upgrade</h2>
-          <p className="mt-2 text-sm text-muted">
+          <h2 className={`${appPanelTitle} text-foreground/95`}>Upgrade</h2>
+          <p className={`mt-2 text-muted ${appBody}`}>
             Checkout includes your account id so webhooks can attach the subscription to your
             profile.
           </p>
@@ -220,7 +221,7 @@ export default async function BillingPage({
                   href={checkoutHref}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex h-11 flex-1 items-center justify-center rounded-xl bg-accent px-5 text-sm font-semibold text-background shadow-[0_0_28px_-8px_rgba(94,225,255,0.45)] transition-[opacity,box-shadow] hover:opacity-95 hover:shadow-[0_0_36px_-6px_rgba(94,225,255,0.55)] sm:min-w-[10rem]"
+                  className={`inline-flex h-11 flex-1 items-center justify-center rounded-xl bg-accent px-5 font-semibold text-background shadow-[0_0_28px_-8px_rgba(94,225,255,0.45)] transition-[opacity,box-shadow] hover:opacity-95 hover:shadow-[0_0_36px_-6px_rgba(94,225,255,0.55)] sm:min-w-[10rem] ${appBody}`}
                 >
                   {teamCheckoutHref ? "Pro checkout" : "Open checkout"}
                 </a>
@@ -230,20 +231,20 @@ export default async function BillingPage({
                   href={teamCheckoutHref}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex h-11 flex-1 items-center justify-center rounded-xl border border-white/[0.12] bg-white/[0.04] px-5 text-sm font-semibold text-foreground transition-[border-color,box-shadow] hover:border-accent/40 hover:shadow-[0_0_24px_-12px_rgba(94,225,255,0.2)] sm:min-w-[10rem]"
+                  className={`inline-flex h-11 flex-1 items-center justify-center rounded-xl border border-white/[0.12] bg-white/[0.04] px-5 font-semibold text-foreground transition-[border-color,box-shadow] hover:border-accent/40 hover:shadow-[0_0_24px_-12px_rgba(94,225,255,0.2)] sm:min-w-[10rem] ${appBody}`}
                 >
                   Team checkout
                 </a>
               ) : null}
             </div>
           ) : (
-            <p className="mt-3 text-sm text-muted">
+            <p className={`mt-3 text-muted ${appBody}`}>
               Set{" "}
-              <code className="rounded bg-surface px-1 py-0.5 font-mono text-xs text-accent">
+              <code className={`rounded bg-surface px-1 py-0.5 font-mono text-accent ${appMeta}`}>
                 NEXT_PUBLIC_LEMONSQUEEZY_CHECKOUT_URL
               </code>{" "}
               (Pro) and optionally{" "}
-              <code className="rounded bg-surface px-1 py-0.5 font-mono text-xs text-accent">
+              <code className={`rounded bg-surface px-1 py-0.5 font-mono text-accent ${appMeta}`}>
                 NEXT_PUBLIC_LEMONSQUEEZY_TEAM_CHECKOUT_URL
               </code>{" "}
               (Team) to your Lemon checkout links.
@@ -253,34 +254,34 @@ export default async function BillingPage({
 
         {plan === "paid" && portalHref ? (
           <div className="shynvo-glass rounded-2xl p-5 md:p-6">
-            <h2 className="text-sm font-semibold text-foreground/95">Manage subscription</h2>
-            <p className="mt-2 text-sm text-muted">
+            <h2 className={`${appPanelTitle} text-foreground/95`}>Manage subscription</h2>
+            <p className={`mt-2 text-muted ${appBody}`}>
               Open your billing customer portal to update payment method, view invoices, or cancel.
             </p>
             <a
               href={portalHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-4 inline-flex h-11 items-center justify-center rounded-xl border border-white/[0.1] bg-white/[0.03] px-5 text-sm font-semibold text-foreground transition-[border-color,color,box-shadow] hover:border-accent/40 hover:text-accent hover:shadow-[0_0_24px_-12px_rgba(94,225,255,0.2)]"
+              className={`mt-4 inline-flex h-11 items-center justify-center rounded-xl border border-white/[0.1] bg-white/[0.03] px-5 font-semibold text-foreground transition-[border-color,color,box-shadow] hover:border-accent/40 hover:text-accent hover:shadow-[0_0_24px_-12px_rgba(94,225,255,0.2)] ${appBody}`}
             >
               Customer portal
             </a>
           </div>
         ) : plan === "paid" && !portalHref ? (
           <div className="shynvo-glass-subtle rounded-2xl border border-dashed border-white/[0.12] p-5 md:p-6">
-            <h2 className="text-sm font-semibold text-foreground/95">Customer portal</h2>
-            <p className="mt-2 text-sm text-muted">
+            <h2 className={`${appPanelTitle} text-foreground/95`}>Customer portal</h2>
+            <p className={`mt-2 text-muted ${appBody}`}>
               Optional: set{" "}
-              <code className="rounded bg-surface px-1 font-mono text-xs text-accent">
+              <code className={`rounded bg-surface px-1 font-mono text-accent ${appMeta}`}>
                 NEXT_PUBLIC_LEMONSQUEEZY_CUSTOMER_PORTAL_URL
               </code>{" "}
-              (or <code className="font-mono text-xs">LEMONSQUEEZY_CUSTOMER_PORTAL_URL</code>) to
+              (or <code className={`font-mono ${appMeta}`}>LEMONSQUEEZY_CUSTOMER_PORTAL_URL</code>) to
               your provider&apos;s customer portal URL.
             </p>
           </div>
         ) : null}
 
-        <p className="text-xs text-muted">
+        <p className={appMeta}>
           Billing changes at your provider (cancel, payment method) sync via webhook. Questions?{" "}
           <Link
             href={encodeURI("mailto:support@shynvo.app?subject=Billing")}

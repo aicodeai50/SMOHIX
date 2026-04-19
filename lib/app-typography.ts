@@ -17,3 +17,6 @@ export const appMeta = "text-[13px] leading-relaxed text-muted";
 
 /** Uppercase rail / group label. */
 export const appOverline = "text-[11px] font-semibold uppercase tracking-[0.12em] text-muted";
+
+/** Form field label (13px, muted). */
+export const appLabel = "text-[13px] font-medium text-muted";

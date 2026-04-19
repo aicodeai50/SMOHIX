@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
+import { appBody, appMeta } from "@/lib/app-typography";
 import { listIncidentsForUser } from "@/lib/incidents/data";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -44,13 +45,13 @@ export default async function IncidentsPage() {
         />
         <Link
           href="/incidents/new"
-          className="inline-flex h-10 shrink-0 items-center justify-center rounded-xl bg-accent px-5 text-sm font-semibold text-background shadow-[0_0_28px_-8px_rgba(94,225,255,0.45)] transition-[opacity,box-shadow] hover:opacity-95 hover:shadow-[0_0_36px_-6px_rgba(94,225,255,0.55)]"
+          className={`inline-flex h-10 shrink-0 items-center justify-center rounded-xl bg-accent px-5 font-semibold text-background shadow-[0_0_28px_-8px_rgba(94,225,255,0.45)] transition-[opacity,box-shadow] hover:opacity-95 hover:shadow-[0_0_36px_-6px_rgba(94,225,255,0.55)] ${appBody}`}
         >
           New incident
         </Link>
       </div>
       {source === "session" ? (
-        <p className="shynvo-glass-subtle mb-4 rounded-xl px-4 py-3 text-xs leading-relaxed text-muted">
+        <p className={`shynvo-glass-subtle mb-4 rounded-xl px-4 py-3 ${appMeta}`}>
           Incidents are scoped to this browser session until Supabase is connected. Run{" "}
           <code className="rounded bg-surface px-1 font-mono text-accent">
             supabase/migrations/20260418130000_incidents.sql
@@ -83,7 +84,7 @@ export default async function IncidentsPage() {
         />
       ) : (
       <div className="shynvo-table-wrap">
-        <table className="w-full text-left text-sm">
+        <table className={`w-full text-left ${appBody}`}>
           <thead className="border-b border-white/[0.06] bg-white/[0.03] font-mono text-[11px] font-medium uppercase tracking-[0.1em] text-muted">
             <tr>
               <th className="px-4 py-3.5">Id</th>
@@ -102,7 +103,7 @@ export default async function IncidentsPage() {
                   key={row.id}
                   className="transition-colors hover:bg-white/[0.03]"
                 >
-                  <td className="px-4 py-3 font-mono text-xs text-accent">
+                  <td className={`px-4 py-3 font-mono text-accent ${appMeta}`}>
                     <Link href={`/incidents/${row.id}`} className="hover:underline">
                       {row.id}
                     </Link>

@@ -5,6 +5,7 @@ import { PageHeader } from "@/components/app/PageHeader";
 import { getUserDisplayName, getUserFirstName } from "@/lib/auth/display-name";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { appBody, appMeta, appPanelTitle } from "@/lib/app-typography";
 import { SITE_BRAND_NAME } from "@/lib/site-brand";
 
 export const metadata: Metadata = {
@@ -71,15 +72,13 @@ export default async function HubPage() {
             href={item.href}
             className="shynvo-glass group flex flex-col rounded-2xl p-5 transition-[border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-[0_0_40px_-14px_rgba(94,225,255,0.2)]"
           >
-            <h2 className="text-base font-semibold text-foreground group-hover:text-accent">
-              {item.title}
-            </h2>
-            <p className="mt-2 flex-1 text-sm leading-relaxed text-muted">{item.blurb}</p>
-            <span className="mt-4 text-xs font-semibold text-accent/85">Open →</span>
+            <h2 className={`${appPanelTitle} text-foreground group-hover:text-accent`}>{item.title}</h2>
+            <p className={`mt-2 flex-1 ${appBody} text-muted`}>{item.blurb}</p>
+            <span className={`mt-4 font-semibold text-accent/85 ${appMeta}`}>Open →</span>
           </Link>
         ))}
       </div>
-      <p className="mt-6 max-w-2xl text-pretty text-sm leading-relaxed text-muted">
+      <p className={`mt-6 max-w-2xl text-pretty ${appBody} text-muted`}>
         Automations, runbooks, approvals, audit, billing, connectors, and the full module rail stay
         above — one navigation surface, no duplicate module grids.{" "}
         <Link href="/vision" className="font-medium text-accent hover:underline">

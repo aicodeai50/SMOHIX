@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { AppIcon } from "@/components/icons/AppIcon";
 import { getConsoleBreadcrumbs } from "@/lib/console-breadcrumbs";
+import { appMeta } from "@/lib/app-typography";
 import { CONSOLE_MODULES } from "@/lib/console-nav";
 
 export function ConsoleNavPanel() {
@@ -36,7 +37,7 @@ export function ConsoleNavPanel() {
           <button
             type="button"
             onClick={goBack}
-            className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-white/[0.1] bg-white/[0.04] px-3 text-xs font-semibold text-foreground/90 transition-colors hover:border-accent/35 hover:bg-white/[0.07] hover:text-accent"
+            className={`inline-flex h-9 items-center gap-1.5 rounded-lg border border-white/[0.1] bg-white/[0.04] px-3 font-semibold text-foreground/90 transition-colors hover:border-accent/35 hover:bg-white/[0.07] hover:text-accent ${appMeta}`}
             aria-label="Go back in browser history"
           >
             <AppIcon name="chevronLeft" size={14} className="text-muted" aria-hidden />
@@ -93,7 +94,7 @@ export function ConsoleNavPanel() {
                 setJumpKey((k) => k + 1);
               }
             }}
-            className="h-9 max-w-[11rem] cursor-pointer rounded-lg border border-white/[0.1] bg-white/[0.04] px-2 text-xs font-medium text-foreground/90 outline-none ring-accent/25 focus:border-accent/40 focus:ring-2 sm:max-w-[14rem]"
+            className={`h-9 max-w-[11rem] cursor-pointer rounded-lg border border-white/[0.1] bg-white/[0.04] px-2 font-medium text-foreground/90 outline-none ring-accent/25 focus:border-accent/40 focus:ring-2 sm:max-w-[14rem] ${appMeta}`}
           >
             <option value="">Jump to…</option>
             {CONSOLE_MODULES.map((m) => (

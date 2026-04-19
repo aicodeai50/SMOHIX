@@ -6,6 +6,7 @@ import { AlertIngestPanel } from "@/components/settings/AlertIngestPanel";
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
 import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { appBody, appLabel, appMeta, appOverline, appPanelTitle } from "@/lib/app-typography";
 import { billingPlanFromSummary, getSubscriptionSummary } from "@/lib/billing/plan";
 import { listServicesForUser } from "@/lib/services/data";
 import { createServiceSupabaseClient } from "@/lib/supabase/admin";
@@ -33,7 +34,7 @@ export default async function ServicesPage({
           title="Services"
           description="Connect Supabase and sign in to manage a service catalog and paid alert ingest."
         />
-        <p className="max-w-xl text-sm text-muted">
+        <p className={`max-w-xl text-muted ${appBody}`}>
           Local mode does not persist services. Configure auth to use this module.
         </p>
       </>
@@ -66,19 +67,19 @@ export default async function ServicesPage({
           description="Map systems and owners, then open incidents from monitoring via a secure webhook — included with an active subscription."
         />
         {err ? (
-          <p className="mb-4 rounded-xl border border-danger/25 bg-danger-dim/50 px-4 py-3 text-sm text-danger">
+          <p className={`mb-4 rounded-xl border border-danger/25 bg-danger-dim/50 px-4 py-3 text-danger ${appBody}`}>
             {err}
           </p>
         ) : null}
         <div className="shynvo-glass rounded-2xl p-6 md:p-8">
-          <h2 className="text-lg font-semibold text-foreground">Subscription required</h2>
-          <p className="mt-2 max-w-md text-sm leading-relaxed text-muted">
+          <h2 className={appPanelTitle}>Subscription required</h2>
+          <p className={`mt-2 max-w-md text-muted ${appBody}`}>
             Service catalog and alert ingest are paid capabilities: they tie your observability
             stack to incident records and use server-side token verification.
           </p>
           <Link
             href="/settings/billing?upgrade=services"
-            className="mt-5 inline-flex h-11 items-center justify-center rounded-xl bg-accent px-5 text-sm font-semibold text-background transition-opacity hover:opacity-90"
+            className={`mt-5 inline-flex h-11 items-center justify-center rounded-xl bg-accent px-5 font-semibold text-background transition-opacity hover:opacity-90 ${appBody}`}
           >
             View billing & checkout
           </Link>
@@ -95,7 +96,7 @@ export default async function ServicesPage({
         description="Catalog systems you operate, attach them to incidents, and accept monitoring webhooks that create incidents automatically."
       />
       {err ? (
-        <p className="mb-4 rounded-xl border border-danger/25 bg-danger-dim/50 px-4 py-3 text-sm text-danger">
+        <p className={`mb-4 rounded-xl border border-danger/25 bg-danger-dim/50 px-4 py-3 text-danger ${appBody}`}>
           {err}
         </p>
       ) : null}
@@ -104,7 +105,7 @@ export default async function ServicesPage({
         <PlaceholderCard title="Catalog">
           <form action={createServiceAction} className="space-y-3">
             <div>
-              <label htmlFor="svc-name" className="mb-1 block text-xs font-medium text-muted">
+              <label htmlFor="svc-name" className={`mb-1 block ${appLabel}`}>
                 Name
               </label>
               <input
@@ -113,11 +114,11 @@ export default async function ServicesPage({
                 required
                 maxLength={200}
                 placeholder="payments-api"
-                className="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm outline-none ring-ring/40 focus:ring-2"
+                className={`h-10 w-full rounded-lg border border-border bg-background px-3 text-foreground outline-none ring-ring/40 focus:ring-2 ${appBody}`}
               />
             </div>
             <div>
-              <label htmlFor="svc-env" className="mb-1 block text-xs font-medium text-muted">
+              <label htmlFor="svc-env" className={`mb-1 block ${appLabel}`}>
                 Environment
               </label>
               <input
@@ -125,11 +126,11 @@ export default async function ServicesPage({
                 name="environment"
                 maxLength={80}
                 placeholder="production"
-                className="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm outline-none ring-ring/40 focus:ring-2"
+                className={`h-10 w-full rounded-lg border border-border bg-background px-3 text-foreground outline-none ring-ring/40 focus:ring-2 ${appBody}`}
               />
             </div>
             <div>
-              <label htmlFor="svc-owner" className="mb-1 block text-xs font-medium text-muted">
+              <label htmlFor="svc-owner" className={`mb-1 block ${appLabel}`}>
                 Owner hint
               </label>
               <input
@@ -137,11 +138,11 @@ export default async function ServicesPage({
                 name="owner_hint"
                 maxLength={200}
                 placeholder="Team: Platform / @pagerduty-schedule"
-                className="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm outline-none ring-ring/40 focus:ring-2"
+                className={`h-10 w-full rounded-lg border border-border bg-background px-3 text-foreground outline-none ring-ring/40 focus:ring-2 ${appBody}`}
               />
             </div>
             <div>
-              <label htmlFor="svc-desc" className="mb-1 block text-xs font-medium text-muted">
+              <label htmlFor="svc-desc" className={`mb-1 block ${appLabel}`}>
                 Description
               </label>
               <textarea
@@ -150,19 +151,19 @@ export default async function ServicesPage({
                 rows={3}
                 maxLength={2000}
                 placeholder="What this system does, dependencies, criticality…"
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none ring-ring/40 focus:ring-2"
+                className={`w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground outline-none ring-ring/40 focus:ring-2 ${appBody}`}
               />
             </div>
             <button
               type="submit"
-              className="h-10 rounded-lg bg-accent px-4 text-sm font-medium text-background hover:opacity-90"
+              className={`h-10 rounded-lg bg-accent px-4 font-medium text-background hover:opacity-90 ${appBody}`}
             >
               Add service
             </button>
           </form>
 
           <div className="mt-6 border-t border-white/[0.06] pt-5">
-            <h3 className="text-xs font-semibold uppercase tracking-wide text-muted">Registered</h3>
+            <h3 className={appOverline}>Registered</h3>
             {rows.length === 0 ? (
               <div className="mt-4">
                 <ConsoleEmptyState
@@ -172,7 +173,7 @@ export default async function ServicesPage({
                 />
               </div>
             ) : (
-              <ul className="mt-3 space-y-2 text-sm">
+              <ul className={`mt-3 space-y-2 ${appBody}`}>
                 {rows.map((r) => (
                   <li
                     key={r.id}
@@ -181,18 +182,18 @@ export default async function ServicesPage({
                     <div>
                       <p className="font-medium text-foreground/90">{r.name}</p>
                       {r.environment ? (
-                        <p className="text-xs text-muted">{r.environment}</p>
+                        <p className={appMeta}>{r.environment}</p>
                       ) : null}
                       {r.ownerHint ? (
-                        <p className="text-xs text-muted">{r.ownerHint}</p>
+                        <p className={appMeta}>{r.ownerHint}</p>
                       ) : null}
-                      <p className="mt-1 font-mono text-[10px] text-accent/80">{r.id}</p>
+                      <p className={`mt-1 font-mono text-accent/80 ${appMeta}`}>{r.id}</p>
                     </div>
                     <form action={deleteServiceAction}>
                       <input type="hidden" name="id" value={r.id} />
                       <button
                         type="submit"
-                        className="text-xs font-medium text-danger hover:underline"
+                        className={`font-medium text-danger hover:underline ${appMeta}`}
                       >
                         Remove
                       </button>
