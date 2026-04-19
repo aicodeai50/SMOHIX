@@ -112,7 +112,7 @@ export function AutomationsConsole({
     <div className="space-y-6">
       <GuardedAutomationIdentity />
       {linkedIncidentId && auditTrailOnDryRun ? (
-        <p className="rounded-xl border border-accent/25 bg-accent/[0.06] px-4 py-3 text-xs leading-relaxed text-foreground/90">
+        <p className={`rounded-xl border border-accent/25 bg-accent/[0.06] px-4 py-3 text-foreground/90 ${appMeta}`}>
           <span className="font-medium text-foreground">Incident context.</span> Dry-runs started
           here will include{" "}
           <span className="font-mono text-accent/95">{linkedIncidentId}</span> in your audit payload
@@ -195,7 +195,7 @@ export function AutomationsConsole({
       </div>
       <section className="shynvo-glass rounded-2xl p-5 md:p-6">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h2 className="text-sm font-semibold text-foreground/90">Recent dry-runs</h2>
+          <h2 className={`${appPanelTitle} text-foreground/90`}>Recent dry-runs</h2>
           {auditTrailOnDryRun ? (
             <Link
               href="/audit"

@@ -106,7 +106,7 @@ export default async function OverviewPage() {
           <p className={`${appMeta} font-medium`}>Setup checklist</p>
           <p className="mt-1 text-2xl font-semibold text-foreground">
             {setupDone}
-            <span className="text-lg font-normal text-muted"> / 4</span>
+            <span className={`${appPanelTitle} font-normal text-muted`}> / 4</span>
           </p>
           <p className={`mt-1 ${appMeta}`}>Workspace readiness</p>
         </div>

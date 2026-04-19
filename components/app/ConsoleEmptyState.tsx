@@ -1,6 +1,8 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
+import { appBody, appMeta, appPanelTitle } from "@/lib/app-typography";
+
 export type EmptyCta = {
   href: string;
   label: string;
@@ -20,8 +22,8 @@ export function ConsoleEmptyState({
 }) {
   return (
     <div className="rounded-2xl border border-dashed border-white/[0.12] bg-white/[0.02] px-6 py-12 text-center sm:px-10">
-      <h3 className="text-base font-semibold text-foreground">{title}</h3>
-      <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-muted">{description}</p>
+      <h3 className={appPanelTitle}>{title}</h3>
+      <p className={`mx-auto mt-2 max-w-md text-muted ${appBody}`}>{description}</p>
       {ctas?.length ? (
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
           {ctas.map((c) =>
@@ -29,7 +31,7 @@ export function ConsoleEmptyState({
               <Link
                 key={c.href}
                 href={c.href}
-                className="inline-flex h-10 items-center justify-center rounded-xl border border-white/[0.12] px-4 text-sm font-medium text-muted transition-colors hover:border-accent/35 hover:text-foreground"
+                className={`inline-flex h-10 items-center justify-center rounded-xl border border-white/[0.12] px-4 font-medium text-muted transition-colors hover:border-accent/35 hover:text-foreground ${appBody}`}
               >
                 {c.label}
               </Link>
@@ -37,7 +39,7 @@ export function ConsoleEmptyState({
               <Link
                 key={c.href}
                 href={c.href}
-                className="inline-flex h-10 items-center justify-center rounded-xl bg-accent px-4 text-sm font-semibold text-background transition-opacity hover:opacity-90"
+                className={`inline-flex h-10 items-center justify-center rounded-xl bg-accent px-4 font-semibold text-background transition-opacity hover:opacity-90 ${appBody}`}
               >
                 {c.label}
               </Link>
@@ -45,7 +47,7 @@ export function ConsoleEmptyState({
           )}
         </div>
       ) : null}
-      {footnote ? <div className="mt-6 text-xs leading-relaxed text-muted">{footnote}</div> : null}
+      {footnote ? <div className={`mt-6 ${appMeta}`}>{footnote}</div> : null}
     </div>
   );
 }

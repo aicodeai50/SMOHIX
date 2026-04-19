@@ -46,7 +46,7 @@ export function ConsoleNavPanel() {
           <button
             type="button"
             onClick={goForward}
-            className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-white/[0.1] bg-white/[0.04] px-3 text-xs font-semibold text-foreground/90 transition-colors hover:border-accent/35 hover:bg-white/[0.07] hover:text-accent"
+            className={`inline-flex h-9 items-center gap-1.5 rounded-lg border border-white/[0.1] bg-white/[0.04] px-3 font-semibold text-foreground/90 transition-colors hover:border-accent/35 hover:bg-white/[0.07] hover:text-accent ${appMeta}`}
             aria-label="Go forward in browser history"
           >
             Forward

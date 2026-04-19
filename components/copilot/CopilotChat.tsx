@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { consumeCopilotSse } from "@/lib/copilot/sse-client";
+import { appBody, appMeta } from "@/lib/app-typography";
 
 /** Default assistant route; optional public env override for a custom JSON backend. */
 const proxyPath =
@@ -242,18 +243,18 @@ export function CopilotChat({
       {persistSession ? (
         <aside className="flex w-full shrink-0 flex-col rounded-xl border border-border bg-surface/70 p-3 shadow-sm lg:w-60">
           <div className="flex items-center justify-between gap-2">
-            <span className="text-xs font-semibold text-foreground/90">Threads</span>
+            <span className={`font-semibold text-foreground/90 ${appMeta}`}>Threads</span>
             <button
               type="button"
               onClick={newConversation}
-              className="rounded-lg border border-border bg-background/30 px-2.5 py-1 text-[11px] font-medium text-muted transition-colors hover:border-accent/35 hover:text-foreground"
+              className={`rounded-lg border border-border bg-background/30 px-2.5 py-1 font-medium text-muted transition-colors hover:border-accent/35 hover:text-foreground ${appMeta}`}
             >
               New chat
             </button>
           </div>
           <ul className="mt-3 max-h-44 space-y-0.5 overflow-y-auto lg:max-h-[min(24rem,calc(100vh-16rem))]">
             {threads.length === 0 ? (
-              <li className="rounded-lg px-2 py-3 text-center text-[11px] leading-relaxed text-muted">
+              <li className={`rounded-lg px-2 py-3 text-center text-muted ${appMeta}`}>
                 No saved threads yet. Send a message to start one.
               </li>
             ) : null}
@@ -270,11 +271,11 @@ export function CopilotChat({
                         : "text-muted hover:bg-surface-elevated/70 hover:text-foreground"
                     }`}
                   >
-                    <span className="line-clamp-2 text-xs font-medium leading-snug">
+                    <span className={`line-clamp-2 font-medium leading-snug ${appMeta}`}>
                       {t.title?.trim() || "Untitled conversation"}
                     </span>
                     {sub ? (
-                      <span className="mt-0.5 block text-[10px] text-muted opacity-90">
+                      <span className={`mt-0.5 block opacity-90 ${appMeta}`}>
                         {sub}
                       </span>
                     ) : null}
@@ -284,11 +285,11 @@ export function CopilotChat({
             })}
           </ul>
           {persistErr ? (
-            <p className="mt-3 rounded-lg border border-warning/25 bg-warning-dim/50 px-2 py-1.5 text-[11px] leading-snug text-warning">
+            <p className={`mt-3 rounded-lg border border-warning/25 bg-warning-dim/50 px-2 py-1.5 text-warning ${appMeta}`}>
               {persistErr}
             </p>
           ) : (
-            <p className="mt-3 text-[10px] leading-relaxed text-muted">
+            <p className={`mt-3 ${appMeta}`}>
               If history never appears, your workspace may still be finishing data setup — check
               Settings or try again later.
             </p>
@@ -299,7 +300,7 @@ export function CopilotChat({
       <div className="flex min-w-0 flex-1 flex-col gap-4">
         {err ? (
           <p
-            className="rounded-xl border border-danger/25 bg-danger-dim/80 px-3.5 py-2.5 text-sm leading-relaxed text-danger"
+            className={`rounded-xl border border-danger/25 bg-danger-dim/80 px-3.5 py-2.5 text-danger ${appBody}`}
             role="alert"
           >
             {err}
@@ -312,13 +313,13 @@ export function CopilotChat({
           aria-relevant="additions"
         >
           {msgs.length === 0 ? (
-            <div className="space-y-3 text-sm leading-relaxed text-muted">
+            <div className={`space-y-3 text-muted ${appBody}`}>
               <p className="text-foreground/85">
                 Describe a symptom, incident, or change. Copilot suggests checks and next steps you
                 can accept, edit, or discard.
               </p>
               {persistSession ? (
-                <p className="text-xs">
+                <p className={appMeta}>
                   Signed in: each conversation can be saved in your thread list when persistence is
                   enabled for this workspace.
                 </p>
@@ -331,7 +332,7 @@ export function CopilotChat({
                 className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
               >
                 <div
-                  className={`max-w-[min(100%,36rem)] rounded-2xl px-4 py-2.5 text-sm leading-relaxed break-words whitespace-pre-wrap ${
+                  className={`max-w-[min(100%,36rem)] rounded-2xl px-4 py-2.5 break-words whitespace-pre-wrap ${appBody} ${
                     m.role === "user"
                       ? "border border-accent/30 bg-accent-dim/85 text-foreground shadow-[0_0_24px_-10px_rgba(94,225,255,0.35)]"
                       : "border border-white/[0.08] bg-white/[0.04] text-foreground/92 backdrop-blur-sm"
@@ -351,7 +352,7 @@ export function CopilotChat({
                   <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted [animation-delay:-0.1s]" />
                   <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted" />
                 </span>
-                <span className="text-xs text-muted">Generating response…</span>
+                <span className={appMeta}>Generating response…</span>
               </div>
             </div>
           ) : null}
@@ -373,13 +374,13 @@ export function CopilotChat({
               }
             }}
             placeholder="Describe what you're seeing…"
-            className="min-h-[2.75rem] min-w-0 flex-1 resize-y rounded-xl border border-border bg-background/80 px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted/70 outline-none transition-shadow ring-ring/40 focus:ring-2"
+            className={`min-h-[2.75rem] min-w-0 flex-1 resize-y rounded-xl border border-border bg-background/80 px-3.5 py-2.5 text-foreground placeholder:text-muted/70 outline-none transition-shadow ring-ring/40 focus:ring-2 ${appBody}`}
           />
           <button
             type="button"
             disabled={pending || !input.trim()}
             onClick={() => void send()}
-            className="h-11 shrink-0 rounded-xl bg-accent px-5 text-sm font-semibold text-background shadow-sm transition-[opacity,box-shadow] hover:opacity-95 focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-45"
+            className={`h-11 shrink-0 rounded-xl bg-accent px-5 font-semibold text-background shadow-sm transition-[opacity,box-shadow] hover:opacity-95 focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-45 ${appBody}`}
           >
             Send
           </button>

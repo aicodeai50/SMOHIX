@@ -1,3 +1,4 @@
+import { appBody, appMeta } from "@/lib/app-typography";
 import { getConnectorHealthRows } from "@/lib/connectors-health";
 
 /** Copilot: shows whether linked services are reachable. */
@@ -12,19 +13,19 @@ export async function ConnectionStatus() {
       : "Guided assistance — enable a cloud model in deployment settings for deeper answers.";
 
   return (
-    <div className="shynvo-glass mb-6 rounded-2xl px-4 py-4 text-sm md:px-5 md:py-5">
+    <div className={`shynvo-glass mb-6 rounded-2xl px-4 py-4 md:px-5 md:py-5 ${appBody}`}>
       <div className="flex flex-col gap-4 md:flex-row md:gap-8">
         <div className="min-w-0 flex-1">
-          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-accent/90">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-accent/90">
             Assistant
           </p>
-          <p className="mt-1.5 text-sm leading-relaxed text-muted">{brainLine}</p>
+          <p className={`mt-1.5 text-muted ${appBody}`}>{brainLine}</p>
         </div>
         <div className="min-w-0 flex-1 border-t border-white/[0.06] pt-4 md:border-l md:border-t-0 md:pl-8 md:pt-0">
-          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-accent/90">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-accent/90">
             Integrations
           </p>
-          <ul className="mt-2 space-y-2 text-xs">
+          <ul className={`mt-2 space-y-2 ${appMeta}`}>
             {rows.map((r) => (
               <li
                 key={r.id}
@@ -45,7 +46,7 @@ export async function ConnectionStatus() {
           </ul>
         </div>
       </div>
-      <p className="mt-4 border-t border-white/[0.06] pt-3 text-xs leading-relaxed text-muted">
+      <p className={`mt-4 border-t border-white/[0.06] pt-3 ${appMeta}`}>
         Status is checked on the server when this page loads. Configure endpoints under{" "}
         <span className="font-medium text-foreground/85">Settings → Connectors</span>.
       </p>

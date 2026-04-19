@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import { appBody, appLabel, appMeta } from "@/lib/app-typography";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 
@@ -64,7 +65,7 @@ export function ProfileNameForm({
   return (
     <form onSubmit={onSubmit} className="mt-4 space-y-4">
       <div>
-        <label htmlFor="profile-email" className="mb-1.5 block text-xs font-medium text-muted">
+        <label htmlFor="profile-email" className={`mb-1.5 block ${appLabel}`}>
           Email
         </label>
         <p
@@ -73,10 +74,10 @@ export function ProfileNameForm({
         >
           {email}
         </p>
-        <p className="mt-1.5 text-[11px] text-muted">Email is managed by your sign-in provider.</p>
+        <p className={`mt-1.5 ${appMeta}`}>Email is managed by your sign-in provider.</p>
       </div>
       <div>
-        <label htmlFor="profile-full-name" className="mb-1.5 block text-xs font-medium text-muted">
+        <label htmlFor="profile-full-name" className={`mb-1.5 block ${appLabel}`}>
           Display name
         </label>
         <input
@@ -88,7 +89,7 @@ export function ProfileNameForm({
           value={fullName}
           onChange={(e) => setFullName(e.target.value)}
           placeholder="How you want to appear in the console"
-          className="h-11 w-full max-w-md rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none ring-ring/50 focus:ring-2"
+          className={`h-11 w-full max-w-md rounded-lg border border-border bg-background px-3 text-foreground outline-none ring-ring/50 focus:ring-2 ${appBody}`}
         />
       </div>
       {error ? (
@@ -97,14 +98,14 @@ export function ProfileNameForm({
         </p>
       ) : null}
       {ok ? (
-        <p className="rounded-lg border border-success/25 bg-success-dim/40 px-3 py-2 text-sm text-success" role="status">
+        <p className={`rounded-lg border border-success/25 bg-success-dim/40 px-3 py-2 text-success ${appBody}`} role="status">
           {ok}
         </p>
       ) : null}
       <button
         type="submit"
         disabled={loading}
-        className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-background transition-opacity hover:opacity-90 disabled:opacity-60"
+        className={`rounded-lg bg-accent px-4 py-2 font-medium text-background transition-opacity hover:opacity-90 disabled:opacity-60 ${appBody}`}
       >
         {loading ? "Saving…" : "Save profile"}
       </button>

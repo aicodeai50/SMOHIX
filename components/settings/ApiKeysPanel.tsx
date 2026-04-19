@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
+import { appBody, appLabel, appMeta, appPanelTitle } from "@/lib/app-typography";
 
 export type ApiKeyRow = {
   id: string;
@@ -102,7 +103,7 @@ export function ApiKeysPanel({
   return (
     <div className="space-y-6">
       {sessionScoped ? (
-        <p className="rounded-lg border border-cyan-500/25 bg-cyan-500/10 px-4 py-3 text-sm text-cyan-100/90">
+        <p className={`rounded-lg border border-cyan-500/25 bg-cyan-500/10 px-4 py-3 text-cyan-100/90 ${appBody}`}>
           <span className="font-medium text-foreground/90">Session-scoped keys.</span> Stored in
           server memory for your <span className="font-mono">shynvo_dev_tid</span> cookie and used
           to authenticate <span className="font-mono">/api/reasoning/*</span> and{" "}
@@ -110,7 +111,7 @@ export function ApiKeysPanel({
           deploy or cold start; connect Supabase for durable keys.
         </p>
       ) : !serviceRoleConfigured ? (
-        <p className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-100/90">
+        <p className={`rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-amber-100/90 ${appBody}`}>
           Set <span className="font-mono">SUPABASE_SERVICE_ROLE_KEY</span> on the server so
           API keys can authenticate proxy requests (
           <span className="font-mono">/api/reasoning</span>,{" "}
@@ -120,24 +121,24 @@ export function ApiKeysPanel({
       ) : null}
 
       {err ? (
-        <p className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200/90">
+        <p className={`rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-red-200/90 ${appBody}`}>
           {err}
         </p>
       ) : null}
 
       {minted ? (
         <div className="rounded-xl border border-accent/40 bg-surface-elevated/40 p-5">
-          <p className="text-sm font-medium text-foreground">Copy your new key now</p>
-          <p className="mt-2 text-xs text-muted">
+          <p className={`font-medium text-foreground ${appBody}`}>Copy your new key now</p>
+          <p className={`mt-2 ${appMeta}`}>
             This value is never shown again. Store it in a password manager or secret store.
           </p>
-          <pre className="mt-3 overflow-x-auto rounded-lg bg-background/80 p-3 font-mono text-xs text-foreground">
+          <pre className={`mt-3 overflow-x-auto rounded-lg bg-background/80 p-3 font-mono text-foreground ${appMeta}`}>
             {minted}
           </pre>
           <div className="mt-4 flex flex-wrap gap-2">
             <button
               type="button"
-              className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-background"
+              className={`rounded-lg bg-accent px-4 py-2 font-medium text-background ${appBody}`}
               onClick={async () => {
                 await navigator.clipboard.writeText(minted);
               }}
@@ -146,7 +147,7 @@ export function ApiKeysPanel({
             </button>
             <button
               type="button"
-              className="rounded-lg border border-border px-4 py-2 text-sm text-muted hover:text-foreground"
+              className={`rounded-lg border border-border px-4 py-2 text-muted hover:text-foreground ${appBody}`}
               onClick={() => setMinted(null)}
             >
               Done
@@ -157,7 +158,7 @@ export function ApiKeysPanel({
 
       <div id="api-key-create" className="flex flex-col gap-3 sm:flex-row sm:items-end">
         <div className="min-w-0 flex-1">
-          <label htmlFor="api-key-name" className="text-xs font-medium text-muted">
+          <label htmlFor="api-key-name" className={appLabel}>
             Label (optional)
           </label>
           <input
@@ -165,7 +166,7 @@ export function ApiKeysPanel({
             value={label}
             onChange={(e) => setLabel(e.target.value)}
             placeholder="e.g. CI, local script, Grafana"
-            className="mt-1 w-full rounded-lg border border-border bg-background/60 px-3 py-2 text-sm text-foreground placeholder:text-muted/60"
+            className={`mt-1 w-full rounded-lg border border-border bg-background/60 px-3 py-2 text-foreground placeholder:text-muted/60 ${appBody}`}
             maxLength={80}
             disabled={busy}
           />
@@ -174,7 +175,7 @@ export function ApiKeysPanel({
           type="button"
           disabled={busy}
           onClick={() => void generate()}
-          className="h-10 shrink-0 rounded-lg bg-accent px-4 text-sm font-medium text-background disabled:opacity-50"
+          className={`h-10 shrink-0 rounded-lg bg-accent px-4 font-medium text-background disabled:opacity-50 ${appBody}`}
         >
           {busy ? "Working…" : "Generate API key"}
         </button>
@@ -182,8 +183,8 @@ export function ApiKeysPanel({
 
       <div className="rounded-xl border border-border bg-surface/80">
         <div className="border-b border-border px-5 py-3">
-          <h2 className="text-sm font-semibold text-foreground">Active keys</h2>
-          <p className="mt-1 text-xs text-muted">
+          <h2 className={appPanelTitle}>Active keys</h2>
+          <p className={`mt-1 ${appMeta}`}>
             Use{" "}
             <span className="font-mono text-foreground/80">
               Authorization: Bearer &lt;key&gt;
@@ -227,8 +228,8 @@ export function ApiKeysPanel({
               >
                 <div className="min-w-0">
                   <p className="font-medium text-foreground">{k.name}</p>
-                  <p className="mt-1 font-mono text-xs text-muted">{k.key_prefix}</p>
-                  <p className="mt-1 text-xs text-muted">
+                  <p className={`mt-1 font-mono ${appMeta}`}>{k.key_prefix}</p>
+                  <p className={`mt-1 ${appMeta}`}>
                     Created {new Date(k.created_at).toLocaleString()}
                     {k.last_used_at
                       ? ` · Last used ${new Date(k.last_used_at).toLocaleString()}`
@@ -239,7 +240,7 @@ export function ApiKeysPanel({
                   type="button"
                   disabled={busy}
                   onClick={() => void revoke(k.id)}
-                  className="shrink-0 rounded-lg border border-border px-3 py-1.5 text-sm text-muted hover:border-red-500/40 hover:text-red-300 disabled:opacity-50"
+                  className={`shrink-0 rounded-lg border border-border px-3 py-1.5 text-muted hover:border-red-500/40 hover:text-red-300 disabled:opacity-50 ${appBody}`}
                 >
                   Revoke
                 </button>

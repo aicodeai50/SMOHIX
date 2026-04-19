@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 
+import { appBody, appLabel, appMeta, appPanelTitle } from "@/lib/app-typography";
+
 export type AlertIngestTokenRow = {
   id: string;
   name: string;
@@ -97,25 +99,25 @@ export function AlertIngestPanel({
   return (
     <div className="space-y-6">
       {!serviceRoleConfigured ? (
-        <p className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-100/90">
+        <p className={`rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-amber-100/90 ${appBody}`}>
           Set <span className="font-mono">SUPABASE_SERVICE_ROLE_KEY</span> so the alert webhook can
           verify tokens and create incidents.
         </p>
       ) : null}
       {loadErr ? (
-        <p className="rounded-lg border border-border bg-surface px-3 py-2 text-sm text-muted">
+        <p className={`rounded-lg border border-border bg-surface px-3 py-2 text-muted ${appBody}`}>
           {loadErr}
         </p>
       ) : null}
       {err ? (
-        <p className="rounded-lg border border-danger/30 bg-danger-dim/50 px-3 py-2 text-sm text-danger">
+        <p className={`rounded-lg border border-danger/30 bg-danger-dim/50 px-3 py-2 text-danger ${appBody}`}>
           {err}
         </p>
       ) : null}
 
       <div>
-        <h3 className="text-sm font-semibold text-foreground/95">Alert → incident webhook</h3>
-        <p className="mt-1 text-xs leading-relaxed text-muted">
+        <h3 className={`${appPanelTitle} text-foreground/95`}>Alert → incident webhook</h3>
+        <p className={`mt-1 text-muted ${appMeta}`}>
           POST JSON to{" "}
           <code className="rounded bg-background/50 px-1 font-mono text-[11px] text-accent/90">
             {origin}/api/integrations/alerts
@@ -135,11 +137,11 @@ export function AlertIngestPanel({
 
       {minted ? (
         <div className="rounded-xl border border-accent/35 bg-accent-dim/40 px-4 py-3">
-          <p className="text-xs font-medium text-foreground/90">New token (copy once)</p>
-          <code className="mt-2 block break-all font-mono text-sm text-accent">{minted}</code>
+          <p className={`font-medium text-foreground/90 ${appMeta}`}>New token (copy once)</p>
+          <code className={`mt-2 block break-all font-mono text-accent ${appBody}`}>{minted}</code>
           <button
             type="button"
-            className="mt-3 text-xs font-medium text-muted hover:text-foreground"
+            className={`mt-3 font-medium text-muted hover:text-foreground ${appMeta}`}
             onClick={() => setMinted(null)}
           >
             Dismiss
@@ -149,14 +151,14 @@ export function AlertIngestPanel({
 
       <div className="flex flex-wrap items-end gap-3">
         <div className="min-w-[12rem] flex-1">
-          <label htmlFor="ingest-label" className="mb-1 block text-xs font-medium text-muted">
+          <label htmlFor="ingest-label" className={`mb-1 block ${appLabel}`}>
             Label (optional)
           </label>
           <input
             id="ingest-label"
             value={label}
             onChange={(e) => setLabel(e.target.value)}
-            className="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm outline-none ring-ring/40 focus:ring-2"
+            className={`h-10 w-full rounded-lg border border-border bg-background px-3 text-foreground outline-none ring-ring/40 focus:ring-2 ${appBody}`}
             placeholder="Grafana EU"
           />
         </div>
@@ -164,28 +166,28 @@ export function AlertIngestPanel({
           type="button"
           disabled={busy}
           onClick={() => void generate()}
-          className="h-10 rounded-lg bg-accent px-4 text-sm font-medium text-background disabled:opacity-50"
+          className={`h-10 rounded-lg bg-accent px-4 font-medium text-background disabled:opacity-50 ${appBody}`}
         >
           {busy ? "Working…" : "Create ingest token"}
         </button>
       </div>
 
-      <ul className="space-y-2 text-sm">
+      <ul className={`space-y-2 ${appBody}`}>
         {active.length === 0 ? (
           <li className="text-muted">No active ingest tokens yet.</li>
         ) : (
           active.map((t) => (
             <li
               key={t.id}
-              className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2"
+              className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2 transition-[border-color,background-color] duration-200 hover:border-white/[0.1] hover:bg-white/[0.035]"
             >
               <span>
                 <span className="font-medium text-foreground/90">{t.name}</span>
-                <span className="ml-2 font-mono text-xs text-muted">{t.key_prefix}</span>
+                <span className={`ml-2 font-mono ${appMeta}`}>{t.key_prefix}</span>
               </span>
               <button
                 type="button"
-                className="text-xs font-medium text-danger hover:underline"
+                className={`font-medium text-danger hover:underline ${appMeta}`}
                 onClick={() => void revoke(t.id)}
                 disabled={busy}
               >
