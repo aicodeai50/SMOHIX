@@ -4,17 +4,15 @@ import { Logo } from "./Logo";
 import { MarketingHistoryNav } from "./MarketingHistoryNav";
 
 const nav = [
-  { href: "#preview", label: "Product" },
-  { href: "#how-it-works", label: "Flow" },
-  { href: "#guarded-mechanics", label: "Guards" },
-  { href: "#use-cases", label: "Cases" },
-  { href: "#control", label: "Control" },
-  { href: "#modules", label: "Modules" },
-  { href: "#operations", label: "Ops" },
-  { href: "#proof", label: "Proof" },
-  { href: "#trust", label: "Trust" },
-  { href: "#connect", label: "Start" },
-];
+  { href: "/", label: "Home" },
+  { href: "/platform", label: "Platform" },
+  { href: "/docs", label: "Docs" },
+  { href: "/pricing", label: "Pricing" },
+  { href: "/integrations", label: "Integrations" },
+  { href: "/status", label: "Status" },
+  { href: "/changelog", label: "Changelog" },
+  { href: "/why", label: "Why" },
+] as const;
 
 export function Header() {
   return (
@@ -23,19 +21,16 @@ export function Header() {
         <Link href="/" className="min-w-0 shrink-0 text-foreground no-underline">
           <Logo />
         </Link>
-        <nav className="hidden flex-wrap items-center justify-end gap-x-4 gap-y-1 text-sm text-muted md:flex lg:gap-x-6">
+        <nav className="hidden max-w-[min(100%,46rem)] flex-wrap items-center justify-end gap-x-2.5 gap-y-1 text-[11px] text-muted md:flex md:text-[12px] lg:max-w-[52rem] lg:gap-x-3 lg:text-sm">
           {nav.map((item) => (
-            <a
+            <Link
               key={item.href}
               href={item.href}
-              className="transition-colors hover:text-foreground"
+              className="whitespace-nowrap transition-colors hover:text-foreground"
             >
               {item.label}
-            </a>
+            </Link>
           ))}
-          <Link href="/integrations" className="transition-colors hover:text-foreground">
-            Integrations
-          </Link>
         </nav>
         <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 sm:w-auto sm:gap-3 md:flex-nowrap">
           <MarketingHistoryNav />

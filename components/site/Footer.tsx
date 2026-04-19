@@ -36,7 +36,7 @@ export function Footer() {
             </p>
           </div>
 
-          <div className="grid gap-8 sm:grid-cols-2 md:gap-10 md:text-right">
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 lg:gap-10 md:text-right">
             <div className="space-y-3">
               <FooterHeading>Explore</FooterHeading>
               <nav className="flex flex-col gap-2 text-sm text-muted" aria-label="Site">
@@ -49,14 +49,38 @@ export function Footer() {
                 <Link href="/#modules" className="w-fit hover:text-foreground md:ml-auto">
                   Modules
                 </Link>
-                <Link href="/integrations" className="w-fit hover:text-foreground md:ml-auto">
-                  Integrations
-                </Link>
                 <Link href="/#trust" className="w-fit hover:text-foreground md:ml-auto">
                   Trust
                 </Link>
                 <Link href="/auth/sign-in" className="w-fit hover:text-foreground md:ml-auto">
                   Account
+                </Link>
+              </nav>
+            </div>
+
+            <div className="space-y-3">
+              <FooterHeading>Product</FooterHeading>
+              <nav className="flex flex-col gap-2 text-sm text-muted" aria-label="Product">
+                <Link href="/platform" className="w-fit hover:text-foreground md:ml-auto">
+                  Platform overview
+                </Link>
+                <Link href="/docs" className="w-fit hover:text-foreground md:ml-auto">
+                  Docs
+                </Link>
+                <Link href="/why" className="w-fit hover:text-foreground md:ml-auto">
+                  Why Shynvo
+                </Link>
+                <Link href="/pricing" className="w-fit hover:text-foreground md:ml-auto">
+                  Pricing
+                </Link>
+                <Link href="/integrations" className="w-fit hover:text-foreground md:ml-auto">
+                  Integrations
+                </Link>
+                <Link href="/status" className="w-fit hover:text-foreground md:ml-auto">
+                  Status
+                </Link>
+                <Link href="/changelog" className="w-fit hover:text-foreground md:ml-auto">
+                  Changelog
                 </Link>
               </nav>
             </div>

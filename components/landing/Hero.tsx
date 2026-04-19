@@ -59,7 +59,16 @@ export function Hero({
         </div>
 
         <p className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted">
-          <a href="#preview" className="text-foreground/90 underline-offset-4 hover:text-accent hover:underline">
+          <Link
+            href="/platform"
+            className="text-foreground/90 underline-offset-4 hover:text-accent hover:underline"
+          >
+            Platform overview
+          </Link>
+          <span className="text-muted/35" aria-hidden>
+            ·
+          </span>
+          <a href="#preview" className="underline-offset-4 hover:text-accent hover:underline">
             See the UI
           </a>
           <span className="text-muted/35" aria-hidden>

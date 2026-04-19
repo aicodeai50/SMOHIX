@@ -20,7 +20,17 @@ function noStoreHtml(response: NextResponse, pathname: string) {
     pathname.startsWith("/audit") ||
     pathname.startsWith("/runbooks") ||
     pathname.startsWith("/settings");
-  if (pathname === "/" || pathname.startsWith("/auth/") || consoleDoc) {
+  const marketing =
+    pathname === "/" ||
+    pathname === "/platform" ||
+    pathname === "/docs" ||
+    pathname === "/pricing" ||
+    pathname === "/status" ||
+    pathname === "/changelog" ||
+    pathname === "/why" ||
+    pathname === "/integrations";
+
+  if (marketing || pathname.startsWith("/auth/") || consoleDoc) {
     response.headers.set("Cache-Control", "private, no-store, must-revalidate");
     response.headers.set("CDN-Cache-Control", "no-store");
   }
