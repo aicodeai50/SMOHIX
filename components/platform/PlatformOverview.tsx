@@ -1,6 +1,53 @@
 import Link from "next/link";
 
+import { mBody, mCardLink, mH1, mH2 } from "@/lib/marketing-layout";
+import { SITE_BRAND_NAME } from "@/lib/site-brand";
+
+const SURFACE = [
+  {
+    title: "Incidents",
+    body: "Single record per event: severity, owner, service link, runbook, timeline, export when DB-backed.",
+    href: "/auth/sign-in?next=/incidents",
+  },
+  {
+    title: "Automations",
+    body: "Playbooks, dry-runs, and guarded execution before production side effects.",
+    href: "/auth/sign-in?next=/automations",
+  },
+  {
+    title: "Approvals",
+    body: "Explicit decisions on high-impact work — a queue you can review, not a disappearing chat thread.",
+    href: "/auth/sign-in?next=/approvals",
+  },
+  {
+    title: "Audit",
+    body: "Append-oriented activity log for keys, billing sync, automation events, and status transitions.",
+    href: "/auth/sign-in?next=/audit",
+  },
+  {
+    title: "Runbooks",
+    body: "Versioned procedures and checks the whole team can follow under pressure.",
+    href: "/auth/sign-in?next=/runbooks",
+  },
+  {
+    title: "Connectors",
+    body: "Optional HTTP backends for health checks, automation, and alerting integrations.",
+    href: "/auth/sign-in?next=/settings/connectors",
+  },
+  {
+    title: "Reasoning",
+    body: "Optional reasoning proxy for Copilot and drafting — configured alongside automation endpoints.",
+    href: "/auth/sign-in?next=/settings/connectors",
+  },
+  {
+    title: "Governance",
+    body: "How trust is assembled: audit, approvals, credentials, execution posture, and limits.",
+    href: "/trust",
+  },
+] as const;
+
 const TOC = [
+  { href: "#surface", label: "Product surface" },
   { href: "#summary", label: "Overview" },
   { href: "#who", label: "Who it is for" },
   { href: "#flow", label: "Core workflow" },
@@ -17,10 +64,10 @@ export function PlatformOverview() {
       <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent/90">
         Product narrative
       </p>
-      <h1 className="mt-2 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-        Shynvo console — what it is
+      <h1 className={`mt-2 ${mH1}`}>
+        {SITE_BRAND_NAME} console — what it is
       </h1>
-      <p className="mt-3 text-sm text-muted">
+      <p className={`mt-3 ${mBody}`}>
         For investors, buyers, and new engineers: meaning first, routes second.
       </p>
 
@@ -40,10 +87,36 @@ export function PlatformOverview() {
         </ul>
       </nav>
 
+      <section id="surface" className="mt-10 scroll-mt-24">
+        <h2 className={mH2}>Product surface</h2>
+        <p className={`mt-3 ${mBody}`}>
+          Signed-in routes grouped the way operators navigate during an incident. Each card opens directly into the
+          console.
+        </p>
+        <p className={`mt-2 ${mBody}`}>
+          <Link href="/trust" className="font-medium text-accent hover:underline">
+            Trust &amp; governance
+          </Link>{" "}
+          explains how these surfaces fit together for reviewers.
+        </p>
+        <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {SURFACE.map((item) => (
+            <li key={item.title}>
+              <Link href={item.href} className={mCardLink}>
+                <span className="text-sm font-semibold text-foreground">{item.title}</span>
+                <span className="mt-2 flex-1 text-[0.9375rem] leading-relaxed text-muted">{item.body}</span>
+                <span className="mt-4 text-xs font-semibold text-accent/90 group-hover:underline">Open →</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
+
       <section id="summary" className="mt-14 scroll-mt-24">
-        <h2 className="text-lg font-semibold text-foreground">System summary</h2>
-        <p className="mt-3 text-sm leading-relaxed text-muted">
-          Shynvo is a <strong className="font-medium text-foreground/90">controlled operations layer</strong>{" "}
+        <h2 className={mH2}>System summary</h2>
+        <p className={`mt-3 ${mBody}`}>
+          {SITE_BRAND_NAME} is a{" "}
+          <strong className="font-medium text-foreground/90">controlled operations layer</strong>{" "}
           for IT teams. It combines <strong className="font-medium text-foreground/90">incident response</strong>,{" "}
           <strong className="font-medium text-foreground/90">guarded automation</strong> (dry-runs and
           approvals before side effects), and an{" "}
@@ -55,8 +128,8 @@ export function PlatformOverview() {
       </section>
 
       <section id="who" className="mt-12 scroll-mt-24">
-        <h2 className="text-lg font-semibold text-foreground">Who it is for</h2>
-        <ul className="mt-3 list-inside list-disc space-y-2 text-sm leading-relaxed text-muted">
+        <h2 className={mH2}>Who it is for</h2>
+        <ul className={`mt-3 list-inside list-disc space-y-2 ${mBody}`}>
           <li>SRE and DevOps teams shipping and operating production services</li>
           <li>Platform engineers standardizing how change is proposed and recorded</li>
           <li>Internal IT operations groups that need defensible automation, not shadow scripts</li>
@@ -65,11 +138,11 @@ export function PlatformOverview() {
       </section>
 
       <section id="flow" className="mt-12 scroll-mt-24">
-        <h2 className="text-lg font-semibold text-foreground">Core operational flow</h2>
-        <p className="mt-3 text-sm leading-relaxed text-muted">
+        <h2 className={mH2}>Core operational flow</h2>
+        <p className={`mt-3 ${mBody}`}>
           This is how modules connect in practice — the story buyers should replay in their heads.
         </p>
-        <ol className="mt-6 space-y-5 text-sm leading-relaxed text-muted">
+        <ol className={`mt-6 space-y-5 ${mBody}`}>
           <li className="border-l-2 border-accent/40 pl-4">
             <span className="font-medium text-foreground">Signal in</span> — HTTP alert ingest (
             <code className="rounded bg-white/[0.06] px-1 font-mono text-xs text-accent/90">
@@ -126,12 +199,12 @@ export function PlatformOverview() {
       </section>
 
       <section id="guarded" className="mt-12 scroll-mt-24">
-        <h2 className="text-lg font-semibold text-foreground">Guarded automation model</h2>
-        <p className="mt-3 text-sm leading-relaxed text-muted">
+        <h2 className={mH2}>Guarded automation model</h2>
+        <p className={`mt-3 ${mBody}`}>
           &ldquo;Guarded&rdquo; means automation is <strong className="text-foreground/90">accountable</strong>, not
           silent. Today the product enforces:
         </p>
-        <ul className="mt-4 list-inside list-disc space-y-2 text-sm leading-relaxed text-muted">
+        <ul className={`mt-4 list-inside list-disc space-y-2 ${mBody}`}>
           <li>
             <strong className="text-foreground/90">Dry-run</strong> path for automations before irreversible
             connector calls.
@@ -148,7 +221,7 @@ export function PlatformOverview() {
             deployment is configured to append.
           </li>
         </ul>
-        <p className="mt-4 text-sm leading-relaxed text-muted">
+        <p className={`mt-4 ${mBody}`}>
           <strong className="text-foreground/90">Roadmap (not implied as shipped):</strong> delegated approver roles,
           fine-grained policy DSL, automatic rollback orchestration, and deep third-party OAuth connectors — see{" "}
           <Link href="/integrations" className="text-accent hover:underline">
@@ -159,11 +232,11 @@ export function PlatformOverview() {
       </section>
 
       <section id="capabilities" className="mt-12 scroll-mt-24">
-        <h2 className="text-lg font-semibold text-foreground">Capabilities (grouped)</h2>
-        <p className="mt-3 text-sm text-muted">
+        <h2 className={mH2}>Capabilities (grouped)</h2>
+        <p className={`mt-3 ${mBody}`}>
           Routes are implementation details; buckets are how teams buy.
         </p>
-        <dl className="mt-6 space-y-6 text-sm">
+        <dl className={`mt-6 space-y-6 text-[0.9375rem]`}>
           <div>
             <dt className="font-semibold text-foreground">Incident management</dt>
             <dd className="mt-1 leading-relaxed text-muted">
@@ -218,8 +291,8 @@ export function PlatformOverview() {
       </section>
 
       <section id="runtime" className="mt-12 scroll-mt-24">
-        <h2 className="text-lg font-semibold text-foreground">Runtime modes (trust)</h2>
-        <ul className="mt-3 space-y-3 text-sm leading-relaxed text-muted">
+        <h2 className={mH2}>Runtime modes (trust)</h2>
+        <ul className={`mt-3 space-y-3 ${mBody}`}>
           <li>
             <strong className="text-foreground/90">Production mode</strong> — Supabase-backed auth, per-user data,
             RLS, incidents in Postgres, audit append when the service role is configured, billing webhooks when
@@ -234,26 +307,27 @@ export function PlatformOverview() {
       </section>
 
       <section id="differentiation" className="mt-12 scroll-mt-24">
-        <h2 className="text-lg font-semibold text-foreground">What makes this different</h2>
-        <ul className="mt-3 space-y-3 text-sm leading-relaxed text-muted">
+        <h2 className={mH2}>What makes this different</h2>
+        <ul className={`mt-3 space-y-3 ${mBody}`}>
           <li>
             <strong className="text-foreground/90">PagerDuty-class tools</strong> skew alerting and paging first.
-            Shynvo does not claim full parity on schedules on day one; it emphasizes{" "}
+            {SITE_BRAND_NAME} does not claim full parity on schedules on day one; it emphasizes{" "}
             <strong className="text-foreground/90">controlled change and proof</strong> after the page.
           </li>
           <li>
             <strong className="text-foreground/90">ServiceNow-class suites</strong> skew heavyweight ITSM process.
-            Shynvo is lighter: opinionated console flows with room to grow — not a full CMDB replacement in v1.
+            {SITE_BRAND_NAME} is lighter: opinionated console flows with room to grow — not a full CMDB replacement in v1.
           </li>
           <li>
-            Shynvo&apos;s wedge is <strong className="text-foreground/90">unified incident + guarded automation + audit</strong>{" "}
+            {SITE_BRAND_NAME}&apos;s wedge is{" "}
+            <strong className="text-foreground/90">unified incident + guarded automation + audit</strong>{" "}
             in one product surface, so operators are not stitching three vendors together for a single incident story.
           </li>
         </ul>
       </section>
 
       <section id="architecture" className="mt-12 scroll-mt-24">
-        <h2 className="text-lg font-semibold text-foreground">Architecture (text)</h2>
+        <h2 className={mH2}>Architecture (text)</h2>
         <pre className="mt-4 overflow-x-auto rounded-xl border border-white/[0.08] bg-black/45 p-4 font-mono text-[11px] leading-relaxed text-foreground/80 sm:text-xs">
 {`Users & webhooks
        │
@@ -281,7 +355,7 @@ export function PlatformOverview() {
         </pre>
       </section>
 
-      <p className="mt-14 text-sm text-muted">
+      <p className={`mt-14 ${mBody}`}>
         <Link href="/" className="font-medium text-accent hover:underline">
           ← Home
         </Link>
@@ -290,8 +364,12 @@ export function PlatformOverview() {
           Docs hub
         </Link>
         {" · "}
+        <Link href="/trust" className="font-medium text-accent hover:underline">
+          Trust
+        </Link>
+        {" · "}
         <Link href="/why" className="font-medium text-accent hover:underline">
-          Why Shynvo
+          Why {SITE_BRAND_NAME}
         </Link>
       </p>
     </article>

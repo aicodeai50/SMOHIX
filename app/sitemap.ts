@@ -12,6 +12,7 @@ const PATHS: { path: string; changeFrequency: MetadataRoute.Sitemap[0]["changeFr
   { path: "/refund", changeFrequency: "monthly", priority: 0.4 },
   { path: "/integrations", changeFrequency: "monthly", priority: 0.65 },
   { path: "/platform", changeFrequency: "monthly", priority: 0.75 },
+  { path: "/trust", changeFrequency: "monthly", priority: 0.72 },
   { path: "/docs", changeFrequency: "weekly", priority: 0.7 },
   { path: "/docs/api", changeFrequency: "weekly", priority: 0.68 },
   { path: "/why", changeFrequency: "monthly", priority: 0.6 },

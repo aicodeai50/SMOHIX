@@ -23,12 +23,12 @@ export function ConnectCTA({
               Integrations and console
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-muted">
-              Reasoning and automation are available in the same application after you sign in.
-              Integration details are managed from Settings.{" "}
+              Reasoning and automation live in the same workspace after you sign in. Connector
+              configuration is under Settings — see the{" "}
               <Link href="/integrations" className="font-medium text-accent hover:underline">
-                Integration roadmap
-              </Link>
-              .
+                integrations overview
+              </Link>{" "}
+              for what ships today and what is planned.
             </p>
             <ul className="mt-5 space-y-2 text-sm text-muted">
               <li>

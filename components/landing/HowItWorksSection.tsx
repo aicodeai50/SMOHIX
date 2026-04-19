@@ -1,3 +1,6 @@
+import { mContainer, mH2, mLede, mPanelShell, mSection } from "@/lib/marketing-layout";
+import { SITE_BRAND_NAME } from "@/lib/site-brand";
+
 const STEPS = [
   {
     n: "1",
@@ -6,7 +9,7 @@ const STEPS = [
   },
   {
     n: "2",
-    title: "Shynvo loads a controlled workflow",
+    title: `${SITE_BRAND_NAME} loads a controlled workflow`,
     body: "Assign owner, link a service, attach a versioned runbook — everyone sees the same checklist.",
   },
   {
@@ -34,29 +37,24 @@ const STEPS = [
 const GUARDED = [
   "Nothing irreversible runs straight from chat — dry-run or human checkpoint first.",
   "Approvals and status transitions are written for audit, not buried in DMs.",
-  "Connectors are yours — Shynvo does not silently phone home to your cloud APIs.",
+  `Connectors are yours — ${SITE_BRAND_NAME} does not silently phone home to your cloud APIs.`,
 ] as const;
 
 export function HowItWorksSection() {
   return (
-    <section
-      id="how-it-works"
-      className="border-b border-white/[0.06] py-16 sm:py-20"
-      aria-labelledby="how-heading"
-    >
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <h2
-          id="how-heading"
-          className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl"
-        >
-          How Shynvo runs an incident
+    <section id="how-it-works" className={mSection} aria-labelledby="how-heading">
+      <div className={mContainer}>
+        <h2 id="how-heading" className={mH2}>
+          How {SITE_BRAND_NAME} runs an incident
         </h2>
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
+        <p className={mLede}>
           Read this like a storyboard — each step maps to a real route in the console today unless
           called out as roadmap.
         </p>
 
-        <p className="mt-6 rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 font-mono text-[11px] leading-relaxed text-foreground/85 sm:text-xs">
+        <p
+          className={`mt-6 px-4 py-3 font-mono text-[11px] leading-relaxed text-foreground/85 sm:text-xs ${mPanelShell}`}
+        >
           <span className="text-muted">Example:</span> server signal → incident opens → runbook +
           Copilot → dry-run playbook → approval recorded → execute via connector → audit + export
         </p>

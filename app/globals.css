@@ -19,6 +19,19 @@
   --danger: #fb7185;
   --danger-dim: rgba(251, 113, 133, 0.1);
   --violet-glow: rgba(129, 140, 248, 0.12);
+
+  /* Design language — marketing + console typography rhythm (24px baseline unit = --dl-space-3) */
+  --dl-space-1: 0.5rem;
+  --dl-space-2: 1rem;
+  --dl-space-3: 1.5rem;
+  --dl-space-4: 2rem;
+  --dl-radius-card: 1rem;
+  --dl-type-h1: 2rem;
+  --dl-type-h1-lg: 2.5rem;
+  --dl-type-h2: 1.5rem;
+  --dl-type-h3: 1.125rem;
+  --dl-type-body: 0.9375rem;
+  --dl-shadow-card-hover: 0 20px 50px -28px rgba(0, 0, 0, 0.55);
 }
 
 @theme inline {

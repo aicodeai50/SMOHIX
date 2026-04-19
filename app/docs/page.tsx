@@ -3,6 +3,8 @@ import Link from "next/link";
 
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
+import { mBody, mCardLink, mContainer, mH1 } from "@/lib/marketing-layout";
+import { SITE_BRAND_NAME } from "@/lib/site-brand";
 
 export const metadata: Metadata = {
   title: "Docs",
@@ -17,11 +19,16 @@ const CARDS = [
   },
   {
     title: "Platform overview",
-    body: "Summary, end-to-end flow, guarded model, capabilities by bucket, runtime modes, differentiation, architecture.",
+    body: "Summary, product surface, end-to-end flow, guarded model, capabilities, runtime modes, differentiation, architecture.",
     href: "/platform",
   },
   {
-    title: "Why Shynvo",
+    title: "Trust & governance",
+    body: "Audit, approvals, connectors, API keys, execution posture, and limits — how the product earns review.",
+    href: "/trust",
+  },
+  {
+    title: `Why ${SITE_BRAND_NAME}`,
     body: "Short philosophy — accountability over hype, guarded automation as thesis.",
     href: "/why",
   },
@@ -57,11 +64,9 @@ export default function DocsPage() {
     <>
       <Header />
       <main className="flex-1 border-b border-white/[0.06]">
-        <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
-          <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-            Learn hub
-          </h1>
-          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted">
+        <div className={`${mContainer} py-12 sm:py-16`}>
+          <h1 className={mH1}>Learn hub</h1>
+          <p className={`mt-4 max-w-2xl ${mBody}`}>
             Open documentation for narrative and entry points. Deep API reference can grow here over
             time; today the highest-signal doc is the{" "}
             <Link href="/platform" className="font-medium text-accent hover:underline">
@@ -72,10 +77,7 @@ export default function DocsPage() {
           <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {CARDS.map((c) => (
               <li key={c.title}>
-                <Link
-                  href={c.href}
-                  className="flex h-full flex-col rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5 transition-colors hover:border-accent/30 hover:bg-white/[0.035]"
-                >
+                <Link href={c.href} className={`${mCardLink} h-full`}>
                   <h2 className="text-base font-semibold text-foreground">{c.title}</h2>
                   <p className="mt-2 flex-1 text-sm leading-relaxed text-muted">{c.body}</p>
                   <span className="mt-4 text-xs font-semibold text-accent">Open →</span>
@@ -83,7 +85,7 @@ export default function DocsPage() {
               </li>
             ))}
           </ul>
-          <p className="mt-12 text-sm text-muted">
+          <p className={`mt-12 ${mBody}`}>
             <Link href="/" className="font-medium text-accent hover:underline">
               ← Home
             </Link>

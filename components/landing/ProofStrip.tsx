@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { mContainer, mH2Sm, mLede, mSectionTight } from "@/lib/marketing-layout";
+
 const SAMPLE = `{
   "event_type": "incident.context_updated",
   "details": { "incident_id": "a1b2c3d4-…" }
@@ -7,21 +9,14 @@ const SAMPLE = `{
 
 export function ProofStrip() {
   return (
-    <section
-      id="proof"
-      className="border-b border-white/[0.06] py-12 sm:py-14"
-      aria-labelledby="proof-heading"
-    >
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+    <section id="proof" className={mSectionTight} aria-labelledby="proof-heading">
+      <div className={mContainer}>
         <div className="flex flex-col gap-6 md:flex-row md:items-stretch md:justify-between md:gap-10">
           <div className="min-w-0 md:max-w-md">
-            <h2
-              id="proof-heading"
-              className="text-lg font-semibold tracking-tight text-foreground sm:text-xl"
-            >
+            <h2 id="proof-heading" className={mH2Sm}>
               Evidence you can show auditors
             </h2>
-            <p className="mt-2 text-sm leading-relaxed text-muted">
+            <p className={mLede}>
               The activity log is append-oriented: billing webhooks, API keys, approvals, status
               changes, and automation events in one place. Export paths grow with your plan.
             </p>

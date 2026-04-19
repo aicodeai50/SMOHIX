@@ -4,7 +4,9 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { PageHeader } from "@/components/app/PageHeader";
+import { AppIcon } from "@/components/icons/AppIcon";
 import { OverviewDecisionSurface } from "@/components/overview/OverviewDecisionSurface";
+import { appBody, appMeta, appPanelTitle } from "@/lib/app-typography";
 import { getConnectorHealthRows } from "@/lib/connectors-health";
 import { listIncidentsForUser } from "@/lib/incidents/data";
 import { loadOverviewCommandCenterData } from "@/lib/overview/command-center-data";
@@ -74,19 +76,19 @@ export default async function OverviewPage() {
 
       <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div className="shynvo-glass rounded-2xl p-5">
-          <p className="text-xs font-medium text-muted">Incidents tracked</p>
+          <p className={`${appMeta} font-medium`}>Incidents tracked</p>
           <p className="mt-1 text-2xl font-semibold text-foreground">{incidents.length}</p>
-          <p className="mt-1 text-xs text-muted">
+          <p className={`mt-1 ${appMeta}`}>
             {open} open · {resolved} resolved
           </p>
         </div>
         <div className="shynvo-glass rounded-2xl p-5">
-          <p className="text-xs font-medium text-muted">High / critical</p>
+          <p className={`${appMeta} font-medium`}>High / critical</p>
           <p className="mt-1 text-2xl font-semibold text-foreground">{hot}</p>
-          <p className="mt-1 text-xs text-muted">Needs attention</p>
+          <p className={`mt-1 ${appMeta}`}>Needs attention</p>
         </div>
         <div className="shynvo-glass rounded-2xl p-5">
-          <p className="text-xs font-medium text-muted">Connectors</p>
+          <p className={`${appMeta} font-medium`}>Connectors</p>
           <p className="mt-1 text-2xl font-semibold text-foreground">
             {connectorsUp}
             <span className="text-lg font-normal text-muted">
@@ -94,19 +96,19 @@ export default async function OverviewPage() {
               / {connectorsConfigured}
             </span>
           </p>
-          <p className="mt-1 text-xs text-muted">
+          <p className={`mt-1 ${appMeta}`}>
             {connectorsConfigured === 0
               ? "No connector URLs configured"
               : "Reachable of configured"}
           </p>
         </div>
         <div className="shynvo-glass rounded-2xl p-5">
-          <p className="text-xs font-medium text-muted">Setup checklist</p>
+          <p className={`${appMeta} font-medium`}>Setup checklist</p>
           <p className="mt-1 text-2xl font-semibold text-foreground">
             {setupDone}
             <span className="text-lg font-normal text-muted"> / 4</span>
           </p>
-          <p className="mt-1 text-xs text-muted">Workspace readiness</p>
+          <p className={`mt-1 ${appMeta}`}>Workspace readiness</p>
         </div>
       </div>
 
@@ -114,8 +116,8 @@ export default async function OverviewPage() {
 
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
         <section className="shynvo-glass rounded-2xl p-5 md:p-6">
-          <h2 className="text-sm font-semibold text-foreground/95">Integrations</h2>
-          <ul className="mt-4 space-y-3 text-sm">
+          <h2 className={appPanelTitle}>Integrations</h2>
+          <ul className={`mt-4 space-y-3 ${appBody} text-foreground/90`}>
             {connectors.map((c) => (
               <li
                 key={c.id}
@@ -123,10 +125,10 @@ export default async function OverviewPage() {
               >
                 <div>
                   <p className="font-medium text-foreground/90">{c.name}</p>
-                  <p className="text-xs text-muted">{c.role}</p>
+                  <p className={appMeta}>{c.role}</p>
                 </div>
                 <span
-                  className={`shrink-0 text-xs font-medium ${
+                  className={`shrink-0 text-[13px] font-medium ${
                     c.ok === true
                       ? "text-success"
                       : c.ok === false
@@ -154,8 +156,8 @@ export default async function OverviewPage() {
         </section>
 
         <section className="shynvo-glass rounded-2xl p-5 md:p-6">
-          <h2 className="text-sm font-semibold text-foreground/95">Deployment checklist</h2>
-          <ul className="mt-4 space-y-2 text-sm">
+          <h2 className={appPanelTitle}>Deployment checklist</h2>
+          <ul className={`mt-4 space-y-2 ${appBody} text-foreground/90`}>
             {[
               { ok: setup.accounts, label: "Accounts & database", href: "/settings" },
               { ok: setup.openai, label: "Copilot cloud model", href: "/copilot" },
@@ -168,11 +170,15 @@ export default async function OverviewPage() {
                   className="flex items-center gap-2 rounded-lg py-1.5 transition-colors hover:bg-white/[0.04]"
                 >
                   <span
-                    className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold ${
+                    className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${
                       item.ok ? "bg-success-dim text-success" : "bg-border text-muted"
                     }`}
                   >
-                    {item.ok ? "✓" : ""}
+                    {item.ok ? (
+                      <AppIcon name="check" size={12} strokeWidth={2.75} className="text-success" />
+                    ) : (
+                      <AppIcon name="circle" size={10} strokeWidth={1.5} className="opacity-50" />
+                    )}
                   </span>
                   <span className={item.ok ? "text-foreground/85" : "text-muted"}>
                     {item.label}
@@ -181,7 +187,7 @@ export default async function OverviewPage() {
               </li>
             ))}
           </ul>
-          <p className="mt-4 text-xs leading-relaxed text-muted">
+          <p className={`mt-4 ${appMeta}`}>
             Paid plans sync through billing webhooks after you configure keys; until then billing
             views stay inactive while the rest of the console runs on session or database data.
           </p>

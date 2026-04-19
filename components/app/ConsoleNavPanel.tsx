@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
+import { AppIcon } from "@/components/icons/AppIcon";
 import { getConsoleBreadcrumbs } from "@/lib/console-breadcrumbs";
 import { CONSOLE_MODULES } from "@/lib/console-nav";
 
@@ -38,7 +39,7 @@ export function ConsoleNavPanel() {
             className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-white/[0.1] bg-white/[0.04] px-3 text-xs font-semibold text-foreground/90 transition-colors hover:border-accent/35 hover:bg-white/[0.07] hover:text-accent"
             aria-label="Go back in browser history"
           >
-            <span aria-hidden>←</span>
+            <AppIcon name="chevronLeft" size={14} className="text-muted" aria-hidden />
             Back
           </button>
           <button
@@ -48,7 +49,7 @@ export function ConsoleNavPanel() {
             aria-label="Go forward in browser history"
           >
             Forward
-            <span aria-hidden>→</span>
+            <AppIcon name="chevronRight" size={14} className="text-muted" aria-hidden />
           </button>
         </div>
 

@@ -5,10 +5,11 @@ import { PageHeader } from "@/components/app/PageHeader";
 import { getUserDisplayName, getUserFirstName } from "@/lib/auth/display-name";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { SITE_BRAND_NAME } from "@/lib/site-brand";
 
 export const metadata: Metadata = {
   title: "Platform",
-  description: "Shynvo console — command center and modules.",
+  description: `${SITE_BRAND_NAME} console — command center and modules.`,
 };
 
 export const dynamic = "force-dynamic";
@@ -62,7 +63,7 @@ export default async function HubPage() {
 
   return (
     <>
-      <PageHeader eyebrow="Shynvo" title={title} description={description} />
+      <PageHeader eyebrow={SITE_BRAND_NAME} title={title} description={description} />
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {QUICK.map((item) => (
           <Link

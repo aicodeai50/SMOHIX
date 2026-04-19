@@ -1,5 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import {
+  SITE_BRAND_NAME,
+  SITE_MARKETING_DESCRIPTION,
+  SITE_MARKETING_TITLE,
+  SITE_MARKETING_TWITTER_DESCRIPTION,
+} from "@/lib/site-brand";
 import { getSiteUrl } from "@/lib/site";
 import "./globals.css";
 
@@ -18,11 +24,10 @@ const siteUrl = getSiteUrl();
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Shynvo — AI operations command center",
-    template: "%s · Shynvo",
+    default: SITE_MARKETING_TITLE,
+    template: `%s · ${SITE_BRAND_NAME}`,
   },
-  description:
-    "Safe automation for IT operations — incident response with dry-runs, approvals, audit trail, and connectors in one console.",
+  description: SITE_MARKETING_DESCRIPTION,
   alternates: {
     canonical: siteUrl,
   },
@@ -30,16 +35,14 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: siteUrl,
-    siteName: "Shynvo",
-    title: "Shynvo — AI operations command center",
-    description:
-      "Incident Copilot, automation playbooks, and runbook intelligence — approvals, API keys, and a compliance-ready activity log.",
+    siteName: SITE_BRAND_NAME,
+    title: SITE_MARKETING_TITLE,
+    description: SITE_MARKETING_DESCRIPTION,
   },
   twitter: {
     card: "summary_large_image",
-    title: "Shynvo — AI operations command center",
-    description:
-      "Trusted IT operations: copilot, automations, and audit-ready controls.",
+    title: SITE_MARKETING_TITLE,
+    description: SITE_MARKETING_TWITTER_DESCRIPTION,
   },
   robots: {
     index: true,

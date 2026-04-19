@@ -4,7 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { ConsoleNavPanel } from "@/components/app/ConsoleNavPanel";
+import { AppIcon } from "@/components/icons/AppIcon";
+import type { ConsoleModuleIconName } from "@/components/icons/AppIcon";
 import { Logo } from "@/components/site/Logo";
+import { appMeta, appOverline } from "@/lib/app-typography";
 import { CONSOLE_MODULES } from "@/lib/console-nav";
 
 function NavBox({
@@ -17,7 +20,7 @@ function NavBox({
   href: string;
   label: string;
   description: string;
-  icon: string;
+  icon: ConsoleModuleIconName;
   live: boolean;
 }) {
   const pathname = usePathname();
@@ -32,17 +35,15 @@ function NavBox({
       }`}
     >
       <div className="flex items-center justify-between gap-1">
-        <span className="text-lg leading-none" aria-hidden>
-          {icon}
-        </span>
+        <AppIcon name={icon} size={20} strokeWidth={1.7} className="text-accent/90" aria-hidden />
         {live ? (
           <span className="rounded-md bg-emerald-500/18 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-emerald-300/95 shadow-[0_0_12px_-4px_rgba(52,211,153,0.35)]">
             Live
           </span>
         ) : null}
       </div>
-      <span className="mt-1.5 text-xs font-semibold text-foreground/95">{label}</span>
-      <span className="mt-0.5 text-[11px] leading-snug text-muted">{description}</span>
+      <span className="mt-1.5 text-[13px] font-semibold text-foreground/95">{label}</span>
+      <span className={`mt-0.5 ${appMeta} leading-snug`}>{description}</span>
     </Link>
   );
 }
@@ -80,9 +81,7 @@ export function AppShell({
           </span>
         </div>
         <div className="p-2 md:p-3">
-          <p className="mb-2 hidden px-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-muted md:block">
-            Modules
-          </p>
+          <p className={`mb-2 hidden px-1 md:block ${appOverline}`}>Modules</p>
           <nav
             className="flex gap-2 overflow-x-auto pb-1 md:grid md:grid-cols-2 md:overflow-visible lg:grid-cols-3 xl:grid-cols-5 md:pb-0"
             aria-label="Console modules"
@@ -92,7 +91,7 @@ export function AppShell({
             ))}
           </nav>
         </div>
-        <div className="flex flex-wrap items-center gap-2 border-t border-white/[0.05] px-3 py-2.5 text-[11px] text-muted md:gap-3 md:px-4">
+        <div className={`flex flex-wrap items-center gap-2 border-t border-white/[0.05] px-3 py-2.5 md:gap-3 md:px-4 ${appMeta}`}>
           {authEnabled && userEmail ? (
             <>
               <div
@@ -106,7 +105,7 @@ export function AppShell({
                   {accountInitial(showName, userEmail)}
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block truncate text-xs font-semibold text-foreground/95">
+                  <span className="block truncate text-[13px] font-semibold text-foreground/95">
                     {showName ?? "Signed in"}
                   </span>
                   <span className="block truncate font-mono text-[10px] text-muted opacity-90">
@@ -130,34 +129,28 @@ export function AppShell({
               Local mode: no account sign-in. Copilot still runs with the built-in assistant.
             </span>
           )}
-          <div className="ml-auto flex flex-wrap items-center justify-end gap-x-2 gap-y-1 text-[11px] font-medium">
+          <div className="ml-auto flex flex-wrap items-center justify-end gap-x-1.5 gap-y-1 text-[13px] font-medium">
             <Link
               href="/docs"
               className="rounded-lg px-2 py-1 text-muted transition-colors hover:bg-surface-elevated/40 hover:text-accent"
             >
               Docs
             </Link>
-            <span className="text-muted/40" aria-hidden>
-              ·
-            </span>
+            <AppIcon name="dot" size={4} className="text-muted/45" aria-hidden />
             <Link
               href="/docs/api"
               className="rounded-lg px-2 py-1 text-muted transition-colors hover:bg-surface-elevated/40 hover:text-accent"
             >
               API
             </Link>
-            <span className="text-muted/40" aria-hidden>
-              ·
-            </span>
+            <AppIcon name="dot" size={4} className="text-muted/45" aria-hidden />
             <Link
               href="/platform"
               className="rounded-lg px-2 py-1 text-muted transition-colors hover:bg-surface-elevated/40 hover:text-accent"
             >
               Platform
             </Link>
-            <span className="text-muted/40" aria-hidden>
-              ·
-            </span>
+            <AppIcon name="dot" size={4} className="text-muted/45" aria-hidden />
             <Link
               href="/"
               className="rounded-lg px-2.5 py-1 text-muted transition-colors hover:bg-surface-elevated/40 hover:text-foreground"

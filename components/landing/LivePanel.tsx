@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { AppIcon } from "@/components/icons/AppIcon";
+import { mCard, mContainer, mH2, mLede, mPanelShell, mSection } from "@/lib/marketing-layout";
 import { getConnectorHealthRows } from "@/lib/connectors-health";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 
@@ -18,7 +20,7 @@ export async function LivePanel() {
       dynamic.push({
         time: stamp,
         kind: "signal",
-        text: `${c.name}: not connected`,
+        text: `${c.name}: not configured`,
       });
     } else {
       dynamic.push({
@@ -34,16 +36,14 @@ export async function LivePanel() {
   const anyUnknown = connectors.some((c) => c.ok === null);
 
   return (
-    <section id="operations" className="border-b border-white/[0.06] py-16 sm:py-20">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+    <section id="operations" className={mSection}>
+      <div className={mContainer}>
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
-            <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
-              Service status
-            </h2>
+            <h2 className={mH2}>Service status</h2>
             <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted">
-              Optional integrations your administrator can enable. When nothing is connected,
-              the console still runs with built-in defaults.
+              Optional connectors your administrator can enable. When none are configured, the
+              console still runs with built-in defaults.
             </p>
           </div>
           <span
@@ -70,10 +70,10 @@ export async function LivePanel() {
         </div>
 
         <div className="mt-10 grid gap-6 lg:grid-cols-5">
-          <div className="flex flex-col rounded-lg border border-white/[0.08] bg-white/[0.02] text-sm lg:col-span-3">
+          <div className={`flex flex-col overflow-hidden text-sm lg:col-span-3 ${mPanelShell}`}>
             <div className="flex items-center justify-between border-b border-white/[0.06] px-4 py-3 text-xs text-muted">
-              <span>Integration</span>
-              <span>UTC</span>
+              <span>Connectors</span>
+              <span>Checked (UTC)</span>
             </div>
             <ul className="min-h-[12rem] divide-y divide-white/[0.06] font-mono text-[13px]">
               {feed.map((row, i) => (
@@ -88,7 +88,11 @@ export async function LivePanel() {
                           : "text-muted"
                     }
                   >
-                    {row.kind === "action" ? "●" : "○"}
+                    {row.kind === "action" ? (
+                      <AppIcon name="circleDot" size={14} strokeWidth={2} className="inline text-accent" />
+                    ) : (
+                      <AppIcon name="circle" size={12} strokeWidth={1.5} className="inline opacity-80" />
+                    )}
                   </span>
                   <span className="text-foreground/90">{row.text}</span>
                 </li>
@@ -104,7 +108,7 @@ export async function LivePanel() {
             </div>
           </div>
 
-          <aside className="space-y-4 rounded-lg border border-white/[0.08] bg-white/[0.02] p-5 lg:col-span-2">
+          <aside className={`space-y-4 lg:col-span-2 ${mCard}`}>
             <h3 className="text-sm font-semibold text-foreground">Approvals</h3>
             <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-4">
               <p className="text-sm font-medium text-foreground">Review queue</p>

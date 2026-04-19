@@ -1,3 +1,5 @@
+import { mCard, mContainer, mH2, mLede, mSection } from "@/lib/marketing-layout";
+
 const CASES = [
   {
     title: "Restart failing services with approval",
@@ -19,28 +21,18 @@ const CASES = [
 
 export function UseCasesSection() {
   return (
-    <section
-      id="use-cases"
-      className="border-b border-white/[0.06] py-16 sm:py-20"
-      aria-labelledby="use-cases-heading"
-    >
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <h2
-          id="use-cases-heading"
-          className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl"
-        >
+    <section id="use-cases" className={mSection} aria-labelledby="use-cases-heading">
+      <div className={mContainer}>
+        <h2 id="use-cases-heading" className={mH2}>
           Concrete outcomes
         </h2>
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
-          If it sounds like a slide deck, it fails. These are the jobs teams hire a control layer
-          for — phrased the way your engineers talk.
+        <p className={mLede}>
+          Operational outcomes you can assign an owner to — phrased the way on-call engineers and
+          change managers actually talk.
         </p>
         <ul className="mt-10 grid gap-5 sm:grid-cols-2">
           {CASES.map((c) => (
-            <li
-              key={c.title}
-              className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5 sm:p-6"
-            >
+            <li key={c.title} className={mCard}>
               <h3 className="text-sm font-semibold text-foreground">{c.title}</h3>
               <p className="mt-2 text-sm leading-relaxed text-muted">{c.body}</p>
             </li>

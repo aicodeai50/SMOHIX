@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { mCard, mContainer, mH2, mLede, mSection } from "@/lib/marketing-layout";
+
 const MECHANICS = [
   {
     title: "Dry-run mode",
@@ -41,30 +43,20 @@ const MECHANICS = [
 
 export function GuardedMechanicsSection() {
   return (
-    <section
-      id="guarded-mechanics"
-      className="border-b border-white/[0.06] py-16 sm:py-20"
-      aria-labelledby="guarded-heading"
-    >
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <h2
-          id="guarded-heading"
-          className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl"
-        >
+    <section id="guarded-mechanics" className={mSection} aria-labelledby="guarded-heading">
+      <div className={mContainer}>
+        <h2 id="guarded-heading" className={mH2}>
           Guarded automation — the mechanics
         </h2>
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
-          Branding becomes trust when every line maps to a screen or an honest roadmap item. We
-          do not claim PagerDuty-scale paging or ServiceNow ITSM — we claim a safety layer for
-          change you trigger from this console.
+        <p className={mLede}>
+          Every line here maps to a console screen or a labeled roadmap item. We do not claim
+          PagerDuty-scale paging or ServiceNow ITSM — we claim a safety layer for change you
+          trigger from this console.
         </p>
 
         <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {MECHANICS.map((m) => (
-            <li
-              key={m.title}
-              className="flex flex-col rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5"
-            >
+            <li key={m.title} className={`flex flex-col ${mCard}`}>
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <h3 className="text-sm font-semibold text-foreground">{m.title}</h3>
                 <span

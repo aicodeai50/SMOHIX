@@ -3,11 +3,13 @@ import Link from "next/link";
 
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
+import { mArticle, mBody, mH1, mPanelShell } from "@/lib/marketing-layout";
+import { SITE_BRAND_NAME } from "@/lib/site-brand";
 import { getSiteUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Status",
-  description: "Shynvo API health check for the configured deployment.",
+  description: `${SITE_BRAND_NAME} API health check for the configured deployment.`,
 };
 
 export const dynamic = "force-dynamic";
@@ -34,32 +36,33 @@ export default async function StatusPage() {
     <>
       <Header />
       <main className="flex-1 border-b border-white/[0.06]">
-        <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
-          <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-            Service status
-          </h1>
-          <p className="mt-3 text-sm leading-relaxed text-muted">
+        <div className={mArticle}>
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent/90">
+            {SITE_BRAND_NAME}
+          </p>
+          <h1 className={`mt-2 ${mH1}`}>Service status</h1>
+          <p className={`mt-4 ${mBody}`}>
             Lightweight signal from <code className="font-mono text-xs text-accent/90">GET /api/health</code> on
             the canonical deployment (<span className="font-mono text-xs">{getSiteUrl()}</span>). This is not a
             full incident history page — it answers &ldquo;is the web tier up?&rdquo;
           </p>
 
           <div
-            className={`mt-8 rounded-2xl border p-6 ${
+            className={`mt-8 overflow-hidden p-6 ${mPanelShell} ${
               ok
-                ? "border-emerald-500/30 bg-emerald-500/10"
-                : "border-amber-500/30 bg-amber-500/10"
+                ? "border-emerald-500/30 bg-emerald-500/[0.08]"
+                : "border-amber-500/30 bg-amber-500/[0.08]"
             }`}
           >
             <p className="text-sm font-semibold text-foreground">
               {ok ? "Operational" : "Check failed or unreachable"}
             </p>
             {health ? (
-              <pre className="mt-4 overflow-x-auto rounded-lg bg-black/40 p-3 font-mono text-xs text-foreground/85">
+              <pre className="mt-4 overflow-x-auto rounded-xl border border-white/[0.06] bg-black/40 p-4 font-mono text-xs text-foreground/85">
                 {JSON.stringify(health, null, 2)}
               </pre>
             ) : (
-              <p className="mt-4 text-sm text-muted">
+              <p className={`mt-4 ${mBody}`}>
                 Could not reach the health endpoint from this server build. Try{" "}
                 <a href="/api/health" className="text-accent hover:underline">
                   /api/health
@@ -69,7 +72,7 @@ export default async function StatusPage() {
             )}
           </div>
 
-          <p className="mt-10 text-sm text-muted">
+          <p className={`mt-10 ${mBody}`}>
             Maintenance windows and dependency incidents will move to a richer status system as the
             product matures. For now, see also{" "}
             <Link href="/changelog" className="font-medium text-accent hover:underline">
@@ -77,7 +80,7 @@ export default async function StatusPage() {
             </Link>
             .
           </p>
-          <p className="mt-6 text-sm">
+          <p className={`mt-6 ${mBody}`}>
             <Link href="/" className="font-medium text-accent hover:underline">
               ← Home
             </Link>

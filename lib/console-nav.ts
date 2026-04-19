@@ -1,101 +1,109 @@
+import type { ConsoleModuleIconName } from "@/components/icons/AppIcon";
+
 /** Shared console navigation — hub + module shortcuts. */
-export const CONSOLE_MODULES = [
+export const CONSOLE_MODULES: readonly {
+  href: string;
+  label: string;
+  description: string;
+  icon: ConsoleModuleIconName;
+  live: boolean;
+}[] = [
   {
     href: "/hub",
     label: "Platform",
     description: "Home",
-    icon: "◆",
+    icon: "layoutDashboard",
     live: true,
   },
   {
     href: "/vision",
     label: "Vision",
     description: "Roadmap",
-    icon: "✦",
+    icon: "telescope",
     live: true,
   },
   {
     href: "/overview",
     label: "Overview",
     description: "Command center",
-    icon: "⌁",
+    icon: "gauge",
     live: true,
   },
   {
     href: "/copilot",
     label: "Copilot",
     description: "AI triage",
-    icon: "◎",
+    icon: "bot",
     live: true,
   },
   {
     href: "/incidents",
     label: "Incidents",
     description: "Track & resolve",
-    icon: "▣",
+    icon: "alertTriangle",
     live: true,
   },
   {
     href: "/services",
     label: "Services",
     description: "Catalog & alerts",
-    icon: "⬡",
+    icon: "server",
     live: true,
   },
   {
     href: "/automations",
     label: "Automations",
     description: "Playbooks",
-    icon: "⎔",
+    icon: "workflow",
     live: true,
   },
   {
     href: "/runbooks",
     label: "Runbooks",
     description: "Procedures",
-    icon: "▦",
+    icon: "bookOpen",
     live: true,
   },
   {
     href: "/approvals",
     label: "Approvals",
     description: "Human gates",
-    icon: "✓",
+    icon: "shieldCheck",
     live: true,
   },
   {
     href: "/audit",
     label: "Audit",
     description: "Compliance log",
-    icon: "≡",
+    icon: "scrollText",
     live: true,
   },
   {
     href: "/settings",
     label: "Settings",
     description: "Hub",
-    icon: "⚙",
+    icon: "settings",
     live: true,
   },
   {
     href: "/settings/billing",
     label: "Billing",
     description: "Plan",
-    icon: "$",
+    icon: "creditCard",
     live: true,
   },
   {
     href: "/settings/api-keys",
     label: "API keys",
     description: "Integrate",
-    icon: "⦿",
+    icon: "keyRound",
     live: true,
   },
   {
     href: "/settings/connectors",
     label: "Connectors",
     description: "Services",
-    icon: "◇",
+    icon: "plug2",
     live: true,
   },
 ] as const;

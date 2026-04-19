@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getTrialHref } from "@/lib/billing";
+import { mH1 } from "@/lib/marketing-layout";
 
 export function Hero({
   signedInCheckoutUrl,
@@ -15,17 +16,17 @@ export function Hero({
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(94,225,255,0.08),transparent)]" />
       <div className="relative mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent/90">
-          Category
+          Controlled operations
         </p>
-        <h1 className="shynvo-headline mt-2 max-w-3xl text-3xl font-semibold tracking-tight sm:text-4xl sm:leading-tight md:text-[2.5rem]">
+        <h1 className={`shynvo-headline mt-2 max-w-3xl ${mH1}`}>
           Safe automation for IT operations
         </h1>
-        <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted sm:text-lg">
+        <p className="mt-4 max-w-2xl text-[0.9375rem] leading-relaxed text-muted sm:text-lg sm:leading-relaxed">
           <span className="text-foreground/90">Incident response, guarded change, and an auditable
           trail</span> — in one console. A safety layer on top of the automations you already run,
           not a vague &ldquo;AI platform.&rdquo;
         </p>
-        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted">
+        <p className="mt-3 max-w-2xl text-[0.9375rem] leading-relaxed text-muted">
           vs legacy paging: we are not claiming full on-call replacement on day one. vs ITSM
           suites: we are not claiming enterprise change modules yet. We are claiming{" "}
           <strong className="font-medium text-foreground/90">approval-first execution with proof</strong>.
@@ -69,7 +70,7 @@ export function Hero({
             ·
           </span>
           <a href="#preview" className="underline-offset-4 hover:text-accent hover:underline">
-            See the UI
+            Console preview
           </a>
           <span className="text-muted/35" aria-hidden>
             ·

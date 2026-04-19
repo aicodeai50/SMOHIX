@@ -2,6 +2,8 @@
 
 import { useId } from "react";
 
+import { SITE_BRAND_NAME } from "@/lib/site-brand";
+
 export function Logo({ className = "" }: { className?: string }) {
   const markId = useId().replace(/:/g, "");
   const gradId = `shynvo-mark-${markId}`;
@@ -42,7 +44,7 @@ export function Logo({ className = "" }: { className?: string }) {
           className="text-accent drop-shadow-[0_0_8px_rgba(94,225,255,0.4)]"
         />
       </svg>
-      <span className="text-lg font-semibold tracking-tight">Shynvo</span>
+      <span className="text-lg font-semibold tracking-tight">{SITE_BRAND_NAME}</span>
     </div>
   );
 }

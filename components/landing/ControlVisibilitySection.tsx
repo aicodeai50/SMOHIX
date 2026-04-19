@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { mCard, mContainer, mH2, mLede, mSection } from "@/lib/marketing-layout";
+
 const ITEMS = [
   {
     title: "Incident snapshot",
@@ -13,7 +15,7 @@ const ITEMS = [
   },
   {
     title: "Automation history",
-    body: "Dry-runs and approvals are designed to land in the same activity log as incidents — one story for reviewers.",
+    body: "Dry-runs and approvals land in the same activity log as incidents — one timeline for reviewers.",
     href: "/auth/sign-in?next=/audit",
   },
   {
@@ -25,26 +27,18 @@ const ITEMS = [
 
 export function ControlVisibilitySection() {
   return (
-    <section
-      id="control"
-      className="border-b border-white/[0.06] py-16 sm:py-20"
-      aria-labelledby="control-heading"
-    >
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <h2
-          id="control-heading"
-          className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl"
-        >
+    <section id="control" className={mSection} aria-labelledby="control-heading">
+      <div className={mContainer}>
+        <h2 id="control-heading" className={mH2}>
           Control and visibility
         </h2>
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
-          Differentiation vs classic paging tools: we are not trying to replace your entire paging
-          vendor on day one — we are trying to make the change that happens after the page safer
-          and provable.
+        <p className={mLede}>
+          We are not trying to replace your paging vendor on day one — we focus on the work after
+          the page: safer change, clearer ownership, and evidence you can replay.
         </p>
-        <ul className="mt-10 grid gap-6 md:grid-cols-2">
+        <ul className="mt-10 grid gap-5 md:grid-cols-2">
           {ITEMS.map((item) => (
-            <li key={item.title} className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
+            <li key={item.title} className={`flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-6 ${mCard}`}>
               <div className="min-w-0">
                 <h3 className="text-sm font-semibold text-foreground">{item.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted">{item.body}</p>
@@ -53,7 +47,7 @@ export function ControlVisibilitySection() {
                 href={item.href}
                 className="shrink-0 text-xs font-semibold text-accent hover:underline sm:pt-1"
               >
-                Explore →
+                Open in console →
               </Link>
             </li>
           ))}

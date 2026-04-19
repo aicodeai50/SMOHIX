@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { mContainer, mH2, mLede, mPanelShell, mSection } from "@/lib/marketing-layout";
+
 const links = [
   {
     href: "/audit",
@@ -26,22 +28,20 @@ const links = [
 
 export function TrustSection() {
   return (
-    <section id="trust" className="border-b border-white/[0.06] py-16 sm:py-20">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
-          Governance and access
-        </h2>
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
-          Evidence, authorization, and credentials — complementary to the product modules
-          above.
+    <section id="trust" className={mSection}>
+      <div className={mContainer}>
+        <h2 className={mH2}>Governance and access</h2>
+        <p className={mLede}>
+          Evidence, authorization, and credentials — alongside the modules above, not bolted on as
+          an afterthought.
         </p>
 
-        <div className="mt-8 rounded-lg border border-white/[0.08] bg-white/[0.02] px-5 py-1 sm:px-6">
-          <ul className="divide-y divide-white/[0.06]">
+        <div className={`mt-8 overflow-hidden ${mPanelShell}`}>
+          <ul className="divide-y divide-white/[0.06] px-6">
             {links.map((item) => (
               <li
                 key={item.href}
-                className="flex flex-col gap-2 py-4 first:pt-3 last:pb-3 sm:flex-row sm:items-center sm:justify-between sm:gap-8"
+                className="flex flex-col gap-2 py-4 first:pt-5 last:pb-5 sm:flex-row sm:items-center sm:justify-between sm:gap-8"
               >
                 <div className="min-w-0 sm:flex-1">
                   <p className="text-sm font-medium text-foreground">{item.title}</p>

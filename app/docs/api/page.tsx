@@ -5,15 +5,16 @@ import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
 import { API_GROUPS } from "@/lib/docs/api-catalog";
 import { getSiteUrl } from "@/lib/site";
+import { SITE_BRAND_NAME } from "@/lib/site-brand";
 
 export const metadata: Metadata = {
   title: "HTTP API reference",
-  description: "Shynvo public and authenticated API routes — methods, paths, and auth expectations.",
+  description: `${SITE_BRAND_NAME} public and authenticated API routes — methods, paths, and auth expectations.`,
 };
 
 const OPENAPI_SKETCH = (base: string) => `openapi: 3.0.3
 info:
-  title: Shynvo API
+  title: ${SITE_BRAND_NAME} API
   version: "0.1.0"
 servers:
   - url: ${base}

@@ -1,22 +1,17 @@
+import { mContainer, mH2, mLede, mSectionPreview } from "@/lib/marketing-layout";
+
 /**
  * Illustrative console chrome only — no live data. Gives first-time visitors a concrete
  * sense of surfaces before sign-in.
  */
 export function ProductConsolePreview() {
   return (
-    <section
-      id="preview"
-      className="border-b border-white/[0.06] py-14 sm:py-16"
-      aria-labelledby="preview-heading"
-    >
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <h2
-          id="preview-heading"
-          className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl"
-        >
+    <section id="preview" className={mSectionPreview} aria-labelledby="preview-heading">
+      <div className={mContainer}>
+        <h2 id="preview-heading" className={mH2}>
           What you actually click
         </h2>
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
+        <p className={mLede}>
           Three routes you will live in during an incident — incidents for state, automations for
           guarded change, audit for proof.
         </p>
