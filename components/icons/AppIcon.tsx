@@ -13,6 +13,7 @@ import {
   Gauge,
   KeyRound,
   LayoutDashboard,
+  Menu,
   Plug2,
   ScrollText,
   Server,
@@ -20,6 +21,7 @@ import {
   ShieldCheck,
   Telescope,
   Workflow,
+  X,
 } from "lucide-react";
 
 const ICON_MAP = {
@@ -43,6 +45,8 @@ const ICON_MAP = {
   dot: Dot,
   chevronLeft: ChevronLeft,
   chevronRight: ChevronRight,
+  menu: Menu,
+  close: X,
 } as const satisfies Record<string, LucideIcon>;
 
 export type AppIconName = keyof typeof ICON_MAP;
