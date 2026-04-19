@@ -11,6 +11,11 @@ export const metadata: Metadata = {
 
 const CARDS = [
   {
+    title: "HTTP API reference",
+    body: "Methods, paths, auth — grouped catalog plus OpenAPI sketch for tooling.",
+    href: "/docs/api",
+  },
+  {
     title: "Platform overview",
     body: "Summary, end-to-end flow, guarded model, capabilities by bucket, runtime modes, differentiation, architecture.",
     href: "/platform",

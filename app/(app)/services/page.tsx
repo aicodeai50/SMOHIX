@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { AlertIngestPanel } from "@/components/settings/AlertIngestPanel";
+import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
 import { PlaceholderCard } from "@/components/app/PlaceholderCard";
 import { billingPlanFromSummary, getSubscriptionSummary } from "@/lib/billing/plan";
@@ -163,7 +164,13 @@ export default async function ServicesPage({
           <div className="mt-6 border-t border-white/[0.06] pt-5">
             <h3 className="text-xs font-semibold uppercase tracking-wide text-muted">Registered</h3>
             {rows.length === 0 ? (
-              <p className="mt-2 text-sm text-muted">No services yet.</p>
+              <div className="mt-4">
+                <ConsoleEmptyState
+                  title="No services in the catalog"
+                  description="Add a system you operate so incidents can link to it and ingest can resolve service_name."
+                  ctas={[{ href: "#svc-name", label: "Fill form above" }]}
+                />
+              </div>
             ) : (
               <ul className="mt-3 space-y-2 text-sm">
                 {rows.map((r) => (

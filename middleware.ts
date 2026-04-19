@@ -24,6 +24,7 @@ function noStoreHtml(response: NextResponse, pathname: string) {
     pathname === "/" ||
     pathname === "/platform" ||
     pathname === "/docs" ||
+    pathname === "/docs/api" ||
     pathname === "/pricing" ||
     pathname === "/status" ||
     pathname === "/changelog" ||

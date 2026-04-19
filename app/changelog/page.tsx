@@ -12,6 +12,15 @@ export const metadata: Metadata = {
 const ENTRIES: { date: string; title: string; bullets: string[] }[] = [
   {
     date: "April 2026",
+    title: "Console UX and API docs",
+    bullets: [
+      "Route-level loading skeletons across incidents, overview, automations, audit, approvals, services, copilot, runbooks",
+      "Richer empty states (incidents, audit, services catalog, approvals) with guided CTAs",
+      "Public /docs/api catalog + OpenAPI sketch from lib/docs/api-catalog",
+    ],
+  },
+  {
+    date: "April 2026",
     title: "Positioning and buyer narrative",
     bullets: [
       "Public /platform overview — flow, guarded model, capabilities, differentiation, architecture",

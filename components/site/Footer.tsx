@@ -82,6 +82,9 @@ export function Footer() {
                 <Link href="/changelog" className="w-fit hover:text-foreground md:ml-auto">
                   Changelog
                 </Link>
+                <Link href="/docs/api" className="w-fit hover:text-foreground md:ml-auto">
+                  API reference
+                </Link>
               </nav>
             </div>
 

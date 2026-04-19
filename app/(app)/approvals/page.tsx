@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { approvalDecisionAction, createApprovalRequestAction } from "./actions";
+import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
 import { listApprovalsForUser } from "@/lib/approvals/data";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
@@ -138,7 +139,13 @@ export default async function ApprovalsPage({ searchParams }: Props) {
         <section className="rounded-2xl border border-amber-400/15 bg-amber-500/[0.06] p-5 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] backdrop-blur-md md:p-6">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-amber-200/90">Pending</h2>
           {pending.length === 0 ? (
-            <p className="mt-4 text-sm text-muted">No pending approvals.</p>
+            <div className="mt-4">
+              <ConsoleEmptyState
+                title="Nothing waiting for a decision"
+                description="Submit a request below or enqueue from automation when your deployment supports it."
+                ctas={[{ href: "#action_label", label: "New request", variant: "secondary" }]}
+              />
+            </div>
           ) : (
             <ul className="mt-4 space-y-4">
               {pending.map((p) => (
@@ -181,13 +188,19 @@ export default async function ApprovalsPage({ searchParams }: Props) {
         <section className="shynvo-glass rounded-2xl p-5 md:p-6">
           <h2 className="text-sm font-semibold text-muted">Recent</h2>
           {recent.length === 0 ? (
-            <p className="mt-4 text-sm text-muted">
-              No completed decisions yet. Use{" "}
-              <Link href="/settings" className="text-accent hover:underline">
-                Settings
-              </Link>{" "}
-              for connectors and billing.
-            </p>
+            <div className="mt-4">
+              <ConsoleEmptyState
+                title="No completed decisions yet"
+                description="Approved or denied items land here after you act on pending requests."
+                ctas={[
+                  {
+                    href: "/settings",
+                    label: "Settings",
+                    variant: "secondary",
+                  },
+                ]}
+              />
+            </div>
           ) : (
             <ul className="mt-4 space-y-3">
               {recent.map((r) => (

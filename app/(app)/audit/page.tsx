@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
+import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
 import { listAuditEntriesForUser } from "@/lib/audit/data";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
@@ -49,6 +50,35 @@ export default async function AuditPage() {
           app can append audit rows.
         </p>
       ) : null}
+      {rows.length === 0 ? (
+        <ConsoleEmptyState
+          title={source === "session" ? "Sign in to see audit history" : "No audit events yet"}
+          description={
+            source === "session"
+              ? "The audit log is stored per account in Supabase. Sign in to load append-only events."
+              : "When the service role can append, status changes, API keys, billing sync, and automation events appear here."
+          }
+          ctas={
+            source === "session"
+              ? [{ href: "/auth/sign-in?next=/audit", label: "Sign in" }]
+              : [
+                  { href: "/approvals", label: "Open approvals", variant: "secondary" },
+                  { href: "/automations", label: "Run a dry-run" },
+                ]
+          }
+          footnote={
+            source === "session" ? null : (
+              <>
+                Apply{" "}
+                <code className="rounded bg-surface px-1 font-mono text-accent">
+                  supabase/migrations/20260418140000_console_extensions.sql
+                </code>{" "}
+                and set <span className="font-mono">SUPABASE_SERVICE_ROLE_KEY</span> for append paths.
+              </>
+            )
+          }
+        />
+      ) : (
       <div className="shynvo-table-wrap">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-white/[0.06] bg-white/[0.03] font-mono text-[11px] font-medium uppercase tracking-[0.1em] text-muted">
@@ -61,14 +91,7 @@ export default async function AuditPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-white/[0.05] font-mono text-xs">
-            {rows.length === 0 ? (
-              <tr>
-                <td colSpan={5} className="px-4 py-12 text-center text-sm text-muted">
-                  No audit events yet.
-                </td>
-              </tr>
-            ) : (
-              rows.map((e) => (
+            {rows.map((e) => (
                 <tr key={e.id} className="transition-colors hover:bg-white/[0.03]">
                   <td className="px-4 py-3 text-muted">{e.ts}</td>
                   <td className="px-4 py-3 text-foreground">{e.actor}</td>
@@ -78,11 +101,11 @@ export default async function AuditPage() {
                   </td>
                   <td className="px-4 py-3 capitalize text-muted">{e.outcome}</td>
                 </tr>
-              ))
-            )}
+              ))}
           </tbody>
         </table>
       </div>
+      )}
     </>
   );
 }

@@ -127,9 +127,14 @@ export function AutomationsConsole({ initialRuns }: { initialRuns: DryRunRecord[
           </tbody>
         </table>
       </div>
-      {runs.length > 0 ? (
-        <section className="shynvo-glass rounded-2xl p-5 md:p-6">
-          <h2 className="text-sm font-semibold text-foreground/90">Recent dry-runs</h2>
+      <section className="shynvo-glass rounded-2xl p-5 md:p-6">
+        <h2 className="text-sm font-semibold text-foreground/90">Recent dry-runs</h2>
+        {runs.length === 0 ? (
+          <p className="mt-4 rounded-xl border border-dashed border-white/[0.1] bg-white/[0.02] px-4 py-8 text-center text-sm text-muted">
+            No dry-runs yet. Pick a playbook above and run <strong className="text-foreground/85">Dry-run</strong>{" "}
+            — results persist to your audit trail when the deployment is configured for it.
+          </p>
+        ) : (
           <ul className="mt-3 max-h-48 space-y-2 overflow-y-auto text-xs text-muted">
             {runs.slice(0, 12).map((r) => (
               <li
@@ -153,8 +158,8 @@ export function AutomationsConsole({ initialRuns }: { initialRuns: DryRunRecord[
               </li>
             ))}
           </ul>
-        </section>
-      ) : null}
+        )}
+      </section>
     </div>
   );
 }

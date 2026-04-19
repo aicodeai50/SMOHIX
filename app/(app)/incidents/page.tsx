@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
 import { listIncidentsForUser } from "@/lib/incidents/data";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
@@ -57,6 +58,30 @@ export default async function IncidentsPage() {
           and sign in for account-wide, persistent incidents.
         </p>
       ) : null}
+      {rows.length === 0 ? (
+        <ConsoleEmptyState
+          title="No incidents yet"
+          description={
+            source === "database"
+              ? "Create your first incident to track response, or wire HTTP ingest so alerts open rows automatically."
+              : "Session mode keeps incidents in this browser only. Sign in with Supabase for a shared, persistent queue."
+          }
+          ctas={[
+            { href: "/incidents/new", label: "Create incident" },
+            ...(source === "database"
+              ? ([
+                  { href: "/settings", label: "Alert ingest & tokens", variant: "secondary" as const },
+                ] as const)
+              : ([
+                  {
+                    href: "/auth/sign-in?next=/incidents",
+                    label: "Sign in for database",
+                    variant: "secondary" as const,
+                  },
+                ] as const)),
+          ]}
+        />
+      ) : (
       <div className="shynvo-table-wrap">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-white/[0.06] bg-white/[0.03] font-mono text-[11px] font-medium uppercase tracking-[0.1em] text-muted">
@@ -72,14 +97,7 @@ export default async function IncidentsPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-white/[0.05]">
-            {rows.length === 0 ? (
-              <tr>
-                <td colSpan={8} className="px-4 py-12 text-center text-sm text-muted">
-                  No incidents yet.
-                </td>
-              </tr>
-            ) : (
-              rows.map((row) => (
+            {rows.map((row) => (
                 <tr
                   key={row.id}
                   className="transition-colors hover:bg-white/[0.03]"
@@ -120,11 +138,11 @@ export default async function IncidentsPage() {
                   <td className="px-4 py-3 capitalize text-muted">{row.status}</td>
                   <td className="px-4 py-3 text-muted">{row.updated}</td>
                 </tr>
-              ))
-            )}
+              ))}
           </tbody>
         </table>
       </div>
+      )}
     </>
   );
 }
