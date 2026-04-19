@@ -2,6 +2,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 
 import { intentTagsForEventType } from "@/lib/guardrails/audit-intent-tags";
+import { incidentIdFromAuditDetails } from "@/lib/audit/incident-from-details";
 
 import type { AuditDisplayRow, AuditListResult } from "./types";
 
@@ -36,6 +37,7 @@ function mapRow(r: {
     target: formatTarget(r.details),
     outcome: "recorded",
     tags: intentTagsForEventType(r.event_type),
+    incidentId: incidentIdFromAuditDetails(r.event_type, r.details),
   };
 }
 

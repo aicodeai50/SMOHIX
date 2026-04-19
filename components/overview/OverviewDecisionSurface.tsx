@@ -23,9 +23,10 @@ export function OverviewDecisionSurface({
           <h2 className="text-sm font-semibold uppercase tracking-wide text-amber-100/95">
             Attention needed
           </h2>
-          {command.attention.length > 0 ? (
-            <ExecutionBadge tone="warn" title="Resolve these before they become incidents">
-              {command.attention.length} item{command.attention.length === 1 ? "" : "s"}
+          {command.attentionGroups.length > 0 ? (
+            <ExecutionBadge tone="warn" title="One card per problem area — start with the primary action">
+              {command.attentionGroups.length} group
+              {command.attentionGroups.length === 1 ? "" : "s"}
             </ExecutionBadge>
           ) : (
             <ExecutionBadge tone="success" title="Nothing urgent in this snapshot">
@@ -33,22 +34,62 @@ export function OverviewDecisionSurface({
             </ExecutionBadge>
           )}
         </div>
-        {command.attention.length === 0 ? (
+        {command.attentionGroups.length === 0 ? (
           <p className="mt-3 text-sm leading-relaxed text-muted">
             No urgent checklist items in this snapshot. Keep connectors healthy and approvals
             flowing so this stays green.
           </p>
         ) : (
-          <ul className="mt-4 space-y-2.5 text-sm">
-            {command.attention.map((item) => (
-              <li key={item.id}>
-                <Link
-                  href={item.href}
-                  className="flex items-start gap-2 rounded-lg py-1 text-foreground/90 transition-colors hover:text-accent"
-                >
-                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-300/90" />
-                  <span>{item.label}</span>
-                </Link>
+          <ul className="mt-4 space-y-4">
+            {command.attentionGroups.map((g) => (
+              <li
+                key={`${g.kind}-${g.id}`}
+                className="rounded-xl border border-white/[0.1] bg-white/[0.04] p-4 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)]"
+              >
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-amber-200/80">
+                      {g.kind === "incident"
+                        ? "Incident"
+                        : g.kind === "approvals"
+                          ? "Approvals"
+                          : "Workspace"}
+                    </p>
+                    <h3 className="mt-1 text-base font-semibold text-foreground/95">{g.title}</h3>
+                    {g.subtitle ? (
+                      <p className="mt-0.5 text-xs leading-relaxed text-muted">{g.subtitle}</p>
+                    ) : null}
+                    <ul className="mt-3 list-disc space-y-1.5 pl-4 text-sm leading-relaxed text-foreground/85">
+                      {g.bullets.map((b, i) => (
+                        <li key={i}>{b}</li>
+                      ))}
+                    </ul>
+                    {g.lastActivityLabel ? (
+                      <p className="mt-3 text-xs font-medium text-foreground/80">{g.lastActivityLabel}</p>
+                    ) : null}
+                  </div>
+                  <div className="flex shrink-0 flex-col items-stretch gap-2 sm:items-end">
+                    <Link
+                      href={g.primaryAction.href}
+                      className="inline-flex h-10 items-center justify-center rounded-xl bg-accent px-4 text-sm font-semibold text-background transition-opacity hover:opacity-90"
+                    >
+                      {g.primaryAction.label}
+                    </Link>
+                  </div>
+                </div>
+                {g.secondaryLinks?.length ? (
+                  <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 border-t border-white/[0.08] pt-3">
+                    {g.secondaryLinks.map((l) => (
+                      <Link
+                        key={l.href}
+                        href={l.href}
+                        className="text-xs font-medium text-accent hover:underline"
+                      >
+                        {l.label}
+                      </Link>
+                    ))}
+                  </div>
+                ) : null}
               </li>
             ))}
           </ul>

@@ -143,13 +143,19 @@ export async function POST(req: NextRequest) {
       playbookId,
       ok,
       detail,
+      incidentId,
     });
     if (row) {
       id = row.id;
       at = row.at;
       persisted = true;
     } else {
-      recordDryRun(tenantKey, { playbookId, ok, detail });
+      recordDryRun(tenantKey, {
+        playbookId,
+        ok,
+        detail,
+        ...(incidentId ? { incidentId } : {}),
+      });
     }
 
     void appendAuditEvent({

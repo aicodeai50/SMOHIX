@@ -13,7 +13,10 @@ import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
 import { PlaceholderCard } from "@/components/app/PlaceholderCard";
 import { AuditWhisperInline } from "@/components/guardrails/AuditWhisperInline";
+import { ExecutionOutcomeBadge } from "@/components/guardrails/ExecutionOutcomeBadge";
 import { getLatestAuditWhisperForIncident } from "@/lib/audit/whispers";
+import { getLatestDryRunForIncident } from "@/lib/automations/dry-runs-db";
+import type { DryRunRecord } from "@/lib/automations/runs-dev";
 import { getIncidentForUser } from "@/lib/incidents/data";
 import { listRunbooks } from "@/lib/runbooks/catalog";
 import { getIncidentTimeline } from "@/lib/incidents/timeline";
@@ -77,6 +80,14 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
       ? `/automations?incident=${encodeURIComponent(id)}`
       : "/automations";
 
+  const robotConnectorConfigured = Boolean(process.env.SHYNVO_ROBOT_API_URL?.trim());
+
+  let lastIncidentDryRun: DryRunRecord | null = null;
+  if (hasSupabaseAuth() && userId && source === "database") {
+    const supabase = await createServerSupabaseClient();
+    lastIncidentDryRun = await getLatestDryRunForIncident(supabase, userId, id);
+  }
+
   return (
     <>
       {source === "session" ? (
@@ -97,6 +108,32 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
           row.serviceName ? ` · ${row.serviceName}` : ""
         }${row.ownerHint ? ` · ${row.ownerHint}` : ""}`}
       />
+      {lastIncidentDryRun ? (
+        <div className="mb-4 flex flex-col gap-3 rounded-xl border border-white/[0.1] bg-white/[0.03] px-4 py-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+          <div className="min-w-0">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted">
+              Last dry-run (this incident)
+            </p>
+            <p className="mt-1 font-mono text-sm text-foreground/90">{lastIncidentDryRun.playbookId}</p>
+            <p className="mt-0.5 text-xs text-muted">
+              {new Date(lastIncidentDryRun.at).toLocaleString()}
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <ExecutionOutcomeBadge
+              ok={lastIncidentDryRun.ok}
+              robotConfigured={robotConnectorConfigured}
+              title="From stored dry-run result and robot connector configuration"
+            />
+            <Link
+              href={automationHref}
+              className="text-xs font-medium text-accent hover:underline"
+            >
+              Open automations →
+            </Link>
+          </div>
+        </div>
+      ) : null}
       {auditWhisper ? (
         <div className="mb-4">
           <AuditWhisperInline whisper={auditWhisper} />

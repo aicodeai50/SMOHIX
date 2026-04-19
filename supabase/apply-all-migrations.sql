@@ -357,3 +357,13 @@ create policy "automation_dry_runs_select_own"
 create policy "automation_dry_runs_insert_own"
   on public.automation_dry_runs for insert
   with check (auth.uid() = user_id);
+
+-- =============================================================================
+-- 20260419130000_automation_dry_runs_incident_id.sql
+-- =============================================================================
+
+alter table public.automation_dry_runs
+  add column if not exists incident_id uuid references public.incidents (id) on delete set null;
+
+create index if not exists automation_dry_runs_user_incident_created_idx
+  on public.automation_dry_runs (user_id, incident_id, created_at desc);

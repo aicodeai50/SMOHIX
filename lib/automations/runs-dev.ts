@@ -4,6 +4,8 @@ export type DryRunRecord = {
   ok: boolean;
   detail: string;
   at: string;
+  /** Present when dry-run was tied to an incident (DB + audit context). */
+  incidentId?: string | null;
 };
 
 const byTenant = new Map<string, DryRunRecord[]>();
@@ -28,6 +30,7 @@ export function recordDryRun(
     ok: entry.ok,
     detail: entry.detail,
     at: new Date().toISOString(),
+    ...(entry.incidentId != null ? { incidentId: entry.incidentId } : {}),
   };
   list.unshift(rec);
   const trimmed = list.slice(0, 40);

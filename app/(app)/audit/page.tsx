@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
@@ -100,6 +101,18 @@ export default async function AuditPage() {
                   <td className="px-4 py-3 text-accent">{e.action}</td>
                   <td className="max-w-md truncate px-4 py-3 text-muted" title={e.target}>
                     {e.target}
+                  </td>
+                  <td className="px-4 py-3 font-sans text-[11px]">
+                    {e.incidentId ? (
+                      <Link
+                        href={`/incidents/${encodeURIComponent(e.incidentId)}`}
+                        className="text-accent hover:underline"
+                      >
+                        View incident
+                      </Link>
+                    ) : (
+                      <span className="text-muted">—</span>
+                    )}
                   </td>
                   <td className="px-4 py-3 align-top font-sans text-[11px]">
                     <AuditIntentTags tags={e.tags} />

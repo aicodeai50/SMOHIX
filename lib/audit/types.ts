@@ -8,6 +8,8 @@ export type AuditDisplayRow = {
   target: string;
   outcome: string;
   tags: AuditIntentTag[];
+  /** When details.incident_id is set (e.g. dry-run in incident context). */
+  incidentId: string | null;
 };
 
 export type AuditListResult =

@@ -8,6 +8,7 @@ type Row = {
   ok: boolean;
   detail: string | null;
   created_at: string;
+  incident_id: string | null;
 };
 
 function mapRow(r: Row): DryRunRecord {
@@ -17,23 +18,34 @@ function mapRow(r: Row): DryRunRecord {
     ok: r.ok,
     detail: r.detail ?? "",
     at: r.created_at,
+    incidentId: r.incident_id ?? null,
   };
 }
 
 export async function insertAutomationDryRun(
   supabase: SupabaseClient,
   userId: string,
-  input: { playbookId: string; ok: boolean; detail: string },
+  input: {
+    playbookId: string;
+    ok: boolean;
+    detail: string;
+    incidentId?: string | null;
+  },
 ): Promise<DryRunRecord | null> {
+  const payload: Record<string, unknown> = {
+    user_id: userId,
+    playbook_id: input.playbookId,
+    ok: input.ok,
+    detail: input.detail,
+  };
+  if (input.incidentId) {
+    payload.incident_id = input.incidentId;
+  }
+
   const { data, error } = await supabase
     .from("automation_dry_runs")
-    .insert({
-      user_id: userId,
-      playbook_id: input.playbookId,
-      ok: input.ok,
-      detail: input.detail,
-    })
-    .select("id, playbook_id, ok, detail, created_at")
+    .insert(payload)
+    .select("id, playbook_id, ok, detail, created_at, incident_id")
     .single();
 
   if (error || !data) {
@@ -51,7 +63,7 @@ export async function listAutomationDryRuns(
 ): Promise<{ runs: DryRunRecord[]; fromDb: boolean }> {
   const { data, error } = await supabase
     .from("automation_dry_runs")
-    .select("id, playbook_id, ok, detail, created_at")
+    .select("id, playbook_id, ok, detail, created_at, incident_id")
     .order("created_at", { ascending: false })
     .limit(40);
 
@@ -63,4 +75,26 @@ export async function listAutomationDryRuns(
   }
 
   return { runs: (data as Row[]).map(mapRow), fromDb: true };
+}
+
+/** Latest dry-run row for a given incident (same user), for incident header intelligence. */
+export async function getLatestDryRunForIncident(
+  supabase: SupabaseClient,
+  userId: string,
+  incidentId: string,
+): Promise<DryRunRecord | null> {
+  const { data, error } = await supabase
+    .from("automation_dry_runs")
+    .select("id, playbook_id, ok, detail, created_at, incident_id")
+    .eq("user_id", userId)
+    .eq("incident_id", incidentId)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error || !data) {
+    return null;
+  }
+
+  return mapRow(data as Row);
 }
