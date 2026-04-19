@@ -17,6 +17,8 @@ export async function createIncidentAction(formData: FormData) {
   const severityRaw = String(formData.get("severity") ?? "medium");
   const status = String(formData.get("status") ?? "investigating");
   const serviceIdRaw = String(formData.get("service_id") ?? "").trim();
+  const ownerHintRaw = String(formData.get("owner_hint") ?? "").trim();
+  const runbookSlugRaw = String(formData.get("runbook_slug") ?? "").trim();
   const severity = SEVERITIES.has(severityRaw as IncidentSeverity)
     ? (severityRaw as IncidentSeverity)
     : "medium";
@@ -26,7 +28,13 @@ export async function createIncidentAction(formData: FormData) {
     if (!title.trim()) {
       redirect(`/incidents/new?error=${encodeURIComponent("Title is required.")}`);
     }
-    const id = recordDevIncident(tid, { title, severity, status });
+    const id = recordDevIncident(tid, {
+      title,
+      severity,
+      status,
+      ownerHint: ownerHintRaw || null,
+      runbookSlug: runbookSlugRaw || null,
+    });
     revalidatePath("/incidents");
     revalidatePath(`/incidents/${id}`);
     revalidatePath("/overview");
@@ -46,6 +54,8 @@ export async function createIncidentAction(formData: FormData) {
     severity,
     status,
     serviceId: serviceIdRaw.length > 0 ? serviceIdRaw : null,
+    ownerHint: ownerHintRaw.length > 0 ? ownerHintRaw : null,
+    runbookSlug: runbookSlugRaw.length > 0 ? runbookSlugRaw : null,
   });
   if (!result.ok) {
     redirect(`/incidents/new?error=${encodeURIComponent(result.reason)}`);

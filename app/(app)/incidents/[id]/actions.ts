@@ -5,7 +5,11 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { appendAuditEvent } from "@/lib/audit/append";
-import { updateIncidentPostmortemForUser, updateIncidentStatusForUser } from "@/lib/incidents/data";
+import {
+  updateIncidentContextForUser,
+  updateIncidentPostmortemForUser,
+  updateIncidentStatusForUser,
+} from "@/lib/incidents/data";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
@@ -51,6 +55,63 @@ export async function updateIncidentStatusAction(formData: FormData) {
     event_type: "incident.status_updated",
     user_id: user.id,
     details: { incident_id: id, status },
+  });
+
+  revalidatePath("/incidents");
+  revalidatePath(`/incidents/${id}`);
+  revalidatePath("/overview");
+  redirect(`/incidents/${id}`);
+}
+
+export async function updateIncidentContextAction(formData: FormData) {
+  const id = String(formData.get("id") ?? "").trim();
+  const ownerHint = String(formData.get("owner_hint") ?? "");
+  const runbookSlug = String(formData.get("runbook_slug") ?? "");
+  if (!id) {
+    return;
+  }
+
+  if (!hasSupabaseAuth()) {
+    const tid = (await cookies()).get("shynvo_dev_tid")?.value ?? "anon";
+    const result = await updateIncidentContextForUser(
+      "",
+      id,
+      { ownerHint, runbookSlug },
+      { devTenantKey: tid },
+    );
+    if (!result.ok) {
+      redirect(
+        `/incidents/${encodeURIComponent(id)}?error=${encodeURIComponent(result.reason)}`,
+      );
+    }
+    revalidatePath("/incidents");
+    revalidatePath(`/incidents/${id}`);
+    revalidatePath("/overview");
+    redirect(`/incidents/${id}`);
+  }
+
+  const supabase = await createServerSupabaseClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    redirect(`/auth/sign-in?next=/incidents/${encodeURIComponent(id)}`);
+  }
+
+  const result = await updateIncidentContextForUser(user.id, id, {
+    ownerHint,
+    runbookSlug,
+  });
+  if (!result.ok) {
+    redirect(
+      `/incidents/${encodeURIComponent(id)}?error=${encodeURIComponent(result.reason)}`,
+    );
+  }
+
+  await appendAuditEvent({
+    event_type: "incident.context_updated",
+    user_id: user.id,
+    details: { incident_id: id },
   });
 
   revalidatePath("/incidents");

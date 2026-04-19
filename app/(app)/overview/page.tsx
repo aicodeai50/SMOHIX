@@ -124,6 +124,11 @@ export default async function OverviewPage() {
                       {row.serviceName}
                     </span>
                   ) : null}
+                  {row.ownerHint ? (
+                    <span className="rounded-md bg-white/[0.04] px-2 py-0.5 text-foreground/80">
+                      {row.ownerHint}
+                    </span>
+                  ) : null}
                   <span className="capitalize">{row.severity}</span>
                   <span className="capitalize">{row.status}</span>
                   <span>{row.updated}</span>

@@ -18,7 +18,12 @@ function formatUtc(iso: string): string {
   }
 }
 
-/** Timeline for a DB-backed incident from `audit_log` (`incident.status_updated`). */
+const INCIDENT_AUDIT_TYPES = [
+  "incident.status_updated",
+  "incident.context_updated",
+] as const;
+
+/** Timeline for a DB-backed incident from `audit_log`. */
 export async function listIncidentTimelineFromAudit(
   userId: string,
   incidentId: string,
@@ -33,7 +38,7 @@ export async function listIncidentTimelineFromAudit(
       .from("audit_log")
       .select("created_at, event_type, details")
       .eq("user_id", userId)
-      .eq("event_type", "incident.status_updated")
+      .in("event_type", [...INCIDENT_AUDIT_TYPES])
       .order("created_at", { ascending: false })
       .limit(100);
 
@@ -47,12 +52,20 @@ export async function listIncidentTimelineFromAudit(
       if (!details || String(details.incident_id ?? "") !== incidentId) {
         continue;
       }
-      const status =
-        typeof details.status === "string" ? details.status : "updated";
-      out.push({
-        at: formatUtc(String(row.created_at)),
-        label: `Status set to ${status}`,
-      });
+      const et = String(row.event_type);
+      if (et === "incident.status_updated") {
+        const status =
+          typeof details.status === "string" ? details.status : "updated";
+        out.push({
+          at: formatUtc(String(row.created_at)),
+          label: `Status set to ${status}`,
+        });
+      } else if (et === "incident.context_updated") {
+        out.push({
+          at: formatUtc(String(row.created_at)),
+          label: "Owner / runbook updated",
+        });
+      }
     }
     return out;
   } catch {

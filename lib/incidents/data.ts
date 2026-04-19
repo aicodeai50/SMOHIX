@@ -1,9 +1,11 @@
+import { isRunbookSlugValid, runbookTitleForSlug } from "@/lib/runbooks/catalog";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 
 import {
   getDevIncident,
   listDevIncidents,
+  updateDevIncidentContext,
   updateDevIncidentStatus,
 } from "./dev-store";
 import { formatIncidentRelative } from "./format";
@@ -21,6 +23,14 @@ function isUuid(s: string): boolean {
   return UUID_RE.test(s);
 }
 
+const OWNER_HINT_MAX = 200;
+
+function strOrNull(v: unknown): string | null {
+  if (typeof v !== "string") return null;
+  const t = v.trim();
+  return t ? t : null;
+}
+
 function mapDbRow(
   r: {
     id: string;
@@ -30,7 +40,11 @@ function mapDbRow(
     updated_at: string;
   },
   serviceName?: string | null,
+  ownerHint?: string | null,
+  runbookSlug?: string | null,
 ): IncidentRow {
+  const slug = runbookSlug?.trim() || null;
+  const owner = ownerHint?.trim() || null;
   return {
     id: r.id,
     title: r.title,
@@ -38,7 +52,25 @@ function mapDbRow(
     status: r.status,
     updated: formatIncidentRelative(r.updated_at),
     serviceName: serviceName ?? undefined,
+    ownerHint: owner ?? undefined,
+    runbookSlug: slug ?? undefined,
+    runbookTitle: slug ? runbookTitleForSlug(slug) ?? undefined : undefined,
   };
+}
+
+function mapDbRecordToRow(rec: Record<string, unknown>): IncidentRow {
+  return mapDbRow(
+    {
+      id: rec.id as string,
+      title: rec.title as string,
+      severity: rec.severity as string,
+      status: rec.status as string,
+      updated_at: rec.updated_at as string,
+    },
+    serviceNameFromJoin(rec as { services?: { name?: string } | null }),
+    strOrNull(rec.owner_hint),
+    strOrNull(rec.runbook_slug),
+  );
 }
 
 function serviceNameFromJoin(
@@ -73,7 +105,9 @@ export async function listIncidentsForUser(
     const supabase = await createServerSupabaseClient();
     const { data, error } = await supabase
       .from("incidents")
-      .select("id, title, severity, status, updated_at, services(name)")
+      .select(
+        "id, title, severity, status, updated_at, owner_hint, runbook_slug, services(name)",
+      )
       .eq("user_id", userId)
       .order("updated_at", { ascending: false });
 
@@ -81,19 +115,7 @@ export async function listIncidentsForUser(
       return { source: "database", rows: [] };
     }
 
-    const rows = (data ?? []).map((r) => {
-      const rec = r as Record<string, unknown>;
-      return mapDbRow(
-        {
-          id: rec.id as string,
-          title: rec.title as string,
-          severity: rec.severity as string,
-          status: rec.status as string,
-          updated_at: rec.updated_at as string,
-        },
-        serviceNameFromJoin(rec as { services?: { name?: string } | null }),
-      );
-    });
+    const rows = (data ?? []).map((r) => mapDbRecordToRow(r as Record<string, unknown>));
 
     return { source: "database", rows };
   } catch {
@@ -130,23 +152,16 @@ export async function getIncidentForUser(
       const supabase = await createServerSupabaseClient();
       const { data, error } = await supabase
         .from("incidents")
-        .select("id, title, severity, status, updated_at, postmortem, service_id, services(name)")
+        .select(
+          "id, title, severity, status, updated_at, postmortem, service_id, owner_hint, runbook_slug, services(name)",
+        )
         .eq("id", id)
         .eq("user_id", userId)
         .maybeSingle();
 
       if (!error && data) {
         const rec = data as Record<string, unknown>;
-        const base = mapDbRow(
-          {
-            id: rec.id as string,
-            title: rec.title as string,
-            severity: rec.severity as string,
-            status: rec.status as string,
-            updated_at: rec.updated_at as string,
-          },
-          serviceNameFromJoin(rec as { services?: { name?: string } | null }),
-        );
+        const base = mapDbRecordToRow(rec);
         const sid = rec.service_id;
         return {
           source: "database",
@@ -226,6 +241,8 @@ export async function createIncidentForUser(
     serviceId?: string | null;
     externalRef?: string | null;
     postmortem?: string | null;
+    ownerHint?: string | null;
+    runbookSlug?: string | null;
   },
 ): Promise<{ ok: true; id: string } | { ok: false; reason: string }> {
   if (!hasSupabaseAuth()) {
@@ -245,6 +262,16 @@ export async function createIncidentForUser(
     typeof input.serviceId === "string" && isUuid(input.serviceId) ? input.serviceId : null;
   const externalRef = input.externalRef?.trim() || null;
   const postmortem = input.postmortem?.trim() || null;
+  const ownerHint =
+    typeof input.ownerHint === "string"
+      ? input.ownerHint.trim().slice(0, OWNER_HINT_MAX) || null
+      : null;
+  const runbookRaw =
+    typeof input.runbookSlug === "string" ? input.runbookSlug.trim() : "";
+  const runbookSlug = runbookRaw ? runbookRaw : null;
+  if (runbookSlug && !isRunbookSlugValid(runbookSlug)) {
+    return { ok: false, reason: "Unknown runbook slug." };
+  }
 
   try {
     const supabase = await createServerSupabaseClient();
@@ -258,6 +285,8 @@ export async function createIncidentForUser(
         ...(serviceId ? { service_id: serviceId } : {}),
         ...(externalRef ? { external_ref: externalRef } : {}),
         ...(postmortem ? { postmortem } : {}),
+        ...(ownerHint ? { owner_hint: ownerHint } : {}),
+        ...(runbookSlug ? { runbook_slug: runbookSlug } : {}),
       })
       .select("id")
       .single();
@@ -273,6 +302,60 @@ export async function createIncidentForUser(
     return {
       ok: false,
       reason: e instanceof Error ? e.message : "Could not create incident.",
+    };
+  }
+}
+
+export async function updateIncidentContextForUser(
+  userId: string,
+  id: string,
+  input: { ownerHint: string | null; runbookSlug: string | null },
+  options?: { devTenantKey?: string | null },
+): Promise<{ ok: true } | { ok: false; reason: string }> {
+  const ownerHint =
+    input.ownerHint?.trim().slice(0, OWNER_HINT_MAX) || null;
+  const runbookRaw = input.runbookSlug?.trim() || "";
+  const runbookSlug = runbookRaw ? runbookRaw : null;
+  if (runbookSlug && !isRunbookSlugValid(runbookSlug)) {
+    return { ok: false, reason: "Unknown runbook slug." };
+  }
+
+  if (!hasSupabaseAuth()) {
+    const tid = options?.devTenantKey;
+    if (
+      tid &&
+      id.startsWith("dev-") &&
+      updateDevIncidentContext(tid, id, { ownerHint, runbookSlug })
+    ) {
+      return { ok: true };
+    }
+    return { ok: false, reason: "Cannot update in this environment." };
+  }
+
+  if (!isUuid(id)) {
+    return { ok: false, reason: "Cannot update in this environment." };
+  }
+
+  try {
+    const supabase = await createServerSupabaseClient();
+    const { error } = await supabase
+      .from("incidents")
+      .update({
+        owner_hint: ownerHint,
+        runbook_slug: runbookSlug,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", id)
+      .eq("user_id", userId);
+
+    if (error) {
+      return { ok: false, reason: error.message };
+    }
+    return { ok: true };
+  } catch (e) {
+    return {
+      ok: false,
+      reason: e instanceof Error ? e.message : "Update failed.",
     };
   }
 }

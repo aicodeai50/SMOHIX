@@ -8,6 +8,12 @@ export type IncidentRow = {
   updated: string;
   /** Present when `services` join is applied (Supabase). */
   serviceName?: string | null;
+  /** Responder / team label. */
+  ownerHint?: string | null;
+  /** Linked runbook catalog slug. */
+  runbookSlug?: string | null;
+  /** Resolved title when `runbookSlug` is set. */
+  runbookTitle?: string | null;
 };
 
 /** Detail view fields (database incidents). */

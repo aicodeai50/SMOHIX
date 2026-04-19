@@ -1,13 +1,18 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { cookies } from "next/headers";
+import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 
-import { updateIncidentPostmortemAction, updateIncidentStatusAction } from "./actions";
+import {
+  updateIncidentContextAction,
+  updateIncidentPostmortemAction,
+  updateIncidentStatusAction,
+} from "./actions";
 
 import { PageHeader } from "@/components/app/PageHeader";
 import { PlaceholderCard } from "@/components/app/PlaceholderCard";
 import { getIncidentForUser } from "@/lib/incidents/data";
+import { listRunbooks } from "@/lib/runbooks/catalog";
 import { getIncidentTimeline } from "@/lib/incidents/timeline";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -50,6 +55,7 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
   }
 
   const { row, source } = resolved;
+  const runbooks = listRunbooks();
 
   const timeline = await getIncidentTimeline({
     source,
@@ -68,16 +74,15 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
         </p>
       ) : (
         <p className="shynvo-glass-subtle mb-4 rounded-xl px-4 py-3 text-xs leading-relaxed text-muted">
-          Timeline entries come from your <span className="font-mono">audit_log</span> (
-          <span className="font-mono">incident.status_updated</span>) when the service role can
-          append audits.
+          Timeline entries come from your <span className="font-mono">audit_log</span> (status and
+          owner/runbook updates) when the service role can append audits.
         </p>
       )}
       <PageHeader
         title={row.title}
         description={`${row.id} · ${row.severity} · ${row.status} · updated ${row.updated}${
           row.serviceName ? ` · ${row.serviceName}` : ""
-        }`}
+        }${row.ownerHint ? ` · ${row.ownerHint}` : ""}`}
       />
       {source === "database" && row.serviceId ? (
         <p className="mb-4 text-sm text-muted">
@@ -87,10 +92,81 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
           </Link>
         </p>
       ) : null}
+      {row.runbookSlug ? (
+        <p className="mb-4 text-sm text-muted">
+          Linked runbook:{" "}
+          <Link
+            href={`/runbooks/${row.runbookSlug}`}
+            className="font-medium text-accent hover:underline"
+          >
+            {row.runbookTitle ?? row.runbookSlug}
+          </Link>
+        </p>
+      ) : null}
+      {source === "database" && hasSupabaseAuth() ? (
+        <p className="mb-4 text-sm">
+          <a
+            href={`/api/incidents/${encodeURIComponent(row.id)}/export`}
+            className="font-medium text-accent hover:underline"
+          >
+            Download markdown export
+          </a>
+          <span className="ml-2 text-xs text-muted">for status pages or postmortem archives</span>
+        </p>
+      ) : null}
       {err ? (
         <p className="mb-4 rounded-xl border border-red-400/25 bg-red-500/[0.08] px-4 py-3 text-sm text-red-200/90 backdrop-blur-sm">
           {err}
         </p>
+      ) : null}
+      {(source === "database" && hasSupabaseAuth()) ||
+      (source === "session" && !hasSupabaseAuth()) ? (
+        <form
+          action={updateIncidentContextAction}
+          className="shynvo-glass mb-6 space-y-4 rounded-2xl p-4 md:p-5"
+        >
+          <input type="hidden" name="id" value={row.id} />
+          <p className="text-xs font-medium uppercase tracking-wide text-muted">Owner & runbook</p>
+          <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end">
+            <div className="min-w-[12rem] flex-1">
+              <label htmlFor="owner_hint" className="mb-1 block text-xs font-medium text-muted">
+                Owner / on-call
+              </label>
+              <input
+                id="owner_hint"
+                name="owner_hint"
+                maxLength={200}
+                defaultValue={row.ownerHint ?? ""}
+                placeholder="@oncall"
+                className="h-10 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 text-sm text-foreground outline-none ring-accent/25 focus:border-accent/40 focus:ring-2"
+              />
+            </div>
+            <div className="min-w-[14rem] flex-1">
+              <label htmlFor="runbook_slug" className="mb-1 block text-xs font-medium text-muted">
+                Runbook
+              </label>
+              <select
+                id="runbook_slug"
+                name="runbook_slug"
+                defaultValue={row.runbookSlug ?? ""}
+                className="h-10 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 text-sm text-foreground outline-none ring-accent/25 focus:border-accent/40 focus:ring-2"
+              >
+                <option value="">— None —</option>
+                {runbooks.map((r) => (
+                  <option key={r.slug} value={r.slug}>
+                    {r.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <button
+              type="submit"
+              className="h-10 shrink-0 rounded-xl bg-accent px-5 text-sm font-semibold text-background hover:opacity-95"
+            >
+              Save context
+            </button>
+          </div>
+        </form>
       ) : null}
       {(source === "database" && hasSupabaseAuth()) ||
       (source === "session" && !hasSupabaseAuth()) ? (

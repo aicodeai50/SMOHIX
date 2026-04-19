@@ -91,3 +91,15 @@ export function listRunbooks(): RunbookSummary[] {
 export function getRunbookBySlug(slug: string): RunbookDetail | undefined {
   return DATA.find((r) => r.slug === slug);
 }
+
+export function isRunbookSlugValid(slug: string): boolean {
+  const s = slug.trim();
+  if (!s) return false;
+  return DATA.some((r) => r.slug === s);
+}
+
+export function runbookTitleForSlug(slug: string | null | undefined): string | null {
+  if (!slug?.trim()) return null;
+  const r = getRunbookBySlug(slug.trim());
+  return r?.title ?? null;
+}

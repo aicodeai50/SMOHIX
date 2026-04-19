@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { PageHeader } from "@/components/app/PageHeader";
+import { listRunbooks } from "@/lib/runbooks/catalog";
 import { listServicesForUser } from "@/lib/services/data";
 import { createIncidentAction } from "../actions";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
@@ -32,6 +33,7 @@ export default async function NewIncidentPage({
   }
 
   const { error } = await searchParams;
+  const runbooks = listRunbooks();
 
   return (
     <>
@@ -86,6 +88,43 @@ export default async function NewIncidentPage({
             </select>
           </div>
         ) : null}
+        <div>
+          <label htmlFor="owner_hint" className="mb-1.5 block text-xs font-medium text-muted">
+            Owner / on-call (optional)
+          </label>
+          <input
+            id="owner_hint"
+            name="owner_hint"
+            maxLength={200}
+            placeholder="@team-platform or pager rotation"
+            className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none ring-ring/50 focus:ring-2"
+          />
+        </div>
+        <div>
+          <label htmlFor="runbook_slug" className="mb-1.5 block text-xs font-medium text-muted">
+            Runbook (optional)
+          </label>
+          <select
+            id="runbook_slug"
+            name="runbook_slug"
+            className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none ring-ring/50 focus:ring-2"
+            defaultValue=""
+          >
+            <option value="">— None —</option>
+            {runbooks.map((r) => (
+              <option key={r.slug} value={r.slug}>
+                {r.title}
+              </option>
+            ))}
+          </select>
+          <p className="mt-1.5 text-xs text-muted">
+            Links this incident to a built-in checklist. See{" "}
+            <Link href="/runbooks" className="text-accent hover:underline">
+              Runbooks
+            </Link>
+            .
+          </p>
+        </div>
         <div>
           <label htmlFor="severity" className="mb-1.5 block text-xs font-medium text-muted">
             Severity

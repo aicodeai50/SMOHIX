@@ -1,4 +1,5 @@
 import { hashApiKeyPlaintext } from "@/lib/api-keys/token";
+import { isRunbookSlugValid } from "@/lib/runbooks/catalog";
 import { createServiceSupabaseClient } from "@/lib/supabase/admin";
 import type { IncidentSeverity } from "@/lib/incidents/types";
 
@@ -19,6 +20,8 @@ export type AlertIngestPayload = {
   service_id?: unknown;
   service_name?: unknown;
   dedupe_key?: unknown;
+  owner_hint?: unknown;
+  runbook_slug?: unknown;
 };
 
 export async function resolveAlertIngestUserId(bearerPlain: string): Promise<
@@ -82,6 +85,14 @@ export async function ingestAlertCreateIncident(
   const dedupe =
     typeof raw.dedupe_key === "string" ? raw.dedupe_key.trim().slice(0, 500) : null;
 
+  const ownerHint =
+    typeof raw.owner_hint === "string"
+      ? raw.owner_hint.trim().slice(0, 200) || null
+      : null;
+  const runbookRaw =
+    typeof raw.runbook_slug === "string" ? raw.runbook_slug.trim() : "";
+  const runbookSlug = runbookRaw && isRunbookSlugValid(runbookRaw) ? runbookRaw : null;
+
   let serviceId: string | null =
     typeof raw.service_id === "string" && /^[0-9a-f-]{36}$/i.test(raw.service_id)
       ? raw.service_id
@@ -126,6 +137,8 @@ export async function ingestAlertCreateIncident(
   };
   if (serviceId) insertRow.service_id = serviceId;
   if (dedupe) insertRow.external_ref = dedupe;
+  if (ownerHint) insertRow.owner_hint = ownerHint;
+  if (runbookSlug) insertRow.runbook_slug = runbookSlug;
 
   const { data: inserted, error: insertError } = await admin
     .from("incidents")

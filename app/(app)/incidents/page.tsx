@@ -64,6 +64,8 @@ export default async function IncidentsPage() {
               <th className="px-4 py-3.5">Id</th>
               <th className="px-4 py-3.5">Title</th>
               <th className="px-4 py-3.5">Service</th>
+              <th className="px-4 py-3.5">Owner</th>
+              <th className="px-4 py-3.5">Runbook</th>
               <th className="px-4 py-3.5">Severity</th>
               <th className="px-4 py-3.5">Status</th>
               <th className="px-4 py-3.5">Updated</th>
@@ -72,7 +74,7 @@ export default async function IncidentsPage() {
           <tbody className="divide-y divide-white/[0.05]">
             {rows.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-4 py-12 text-center text-sm text-muted">
+                <td colSpan={8} className="px-4 py-12 text-center text-sm text-muted">
                   No incidents yet.
                 </td>
               </tr>
@@ -91,6 +93,25 @@ export default async function IncidentsPage() {
                   <td className="px-4 py-3 text-muted">
                     {row.serviceName ? (
                       <span className="text-foreground/85">{row.serviceName}</span>
+                    ) : (
+                      "—"
+                    )}
+                  </td>
+                  <td className="max-w-[10rem] truncate px-4 py-3 text-muted">
+                    {row.ownerHint ? (
+                      <span className="text-foreground/85">{row.ownerHint}</span>
+                    ) : (
+                      "—"
+                    )}
+                  </td>
+                  <td className="max-w-[12rem] truncate px-4 py-3 text-muted">
+                    {row.runbookSlug ? (
+                      <Link
+                        href={`/runbooks/${row.runbookSlug}`}
+                        className="text-accent hover:underline"
+                      >
+                        {row.runbookTitle ?? row.runbookSlug}
+                      </Link>
                     ) : (
                       "—"
                     )}
