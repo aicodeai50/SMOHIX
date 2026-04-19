@@ -1,6 +1,17 @@
 import Link from "next/link";
 
-import { mBody, mCardLink, mH1, mH2 } from "@/lib/marketing-layout";
+import {
+  mArticle,
+  mBody,
+  mCardLink,
+  mEyebrow,
+  mFooterLabel,
+  mH1,
+  mH2,
+  mH3,
+  mPanelShell,
+  mSectionEnter,
+} from "@/lib/marketing-layout";
 import { SITE_BRAND_NAME } from "@/lib/site-brand";
 
 const SURFACE = [
@@ -60,10 +71,8 @@ const TOC = [
 
 export function PlatformOverview() {
   return (
-    <article className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
-      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent/90">
-        Product narrative
-      </p>
+    <article className={`${mArticle} ${mSectionEnter}`}>
+      <p className={mEyebrow}>Product narrative</p>
       <h1 className={`mt-2 ${mH1}`}>
         {SITE_BRAND_NAME} console — what it is
       </h1>
@@ -71,11 +80,8 @@ export function PlatformOverview() {
         For investors, buyers, and new engineers: meaning first, routes second.
       </p>
 
-      <nav
-        aria-label="On this page"
-        className="mt-8 rounded-xl border border-white/[0.08] bg-white/[0.02] p-4 text-sm"
-      >
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted">On this page</p>
+      <nav aria-label="On this page" className={`mt-8 p-4 text-sm ${mPanelShell}`}>
+        <p className={mFooterLabel}>On this page</p>
         <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-2">
           {TOC.map((t) => (
             <li key={t.href}>
@@ -104,7 +110,7 @@ export function PlatformOverview() {
             <li key={item.title}>
               <Link href={item.href} className={mCardLink}>
                 <span className="text-sm font-semibold text-foreground">{item.title}</span>
-                <span className="mt-2 flex-1 text-[0.9375rem] leading-relaxed text-muted">{item.body}</span>
+                <span className={`mt-2 flex-1 ${mBody}`}>{item.body}</span>
                 <span className="mt-4 text-xs font-semibold text-accent/90 group-hover:underline">Open →</span>
               </Link>
             </li>
@@ -236,17 +242,17 @@ export function PlatformOverview() {
         <p className={`mt-3 ${mBody}`}>
           Routes are implementation details; buckets are how teams buy.
         </p>
-        <dl className={`mt-6 space-y-6 text-[0.9375rem]`}>
+        <dl className="mt-6 space-y-6">
           <div>
-            <dt className="font-semibold text-foreground">Incident management</dt>
-            <dd className="mt-1 leading-relaxed text-muted">
+            <dt className={mH3}>Incident management</dt>
+            <dd className={`mt-1 ${mBody}`}>
               List, create, drill-down, status, owner/runbook context, postmortem, timeline, export —{" "}
               <code className="font-mono text-xs text-accent/90">/incidents</code> family.
             </dd>
           </div>
           <div>
-            <dt className="font-semibold text-foreground">Automation and execution</dt>
-            <dd className="mt-1 leading-relaxed text-muted">
+            <dt className={mH3}>Automation and execution</dt>
+            <dd className={`mt-1 ${mBody}`}>
               Console automations + dry-run API; optional proxies to reasoning and robot backends —{" "}
               <code className="font-mono text-xs text-accent/90">/automations</code>,{" "}
               <code className="font-mono text-xs text-accent/90">/api/automations/dry-run</code>,{" "}
@@ -255,22 +261,22 @@ export function PlatformOverview() {
             </dd>
           </div>
           <div>
-            <dt className="font-semibold text-foreground">Approvals and control</dt>
-            <dd className="mt-1 leading-relaxed text-muted">
+            <dt className={mH3}>Approvals and control</dt>
+            <dd className={`mt-1 ${mBody}`}>
               Human checkpoint before risky automation — <code className="font-mono text-xs text-accent/90">/approvals</code>.
             </dd>
           </div>
           <div>
-            <dt className="font-semibold text-foreground">Audit and compliance artifacts</dt>
-            <dd className="mt-1 leading-relaxed text-muted">
+            <dt className={mH3}>Audit and compliance artifacts</dt>
+            <dd className={`mt-1 ${mBody}`}>
               Activity log + incident markdown export —{" "}
               <code className="font-mono text-xs text-accent/90">/audit</code>,{" "}
               <code className="font-mono text-xs text-accent/90">/api/incidents/[id]/export</code>.
             </dd>
           </div>
           <div>
-            <dt className="font-semibold text-foreground">Integrations and ingest</dt>
-            <dd className="mt-1 leading-relaxed text-muted">
+            <dt className={mH3}>Integrations and ingest</dt>
+            <dd className={`mt-1 ${mBody}`}>
               Alert ingest, connector health —{" "}
               <code className="font-mono text-xs text-accent/90">/api/integrations/alerts</code>,{" "}
               <code className="font-mono text-xs text-accent/90">/api/connectors/status</code>,{" "}
@@ -281,8 +287,8 @@ export function PlatformOverview() {
             </dd>
           </div>
           <div>
-            <dt className="font-semibold text-foreground">AI copilot</dt>
-            <dd className="mt-1 leading-relaxed text-muted">
+            <dt className={mH3}>AI copilot</dt>
+            <dd className={`mt-1 ${mBody}`}>
               Triage chat and threads — <code className="font-mono text-xs text-accent/90">/copilot</code>,{" "}
               <code className="font-mono text-xs text-accent/90">/api/copilot/*</code>.
             </dd>
@@ -328,7 +334,9 @@ export function PlatformOverview() {
 
       <section id="architecture" className="mt-12 scroll-mt-24">
         <h2 className={mH2}>Architecture (text)</h2>
-        <pre className="mt-4 overflow-x-auto rounded-xl border border-white/[0.08] bg-black/45 p-4 font-mono text-[11px] leading-relaxed text-foreground/80 sm:text-xs">
+        <pre
+          className={`mt-4 overflow-x-auto p-4 font-mono text-[11px] leading-relaxed text-foreground/80 sm:text-xs ${mPanelShell} bg-black/45`}
+        >
 {`Users & webhooks
        │
        ▼

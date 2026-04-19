@@ -1,6 +1,13 @@
 import Link from "next/link";
 
-import { mContainer, mH2, mLede, mPanelShell, mSection } from "@/lib/marketing-layout";
+import {
+  mContainer,
+  mH2,
+  mLede,
+  mPanelShell,
+  mSection,
+  mSectionEnter,
+} from "@/lib/marketing-layout";
 
 const links = [
   {
@@ -28,7 +35,7 @@ const links = [
 
 export function TrustSection() {
   return (
-    <section id="trust" className={mSection}>
+    <section id="trust" className={`${mSection} ${mSectionEnter}`}>
       <div className={mContainer}>
         <h2 className={mH2}>Governance and access</h2>
         <p className={mLede}>

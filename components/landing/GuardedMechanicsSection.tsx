@@ -1,6 +1,16 @@
 import Link from "next/link";
 
-import { mCard, mContainer, mH2, mLede, mSection } from "@/lib/marketing-layout";
+import {
+  mBody,
+  mCard,
+  mCardTitle,
+  mContainer,
+  mH2,
+  mLede,
+  mSection,
+  mSectionEnter,
+  mStaggerGrid,
+} from "@/lib/marketing-layout";
 
 const MECHANICS = [
   {
@@ -43,7 +53,11 @@ const MECHANICS = [
 
 export function GuardedMechanicsSection() {
   return (
-    <section id="guarded-mechanics" className={mSection} aria-labelledby="guarded-heading">
+    <section
+      id="guarded-mechanics"
+      className={`${mSection} ${mSectionEnter}`}
+      aria-labelledby="guarded-heading"
+    >
       <div className={mContainer}>
         <h2 id="guarded-heading" className={mH2}>
           Guarded automation — the mechanics
@@ -54,11 +68,11 @@ export function GuardedMechanicsSection() {
           trigger from this console.
         </p>
 
-        <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className={`mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 ${mStaggerGrid}`}>
           {MECHANICS.map((m) => (
             <li key={m.title} className={`flex flex-col ${mCard}`}>
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <h3 className="text-sm font-semibold text-foreground">{m.title}</h3>
+                <h3 className={mCardTitle}>{m.title}</h3>
                 <span
                   className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
                     m.status === "In console"
@@ -69,7 +83,7 @@ export function GuardedMechanicsSection() {
                   {m.status}
                 </span>
               </div>
-              <p className="mt-3 flex-1 text-sm leading-relaxed text-muted">{m.body}</p>
+              <p className={`mt-3 flex-1 ${mBody}`}>{m.body}</p>
               <Link
                 href={m.href}
                 className="mt-4 text-xs font-semibold text-accent hover:underline"

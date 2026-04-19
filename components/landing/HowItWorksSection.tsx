@@ -1,4 +1,12 @@
-import { mContainer, mH2, mLede, mPanelShell, mSection } from "@/lib/marketing-layout";
+import {
+  mContainer,
+  mH2,
+  mLede,
+  mPanelShell,
+  mSection,
+  mSectionEnter,
+  mStaggerGrid,
+} from "@/lib/marketing-layout";
 import { SITE_BRAND_NAME } from "@/lib/site-brand";
 
 const STEPS = [
@@ -42,7 +50,11 @@ const GUARDED = [
 
 export function HowItWorksSection() {
   return (
-    <section id="how-it-works" className={mSection} aria-labelledby="how-heading">
+    <section
+      id="how-it-works"
+      className={`${mSection} ${mSectionEnter}`}
+      aria-labelledby="how-heading"
+    >
       <div className={mContainer}>
         <h2 id="how-heading" className={mH2}>
           How {SITE_BRAND_NAME} runs an incident
@@ -59,7 +71,9 @@ export function HowItWorksSection() {
           Copilot → dry-run playbook → approval recorded → execute via connector → audit + export
         </p>
 
-        <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_minmax(0,20rem)] lg:items-start">
+        <div
+          className={`mt-10 grid gap-10 lg:grid-cols-[1fr_minmax(0,20rem)] lg:items-start ${mStaggerGrid}`}
+        >
           <ol className="space-y-6">
             {STEPS.map((step) => (
               <li key={step.n} className="flex gap-4">

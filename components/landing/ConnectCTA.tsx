@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getTrialHref } from "@/lib/billing";
 import { marketingCta } from "@/lib/marketing-copy";
+import { mBody, mContainer, mH2, mSectionEnter } from "@/lib/marketing-layout";
 
 export function ConnectCTA({
   signedInCheckoutUrl,
@@ -12,17 +13,18 @@ export function ConnectCTA({
   const trialHref = signedInCheckoutUrl?.trim() || getTrialHref();
   const teamHref = signedInTeamCheckoutUrl?.trim();
   return (
-    <section id="connect" className="py-16 sm:py-20" aria-labelledby="connect-heading">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+    <section
+      id="connect"
+      className={`py-16 sm:py-20 ${mSectionEnter}`}
+      aria-labelledby="connect-heading"
+    >
+      <div className={mContainer}>
         <div className="shynvo-glass relative overflow-hidden rounded-2xl px-6 py-10 sm:px-10 sm:py-12">
           <div className="relative max-w-2xl">
-            <h2
-              id="connect-heading"
-              className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl"
-            >
+            <h2 id="connect-heading" className={mH2}>
               Integrations and console
             </h2>
-            <p className="mt-2 text-sm leading-relaxed text-muted">
+            <p className={`mt-2 ${mBody}`}>
               Reasoning and automation live in the same workspace after you sign in. Connector
               configuration is under Settings — see the{" "}
               <Link href="/integrations" className="font-medium text-accent hover:underline">
@@ -30,7 +32,7 @@ export function ConnectCTA({
               </Link>{" "}
               for what ships today and what is planned.
             </p>
-            <ul className="mt-5 space-y-2 text-sm text-muted">
+            <ul className={`mt-5 space-y-2 ${mBody}`}>
               <li>
                 <Link href="/copilot" className="text-foreground/85 hover:text-accent hover:underline">
                   Copilot

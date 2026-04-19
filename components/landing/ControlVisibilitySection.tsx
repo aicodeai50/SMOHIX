@@ -1,6 +1,16 @@
 import Link from "next/link";
 
-import { mCard, mContainer, mH2, mLede, mSection } from "@/lib/marketing-layout";
+import {
+  mBody,
+  mCard,
+  mCardTitle,
+  mContainer,
+  mH2,
+  mLede,
+  mSection,
+  mSectionEnter,
+  mStaggerGrid,
+} from "@/lib/marketing-layout";
 
 const ITEMS = [
   {
@@ -27,7 +37,11 @@ const ITEMS = [
 
 export function ControlVisibilitySection() {
   return (
-    <section id="control" className={mSection} aria-labelledby="control-heading">
+    <section
+      id="control"
+      className={`${mSection} ${mSectionEnter}`}
+      aria-labelledby="control-heading"
+    >
       <div className={mContainer}>
         <h2 id="control-heading" className={mH2}>
           Control and visibility
@@ -36,12 +50,12 @@ export function ControlVisibilitySection() {
           We are not trying to replace your paging vendor on day one — we focus on the work after
           the page: safer change, clearer ownership, and evidence you can replay.
         </p>
-        <ul className="mt-10 grid gap-5 md:grid-cols-2">
+        <ul className={`mt-10 grid gap-5 md:grid-cols-2 ${mStaggerGrid}`}>
           {ITEMS.map((item) => (
             <li key={item.title} className={`flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-6 ${mCard}`}>
               <div className="min-w-0">
-                <h3 className="text-sm font-semibold text-foreground">{item.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted">{item.body}</p>
+                <h3 className={mCardTitle}>{item.title}</h3>
+                <p className={`mt-2 ${mBody}`}>{item.body}</p>
               </div>
               <Link
                 href={item.href}

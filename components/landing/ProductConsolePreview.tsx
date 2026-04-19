@@ -1,4 +1,11 @@
-import { mContainer, mH2, mLede, mSectionPreview } from "@/lib/marketing-layout";
+import {
+  mContainer,
+  mH2,
+  mLede,
+  mPanelShell,
+  mSectionEnter,
+  mSectionPreview,
+} from "@/lib/marketing-layout";
 
 /**
  * Illustrative console chrome only — no live data. Gives first-time visitors a concrete
@@ -6,7 +13,11 @@ import { mContainer, mH2, mLede, mSectionPreview } from "@/lib/marketing-layout"
  */
 export function ProductConsolePreview() {
   return (
-    <section id="preview" className={mSectionPreview} aria-labelledby="preview-heading">
+    <section
+      id="preview"
+      className={`${mSectionPreview} ${mSectionEnter}`}
+      aria-labelledby="preview-heading"
+    >
       <div className={mContainer}>
         <h2 id="preview-heading" className={mH2}>
           What you actually click
@@ -17,7 +28,7 @@ export function ProductConsolePreview() {
         </p>
 
         <div
-          className="mt-8 overflow-hidden rounded-2xl border border-white/[0.1] bg-[#070a0d] shadow-[0_0_0_1px_rgba(255,255,255,0.04)]"
+          className={`mt-8 overflow-hidden bg-[#070a0d] shadow-[0_0_0_1px_rgba(255,255,255,0.04)] ${mPanelShell} border-white/[0.1]`}
           aria-label="Illustrative console layout, not live data"
         >
           <div className="flex items-center gap-2 border-b border-white/[0.06] bg-white/[0.03] px-3 py-2.5">

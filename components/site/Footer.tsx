@@ -6,6 +6,7 @@ import {
   getGeneralMailtoHref,
   getSupportMailtoHref,
 } from "@/lib/billing";
+import { mBody, mContainer, mFooterLabel } from "@/lib/marketing-layout";
 import { SITE_BRAND_NAME } from "@/lib/site-brand";
 import { Logo } from "./Logo";
 
@@ -18,20 +19,18 @@ const legal = [
 ] as const;
 
 function FooterHeading({ children }: { children: ReactNode }) {
-  return (
-    <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">{children}</p>
-  );
+  return <p className={mFooterLabel}>{children}</p>;
 }
 
 export function Footer() {
   const year = new Date().getFullYear();
   return (
     <footer className="border-t border-white/[0.06] bg-surface/40">
-      <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+      <div className={`${mContainer} py-12`}>
         <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-sm space-y-3">
             <Logo />
-            <p className="text-[0.9375rem] leading-relaxed text-muted">
+            <p className={mBody}>
               Safe automation for IT operations — incident response with approvals, dry-runs, and
               proof in one console.
             </p>

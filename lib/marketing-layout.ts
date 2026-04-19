@@ -39,3 +39,28 @@ export const mCard = `${mPanelShell} p-6 ${mCardMotion} hover:border-white/[0.12
 
 /** Primary navigation card (module links). */
 export const mCardLink = `group flex flex-col ${mPanelShell} p-6 ${mCardMotion} hover:border-white/[0.14] hover:bg-white/[0.035]`;
+
+/** Accent eyebrow — product / narrative labels (hero, long-form). */
+export const mEyebrow = "text-xs font-semibold uppercase tracking-[0.14em] text-accent/90";
+
+/** Footer and in-page dense column labels. */
+export const mFooterLabel =
+  "text-[11px] font-semibold uppercase tracking-[0.14em] text-muted";
+
+/** Grid / module card titles — between body copy and section H2. */
+export const mCardTitle = "text-base font-semibold tracking-tight text-foreground";
+
+/** Hero primary lede — body token, slightly larger from `sm`. */
+export const mHeroLede = `mt-4 max-w-2xl ${mBody} sm:text-lg sm:leading-relaxed`;
+
+/** Fine print and panel annotations. */
+export const mBodySm = "text-xs leading-relaxed text-muted";
+
+/**
+ * Fade-up on first paint — paired with `globals.css` and optional
+ * `main.flex-1 > section` cascade delays on the home page.
+ */
+export const mSectionEnter = "m-marketing-section-enter";
+
+/** Direct children: subtle sequential rise (transform-only; pairs with globals). */
+export const mStaggerGrid = "m-marketing-stagger-grid";

@@ -1,7 +1,17 @@
 import Link from "next/link";
 
 import { AppIcon } from "@/components/icons/AppIcon";
-import { mCard, mContainer, mH2, mPanelShell, mSection } from "@/lib/marketing-layout";
+import {
+  mBody,
+  mBodySm,
+  mCard,
+  mContainer,
+  mH2,
+  mPanelShell,
+  mSection,
+  mSectionEnter,
+  mStaggerGrid,
+} from "@/lib/marketing-layout";
 import { getConnectorHealthRows } from "@/lib/connectors-health";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 
@@ -36,12 +46,12 @@ export async function LivePanel() {
   const anyUnknown = connectors.some((c) => c.ok === null);
 
   return (
-    <section id="operations" className={mSection}>
+    <section id="operations" className={`${mSection} ${mSectionEnter}`}>
       <div className={mContainer}>
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
             <h2 className={mH2}>Service status</h2>
-            <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted">
+            <p className={`mt-2 max-w-xl ${mBody}`}>
               Optional connectors your administrator can enable. When none are configured, the
               console still runs with built-in defaults.
             </p>
@@ -69,7 +79,7 @@ export async function LivePanel() {
           </span>
         </div>
 
-        <div className="mt-10 grid gap-6 lg:grid-cols-5">
+        <div className={`mt-10 grid gap-6 lg:grid-cols-5 ${mStaggerGrid}`}>
           <div className={`flex flex-col overflow-hidden text-sm lg:col-span-3 ${mPanelShell}`}>
             <div className="flex items-center justify-between border-b border-white/[0.06] px-4 py-3 text-xs text-muted">
               <span>Connectors</span>
@@ -109,10 +119,10 @@ export async function LivePanel() {
           </div>
 
           <aside className={`space-y-4 lg:col-span-2 ${mCard}`}>
-            <h3 className="text-sm font-semibold text-foreground">Approvals</h3>
-            <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-4">
+            <h3 className="text-sm font-semibold tracking-tight text-foreground">Approvals</h3>
+            <div className={`${mPanelShell} border-amber-500/25 bg-amber-500/5 p-4`}>
               <p className="text-sm font-medium text-foreground">Review queue</p>
-              <p className="mt-1 text-xs leading-relaxed text-muted">
+              <p className={`mt-1 ${mBodySm}`}>
                 High-impact changes can require reviewer approval before execution.
               </p>
               <div className="mt-4">
@@ -125,7 +135,7 @@ export async function LivePanel() {
               </div>
             </div>
             {!authEnabled ? (
-              <p className="text-xs leading-relaxed text-muted">
+              <p className={mBodySm}>
                 Organization-wide queues require administrator sign-in to be enabled.{" "}
                 <Link href="/settings" className="text-accent hover:underline">
                   Settings

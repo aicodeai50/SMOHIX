@@ -1,4 +1,14 @@
-import { mCard, mContainer, mH2, mLede, mSection } from "@/lib/marketing-layout";
+import {
+  mBody,
+  mCard,
+  mCardTitle,
+  mContainer,
+  mH2,
+  mLede,
+  mSection,
+  mSectionEnter,
+  mStaggerGrid,
+} from "@/lib/marketing-layout";
 
 const CASES = [
   {
@@ -21,7 +31,11 @@ const CASES = [
 
 export function UseCasesSection() {
   return (
-    <section id="use-cases" className={mSection} aria-labelledby="use-cases-heading">
+    <section
+      id="use-cases"
+      className={`${mSection} ${mSectionEnter}`}
+      aria-labelledby="use-cases-heading"
+    >
       <div className={mContainer}>
         <h2 id="use-cases-heading" className={mH2}>
           Concrete outcomes
@@ -30,11 +44,11 @@ export function UseCasesSection() {
           Operational outcomes you can assign an owner to — phrased the way on-call engineers and
           change managers actually talk.
         </p>
-        <ul className="mt-10 grid gap-5 sm:grid-cols-2">
+        <ul className={`mt-10 grid gap-5 sm:grid-cols-2 ${mStaggerGrid}`}>
           {CASES.map((c) => (
             <li key={c.title} className={mCard}>
-              <h3 className="text-sm font-semibold text-foreground">{c.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted">{c.body}</p>
+              <h3 className={mCardTitle}>{c.title}</h3>
+              <p className={`mt-2 ${mBody}`}>{c.body}</p>
             </li>
           ))}
         </ul>
