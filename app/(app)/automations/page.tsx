@@ -4,9 +4,12 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { AutomationsConsole } from "@/components/automations/AutomationsConsole";
+import { GuardedAutomationIdentity } from "@/components/guardrails/GuardedAutomationIdentity";
+import { ExecutionBadge } from "@/components/guardrails/ExecutionBadge";
 import { PageHeader } from "@/components/app/PageHeader";
 import { listAutomationDryRuns } from "@/lib/automations/dry-runs-db";
 import { listDryRuns } from "@/lib/automations/runs-dev";
+import { getLatestAuditWhisper } from "@/lib/audit/whispers";
 import { billingPlanFromSummary, getSubscriptionSummary } from "@/lib/billing/plan";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -18,8 +21,21 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function AutomationsPage() {
+const INCIDENT_UUID =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+export default async function AutomationsPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const sp = await searchParams;
+  const rawInc = typeof sp.incident === "string" ? sp.incident.trim() : "";
+  const linkedIncidentId = INCIDENT_UUID.test(rawInc) ? rawInc : null;
   let runs;
+  let auditTrailOnDryRun = false;
+  let auditWhisper = null;
+
   if (hasSupabaseAuth()) {
     const supabase = await createServerSupabaseClient();
     const {
@@ -39,8 +55,16 @@ export default async function AutomationsPage() {
             title="Automations"
             description="Playbooks and dry-runs require an active subscription when organization billing is enabled."
           />
+          <div className="mb-4">
+            <GuardedAutomationIdentity />
+          </div>
           <div className="shynvo-glass rounded-2xl p-6 md:p-8">
-            <h2 className="text-lg font-semibold text-foreground">Subscription required</h2>
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className="text-lg font-semibold text-foreground">Subscription required</h2>
+              <ExecutionBadge tone="warn" title="Paid plan required for automation console">
+                Execution blocked
+              </ExecutionBadge>
+            </div>
             <p className="mt-2 max-w-md text-sm leading-relaxed text-muted">
               Choose a plan and complete checkout while signed in so your subscription links to
               this account. Then you can run playbooks and persist dry-run history.
@@ -55,6 +79,8 @@ export default async function AutomationsPage() {
         </>
       );
     }
+    auditTrailOnDryRun = true;
+    auditWhisper = await getLatestAuditWhisper(user.id);
     const { runs: dbRuns, fromDb } = await listAutomationDryRuns(supabase);
     runs = fromDb ? dbRuns : listDryRuns(`u:${user.id}`);
   } else {
@@ -62,13 +88,21 @@ export default async function AutomationsPage() {
     runs = listDryRuns(tenantKey);
   }
 
+  const robotConnectorConfigured = Boolean(process.env.SHYNVO_ROBOT_API_URL?.trim());
+
   return (
     <>
       <PageHeader
         title="Automations"
         description="Playbooks with dry-runs against your robot service when SHYNVO_ROBOT_API_URL is set; otherwise simulated runs are recorded. Signed-in accounts persist dry-runs and emit audit events when the automation_dry_runs migration is applied."
       />
-      <AutomationsConsole initialRuns={runs} />
+      <AutomationsConsole
+        initialRuns={runs}
+        auditTrailOnDryRun={auditTrailOnDryRun}
+        auditWhisper={auditWhisper}
+        robotConnectorConfigured={robotConnectorConfigured}
+        linkedIncidentId={linkedIncidentId}
+      />
     </>
   );
 }

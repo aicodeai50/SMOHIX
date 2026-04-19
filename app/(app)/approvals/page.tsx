@@ -6,6 +6,9 @@ import { redirect } from "next/navigation";
 import { approvalDecisionAction, createApprovalRequestAction } from "./actions";
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
+import { ExecutionBadge } from "@/components/guardrails/ExecutionBadge";
+import { ExecutionModeCallout } from "@/components/guardrails/ExecutionModeCallout";
+import { GuardedAutomationIdentity } from "@/components/guardrails/GuardedAutomationIdentity";
 import { listApprovalsForUser } from "@/lib/approvals/data";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -54,6 +57,14 @@ export default async function ApprovalsPage({ searchParams }: Props) {
         title="Approvals"
         description="Human-in-the-loop gates for destructive or high-blast-radius changes. Open a new request below, then approve or deny pending items; completed decisions appear in Recent."
       />
+      <div className="mb-6 space-y-4">
+        <GuardedAutomationIdentity />
+        <ExecutionModeCallout
+          requiresApproval
+          dryRunAvailable
+          auditLogged={hasSupabaseAuth()}
+        />
+      </div>
       {createdOk ? (
         <p className="mb-4 rounded-xl border border-emerald-400/20 bg-emerald-500/[0.08] px-4 py-3 text-sm text-emerald-100/90 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] backdrop-blur-sm">
           Approval request created and is pending decision.
@@ -154,7 +165,12 @@ export default async function ApprovalsPage({ searchParams }: Props) {
                   className="rounded-xl border border-white/[0.08] bg-white/[0.03] p-4 transition-[border-color,box-shadow] hover:border-amber-400/20 hover:shadow-[0_0_24px_-14px_rgba(251,191,36,0.15)]"
                 >
                   <p className="font-mono text-xs text-muted">{p.id}</p>
-                  <p className="mt-1 text-sm font-medium text-foreground">{p.action}</p>
+                  <div className="mt-2 flex flex-wrap items-start justify-between gap-2">
+                    <p className="min-w-0 text-sm font-medium text-foreground">{p.action}</p>
+                    <ExecutionBadge tone="warn" title="Waiting for a human decision">
+                      Pending approval
+                    </ExecutionBadge>
+                  </div>
                   <p className="mt-1 text-xs text-muted">
                     {p.requestedBy} · {p.policy}
                   </p>
@@ -208,17 +224,17 @@ export default async function ApprovalsPage({ searchParams }: Props) {
                   key={r.id}
                   className="rounded-xl border border-white/[0.06] bg-white/[0.02] px-3 py-2 transition-colors hover:bg-white/[0.04]"
                 >
-                  <div className="flex items-center justify-between gap-2">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
                     <span className="text-sm text-foreground/90">{r.action}</span>
-                    <span
-                      className={
-                        r.status === "approved"
-                          ? "text-xs font-medium text-emerald-400/90"
-                          : "text-xs font-medium text-red-300/90"
-                      }
-                    >
-                      {r.status}
-                    </span>
+                    {r.status === "approved" ? (
+                      <ExecutionBadge tone="success" title="Recorded in audit when Supabase append is enabled">
+                        Approved
+                      </ExecutionBadge>
+                    ) : (
+                      <ExecutionBadge tone="danger" title="Blocked path — revisit policy or open a new request">
+                        Denied
+                      </ExecutionBadge>
+                    )}
                   </div>
                   <p className="mt-1 font-mono text-[10px] text-muted">{r.id}</p>
                 </li>

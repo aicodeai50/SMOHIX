@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
 import { getConnectorHealthRows } from "@/lib/connectors-health";
 
@@ -11,6 +12,7 @@ export const dynamic = "force-dynamic";
 
 export default async function ConnectorsPage() {
   const connectors = await getConnectorHealthRows();
+  const noneConfigured = connectors.every((c) => !c.baseUrl);
 
   return (
     <>
@@ -18,6 +20,25 @@ export default async function ConnectorsPage() {
         title="Connectors"
         description="URLs are read from server environment variables. Health checks run on the server when you open this page."
       />
+      {noneConfigured ? (
+        <div className="mb-6">
+          <ConsoleEmptyState
+            title="No connectors configured"
+            description="Point Shynvo at your reasoning and automation backends so Copilot, dry-runs, and guarded execution can reach your stack. Set the env vars on your deployment, redeploy, then refresh this page."
+            ctas={[
+              { href: "/docs/api", label: "API reference", variant: "secondary" },
+              { href: "/docs", label: "Platform docs", variant: "secondary" },
+            ]}
+            footnote={
+              <p>
+                Set <span className="font-mono text-foreground/80">SHYNVO_REASONING_API_URL</span>{" "}
+                and <span className="font-mono text-foreground/80">SHYNVO_ROBOT_API_URL</span> to
+                HTTPS base URLs (no trailing slash required).
+              </p>
+            }
+          />
+        </div>
+      ) : null}
       <div className="space-y-4">
         {connectors.map((c) => (
           <div

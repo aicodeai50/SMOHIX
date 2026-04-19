@@ -7,7 +7,8 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "verify:api-catalog": "node scripts/verify-api-catalog.mjs",
+    "build": "npm run verify:api-catalog && next build",
     "start": "next start --hostname 0.0.0.0",
     "lint": "eslint"
   },

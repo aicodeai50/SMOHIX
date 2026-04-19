@@ -103,6 +103,58 @@ export default async function BillingPage({
       ) : null}
 
       <div className="max-w-xl space-y-6">
+        {plan === "free" && !queryError ? (
+          <div className="shynvo-glass rounded-2xl border border-accent/20 bg-accent/[0.06] p-5 md:p-6 shadow-[0_0_32px_-14px_rgba(94,225,255,0.25)]">
+            <h2 className="text-sm font-semibold text-foreground/95">You&apos;re on the free tier</h2>
+            <p className="mt-2 text-sm leading-relaxed text-muted">
+              Core console features stay available while you evaluate. Limits below are the current
+              product stance; billing adjusts automatically when you subscribe.
+            </p>
+            <ul className="mt-4 space-y-2 text-sm text-foreground/85">
+              <li className="flex gap-2">
+                <span className="text-accent">·</span>
+                <span>
+                  <span className="font-medium text-foreground/90">Incidents &amp; services</span> —
+                  full tracking; export needs Supabase sign-in.
+                </span>
+              </li>
+              <li className="flex gap-2">
+                <span className="text-accent">·</span>
+                <span>
+                  <span className="font-medium text-foreground/90">Automations</span> — dry-run and
+                  review flows; provider execution stays on paid plans.
+                </span>
+              </li>
+              <li className="flex gap-2">
+                <span className="text-accent">·</span>
+                <span>
+                  <span className="font-medium text-foreground/90">API &amp; connectors</span> —
+                  keys and proxies scale with your deployment; alert ingest is paid-gated in
+                  production.
+                </span>
+              </li>
+            </ul>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Link
+                href="/pricing"
+                className="inline-flex h-10 items-center justify-center rounded-xl border border-white/[0.14] bg-white/[0.04] px-4 text-sm font-medium text-foreground transition-colors hover:border-accent/40"
+              >
+                View pricing
+              </Link>
+              {checkoutHref || teamCheckoutHref ? (
+                <a
+                  href={(checkoutHref ?? teamCheckoutHref) as string}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex h-10 items-center justify-center rounded-xl bg-accent px-4 text-sm font-semibold text-background hover:opacity-95"
+                >
+                  Upgrade
+                </a>
+              ) : null}
+            </div>
+          </div>
+        ) : null}
+
         <div className="shynvo-glass rounded-2xl p-5 md:p-6">
           <h2 className="text-sm font-semibold text-foreground/95">Current plan</h2>
           <p className="mt-2 text-2xl font-semibold text-foreground">{planDisplayName}</p>

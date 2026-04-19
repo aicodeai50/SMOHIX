@@ -9,8 +9,11 @@ import {
   updateIncidentStatusAction,
 } from "./actions";
 
+import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
 import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { AuditWhisperInline } from "@/components/guardrails/AuditWhisperInline";
+import { getLatestAuditWhisperForIncident } from "@/lib/audit/whispers";
 import { getIncidentForUser } from "@/lib/incidents/data";
 import { listRunbooks } from "@/lib/runbooks/catalog";
 import { getIncidentTimeline } from "@/lib/incidents/timeline";
@@ -64,6 +67,16 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
     devTenantKey,
   });
 
+  const auditWhisper =
+    hasSupabaseAuth() && userId && source === "database"
+      ? await getLatestAuditWhisperForIncident(userId, id)
+      : null;
+
+  const automationHref =
+    source === "database" && hasSupabaseAuth()
+      ? `/automations?incident=${encodeURIComponent(id)}`
+      : "/automations";
+
   return (
     <>
       {source === "session" ? (
@@ -84,6 +97,19 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
           row.serviceName ? ` · ${row.serviceName}` : ""
         }${row.ownerHint ? ` · ${row.ownerHint}` : ""}`}
       />
+      {auditWhisper ? (
+        <div className="mb-4">
+          <AuditWhisperInline whisper={auditWhisper} />
+        </div>
+      ) : hasSupabaseAuth() && source === "database" ? (
+        <p className="mb-4 rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3 text-xs leading-relaxed text-muted">
+          No audit events linked to this incident yet.{" "}
+          <Link href={automationHref} className="font-medium text-accent hover:underline">
+            Run a contextual dry-run
+          </Link>{" "}
+          to attach automation evidence with this incident id.
+        </p>
+      ) : null}
       {source === "database" && row.serviceId ? (
         <p className="mb-4 text-sm text-muted">
           Linked service:{" "}
@@ -122,6 +148,7 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
       {(source === "database" && hasSupabaseAuth()) ||
       (source === "session" && !hasSupabaseAuth()) ? (
         <form
+          id="incident-context"
           action={updateIncidentContextAction}
           className="shynvo-glass mb-6 space-y-4 rounded-2xl p-4 md:p-5"
         >
@@ -171,6 +198,7 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
       {(source === "database" && hasSupabaseAuth()) ||
       (source === "session" && !hasSupabaseAuth()) ? (
         <form
+          id="incident-status"
           action={updateIncidentStatusAction}
           className="shynvo-glass mb-6 flex flex-wrap items-end gap-3 rounded-2xl p-4 md:p-5"
         >
@@ -226,11 +254,23 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
       ) : null}
       <PlaceholderCard title="Timeline">
         {timeline.length === 0 ? (
-          <p className="text-sm leading-relaxed text-muted">
-            {source === "database"
-              ? "No status changes in audit yet. Updates appear here after each successful save (requires audit append in production)."
-              : "No events recorded yet."}
-          </p>
+          <ConsoleEmptyState
+            title="No events recorded yet"
+            description={
+              source === "database"
+                ? "Saves and automation runs append here when audit logging is available. Use the steps below so this incident does not stall."
+                : "This session has not recorded timeline events yet. Actions you take below will show up here when auditing is wired for session mode."
+            }
+            ctas={[
+              { href: automationHref, label: "Run a dry-run automation" },
+              ...(source === "database" && hasSupabaseAuth()
+                ? [{ href: "#postmortem", label: "Add a note", variant: "secondary" as const }]
+                : []),
+              { href: "#incident-status", label: "Update status", variant: "secondary" },
+              { href: "#incident-context", label: "Attach a runbook", variant: "secondary" },
+              { href: "/audit", label: "Open audit log", variant: "secondary" },
+            ]}
+          />
         ) : (
           <ul className="space-y-3 font-mono text-sm">
             {timeline.map((e, i) => (

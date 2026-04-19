@@ -1,3 +1,5 @@
+import type { AuditIntentTag } from "@/lib/guardrails/audit-intent-tags";
+
 export type AuditDisplayRow = {
   id: string;
   ts: string;
@@ -5,6 +7,7 @@ export type AuditDisplayRow = {
   action: string;
   target: string;
   outcome: string;
+  tags: AuditIntentTag[];
 };
 
 export type AuditListResult =

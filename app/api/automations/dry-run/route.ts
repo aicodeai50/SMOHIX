@@ -1,5 +1,6 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 
 import { insertAutomationDryRun } from "@/lib/automations/dry-runs-db";
 import { recordDryRun } from "@/lib/automations/runs-dev";
@@ -9,6 +10,13 @@ import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
+
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+function isUuid(s: string): boolean {
+  return UUID_RE.test(s);
+}
 
 function normalizeBase(url: string | undefined): string | null {
   const t = url?.trim();
@@ -67,14 +75,40 @@ export async function POST(req: NextRequest) {
   }
 
   let playbookId = "";
+  let incidentId: string | null = null;
   try {
-    const b = (await req.json()) as { playbookId?: string };
+    const b = (await req.json()) as { playbookId?: string; incidentId?: string };
     playbookId = String(b.playbookId ?? "").trim();
+    const rawInc = String(b.incidentId ?? "").trim();
+    if (rawInc) {
+      if (!isUuid(rawInc)) {
+        return NextResponse.json({ error: "invalid_incident_id" }, { status: 400 });
+      }
+      incidentId = rawInc;
+    }
   } catch {
     return NextResponse.json({ error: "invalid_json" }, { status: 400 });
   }
   if (!playbookId) {
     return NextResponse.json({ error: "playbookId_required" }, { status: 400 });
+  }
+
+  if (incidentId && ctx.mode === "auth") {
+    const supabase = await createServerSupabaseClient();
+    const { data: inc, error: incErr } = await supabase
+      .from("incidents")
+      .select("id")
+      .eq("id", incidentId)
+      .eq("user_id", ctx.userId)
+      .maybeSingle();
+    if (incErr || !inc) {
+      return NextResponse.json({ error: "incident_not_found" }, { status: 404 });
+    }
+  } else if (incidentId) {
+    return NextResponse.json(
+      { error: "incident_context_requires_auth" },
+      { status: 400 },
+    );
   }
 
   const robotBase = normalizeBase(process.env.SHYNVO_ROBOT_API_URL);
@@ -125,8 +159,13 @@ export async function POST(req: NextRequest) {
         playbook_id: playbookId,
         ok,
         detail: detail.slice(0, 500),
+        ...(incidentId ? { incident_id: incidentId } : {}),
       },
     });
+    revalidatePath("/overview");
+    if (incidentId) {
+      revalidatePath(`/incidents/${incidentId}`);
+    }
   } else {
     recordDryRun(tenantKey, { playbookId, ok, detail });
   }

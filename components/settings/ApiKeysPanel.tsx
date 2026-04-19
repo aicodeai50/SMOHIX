@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 
+import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
+
 export type ApiKeyRow = {
   id: string;
   name: string;
@@ -153,7 +155,7 @@ export function ApiKeysPanel({
         </div>
       ) : null}
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+      <div id="api-key-create" className="flex flex-col gap-3 sm:flex-row sm:items-end">
         <div className="min-w-0 flex-1">
           <label htmlFor="api-key-name" className="text-xs font-medium text-muted">
             Label (optional)
@@ -193,7 +195,29 @@ export function ApiKeysPanel({
           </p>
         </div>
         {active.length === 0 ? (
-          <p className="px-5 py-8 text-sm text-muted">No active keys yet.</p>
+          <div className="border-t border-border px-4 py-8 sm:px-6">
+            <ConsoleEmptyState
+              title="No API keys yet"
+              description="Keys authenticate the same-origin reasoning and robot proxies from scripts, CI, or external tools. Use a label per integration so you can revoke one without touching the others."
+              ctas={[
+                { href: "#api-key-create", label: "Create API key" },
+                { href: "/docs/api", label: "Scopes & endpoints", variant: "secondary" },
+              ]}
+              footnote={
+                <p>
+                  Send{" "}
+                  <span className="font-mono text-foreground/80">
+                    Authorization: Bearer &lt;key&gt;
+                  </span>{" "}
+                  or header{" "}
+                  <span className="font-mono text-foreground/80">X-Shynvo-Api-Key</span> on
+                  requests to <span className="font-mono">/api/reasoning/…</span> and{" "}
+                  <span className="font-mono">/api/robot/…</span>. Other REST routes use your
+                  session or specialized tokens (see API docs).
+                </p>
+              }
+            />
+          </div>
         ) : (
           <ul className="divide-y divide-border">
             {active.map((k) => (

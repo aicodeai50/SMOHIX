@@ -1,6 +1,8 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 
+import { intentTagsForEventType } from "@/lib/guardrails/audit-intent-tags";
+
 import type { AuditDisplayRow, AuditListResult } from "./types";
 
 function shorten(s: string, max: number): string {
@@ -33,6 +35,7 @@ function mapRow(r: {
     action: r.event_type,
     target: formatTarget(r.details),
     outcome: "recorded",
+    tags: intentTagsForEventType(r.event_type),
   };
 }
 

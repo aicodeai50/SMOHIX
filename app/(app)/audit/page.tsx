@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
+import { AuditIntentTags } from "@/components/guardrails/AuditIntentTags";
 import { listAuditEntriesForUser } from "@/lib/audit/data";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -87,6 +88,7 @@ export default async function AuditPage() {
               <th className="px-4 py-3.5">Actor</th>
               <th className="px-4 py-3.5">Action</th>
               <th className="px-4 py-3.5">Details</th>
+              <th className="px-4 py-3.5">Intent</th>
               <th className="px-4 py-3.5">Outcome</th>
             </tr>
           </thead>
@@ -98,6 +100,9 @@ export default async function AuditPage() {
                   <td className="px-4 py-3 text-accent">{e.action}</td>
                   <td className="max-w-md truncate px-4 py-3 text-muted" title={e.target}>
                     {e.target}
+                  </td>
+                  <td className="px-4 py-3 align-top font-sans text-[11px]">
+                    <AuditIntentTags tags={e.tags} />
                   </td>
                   <td className="px-4 py-3 capitalize text-muted">{e.outcome}</td>
                 </tr>
