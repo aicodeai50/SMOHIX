@@ -94,6 +94,167 @@ Apply database changes from `supabase/migrations/` in the Supabase SQL Editor (o
 
 ---
 
+## Phase G — Equipment operations (implementation blueprint)
+
+This section turns the equipment roadmap into concrete build steps and data models. Ship in this order to maximize operator value and minimize rework.
+
+### G1. Certificate and secrets inventory (first)
+
+**Why first:** biggest outage-prevention ROI and straightforward to model.
+
+**Build order**
+
+1. Create inventory tables + basic CRUD UI (`/assets/certificates`, `/assets/secrets`).
+2. Add expiry dashboards (30/14/7-day windows).
+3. Add incident linking + audit events for create/update/rotate/revoke.
+4. Add optional alerting hooks (email/Slack/webhook) for imminent expiry.
+
+**Tables**
+
+- `asset_certificates`
+  - `id` (uuid, pk), `user_id` (uuid), `name` (text), `environment` (text)
+  - `cn` (text), `sans` (text[]), `issuer` (text)
+  - `expires_at` (timestamptz), `auto_renew` (bool)
+  - `owner_hint` (text), `service_id` (uuid, nullable), `incident_id` (uuid, nullable)
+  - `notes` (text), `created_at`, `updated_at`
+- `asset_secrets`
+  - `id` (uuid, pk), `user_id` (uuid), `name` (text), `environment` (text)
+  - `secret_type` (text: `api_key` | `token` | `password` | `cert_key`)
+  - `rotation_policy_days` (int), `last_rotated_at` (timestamptz), `next_rotate_at` (timestamptz)
+  - `owner_hint` (text), `service_id` (uuid, nullable), `incident_id` (uuid, nullable)
+  - `notes` (text), `created_at`, `updated_at`
+
+### G2. Backup and restore readiness tracking
+
+**Why second:** DR confidence and compliance proof.
+
+**Build order**
+
+1. Add backup policy + run tracking UI (`/resilience/backups`).
+2. Track last successful backup + restore test outcome.
+3. Add incident/runbook linkage and audit trails.
+4. Add “at risk” score badges (stale backup, no restore test, repeated failures).
+
+**Tables**
+
+- `backup_policies`
+  - `id` (uuid, pk), `user_id` (uuid), `name` (text)
+  - `asset_scope` (text), `rpo_target_minutes` (int), `rto_target_minutes` (int)
+  - `retention_days` (int), `enabled` (bool), `owner_hint` (text)
+  - `created_at`, `updated_at`
+- `backup_runs`
+  - `id` (uuid, pk), `user_id` (uuid), `policy_id` (uuid, fk)
+  - `status` (text: `success` | `failed` | `partial`)
+  - `started_at` (timestamptz), `finished_at` (timestamptz)
+  - `snapshot_ref` (text), `error_summary` (text)
+  - `incident_id` (uuid, nullable), `created_at`
+- `restore_tests`
+  - `id` (uuid, pk), `user_id` (uuid), `policy_id` (uuid, fk)
+  - `status` (text: `passed` | `failed`)
+  - `tested_at` (timestamptz), `duration_seconds` (int), `notes` (text)
+  - `incident_id` (uuid, nullable), `created_at`
+
+### G3. Network firmware and config drift tracking
+
+**Why third:** catches silent network risk before major incidents.
+
+**Build order**
+
+1. Add network asset registry (`/assets/network`).
+2. Record baseline firmware/config hashes.
+3. Compute drift status per device and expose “needs review” queue.
+4. Add approval-gated remediation actions and audit emission.
+
+**Tables**
+
+- `network_devices`
+  - `id` (uuid, pk), `user_id` (uuid)
+  - `hostname` (text), `device_role` (text), `vendor` (text), `model` (text)
+  - `serial_number` (text), `mgmt_ip` (text), `site` (text), `environment` (text)
+  - `firmware_version` (text), `owner_hint` (text), `created_at`, `updated_at`
+- `network_config_snapshots`
+  - `id` (uuid, pk), `user_id` (uuid), `device_id` (uuid, fk)
+  - `captured_at` (timestamptz), `config_hash` (text), `snapshot_ref` (text)
+  - `captured_by` (text), `created_at`
+- `network_drift_findings`
+  - `id` (uuid, pk), `user_id` (uuid), `device_id` (uuid, fk)
+  - `finding_type` (text: `firmware` | `config`)
+  - `severity` (text), `summary` (text), `detected_at` (timestamptz)
+  - `status` (text: `open` | `approved` | `resolved`)
+  - `approval_request_id` (uuid, nullable), `incident_id` (uuid, nullable)
+  - `created_at`, `updated_at`
+
+### G4. MFA and privileged access posture
+
+**Why fourth:** security posture gating for high-impact operations.
+
+**Build order**
+
+1. Add posture dashboard (`/governance/access`).
+2. Track MFA coverage and privileged account hygiene.
+3. Gate selected automations on posture checks (with approval override).
+4. Add policy reasons to audit entries for blocked/overridden actions.
+
+**Tables**
+
+- `access_posture_snapshots`
+  - `id` (uuid, pk), `user_id` (uuid)
+  - `captured_at` (timestamptz)
+  - `mfa_coverage_percent` (numeric), `privileged_accounts_total` (int)
+  - `privileged_accounts_mfa_enabled` (int), `stale_privileged_accounts` (int)
+  - `source_system` (text), `created_at`
+- `access_policy_rules`
+  - `id` (uuid, pk), `user_id` (uuid)
+  - `rule_name` (text), `min_mfa_coverage_percent` (numeric)
+  - `block_high_risk_without_approval` (bool), `enabled` (bool)
+  - `created_at`, `updated_at`
+
+### G5. Maintenance windows and change calendar
+
+**Why fifth:** turns approvals + automations into safe change management.
+
+**Build order**
+
+1. Add change calendar UI (`/changes`) with upcoming windows.
+2. Attach automation actions to a window (or require explicit override approval).
+3. Link window events to incidents and audit.
+4. Add conflict detection (overlapping windows on same service).
+
+**Tables**
+
+- `change_windows`
+  - `id` (uuid, pk), `user_id` (uuid)
+  - `title` (text), `service_id` (uuid, nullable), `environment` (text)
+  - `starts_at` (timestamptz), `ends_at` (timestamptz)
+  - `risk_level` (text), `requires_approval` (bool)
+  - `owner_hint` (text), `notes` (text)
+  - `created_at`, `updated_at`
+- `change_actions`
+  - `id` (uuid, pk), `user_id` (uuid), `change_window_id` (uuid, fk)
+  - `action_type` (text), `target_ref` (text)
+  - `status` (text: `planned` | `executed` | `rolled_back` | `cancelled`)
+  - `approval_request_id` (uuid, nullable), `incident_id` (uuid, nullable)
+  - `executed_at` (timestamptz, nullable), `created_at`, `updated_at`
+
+### Cross-cutting integration rules
+
+- Every equipment table should include `user_id` + RLS ownership patterns consistent with existing console tables.
+- High-risk actions should always connect to `approval_requests` and append to `audit_log`.
+- Incident pages should support linking affected equipment records.
+- Runbooks should optionally reference equipment types and model-specific procedures.
+- Export paths should include equipment context for post-incident reporting.
+
+### Suggested route map (UI)
+
+- `/assets/certificates`
+- `/assets/secrets`
+- `/resilience/backups`
+- `/assets/network`
+- `/governance/access`
+- `/changes`
+
+---
+
 ## Reference
 
 | Topic | Location |

@@ -38,6 +38,36 @@ const cards = [
     title: "Services",
     description: "Service catalog and monitoring webhook ingest (subscription).",
   },
+  {
+    href: "/assets/certificates",
+    title: "Certificates",
+    description: "Certificate inventory with expiry and ownership tracking.",
+  },
+  {
+    href: "/assets/secrets",
+    title: "Secrets",
+    description: "Secret rotation metadata and governance visibility.",
+  },
+  {
+    href: "/assets/network",
+    title: "Network assets",
+    description: "Routers, firewalls, switches, and firmware posture.",
+  },
+  {
+    href: "/resilience/backups",
+    title: "Backup readiness",
+    description: "Backup policy inventory with recovery targets.",
+  },
+  {
+    href: "/governance/access",
+    title: "Access posture",
+    description: "MFA and privileged-account governance snapshots.",
+  },
+  {
+    href: "/changes",
+    title: "Change calendar",
+    description: "Maintenance windows and action execution log.",
+  },
 ] as const;
 
 export default async function SettingsIndexPage() {

@@ -364,6 +364,10 @@ export function PlatformOverview() {
       </section>
 
       <p className={`mt-14 ${mBody}`}>
+        <Link href="/platform" className="font-medium text-accent hover:underline">
+          Platform map
+        </Link>
+        {" · "}
         <Link href="/" className="font-medium text-accent hover:underline">
           ← Home
         </Link>

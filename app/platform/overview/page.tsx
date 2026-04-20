@@ -1,21 +1,21 @@
 import type { Metadata } from "next";
 
-import { PlatformSurfaceMap } from "@/components/platform/PlatformSurfaceMap";
+import { PlatformOverview } from "@/components/platform/PlatformOverview";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
 
 export const metadata: Metadata = {
-  title: "Platform",
+  title: "Platform overview",
   description:
-    "Operational module map for Shynvo: incidents, automations, approvals, audit, runbooks, connectors, governance, and reasoning.",
+    "Detailed platform narrative: guarded automation model, architecture, runtime modes, and differentiation.",
 };
 
-export default function PlatformPage() {
+export default function PlatformOverviewPage() {
   return (
     <>
       <Header />
       <main className="flex-1 border-b border-white/[0.06]">
-        <PlatformSurfaceMap />
+        <PlatformOverview />
       </main>
       <Footer />
     </>

@@ -1,6 +1,8 @@
 -- Shynvo: all migrations in one file (run once in Supabase → SQL Editor → Run).
 -- Fresh project only. Re-running may error on existing policies/objects.
 -- Order: platform_spine → incidents → console_extensions → api_keys → automation_dry_runs.
+-- Note: equipment operations tables live in `supabase/migrations/20260420120000_equipment_operations.sql`
+-- and should be run after this file for full platform coverage.
 
 -- =============================================================================
 -- 20260418120000_platform_spine.sql
