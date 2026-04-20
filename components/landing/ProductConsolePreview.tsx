@@ -1,9 +1,9 @@
+import { MarketingReveal } from "@/components/marketing/MarketingReveal";
 import {
   mContainer,
   mH2,
   mLede,
   mPanelShell,
-  mSectionEnter,
   mSectionPreview,
 } from "@/lib/marketing-layout";
 
@@ -13,9 +13,9 @@ import {
  */
 export function ProductConsolePreview() {
   return (
-    <section
+    <MarketingReveal
       id="preview"
-      className={`${mSectionPreview} ${mSectionEnter}`}
+      className={mSectionPreview}
       aria-labelledby="preview-heading"
     >
       <div className={mContainer}>
@@ -80,6 +80,6 @@ export function ProductConsolePreview() {
           </div>
         </div>
       </div>
-    </section>
+    </MarketingReveal>
   );
 }

@@ -1,3 +1,4 @@
+import { MarketingReveal } from "@/components/marketing/MarketingReveal";
 import {
   mBody,
   mCard,
@@ -6,7 +7,6 @@ import {
   mH2,
   mLede,
   mSection,
-  mSectionEnter,
   mStaggerGrid,
 } from "@/lib/marketing-layout";
 
@@ -31,9 +31,9 @@ const CASES = [
 
 export function UseCasesSection() {
   return (
-    <section
+    <MarketingReveal
       id="use-cases"
-      className={`${mSection} ${mSectionEnter}`}
+      className={mSection}
       aria-labelledby="use-cases-heading"
     >
       <div className={mContainer}>
@@ -53,6 +53,6 @@ export function UseCasesSection() {
           ))}
         </ul>
       </div>
-    </section>
+    </MarketingReveal>
   );
 }

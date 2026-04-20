@@ -1,7 +1,8 @@
 import Link from "next/link";
+import { MarketingReveal } from "@/components/marketing/MarketingReveal";
 import { getTrialHref } from "@/lib/billing";
 import { marketingCta } from "@/lib/marketing-copy";
-import { mBody, mContainer, mH2, mSectionEnter } from "@/lib/marketing-layout";
+import { mBody, mContainer, mH2 } from "@/lib/marketing-layout";
 
 export function ConnectCTA({
   signedInCheckoutUrl,
@@ -13,9 +14,9 @@ export function ConnectCTA({
   const trialHref = signedInCheckoutUrl?.trim() || getTrialHref();
   const teamHref = signedInTeamCheckoutUrl?.trim();
   return (
-    <section
+    <MarketingReveal
       id="connect"
-      className={`py-16 sm:py-20 ${mSectionEnter}`}
+      className="py-16 sm:py-20"
       aria-labelledby="connect-heading"
     >
       <div className={mContainer}>
@@ -76,6 +77,6 @@ export function ConnectCTA({
           </div>
         </div>
       </div>
-    </section>
+    </MarketingReveal>
   );
 }

@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { AppIcon } from "@/components/icons/AppIcon";
+import { MarketingReveal } from "@/components/marketing/MarketingReveal";
 import {
   mBody,
   mBodySm,
@@ -9,7 +10,6 @@ import {
   mH2,
   mPanelShell,
   mSection,
-  mSectionEnter,
   mStaggerGrid,
 } from "@/lib/marketing-layout";
 import { getConnectorHealthRows } from "@/lib/connectors-health";
@@ -46,7 +46,7 @@ export async function LivePanel() {
   const anyUnknown = connectors.some((c) => c.ok === null);
 
   return (
-    <section id="operations" className={`${mSection} ${mSectionEnter}`}>
+    <MarketingReveal id="operations" className={mSection}>
       <div className={mContainer}>
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
@@ -145,6 +145,6 @@ export async function LivePanel() {
           </aside>
         </div>
       </div>
-    </section>
+    </MarketingReveal>
   );
 }

@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { MarketingReveal } from "@/components/marketing/MarketingReveal";
 import {
   mBody,
   mCard,
@@ -8,7 +9,6 @@ import {
   mH2,
   mLede,
   mSection,
-  mSectionEnter,
   mStaggerGrid,
 } from "@/lib/marketing-layout";
 
@@ -53,9 +53,9 @@ const MECHANICS = [
 
 export function GuardedMechanicsSection() {
   return (
-    <section
+    <MarketingReveal
       id="guarded-mechanics"
-      className={`${mSection} ${mSectionEnter}`}
+      className={mSection}
       aria-labelledby="guarded-heading"
     >
       <div className={mContainer}>
@@ -94,6 +94,6 @@ export function GuardedMechanicsSection() {
           ))}
         </ul>
       </div>
-    </section>
+    </MarketingReveal>
   );
 }

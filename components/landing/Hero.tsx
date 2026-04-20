@@ -1,13 +1,7 @@
 import Link from "next/link";
+import { MarketingReveal } from "@/components/marketing/MarketingReveal";
 import { getTrialHref } from "@/lib/billing";
-import {
-  mBody,
-  mContainer,
-  mEyebrow,
-  mH1,
-  mHeroLede,
-  mSectionEnter,
-} from "@/lib/marketing-layout";
+import { mBody, mContainer, mEyebrow, mH1, mHeroLede } from "@/lib/marketing-layout";
 
 export function Hero({
   signedInCheckoutUrl,
@@ -19,9 +13,7 @@ export function Hero({
   const trialHref = signedInCheckoutUrl?.trim() || getTrialHref();
   const teamHref = signedInTeamCheckoutUrl?.trim();
   return (
-    <section
-      className={`relative overflow-hidden border-b border-white/[0.06] ${mSectionEnter}`}
-    >
+    <MarketingReveal className="relative overflow-hidden border-b border-white/[0.06]">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(94,225,255,0.08),transparent)]" />
       <div className={`relative py-16 sm:py-24 ${mContainer}`}>
         <p className={mEyebrow}>Controlled operations</p>
@@ -114,6 +106,6 @@ export function Hero({
           ) : null}
         </p>
       </div>
-    </section>
+    </MarketingReveal>
   );
 }

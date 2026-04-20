@@ -56,11 +56,11 @@ export const mHeroLede = `mt-4 max-w-2xl ${mBody} sm:text-lg sm:leading-relaxed`
 /** Fine print and panel annotations. */
 export const mBodySm = "text-xs leading-relaxed text-muted";
 
-/**
- * Fade-up on first paint — paired with `globals.css` and optional
- * `main.flex-1 > section` cascade delays on the home page.
- */
+/** Prepare state for scroll-triggered reveal — paired with `MarketingReveal` + `globals.css`. */
 export const mSectionEnter = "m-marketing-section-enter";
+
+/** Applied when the block intersects the viewport (client) or immediately if reduced motion. */
+export const mRevealVisible = "m-marketing-reveal--visible";
 
 /** Direct children: subtle sequential rise (transform-only; pairs with globals). */
 export const mStaggerGrid = "m-marketing-stagger-grid";

@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { MarketingReveal } from "@/components/marketing/MarketingReveal";
 import {
   mBody,
   mCard,
@@ -8,7 +9,6 @@ import {
   mH2,
   mLede,
   mSection,
-  mSectionEnter,
   mStaggerGrid,
 } from "@/lib/marketing-layout";
 
@@ -37,9 +37,9 @@ const ITEMS = [
 
 export function ControlVisibilitySection() {
   return (
-    <section
+    <MarketingReveal
       id="control"
-      className={`${mSection} ${mSectionEnter}`}
+      className={mSection}
       aria-labelledby="control-heading"
     >
       <div className={mContainer}>
@@ -67,6 +67,6 @@ export function ControlVisibilitySection() {
           ))}
         </ul>
       </div>
-    </section>
+    </MarketingReveal>
   );
 }

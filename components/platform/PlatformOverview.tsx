@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { MarketingReveal } from "@/components/marketing/MarketingReveal";
 import {
   mArticle,
   mBody,
@@ -10,7 +11,6 @@ import {
   mH2,
   mH3,
   mPanelShell,
-  mSectionEnter,
 } from "@/lib/marketing-layout";
 import { SITE_BRAND_NAME } from "@/lib/site-brand";
 
@@ -71,7 +71,7 @@ const TOC = [
 
 export function PlatformOverview() {
   return (
-    <article className={`${mArticle} ${mSectionEnter}`}>
+    <MarketingReveal as="article" className={mArticle}>
       <p className={mEyebrow}>Product narrative</p>
       <h1 className={`mt-2 ${mH1}`}>
         {SITE_BRAND_NAME} console — what it is
@@ -380,6 +380,6 @@ export function PlatformOverview() {
           Why {SITE_BRAND_NAME}
         </Link>
       </p>
-    </article>
+    </MarketingReveal>
   );
 }

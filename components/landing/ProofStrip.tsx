@@ -1,12 +1,12 @@
 import Link from "next/link";
 
+import { MarketingReveal } from "@/components/marketing/MarketingReveal";
 import {
   mContainer,
   mFooterLabel,
   mH2Sm,
   mLede,
   mPanelShell,
-  mSectionEnter,
   mSectionTight,
   mStaggerGrid,
 } from "@/lib/marketing-layout";
@@ -18,9 +18,9 @@ const SAMPLE = `{
 
 export function ProofStrip() {
   return (
-    <section
+    <MarketingReveal
       id="proof"
-      className={`${mSectionTight} ${mSectionEnter}`}
+      className={mSectionTight}
       aria-labelledby="proof-heading"
     >
       <div className={mContainer}>
@@ -53,6 +53,6 @@ export function ProofStrip() {
           </div>
         </div>
       </div>
-    </section>
+    </MarketingReveal>
   );
 }

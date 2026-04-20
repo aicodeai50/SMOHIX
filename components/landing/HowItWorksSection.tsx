@@ -1,10 +1,10 @@
+import { MarketingReveal } from "@/components/marketing/MarketingReveal";
 import {
   mContainer,
   mH2,
   mLede,
   mPanelShell,
   mSection,
-  mSectionEnter,
   mStaggerGrid,
 } from "@/lib/marketing-layout";
 import { SITE_BRAND_NAME } from "@/lib/site-brand";
@@ -50,9 +50,9 @@ const GUARDED = [
 
 export function HowItWorksSection() {
   return (
-    <section
+    <MarketingReveal
       id="how-it-works"
-      className={`${mSection} ${mSectionEnter}`}
+      className={mSection}
       aria-labelledby="how-heading"
     >
       <div className={mContainer}>
@@ -112,6 +112,6 @@ export function HowItWorksSection() {
           </aside>
         </div>
       </div>
-    </section>
+    </MarketingReveal>
   );
 }

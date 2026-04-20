@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { AppIcon } from "@/components/icons/AppIcon";
+import { MarketingReveal } from "@/components/marketing/MarketingReveal";
 import {
   mBody,
   mCardLink,
@@ -9,7 +10,6 @@ import {
   mH2,
   mLede,
   mSection,
-  mSectionEnter,
   mStaggerGrid,
 } from "@/lib/marketing-layout";
 
@@ -42,7 +42,7 @@ const modules = [
 
 export function ModuleGrid() {
   return (
-    <section id="modules" className={`${mSection} ${mSectionEnter}`}>
+    <MarketingReveal id="modules" className={mSection}>
       <div className={mContainer}>
         <h2 className={mH2}>Modules</h2>
         <p className={mLede}>
@@ -73,6 +73,6 @@ export function ModuleGrid() {
           ))}
         </div>
       </div>
-    </section>
+    </MarketingReveal>
   );
 }
