@@ -3,9 +3,11 @@ import { NextResponse } from "next/server";
 
 import {
   ingestAlertCreateIncident,
+  normalizeAlertIngestPayload,
   resolveAlertIngestUserId,
   type AlertIngestPayload,
 } from "@/lib/integrations/alert-ingest";
+import { verifyAlertWebhookSignature } from "@/lib/integrations/alert-webhook-verify";
 import { clientIpFromRequest, takeToken } from "@/lib/rate-limit/memory";
 
 export const runtime = "nodejs";
@@ -38,9 +40,32 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  const rawBody = await req.text();
+  const signingSecret = process.env.SHYNVO_ALERT_WEBHOOK_SIGNING_SECRET?.trim();
+  if (signingSecret) {
+    const signatureHeader = req.headers.get("x-shynvo-signature");
+    const timestampHeader = req.headers.get("x-shynvo-signature-timestamp");
+    const ok = verifyAlertWebhookSignature({
+      rawBody,
+      signatureHeader,
+      timestampHeader,
+      signingSecret,
+    });
+    if (!ok) {
+      return NextResponse.json(
+        {
+          error: "unauthorized",
+          message:
+            "Invalid alert webhook signature. Expected X-Shynvo-Signature HMAC-SHA256.",
+        },
+        { status: 401 },
+      );
+    }
+  }
+
   let body: unknown;
   try {
-    body = await req.json();
+    body = rawBody ? (JSON.parse(rawBody) as unknown) : {};
   } catch {
     return NextResponse.json({ error: "invalid_json", message: "Body must be JSON." }, { status: 400 });
   }
@@ -48,7 +73,10 @@ export async function POST(req: NextRequest) {
   const result = await ingestAlertCreateIncident(
     resolved.userId,
     resolved.tokenId,
-    body as AlertIngestPayload,
+    normalizeAlertIngestPayload(
+      body as AlertIngestPayload,
+      req.headers.get("x-shynvo-alert-source") ?? req.headers.get("user-agent"),
+    ),
   );
 
   if (!result.ok) {

@@ -125,6 +125,14 @@ export default function IntegrationsPage() {
                 </div>
               ))}
             </div>
+            <div className="mt-8 rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5 sm:p-6">
+              <h3 className="text-sm font-semibold text-foreground">How users connect vendors</h3>
+              <ol className="mt-3 list-inside list-decimal space-y-2 text-sm leading-relaxed text-muted">
+                <li>Choose a shipped connector in Settings and provide OAuth or API credentials.</li>
+                <li>Map incoming vendor signals to services, incidents, and change windows.</li>
+                <li>Run with approvals/audit enabled so high-impact actions stay reviewable.</li>
+              </ol>
+            </div>
           </section>
 
           <p className="mt-14 max-w-2xl text-sm leading-relaxed text-muted">

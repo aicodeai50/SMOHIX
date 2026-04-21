@@ -48,7 +48,8 @@ export const API_GROUPS: ApiGroup[] = [
         path: "/api/integrations/alerts",
         summary: "Create or dedupe incident from monitoring (Bearer alert ingest token).",
         auth: "Bearer ingest token",
-        notes: "Paid-gated per deployment; validates token server-side.",
+        notes:
+          "Paid-gated per deployment; validates token server-side. Supports normalized Shynvo payload, Datadog, Prometheus/Grafana Alertmanager, PagerDuty, and New Relic payloads (vendor-specific dedupe keys). Optional HMAC signature check via SHYNVO_ALERT_WEBHOOK_SIGNING_SECRET.",
       },
       {
         method: "GET",

@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "next dev",
     "verify:api-catalog": "node scripts/verify-api-catalog.mjs",
+    "gen:alert-signature": "node scripts/gen-alert-signature.mjs",
     "build": "npm run verify:api-catalog && next build",
     "start": "next start --hostname 0.0.0.0",
     "deploy:railway": "railway up --detach",

@@ -215,6 +215,156 @@ Path segments cannot contain `..` or `/` (basic hardening). For public internet 
 | **`/settings/connectors`** | UI for the same probes. |
 | **`/copilot`** | Shows connection status from the server. |
 
+### Monitoring alert ingest (Datadog first adapter)
+
+`POST /api/integrations/alerts` accepts:
+
+- **Native Shynvo ingest shape** (`title`, `severity`, `service_name`, `dedupe_key`, etc.)
+- **Datadog event/webhook-like payloads** (auto-normalized to incidents)
+
+For Datadog:
+
+- If payload includes event id, dedupe uses `external_ref = datadog:<event_id>`.
+- `alert_type` / `priority` are mapped to Shynvo severity.
+- Tags like `service:<name>`, `owner:<team>`, `runbook:<slug>` are mapped when present.
+
+Optional header for explicit source hint:
+
+- `X-Shynvo-Alert-Source: datadog`
+
+Example:
+
+```bash
+curl -X POST "https://shynvo.app/api/integrations/alerts" \
+  -H "Authorization: Bearer shynvo_ingest_xxx" \
+  -H "Content-Type: application/json" \
+  -H "X-Shynvo-Alert-Source: datadog" \
+  -d '{
+    "id": 987654321,
+    "title": "API 5xx spike",
+    "text": "Error rate is above threshold on payments-api",
+    "alert_type": "error",
+    "tags": ["service:payments-api", "owner:platform", "runbook:incident-triage"]
+  }'
+```
+
+### Monitoring alert ingest (Prometheus / Grafana Alertmanager adapter)
+
+The same endpoint also accepts Alertmanager payload shape (`status`, `alerts[]`, `labels`,
+`annotations`) and maps it to incidents automatically.
+
+For Prometheus/Grafana:
+
+- `labels.severity` maps to Shynvo severity (`critical`/`warning`/`info` etc).
+- `labels.service`/`job`/`app` can map `service_name`.
+- `labels.owner` or `labels.team` can map `owner_hint`.
+- `labels.runbook` can map `runbook_slug` when valid.
+- `fingerprint` dedupes as `prometheus:<fingerprint>`.
+
+Optional header for explicit source hint:
+
+- `X-Shynvo-Alert-Source: prometheus` (or `grafana`)
+
+Example:
+
+```bash
+curl -X POST "https://shynvo.app/api/integrations/alerts" \
+  -H "Authorization: Bearer shynvo_ingest_xxx" \
+  -H "Content-Type: application/json" \
+  -H "X-Shynvo-Alert-Source: prometheus" \
+  -d '{
+    "status": "firing",
+    "alerts": [
+      {
+        "status": "firing",
+        "labels": {
+          "alertname": "HighErrorRate",
+          "severity": "critical",
+          "service": "payments-api",
+          "team": "platform"
+        },
+        "annotations": {
+          "summary": "5xx error rate above threshold"
+        },
+        "fingerprint": "abc123def456"
+      }
+    ]
+  }'
+```
+
+### Monitoring alert ingest (PagerDuty events adapter)
+
+The same endpoint accepts PagerDuty Events-style payloads and maps:
+
+- `event_action` (`trigger`/`resolve`) to incident status.
+- `payload.severity` / `payload.urgency` to Shynvo severity.
+- `dedup_key` to `external_ref` as `pagerduty:<dedup_key>`.
+- `payload.component`/`source` to `service_name`.
+- optional `payload.custom_details.owner_hint`, `team`, `runbook_slug`.
+
+Optional header for explicit source hint:
+
+- `X-Shynvo-Alert-Source: pagerduty`
+
+Example:
+
+```bash
+curl -X POST "https://shynvo.app/api/integrations/alerts" \
+  -H "Authorization: Bearer shynvo_ingest_xxx" \
+  -H "Content-Type: application/json" \
+  -H "X-Shynvo-Alert-Source: pagerduty" \
+  -d '{
+    "event_action": "trigger",
+    "dedup_key": "payments-api-5xx",
+    "payload": {
+      "summary": "payments-api error budget burn",
+      "source": "payments-api",
+      "component": "payments-api",
+      "severity": "critical",
+      "custom_details": {
+        "owner_hint": "platform-oncall",
+        "runbook_slug": "incident-triage"
+      }
+    }
+  }'
+```
+
+### Monitoring alert ingest (New Relic adapter)
+
+The same endpoint accepts New Relic-style incident webhook payloads and maps:
+
+- `current_state` (`open`/`closed`) to incident status.
+- `severity`/`priority` to Shynvo severity.
+- `incident_id` (or violation id in details) to dedupe key `newrelic:<id>`.
+- `labels.service` or target labels to `service_name`.
+
+Optional header for explicit source hint:
+
+- `X-Shynvo-Alert-Source: newrelic`
+
+### Optional webhook signature verification (recommended)
+
+To require HMAC verification on `/api/integrations/alerts`, set:
+
+- `SHYNVO_ALERT_WEBHOOK_SIGNING_SECRET`
+
+When set, requests must include:
+
+- `X-Shynvo-Signature: <hex>` or `sha256=<hex>`
+- Optional: `X-Shynvo-Signature-Timestamp` (if provided, verifier checks `${timestamp}.${rawBody}`)
+
+Digest algorithm: **HMAC-SHA256** over raw request body (or timestamp + body mode above).
+
+Local signature helper:
+
+```bash
+# Inline payload
+npm run gen:alert-signature -- --secret "your-secret" --body '{"title":"Test alert"}'
+
+# Payload from file + timestamp mode
+npm run gen:alert-signature -- --secret "your-secret" --body-file payload.json --timestamp 1715000000
+```
+
 ## Stack
 
 Next.js 16, React 19, Tailwind CSS 4.

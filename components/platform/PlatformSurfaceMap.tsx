@@ -49,12 +49,6 @@ const MODULES = [
     cta: "Open reasoning",
   },
   {
-    title: "Automations",
-    body: "Dry-run first, then approve and execute.",
-    href: "/auth/sign-in?next=/automations",
-    cta: "Open automations",
-  },
-  {
     title: "Approvals",
     body: "Approval-first gate for high-impact changes.",
     href: "/auth/sign-in?next=/approvals",
@@ -114,6 +108,13 @@ const NEXT_CAPABILITIES = [
   "SLO and error budget views",
   "ITSM sync (Jira/ServiceNow)",
   "Structured alert adapters",
+] as const;
+
+const VENDOR_ROADMAP = [
+  { category: "Monitoring", vendors: "Datadog, Prometheus/Grafana Alerting, New Relic" },
+  { category: "Chat & paging", vendors: "Slack, Microsoft Teams, PagerDuty (events)" },
+  { category: "Cloud control planes", vendors: "AWS, Azure, GCP" },
+  { category: "ITSM / tickets", vendors: "Jira, ServiceNow, Linear (change tasks)" },
 ] as const;
 
 const EQUIPMENT_PHASE_1 = [
@@ -216,6 +217,33 @@ export function PlatformSurfaceMap() {
             </li>
           ))}
         </ul>
+      </section>
+
+      <section className="mt-7">
+        <h2 className={mH2}>Vendor integrations roadmap</h2>
+        <p className="mt-1.5 text-sm leading-6 text-foreground/80 sm:text-base sm:leading-7">
+          Planned first-party connectors and supported webhook targets. These are roadmap targets,
+          not live claims.
+        </p>
+        <ul className="mt-3 grid gap-2.5 sm:grid-cols-2">
+          {VENDOR_ROADMAP.map((item) => (
+            <li key={item.category} className={`${mCardLink} min-h-24 p-3.5`}>
+              <span className="text-[13px] font-semibold text-foreground sm:text-sm">{item.category}</span>
+              <span className="mt-1 text-[13px] leading-5 text-foreground/80 sm:text-sm sm:leading-6">
+                {item.vendors}
+              </span>
+            </li>
+          ))}
+        </ul>
+        <p className="mt-3 text-sm leading-6 text-foreground/75 sm:text-base sm:leading-7">
+          <Link href="/integrations" className="font-medium text-accent hover:underline">
+            Open integrations roadmap
+          </Link>
+          {" · "}
+          <Link href="/auth/sign-in?next=/settings/connectors" className="font-medium text-accent hover:underline">
+            Configure live connectors
+          </Link>
+        </p>
       </section>
 
       <section className="mt-7">
