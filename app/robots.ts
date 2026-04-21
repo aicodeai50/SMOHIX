@@ -8,6 +8,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
+      disallow: ["/status", "/api/health", "/api/connectors/status"],
     },
     sitemap: `${base}/sitemap.xml`,
     host: base.replace(/^https?:\/\//, ""),

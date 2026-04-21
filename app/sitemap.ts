@@ -17,7 +17,6 @@ const PATHS: { path: string; changeFrequency: MetadataRoute.Sitemap[0]["changeFr
   { path: "/docs/api", changeFrequency: "weekly", priority: 0.68 },
   { path: "/why", changeFrequency: "monthly", priority: 0.6 },
   { path: "/pricing", changeFrequency: "weekly", priority: 0.7 },
-  { path: "/status", changeFrequency: "hourly", priority: 0.45 },
   { path: "/changelog", changeFrequency: "weekly", priority: 0.5 },
 ];
 

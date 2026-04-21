@@ -23,7 +23,7 @@ export const API_GROUPS: ApiGroup[] = [
     title: "Health",
     description: "Liveness for load balancers; no auth.",
     operations: [
-      { method: "GET", path: "/api/health", summary: "JSON ok, uptime, optional deploy commit." },
+      { method: "GET", path: "/api/health", summary: "JSON ok, service name, and uptime seconds." },
       { method: "HEAD", path: "/api/health", summary: "Same as GET without body." },
     ],
   },
@@ -55,7 +55,7 @@ export const API_GROUPS: ApiGroup[] = [
         method: "GET",
         path: "/api/connectors/status",
         summary: "Probe configured reasoning/automation connector URLs.",
-        auth: "None (public probe from server)",
+        auth: "Session cookie when Supabase auth is enabled",
       },
     ],
   },

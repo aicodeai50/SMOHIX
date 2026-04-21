@@ -140,6 +140,30 @@ function statusBadgeClass(status: string): string {
   return "border-white/[0.12] bg-white/[0.03] text-foreground/85";
 }
 
+function connectorOriginLabel(rawUrl: string): string {
+  try {
+    const u = new URL(rawUrl);
+    const parts = u.hostname.split(".");
+    const maskedHost =
+      parts.length >= 2
+        ? `${parts[0]?.slice(0, 2) || "xx"}***.${parts.slice(1).join(".")}`
+        : `${u.hostname.slice(0, 2) || "xx"}***`;
+    const port = u.port ? `:${u.port}` : "";
+    return `${u.protocol}//${maskedHost}${port}`;
+  } catch {
+    return rawUrl;
+  }
+}
+
+function connectorOriginUrl(rawUrl: string): string | null {
+  try {
+    const u = new URL(rawUrl);
+    return `${u.protocol}//${u.host}`;
+  } catch {
+    return null;
+  }
+}
+
 export default async function ConnectorsPage({
   searchParams,
 }: {
@@ -852,12 +876,16 @@ export default async function ConnectorsPage({
             key={c.id}
             className="flex flex-col gap-4 rounded-xl border border-border bg-surface/80 p-5 sm:flex-row sm:items-start sm:justify-between"
           >
+            {(() => {
+              const originUrl = c.baseUrl ? connectorOriginUrl(c.baseUrl) : null;
+              return (
+                <>
             <div className="min-w-0 flex-1">
               <h2 className={appPanelTitle}>{c.name}</h2>
               <p className={`mt-1 text-muted ${appBody}`}>{c.role}</p>
               {c.baseUrl ? (
-                <p className={`mt-2 truncate font-mono ${appMeta}`} title={c.baseUrl}>
-                  {c.baseUrl}
+                <p className={`mt-2 truncate font-mono ${appMeta}`} title={connectorOriginLabel(c.baseUrl)}>
+                  {connectorOriginLabel(c.baseUrl)}
                 </p>
               ) : null}
               <p className={`mt-2 font-mono ${appMeta}`}>{c.detail}</p>
@@ -876,9 +904,9 @@ export default async function ConnectorsPage({
               </p>
             </div>
             <div className="flex shrink-0 flex-col gap-2 sm:items-end">
-              {c.baseUrl && c.ok ? (
+              {originUrl && c.ok ? (
                 <a
-                  href={c.baseUrl}
+                  href={originUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={`rounded-lg border border-border px-4 py-2 text-foreground transition-colors hover:border-accent/40 ${appBody}`}
@@ -886,9 +914,9 @@ export default async function ConnectorsPage({
                   Open service
                 </a>
               ) : null}
-              {c.id === "robot" && c.baseUrl && c.ok ? (
+              {c.id === "robot" && originUrl && c.ok ? (
                 <a
-                  href={`${c.baseUrl}${c.docsPath ?? "/docs"}`}
+                  href={`${originUrl}${c.docsPath ?? "/docs"}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={`${appMeta} hover:text-accent`}
@@ -897,6 +925,9 @@ export default async function ConnectorsPage({
                 </a>
               ) : null}
             </div>
+                </>
+              );
+            })()}
           </div>
         ))}
       </div>

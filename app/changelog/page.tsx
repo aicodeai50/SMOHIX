@@ -35,7 +35,7 @@ const ENTRIES: { date: string; title: string; bullets: string[] }[] = [
     title: "Incidents and operations depth",
     bullets: [
       "Incident owner hint, runbook slug, markdown export API",
-      "Health endpoint optional deploy commit",
+      "Health endpoint hardening and public status cleanup",
       "Alert ingest payload extensions",
     ],
   },

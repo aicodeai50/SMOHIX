@@ -10,6 +10,10 @@ import { getSiteUrl } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Status",
   description: `${SITE_BRAND_NAME} API health check for the configured deployment.`,
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export const dynamic = "force-dynamic";
@@ -31,6 +35,16 @@ async function fetchHealth(): Promise<Record<string, unknown> | null> {
 export default async function StatusPage() {
   const health = await fetchHealth();
   const ok = health?.ok === true;
+  const statusView = health
+    ? {
+        ok: health.ok === true,
+        service: typeof health.service === "string" ? health.service : "shynvo-web",
+        uptime_s:
+          typeof health.uptime_s === "number" && Number.isFinite(health.uptime_s)
+            ? Math.max(0, Math.round(health.uptime_s))
+            : null,
+      }
+    : null;
 
   return (
     <>
@@ -57,9 +71,9 @@ export default async function StatusPage() {
             <p className="text-sm font-semibold text-foreground">
               {ok ? "Operational" : "Check failed or unreachable"}
             </p>
-            {health ? (
+            {statusView ? (
               <pre className="mt-4 overflow-x-auto rounded-xl border border-white/[0.06] bg-black/40 p-4 font-mono text-xs text-foreground/85">
-                {JSON.stringify(health, null, 2)}
+                {JSON.stringify(statusView, null, 2)}
               </pre>
             ) : (
               <p className={`mt-4 ${mBody}`}>

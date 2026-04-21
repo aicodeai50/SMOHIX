@@ -21,7 +21,7 @@ servers:
 paths:
   /api/health:
     get:
-      summary: Liveness and optional deploy commit
+      summary: Liveness and uptime
   /api/integrations/alerts:
     post:
       summary: Alert ingest (Bearer token)

@@ -147,7 +147,7 @@ After `shynvo.app` resolves to Railway, set the Lemon webhook URL to:
 2. **Settings → Source**: confirm **Branch** is **`main`** and the repo is **`Sanher50/SHYNVO`**. Use **Disconnect** / **Reconnect** if pushes never trigger a deploy.
 3. **Redeploy**: on the latest deployment menu, choose **Redeploy** (or **Restart** only restarts the same image — you want a **new build** when code changed). If Railway offers **Clear build cache**, use it once.
 4. **One-shot cache bust**: add variable **`NIXPACKS_NO_CACHE`** = **`1`**, redeploy, then **remove** the variable (optional; forces Nixpacks to rebuild layers).
-5. **Prove which revision is live**: `curl -sS "https://YOUR-URL.up.railway.app/api/health"` — check **`commit`** (git SHA) and **`railway_deployment_id`**. After a fresh deploy, **`uptime_s`** resets to a small number.
+5. **Confirm web tier is up**: `curl -sS "https://YOUR-URL.up.railway.app/api/health"` — expect **`ok: true`** and a valid **`uptime_s`** value.
 6. **Browser**: hard refresh (**Ctrl+Shift+R**) or a private window — stale JS/CSS can look like an old release even when the server is new.
 
 ### Supabase (auth)
