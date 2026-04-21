@@ -368,3 +368,7 @@ npm run gen:alert-signature -- --secret "your-secret" --body-file payload.json -
 ## Stack
 
 Next.js 16, React 19, Tailwind CSS 4.
+
+## Security policy
+
+For operational metadata exposure rules and required hardening headers, see `SECURITY.md`.

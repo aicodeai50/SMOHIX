@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { OPERATIONAL_RESPONSE_HEADERS } from "@/lib/security/operational-headers";
 
 export const runtime = "nodejs";
 
@@ -16,15 +17,7 @@ export async function GET() {
     },
     {
       status: 200,
-      headers: {
-        "Cache-Control": "no-store, max-age=0",
-        "X-Robots-Tag": "noindex, nofollow",
-        "X-Content-Type-Options": "nosniff",
-        "Referrer-Policy": "no-referrer",
-        "X-Frame-Options": "DENY",
-        "Permissions-Policy": "geolocation=(), camera=(), microphone=()",
-        "Cross-Origin-Resource-Policy": "same-origin",
-      },
+      headers: OPERATIONAL_RESPONSE_HEADERS,
     },
   );
 }
@@ -33,14 +26,6 @@ export async function GET() {
 export async function HEAD() {
   return new NextResponse(null, {
     status: 200,
-    headers: {
-      "Cache-Control": "no-store, max-age=0",
-      "X-Robots-Tag": "noindex, nofollow",
-      "X-Content-Type-Options": "nosniff",
-      "Referrer-Policy": "no-referrer",
-      "X-Frame-Options": "DENY",
-      "Permissions-Policy": "geolocation=(), camera=(), microphone=()",
-      "Cross-Origin-Resource-Policy": "same-origin",
-    },
+    headers: OPERATIONAL_RESPONSE_HEADERS,
   });
 }

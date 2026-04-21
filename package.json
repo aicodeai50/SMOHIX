@@ -8,10 +8,12 @@
   "scripts": {
     "dev": "next dev",
     "verify:api-catalog": "node scripts/verify-api-catalog.mjs",
+    "test:security": "node scripts/security-regression.mjs",
+    "verify:release": "npm run verify:api-catalog && npm run test:security",
     "gen:alert-signature": "node scripts/gen-alert-signature.mjs",
-    "build": "npm run verify:api-catalog && next build",
+    "build": "npm run verify:release && next build",
     "start": "next start --hostname 0.0.0.0",
-    "deploy:railway": "railway up --detach",
+    "deploy:railway": "npm run verify:release && railway up --detach",
     "lint": "eslint"
   },
   "dependencies": {

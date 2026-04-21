@@ -1,0 +1,18 @@
+# Global fallback owner
+* @Sanher50
+
+# Security-sensitive operational surfaces
+/app/api/health/route.ts @Sanher50
+/app/api/connectors/status/route.ts @Sanher50
+/app/status/page.tsx @Sanher50
+/app/robots.ts @Sanher50
+/app/sitemap.ts @Sanher50
+/lib/security/ @Sanher50
+/scripts/security-regression.mjs @Sanher50
+/SECURITY.md @Sanher50
+
+# Release/CI policy files
+/.github/workflows/verify-release.yml @Sanher50
+/.github/pull_request_template.md @Sanher50
+/.github/dependabot.yml @Sanher50
+/package.json @Sanher50
