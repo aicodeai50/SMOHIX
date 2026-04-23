@@ -79,6 +79,10 @@ export default async function SettingsIndexPage({
   const sp = (await searchParams) ?? {};
   const setupCheckRequested = sp.setup_check === "1";
   const setupDoneHint = typeof sp.setup_done === "string" ? sp.setup_done.trim().toLowerCase() : "";
+  const completedStepKey =
+    setupDoneHint === "api-key" || setupDoneHint === "ingest-token" || setupDoneHint === "connectors"
+      ? setupDoneHint
+      : null;
   let accountEmail: string | null = null;
   let initialFullName = "";
   let hasApiKey = false;
@@ -139,7 +143,7 @@ export default async function SettingsIndexPage({
       done: hasApiKey,
       title: "Create your first API key",
       detail: "Use keys for automation and external tool calls into your workspace.",
-      href: "/settings/api-keys?next=/settings%3Fsetup_check%3D1%26setup_done%3Dapi-key%23setup-wizard",
+      href: "/settings/api-keys?setup_step=api-key&next=/settings%3Fsetup_check%3D1%26setup_done%3Dapi-key%23setup-wizard#api-key-create",
       cta: "Create API key",
     },
     {
@@ -147,7 +151,7 @@ export default async function SettingsIndexPage({
       done: hasIngestToken,
       title: "Create alert ingest token",
       detail: "Enable monitoring tools to open or dedupe incidents through ingest.",
-      href: "/settings/connectors?next=/settings%3Fsetup_check%3D1%26setup_done%3Dingest-token%23setup-wizard",
+      href: "/settings/connectors?setup_step=ingest-token&next=/settings%3Fsetup_check%3D1%26setup_done%3Dingest-token%23setup-wizard#ingest-token-setup",
       cta: "Set up ingest",
     },
     {
@@ -155,7 +159,7 @@ export default async function SettingsIndexPage({
       done: connectorsConfigured > 0,
       title: "Configure at least one connector",
       detail: "Attach reasoning or automation endpoints for live run coverage.",
-      href: "/settings/connectors?next=/settings%3Fsetup_check%3D1%26setup_done%3Dconnectors%23setup-wizard",
+      href: "/settings/connectors?setup_step=connectors&next=/settings%3Fsetup_check%3D1%26setup_done%3Dconnectors%23setup-wizard#connectors-health",
       cta: "Configure connectors",
     },
   ] as const;
@@ -181,7 +185,7 @@ export default async function SettingsIndexPage({
           key: s.key,
           title: "API key step pending",
           detail: "No active API key found. Create one key for scripts or automation callers.",
-          href: "/settings/api-keys",
+          href: "/settings/api-keys#api-key-create",
           cta: "Open API keys",
         };
       }
@@ -190,7 +194,7 @@ export default async function SettingsIndexPage({
           key: s.key,
           title: "Ingest token step pending",
           detail: "No active alert ingest token found. Create one in Connectors and run a test event.",
-          href: "/settings/connectors",
+          href: "/settings/connectors#ingest-token-setup",
           cta: "Open Connectors",
         };
       }
@@ -199,7 +203,7 @@ export default async function SettingsIndexPage({
         title: "Connector setup pending",
         detail:
           "No connector endpoints are configured or reachable. Add at least one connector URL and run a setup check.",
-        href: "/settings/connectors",
+        href: "/settings/connectors#connectors-health",
         cta: "Configure connector",
       };
     });
@@ -261,6 +265,39 @@ export default async function SettingsIndexPage({
               : "ready for operations"}
           </p>
         </div>
+        <div className="sticky top-2 z-10 mt-3 rounded-xl border border-white/[0.08] bg-background/80 px-3 py-2 backdrop-blur">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className={`rounded-full border border-accent/35 bg-accent/10 px-2.5 py-1 text-accent ${appMeta}`}>
+                Setup progress: {setupComplete}/{setupSteps.length}
+              </span>
+              {nextStep ? (
+                <span className={`rounded-full border border-amber-400/35 bg-amber-400/10 px-2.5 py-1 text-amber-300 ${appMeta}`}>
+                  Next: {nextStep.title}
+                </span>
+              ) : (
+                <span className={`rounded-full border border-success/35 bg-success-dim/40 px-2.5 py-1 text-success ${appMeta}`}>
+                  All steps complete
+                </span>
+              )}
+            </div>
+            {nextStep ? (
+              <Link
+                href={nextStep.href}
+                className={`rounded-lg border border-accent/45 bg-accent/20 px-3 py-1.5 font-medium text-accent transition-colors hover:border-accent/70 hover:bg-accent/30 ${appBody}`}
+              >
+                Continue
+              </Link>
+            ) : (
+              <Link
+                href="#setup-wizard"
+                className={`rounded-lg border border-white/[0.14] px-3 py-1.5 font-medium text-foreground/80 transition-colors hover:border-accent/35 hover:text-foreground ${appBody}`}
+              >
+                Review checklist
+              </Link>
+            )}
+          </div>
+        </div>
         {nextStep ? (
           <div className="mt-3">
             <Link
@@ -276,19 +313,30 @@ export default async function SettingsIndexPage({
             <Link
               key={step.key}
               href={step.href}
-              className="rounded-xl border border-white/[0.08] bg-black/20 p-4 transition-colors hover:border-accent/35"
+              className={`rounded-xl border bg-black/20 p-4 transition-colors hover:border-accent/35 ${
+                completedStepKey === step.key
+                  ? "border-emerald-400/35 ring-1 ring-emerald-400/30"
+                  : "border-white/[0.08]"
+              }`}
             >
               <div className="flex items-center justify-between gap-2">
                 <p className={`${appBody} font-medium text-foreground/90`}>{step.title}</p>
-                <span
-                  className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
-                    step.done
-                      ? "border-success/40 bg-success-dim/40 text-success"
-                      : "border-amber-400/35 bg-amber-400/10 text-amber-300"
-                  }`}
-                >
-                  {step.done ? "Done" : "Pending"}
-                </span>
+                <div className="flex items-center gap-2">
+                  {completedStepKey === step.key ? (
+                    <span className="rounded-full border border-emerald-400/35 bg-emerald-400/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-300">
+                      Just completed
+                    </span>
+                  ) : null}
+                  <span
+                    className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
+                      step.done
+                        ? "border-success/40 bg-success-dim/40 text-success"
+                        : "border-amber-400/35 bg-amber-400/10 text-amber-300"
+                    }`}
+                  >
+                    {step.done ? "Done" : "Pending"}
+                  </span>
+                </div>
               </div>
               <p className={`mt-2 ${appMeta}`}>{step.detail}</p>
               {!step.done ? (

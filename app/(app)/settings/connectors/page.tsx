@@ -3,6 +3,7 @@ import Link from "next/link";
 import Script from "next/script";
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
+import { AlertIngestPanel } from "@/components/settings/AlertIngestPanel";
 import { appBody, appMeta, appPanelTitle } from "@/lib/app-typography";
 import { getConnectorHealthRows } from "@/lib/connectors-health";
 import { getSiteUrl } from "@/lib/site";
@@ -169,6 +170,7 @@ export default async function ConnectorsPage({
 }: {
   searchParams: Promise<{
     next?: string;
+    setup_step?: string;
     vendor?: string;
     window?: string;
     sort?: string;
@@ -185,6 +187,7 @@ export default async function ConnectorsPage({
 }) {
   const connectors = await getConnectorHealthRows();
   const noneConfigured = connectors.every((c) => !c.baseUrl);
+  const configuredConnectorsCount = connectors.filter((c) => Boolean(c.baseUrl)).length;
   const siteUrl = getSiteUrl();
   const exampleToken = "shynvo_ingest_xxx";
   const exampleSecret = "replace-with-signing-secret";
@@ -279,6 +282,7 @@ export default async function ConnectorsPage({
     typeof sp.next === "string" && sp.next.startsWith("/")
       ? sp.next
       : null;
+  const setupStep = typeof sp.setup_step === "string" ? sp.setup_step.trim().toLowerCase() : "";
   const vendorFilterRaw = typeof sp.vendor === "string" ? sp.vendor.trim().toLowerCase() : "";
   const windowFilterRaw = typeof sp.window === "string" ? sp.window.trim().toLowerCase() : "";
   const sortFilterRaw = typeof sp.sort === "string" ? sp.sort.trim().toLowerCase() : "";
@@ -309,6 +313,21 @@ export default async function ConnectorsPage({
   const statusFilter = allowedStatus.has(statusRaw) ? statusRaw : "all";
   const queryFilter = queryRaw.slice(0, 80);
   const autoRefreshEnabled = autoRefreshRaw === "1";
+  const setupStepComplete =
+    setupStep === "ingest-token"
+      ? ingestTokenStats.activeCount > 0
+      : setupStep === "connectors"
+        ? configuredConnectorsCount > 0
+        : false;
+  const setupStepLabel =
+    setupStep === "ingest-token"
+      ? "Ingest token"
+      : setupStep === "connectors"
+        ? "Connector configuration"
+        : "Setup step";
+  const setupStepPosition =
+    setupStep === "ingest-token" ? 3 : setupStep === "connectors" ? 4 : null;
+  const inSetupFlow = Boolean(returnHref && setupStepPosition);
   const now = Date.now();
   const windowMs =
     windowFilter === "24h"
@@ -451,14 +470,24 @@ export default async function ConnectorsPage({
   );
   const jsonHref = `data:application/json;charset=utf-8,${encodeURIComponent(jsonReport)}`;
   const jsonFilename = `shynvo-ingest-events-${windowFilter}-${vendorFilter || "all"}.json`;
+  const wizardContextQuery = [
+    returnHref ? `next=${encodeURIComponent(returnHref)}` : null,
+    setupStep ? `setup_step=${encodeURIComponent(setupStep)}` : null,
+  ]
+    .filter(Boolean)
+    .join("&");
+  const wizardContextSuffix = wizardContextQuery ? `&${wizardContextQuery}` : "";
+  const wizardContextPrefix = wizardContextQuery ? `?${wizardContextQuery}` : "";
   const filteredShareUrl = `${siteUrl}/settings/connectors?window=${windowFilter}${
     vendorFilter ? `&vendor=${vendorFilter}` : ""
-  }&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}`;
-  const defaultScopeHref = `/settings/connectors${autoRefreshEnabled ? "?auto=1" : ""}`;
+  }&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}${wizardContextSuffix}`;
+  const defaultScopeHref = `/settings/connectors${
+    autoRefreshEnabled ? `?auto=1${wizardContextSuffix}` : wizardContextPrefix
+  }`;
   const defaultScopeAnchorHref = (anchor: string) => `${defaultScopeHref}#${anchor}`;
   const refreshedAt = new Date();
-  const refreshHref = `/settings/connectors?window=${windowFilter}${vendorFilter ? `&vendor=${vendorFilter}` : ""}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}`;
-  const autoToggleHref = `/settings/connectors?window=${windowFilter}${vendorFilter ? `&vendor=${vendorFilter}` : ""}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "" : "&auto=1"}`;
+  const refreshHref = `/settings/connectors?window=${windowFilter}${vendorFilter ? `&vendor=${vendorFilter}` : ""}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}${wizardContextSuffix}`;
+  const autoToggleHref = `/settings/connectors?window=${windowFilter}${vendorFilter ? `&vendor=${vendorFilter}` : ""}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "" : "&auto=1"}${wizardContextSuffix}`;
   const hasNonDefaultFilters =
     vendorFilter !== "" ||
     windowFilter !== "all" ||
@@ -520,6 +549,8 @@ export default async function ConnectorsPage({
             ? "pagerduty-active"
             : null;
   const skipLinks = [
+    { href: "#connectors-health", label: "Skip to connector health" },
+    { href: "#ingest-token-setup", label: "Skip to ingest token setup" },
     { href: "#recent-ingest-events", label: "Skip to recent ingest events" },
     { href: "#ingest-diagnostics", label: "Skip to ingest diagnostics" },
     { href: "#connectors-action-workflow", label: "Skip to actions workflow" },
@@ -551,6 +582,39 @@ export default async function ConnectorsPage({
         <p className={`mb-3 ${appBody}`}>
           <Link href={returnHref} className="font-medium text-accent hover:underline">
             ← Return to setup wizard
+          </Link>
+        </p>
+      ) : null}
+      {inSetupFlow ? (
+        <div className="mb-3 flex flex-wrap items-center gap-2">
+          <span
+            className={`rounded-full border px-2.5 py-1 ${appMeta} ${
+              setupStepComplete
+                ? "border-emerald-400/35 bg-emerald-400/10 text-emerald-300"
+                : "border-accent/35 bg-accent/10 text-accent"
+            }`}
+          >
+            Guided setup: step {setupStepPosition} of 4
+          </span>
+          <span className={`rounded-full border border-white/[0.12] px-2.5 py-1 text-foreground/75 ${appMeta}`}>
+            {setupStepLabel}
+          </span>
+          <span
+            className={`rounded-full border px-2.5 py-1 ${appMeta} ${
+              setupStepComplete
+                ? "border-emerald-400/35 bg-emerald-400/10 text-emerald-300"
+                : "border-amber-400/35 bg-amber-400/10 text-amber-300"
+            }`}
+          >
+            {setupStepComplete ? "Complete" : "Pending"}
+          </span>
+        </div>
+      ) : null}
+      {returnHref && setupStepComplete ? (
+        <p className={`mb-3 rounded-lg border border-emerald-500/35 bg-emerald-500/10 px-4 py-3 text-emerald-100 ${appBody}`}>
+          {setupStepLabel} step complete.{" "}
+          <Link href={returnHref} className="font-semibold text-emerald-200 underline-offset-2 hover:underline">
+            Continue setup wizard →
           </Link>
         </p>
       ) : null}
@@ -623,7 +687,7 @@ export default async function ConnectorsPage({
           ) : null}
           {queryFilter ? (
             <Link
-              href={`/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}${vendorFilter ? `&vendor=${vendorFilter}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}`}
+              href={`/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}${vendorFilter ? `&vendor=${vendorFilter}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}${wizardContextSuffix}`}
               className={`shrink-0 rounded-full border border-white/[0.14] px-2.5 py-1 text-foreground/75 transition-colors hover:border-accent/35 hover:text-foreground ${appMeta}`}
             >
               Clear search
@@ -631,7 +695,7 @@ export default async function ConnectorsPage({
           ) : null}
           {statusFilter !== "all" ? (
             <Link
-              href={`/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}${vendorFilter ? `&vendor=${vendorFilter}` : ""}${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}`}
+              href={`/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}${vendorFilter ? `&vendor=${vendorFilter}` : ""}${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}${wizardContextSuffix}`}
               className={`shrink-0 rounded-full border border-white/[0.14] px-2.5 py-1 text-foreground/75 transition-colors hover:border-accent/35 hover:text-foreground ${appMeta}`}
             >
               Clear status
@@ -639,7 +703,7 @@ export default async function ConnectorsPage({
           ) : null}
           {vendorFilter ? (
             <Link
-              href={`/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}`}
+              href={`/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}${wizardContextSuffix}`}
               className={`shrink-0 rounded-full border border-white/[0.14] px-2.5 py-1 text-foreground/75 transition-colors hover:border-accent/35 hover:text-foreground ${appMeta}`}
             >
               Clear vendor
@@ -647,7 +711,7 @@ export default async function ConnectorsPage({
           ) : null}
           {windowFilter !== "all" ? (
             <Link
-              href={`/settings/connectors?window=all&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}${vendorFilter ? `&vendor=${vendorFilter}` : ""}${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}`}
+              href={`/settings/connectors?window=all&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}${vendorFilter ? `&vendor=${vendorFilter}` : ""}${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}${wizardContextSuffix}`}
               className={`shrink-0 rounded-full border border-white/[0.14] px-2.5 py-1 text-foreground/75 transition-colors hover:border-accent/35 hover:text-foreground ${appMeta}`}
             >
               Clear window
@@ -655,7 +719,7 @@ export default async function ConnectorsPage({
           ) : null}
           {sortFilter !== "newest" ? (
             <Link
-              href={`/settings/connectors?window=${windowFilter}&sort=newest&limit=${rowLimit}&status=${statusFilter}${vendorFilter ? `&vendor=${vendorFilter}` : ""}${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}`}
+              href={`/settings/connectors?window=${windowFilter}&sort=newest&limit=${rowLimit}&status=${statusFilter}${vendorFilter ? `&vendor=${vendorFilter}` : ""}${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}${wizardContextSuffix}`}
               className={`shrink-0 rounded-full border border-white/[0.14] px-2.5 py-1 text-foreground/75 transition-colors hover:border-accent/35 hover:text-foreground ${appMeta}`}
             >
               Reset sort
@@ -663,7 +727,7 @@ export default async function ConnectorsPage({
           ) : null}
           {rowLimit !== 5 ? (
             <Link
-              href={`/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=5&status=${statusFilter}${vendorFilter ? `&vendor=${vendorFilter}` : ""}${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}`}
+              href={`/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=5&status=${statusFilter}${vendorFilter ? `&vendor=${vendorFilter}` : ""}${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}${wizardContextSuffix}`}
               className={`shrink-0 rounded-full border border-white/[0.14] px-2.5 py-1 text-foreground/75 transition-colors hover:border-accent/35 hover:text-foreground ${appMeta}`}
             >
               Reset rows
@@ -671,14 +735,14 @@ export default async function ConnectorsPage({
           ) : null}
           {autoRefreshEnabled ? (
             <Link
-              href={`/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}${vendorFilter ? `&vendor=${vendorFilter}` : ""}${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}`}
+              href={`/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}${vendorFilter ? `&vendor=${vendorFilter}` : ""}${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${wizardContextSuffix}`}
               className={`shrink-0 rounded-full border border-danger/35 bg-danger-dim/15 px-2.5 py-1 text-danger transition-colors hover:border-danger/55 hover:bg-danger-dim/25 ${appMeta}`}
             >
               Disable auto-refresh
             </Link>
           ) : (
             <Link
-              href={`/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}${vendorFilter ? `&vendor=${vendorFilter}` : ""}${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}&auto=1`}
+              href={`/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}${vendorFilter ? `&vendor=${vendorFilter}` : ""}${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}&auto=1${wizardContextSuffix}`}
               className={`shrink-0 rounded-full border border-emerald-400/35 bg-emerald-400/10 px-2.5 py-1 text-emerald-300 transition-colors hover:border-emerald-300/55 hover:bg-emerald-400/15 ${appMeta}`}
             >
               Enable auto-refresh
@@ -689,6 +753,34 @@ export default async function ConnectorsPage({
             idleLabel="Copy current view"
             copiedLabel="Current view copied"
           />
+          <div className="flex shrink-0 snap-start items-center gap-2">
+          <Link
+            href="#connectors-health"
+            title="Connector reachability and endpoint configuration status."
+            className={`rounded-full border border-white/[0.14] px-2.5 py-1 text-foreground/75 transition-colors hover:border-accent/35 hover:text-foreground ${appMeta}`}
+          >
+            Connector health
+          </Link>
+          <CopyCommandButton
+            content={`${filteredShareUrl}#connectors-health`}
+            idleLabel="Copy link"
+            copiedLabel="Link copied"
+          />
+          </div>
+          <div className="flex shrink-0 snap-start items-center gap-2">
+          <Link
+            href="#ingest-token-setup"
+            title="Create or revoke alert ingest tokens."
+            className={`rounded-full border border-white/[0.14] px-2.5 py-1 text-foreground/75 transition-colors hover:border-accent/35 hover:text-foreground ${appMeta}`}
+          >
+            Token setup
+          </Link>
+          <CopyCommandButton
+            content={`${filteredShareUrl}#ingest-token-setup`}
+            idleLabel="Copy link"
+            copiedLabel="Link copied"
+          />
+          </div>
           <div className="flex shrink-0 snap-start items-center gap-2">
           <Link
             href="#ingest-diagnostics"
@@ -882,7 +974,7 @@ export default async function ConnectorsPage({
           />
         </div>
       ) : null}
-      <div className="space-y-4">
+      <div id="connectors-health" className="space-y-4">
         {connectors.map((c) => (
           <div
             key={c.id}
@@ -1038,13 +1130,24 @@ export default async function ConnectorsPage({
           </div>
         </div>
         <p className={`mt-4 ${appMeta}`}>
-          If active tokens are zero, create one in{" "}
-          <Link href="/settings/api-keys" className="font-medium text-accent hover:underline">
-            API keys
-          </Link>
-          . If signature mode is enabled, include valid{" "}
+          If active tokens are zero, create one below. If signature mode is enabled, include valid{" "}
           <span className="font-mono text-foreground/80">X-Shynvo-Signature</span> headers.
         </p>
+        <div id="ingest-token-setup" className="mt-4 rounded-xl border border-white/[0.08] bg-black/20 p-4">
+          <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+            <p className={`font-medium text-foreground/90 ${appBody}`}>Ingest token setup</p>
+            <CopyCommandButton
+              content={`${filteredShareUrl}#ingest-token-setup`}
+              idleLabel="Copy section link"
+              copiedLabel="Section link copied"
+            />
+          </div>
+          <AlertIngestPanel
+            serviceRoleConfigured={Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY?.trim())}
+            setupStep={setupStep}
+            returnHref={returnHref}
+          />
+        </div>
         <div className="mt-3 flex flex-wrap items-center gap-2">
           <span className={`text-foreground/55 ${appMeta}`}>Quick jump:</span>
           <Link
@@ -1274,6 +1377,8 @@ export default async function ConnectorsPage({
                 <span className={`text-foreground/55 ${appMeta}`}>fast check</span>
               </div>
               <form action={generateTestIngestIncidentAction}>
+                {returnHref ? <input type="hidden" name="next" value={returnHref} /> : null}
+                {setupStep ? <input type="hidden" name="setup_step" value={setupStep} /> : null}
                 <button
                   type="submit"
                   title="Create one synthetic incident to quickly verify ingest is healthy."
@@ -1301,6 +1406,8 @@ export default async function ConnectorsPage({
                 <span className={`text-foreground/55 ${appMeta}`}>coverage run</span>
               </div>
               <form action={generateVendorTestEventsAction}>
+                {returnHref ? <input type="hidden" name="next" value={returnHref} /> : null}
+                {setupStep ? <input type="hidden" name="setup_step" value={setupStep} /> : null}
                 <button
                   type="submit"
                   title="Create one synthetic event per vendor adapter for coverage checks."
@@ -1328,6 +1435,8 @@ export default async function ConnectorsPage({
                 <span className={`text-foreground/55 ${appMeta}`}>state update only</span>
               </div>
               <form action={acknowledgeUnknownSyntheticIngestAction}>
+                {returnHref ? <input type="hidden" name="next" value={returnHref} /> : null}
+                {setupStep ? <input type="hidden" name="setup_step" value={setupStep} /> : null}
                 <ConfirmSubmitButton
                   label="Acknowledge unknown unresolved tests"
                   confirmMessage="Mark unknown unresolved synthetic incidents as mitigated?"
@@ -1345,6 +1454,8 @@ export default async function ConnectorsPage({
                 <span className={`text-foreground/55 ${appMeta}`}>deletes data</span>
               </div>
               <form action={cleanupSyntheticIngestTestsAction}>
+                {returnHref ? <input type="hidden" name="next" value={returnHref} /> : null}
+                {setupStep ? <input type="hidden" name="setup_step" value={setupStep} /> : null}
                 <ConfirmSubmitButton
                   label="Cleanup synthetic tests"
                   confirmMessage="Delete synthetic test incidents created from connectors diagnostics?"
@@ -1622,28 +1733,28 @@ curl -X POST "${siteUrl}/api/integrations/alerts" \\
               label: "Active now",
               href: `/settings/connectors?window=24h&status=investigating&sort=newest&limit=10${
                 autoRefreshEnabled ? "&auto=1" : ""
-              }`,
+              }${wizardContextSuffix}`,
             },
             {
               key: "resolved-week",
               label: "Resolved this week",
               href: `/settings/connectors?window=7d&status=resolved&sort=newest&limit=25${
                 autoRefreshEnabled ? "&auto=1" : ""
-              }`,
+              }${wizardContextSuffix}`,
             },
             {
               key: "datadog-24h",
               label: "Datadog last 24h",
               href: `/settings/connectors?window=24h&vendor=datadog&sort=newest&limit=10${
                 autoRefreshEnabled ? "&auto=1" : ""
-              }`,
+              }${wizardContextSuffix}`,
             },
             {
               key: "pagerduty-active",
               label: "PagerDuty active",
               href: `/settings/connectors?window=7d&vendor=pagerduty&status=investigating&sort=newest&limit=10${
                 autoRefreshEnabled ? "&auto=1" : ""
-              }`,
+              }${wizardContextSuffix}`,
             },
           ].map((preset) => {
             const active = activePresetKey === preset.key;
@@ -1692,7 +1803,7 @@ curl -X POST "${siteUrl}/api/integrations/alerts" \\
           </p>
           <div className="flex flex-wrap items-center gap-2">
             <Link
-              href={`/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=unresolved&vendor=unknown${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}`}
+              href={`/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=unresolved&vendor=unknown${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}${wizardContextSuffix}`}
               className={`rounded-lg border px-3 py-1.5 font-medium transition-colors ${
                 vendorFilter === "unknown" && statusFilter === "unresolved"
                   ? "border-danger/45 bg-danger-dim/25 text-danger"
@@ -1735,6 +1846,8 @@ curl -X POST "${siteUrl}/api/integrations/alerts" \\
           <input type="hidden" name="status" value={statusFilter} />
           {vendorFilter ? <input type="hidden" name="vendor" value={vendorFilter} /> : null}
           {autoRefreshEnabled ? <input type="hidden" name="auto" value="1" /> : null}
+          {returnHref ? <input type="hidden" name="next" value={returnHref} /> : null}
+          {setupStep ? <input type="hidden" name="setup_step" value={setupStep} /> : null}
           <input
             type="text"
             name="q"
@@ -1750,7 +1863,7 @@ curl -X POST "${siteUrl}/api/integrations/alerts" \\
           </button>
           {queryFilter ? (
             <Link
-              href={`/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}${vendorFilter ? `&vendor=${vendorFilter}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}`}
+              href={`/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}${vendorFilter ? `&vendor=${vendorFilter}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}${wizardContextSuffix}`}
               className={`rounded-lg border border-border px-3 py-1.5 font-medium text-foreground/85 transition-colors hover:border-accent/35 hover:text-foreground ${appBody}`}
             >
               Clear search
@@ -1778,7 +1891,7 @@ curl -X POST "${siteUrl}/api/integrations/alerts" \\
             </ul>
             <div className="mt-3">
               <Link
-                href={`/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=unresolved&vendor=unknown${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}`}
+                href={`/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=unresolved&vendor=unknown${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}${wizardContextSuffix}`}
                 className={`inline-flex rounded-lg border border-amber-400/35 bg-amber-400/10 px-3 py-1.5 font-medium text-amber-300 transition-colors hover:border-amber-300/45 hover:text-amber-200 ${appBody}`}
               >
                 Show unresolved unknown only
@@ -1791,37 +1904,37 @@ curl -X POST "${siteUrl}/api/integrations/alerts" \\
             {
               label: "All",
               count: vendorCounts.all,
-              href: `/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}`,
+              href: `/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}${wizardContextSuffix}`,
               active: vendorFilter === "",
             },
             {
               label: "Datadog",
               count: vendorCounts.datadog,
-              href: `/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}&vendor=datadog${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}`,
+              href: `/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}&vendor=datadog${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}${wizardContextSuffix}`,
               active: vendorFilter === "datadog",
             },
             {
               label: "Prometheus/Grafana",
               count: vendorCounts.prometheus,
-              href: `/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}&vendor=prometheus${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}`,
+              href: `/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}&vendor=prometheus${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}${wizardContextSuffix}`,
               active: vendorFilter === "prometheus",
             },
             {
               label: "PagerDuty",
               count: vendorCounts.pagerduty,
-              href: `/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}&vendor=pagerduty${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}`,
+              href: `/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}&vendor=pagerduty${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}${wizardContextSuffix}`,
               active: vendorFilter === "pagerduty",
             },
             {
               label: "New Relic",
               count: vendorCounts.newrelic,
-              href: `/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}&vendor=newrelic${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}`,
+              href: `/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}&vendor=newrelic${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}${wizardContextSuffix}`,
               active: vendorFilter === "newrelic",
             },
             {
               label: "Unknown",
               count: vendorCounts.unknown,
-              href: `/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}&vendor=unknown${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}`,
+              href: `/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}&vendor=unknown${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}${wizardContextSuffix}`,
               active: vendorFilter === "unknown",
             },
           ].map((card) => (
@@ -1850,7 +1963,7 @@ curl -X POST "${siteUrl}/api/integrations/alerts" \\
             return (
               <Link
                 key={w.href}
-                href={`${w.href}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}${vendorFilter ? `&vendor=${vendorFilter}` : ""}${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}`}
+                href={`${w.href}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}${vendorFilter ? `&vendor=${vendorFilter}` : ""}${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}${wizardContextSuffix}`}
                 className={`rounded-full border px-2.5 py-1 text-xs font-medium transition-colors ${
                   active
                     ? "border-accent/60 bg-accent/10 text-accent"
@@ -1864,8 +1977,8 @@ curl -X POST "${siteUrl}/api/integrations/alerts" \\
         </div>
         <div className="mt-2 flex flex-wrap gap-2">
           {[
-            { key: "newest", label: "Newest first", href: `/settings/connectors?window=${windowFilter}${vendorFilter ? `&vendor=${vendorFilter}` : ""}&sort=newest${autoRefreshEnabled ? "&auto=1" : ""}` },
-            { key: "oldest", label: "Oldest first", href: `/settings/connectors?window=${windowFilter}${vendorFilter ? `&vendor=${vendorFilter}` : ""}&sort=oldest${autoRefreshEnabled ? "&auto=1" : ""}` },
+            { key: "newest", label: "Newest first", href: `/settings/connectors?window=${windowFilter}${vendorFilter ? `&vendor=${vendorFilter}` : ""}&sort=newest${autoRefreshEnabled ? "&auto=1" : ""}${wizardContextSuffix}` },
+            { key: "oldest", label: "Oldest first", href: `/settings/connectors?window=${windowFilter}${vendorFilter ? `&vendor=${vendorFilter}` : ""}&sort=oldest${autoRefreshEnabled ? "&auto=1" : ""}${wizardContextSuffix}` },
           ].map((s) => {
             const active = sortFilter === s.key;
             return (
@@ -1893,7 +2006,7 @@ curl -X POST "${siteUrl}/api/integrations/alerts" \\
             return (
               <Link
                 key={l.key}
-                href={`/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${l.key}&status=${statusFilter}${vendorFilter ? `&vendor=${vendorFilter}` : ""}${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}`}
+                href={`/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${l.key}&status=${statusFilter}${vendorFilter ? `&vendor=${vendorFilter}` : ""}${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}${wizardContextSuffix}`}
                 className={`rounded-full border px-2.5 py-1 text-xs font-medium transition-colors ${
                   active
                     ? "border-accent/60 bg-accent/10 text-accent"
@@ -1918,7 +2031,7 @@ curl -X POST "${siteUrl}/api/integrations/alerts" \\
             return (
               <Link
                 key={s.key}
-                href={`/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=${s.key}${vendorFilter ? `&vendor=${vendorFilter}` : ""}${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}`}
+                href={`/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=${s.key}${vendorFilter ? `&vendor=${vendorFilter}` : ""}${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}${wizardContextSuffix}`}
                 className={`rounded-full border px-2.5 py-1 text-xs font-medium transition-colors ${
                   active
                     ? "border-accent/60 bg-accent/10 text-accent"
@@ -1932,12 +2045,12 @@ curl -X POST "${siteUrl}/api/integrations/alerts" \\
         </div>
         <div className="mt-2 flex flex-wrap gap-2">
           {[
-            { key: "", label: "All", href: `/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}` },
-            { key: "datadog", label: "Datadog", href: `/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}&vendor=datadog${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}` },
-            { key: "prometheus", label: "Prometheus/Grafana", href: `/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}&vendor=prometheus${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}` },
-            { key: "pagerduty", label: "PagerDuty", href: `/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}&vendor=pagerduty${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}` },
-            { key: "newrelic", label: "New Relic", href: `/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}&vendor=newrelic${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}` },
-            { key: "unknown", label: "Unknown", href: `/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}&vendor=unknown${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}` },
+            { key: "", label: "All", href: `/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}${wizardContextSuffix}` },
+            { key: "datadog", label: "Datadog", href: `/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}&vendor=datadog${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}${wizardContextSuffix}` },
+            { key: "prometheus", label: "Prometheus/Grafana", href: `/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}&vendor=prometheus${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}${wizardContextSuffix}` },
+            { key: "pagerduty", label: "PagerDuty", href: `/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}&vendor=pagerduty${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}${wizardContextSuffix}` },
+            { key: "newrelic", label: "New Relic", href: `/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}&vendor=newrelic${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}${wizardContextSuffix}` },
+            { key: "unknown", label: "Unknown", href: `/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}&status=${statusFilter}&vendor=unknown${queryFilter ? `&q=${encodeURIComponent(queryFilter)}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}${wizardContextSuffix}` },
           ].map((f) => {
             const active = vendorFilter === f.key;
             return (
@@ -2143,7 +2256,7 @@ curl -X POST "${siteUrl}/api/integrations/alerts" \\
             <div className="mt-3 flex flex-wrap items-center gap-2">
               {queryFilter ? (
                 <Link
-                  href={`/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}${vendorFilter ? `&vendor=${vendorFilter}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}`}
+                  href={`/settings/connectors?window=${windowFilter}&sort=${sortFilter}&limit=${rowLimit}${vendorFilter ? `&vendor=${vendorFilter}` : ""}${autoRefreshEnabled ? "&auto=1" : ""}${wizardContextSuffix}`}
                   className={`rounded-lg border border-border px-3 py-1.5 font-medium text-foreground/85 transition-colors hover:border-accent/35 hover:text-foreground ${appBody}`}
                 >
                   Clear search

@@ -7,7 +7,33 @@ import { ingestAlertCreateIncident, normalizeAlertIngestPayload } from "@/lib/in
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-export async function generateTestIngestIncidentAction() {
+function readWizardIntent(formData: FormData) {
+  const nextRaw = formData.get("next");
+  const setupStepRaw = formData.get("setup_step");
+  const next = typeof nextRaw === "string" && nextRaw.startsWith("/") ? nextRaw : null;
+  const setupStepCandidate =
+    typeof setupStepRaw === "string" ? setupStepRaw.trim().toLowerCase() : "";
+  const setupStep =
+    setupStepCandidate === "ingest-token" || setupStepCandidate === "connectors"
+      ? setupStepCandidate
+      : null;
+  const suffix = [
+    next ? `next=${encodeURIComponent(next)}` : null,
+    setupStep ? `setup_step=${encodeURIComponent(setupStep)}` : null,
+  ]
+    .filter(Boolean)
+    .join("&");
+  return { next, setupStep, suffix };
+}
+
+function connectorsPathWithWizard(wizard: { suffix: string; setupStep: string | null }) {
+  const base = wizard.suffix ? `/settings/connectors?${wizard.suffix}` : "/settings/connectors";
+  const anchor = wizard.setupStep === "ingest-token" ? "#ingest-token-setup" : "#connectors-health";
+  return `${base}${anchor}`;
+}
+
+export async function generateTestIngestIncidentAction(formData: FormData) {
+  const wizard = readWizardIntent(formData);
   if (!hasSupabaseAuth()) {
     redirect("/hub");
   }
@@ -17,7 +43,7 @@ export async function generateTestIngestIncidentAction() {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
-    redirect("/auth/sign-in?next=/settings/connectors");
+    redirect(`/auth/sign-in?next=${encodeURIComponent(connectorsPathWithWizard(wizard))}`);
   }
 
   const ts = Date.now();
@@ -31,16 +57,24 @@ export async function generateTestIngestIncidentAction() {
   });
 
   if (!result.ok) {
-    redirect(`/settings/connectors?error=${encodeURIComponent(result.message)}`);
+    const q = [`error=${encodeURIComponent(result.message)}`, wizard.suffix]
+      .filter(Boolean)
+      .join("&");
+    redirect(`/settings/connectors?${q}`);
   }
 
   revalidatePath("/settings/connectors");
   revalidatePath("/incidents");
   revalidatePath("/audit");
-  redirect(`/settings/connectors?ok=${encodeURIComponent(result.id)}`);
+  if (wizard.next) {
+    redirect(wizard.next);
+  }
+  const q = [`ok=${encodeURIComponent(result.id)}`, wizard.suffix].filter(Boolean).join("&");
+  redirect(`/settings/connectors?${q}`);
 }
 
-export async function generateVendorTestEventsAction() {
+export async function generateVendorTestEventsAction(formData: FormData) {
+  const wizard = readWizardIntent(formData);
   if (!hasSupabaseAuth()) {
     redirect("/hub");
   }
@@ -50,7 +84,7 @@ export async function generateVendorTestEventsAction() {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
-    redirect("/auth/sign-in?next=/settings/connectors");
+    redirect(`/auth/sign-in?next=${encodeURIComponent(connectorsPathWithWizard(wizard))}`);
   }
 
   const ts = Date.now();
@@ -117,10 +151,15 @@ export async function generateVendorTestEventsAction() {
   revalidatePath("/settings/connectors");
   revalidatePath("/incidents");
   revalidatePath("/audit");
-  redirect(`/settings/connectors?batch_ok=${created}`);
+  if (wizard.next) {
+    redirect(wizard.next);
+  }
+  const q = [`batch_ok=${created}`, wizard.suffix].filter(Boolean).join("&");
+  redirect(`/settings/connectors?${q}`);
 }
 
-export async function cleanupSyntheticIngestTestsAction() {
+export async function cleanupSyntheticIngestTestsAction(formData: FormData) {
+  const wizard = readWizardIntent(formData);
   if (!hasSupabaseAuth()) {
     redirect("/hub");
   }
@@ -130,7 +169,7 @@ export async function cleanupSyntheticIngestTestsAction() {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
-    redirect("/auth/sign-in?next=/settings/connectors");
+    redirect(`/auth/sign-in?next=${encodeURIComponent(connectorsPathWithWizard(wizard))}`);
   }
 
   const { data: rows } = await supabase
@@ -171,10 +210,15 @@ export async function cleanupSyntheticIngestTestsAction() {
   revalidatePath("/settings/connectors");
   revalidatePath("/incidents");
   revalidatePath("/audit");
-  redirect(`/settings/connectors?clean_ok=${deleted}`);
+  if (wizard.next) {
+    redirect(wizard.next);
+  }
+  const q = [`clean_ok=${deleted}`, wizard.suffix].filter(Boolean).join("&");
+  redirect(`/settings/connectors?${q}`);
 }
 
-export async function acknowledgeUnknownSyntheticIngestAction() {
+export async function acknowledgeUnknownSyntheticIngestAction(formData: FormData) {
+  const wizard = readWizardIntent(formData);
   if (!hasSupabaseAuth()) {
     redirect("/hub");
   }
@@ -184,7 +228,7 @@ export async function acknowledgeUnknownSyntheticIngestAction() {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
-    redirect("/auth/sign-in?next=/settings/connectors");
+    redirect(`/auth/sign-in?next=${encodeURIComponent(connectorsPathWithWizard(wizard))}`);
   }
 
   const { data: rows } = await supabase
@@ -234,5 +278,9 @@ export async function acknowledgeUnknownSyntheticIngestAction() {
   revalidatePath("/settings/connectors");
   revalidatePath("/incidents");
   revalidatePath("/audit");
-  redirect(`/settings/connectors?ack_ok=${updated}`);
+  if (wizard.next) {
+    redirect(wizard.next);
+  }
+  const q = [`ack_ok=${updated}`, wizard.suffix].filter(Boolean).join("&");
+  redirect(`/settings/connectors?${q}`);
 }

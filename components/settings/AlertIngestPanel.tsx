@@ -15,8 +15,12 @@ export type AlertIngestTokenRow = {
 
 export function AlertIngestPanel({
   serviceRoleConfigured,
+  setupStep,
+  returnHref,
 }: {
   serviceRoleConfigured: boolean;
+  setupStep?: string;
+  returnHref?: string | null;
 }) {
   const [tokens, setTokens] = useState<AlertIngestTokenRow[]>([]);
   const [label, setLabel] = useState("");
@@ -95,11 +99,21 @@ export function AlertIngestPanel({
   }
 
   const active = tokens.filter((t) => !t.revoked_at);
+  const inIngestWizardStep =
+    setupStep === "ingest-token" && typeof returnHref === "string" && returnHref.startsWith("/");
   const origin =
     typeof window !== "undefined" ? window.location.origin : "https://your-deployment";
 
   return (
     <div className="space-y-6">
+      {inIngestWizardStep && active.length > 0 ? (
+        <p className={`rounded-lg border border-emerald-500/35 bg-emerald-500/10 px-4 py-3 text-emerald-100 ${appBody}`}>
+          Ingest token step complete.{" "}
+          <a href={returnHref} className="font-semibold text-emerald-200 underline-offset-2 hover:underline">
+            Continue setup wizard →
+          </a>
+        </p>
+      ) : null}
       {!serviceRoleConfigured ? (
         <p className={`rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-amber-100/90 ${appBody}`}>
           Set <span className="font-mono">SUPABASE_SERVICE_ROLE_KEY</span> so the alert webhook can
@@ -141,13 +155,33 @@ export function AlertIngestPanel({
         <div className="rounded-xl border border-accent/35 bg-accent-dim/40 px-4 py-3">
           <p className={`font-medium text-foreground/90 ${appMeta}`}>New token (copy once)</p>
           <code className={`mt-2 block break-all font-mono text-accent ${appBody}`}>{minted}</code>
-          <button
-            type="button"
-            className={`mt-3 font-medium text-muted hover:text-foreground ${appMeta}`}
-            onClick={() => setMinted(null)}
-          >
-            Dismiss
-          </button>
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            {inIngestWizardStep ? (
+              <button
+                type="button"
+                className={`rounded-lg bg-emerald-500 px-3 py-1.5 font-medium text-background ${appBody}`}
+                onClick={async () => {
+                  await navigator.clipboard.writeText(minted);
+                  window.location.assign(returnHref);
+                }}
+              >
+                Copy and continue setup wizard
+              </button>
+            ) : null}
+            <button
+              type="button"
+              className={`font-medium text-muted hover:text-foreground ${appMeta}`}
+              onClick={() => {
+                if (inIngestWizardStep) {
+                  window.location.assign(returnHref);
+                  return;
+                }
+                setMinted(null);
+              }}
+            >
+              {inIngestWizardStep ? "Continue setup wizard" : "Dismiss"}
+            </button>
+          </div>
         </div>
       ) : null}
 

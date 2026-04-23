@@ -18,11 +18,15 @@ export function ApiKeysPanel({
   initialKeys,
   serviceRoleConfigured,
   sessionScoped = false,
+  setupStep,
+  returnHref,
 }: {
   initialKeys: ApiKeyRow[];
   serviceRoleConfigured: boolean;
   /** Keys stored per browser session until Supabase auth is on. */
   sessionScoped?: boolean;
+  setupStep?: string;
+  returnHref?: string | null;
 }) {
   const [keys, setKeys] = useState<ApiKeyRow[]>(initialKeys);
   const [label, setLabel] = useState("");
@@ -99,9 +103,18 @@ export function ApiKeysPanel({
   }
 
   const active = keys.filter((k) => !k.revoked_at);
+  const inApiKeyWizardStep = setupStep === "api-key" && typeof returnHref === "string" && returnHref.startsWith("/");
 
   return (
     <div className="space-y-6">
+      {inApiKeyWizardStep && active.length > 0 ? (
+        <p className={`rounded-lg border border-emerald-500/35 bg-emerald-500/10 px-4 py-3 text-emerald-100 ${appBody}`}>
+          API key step complete.{" "}
+          <a href={returnHref} className="font-semibold text-emerald-200 underline-offset-2 hover:underline">
+            Continue setup wizard →
+          </a>
+        </p>
+      ) : null}
       {sessionScoped ? (
         <p className={`rounded-lg border border-cyan-500/25 bg-cyan-500/10 px-4 py-3 text-cyan-100/90 ${appBody}`}>
           <span className="font-medium text-foreground/90">Session-scoped keys.</span> Stored in
@@ -136,6 +149,18 @@ export function ApiKeysPanel({
             {minted}
           </pre>
           <div className="mt-4 flex flex-wrap gap-2">
+            {inApiKeyWizardStep ? (
+              <button
+                type="button"
+                className={`rounded-lg bg-emerald-500 px-4 py-2 font-medium text-background ${appBody}`}
+                onClick={async () => {
+                  await navigator.clipboard.writeText(minted);
+                  window.location.assign(returnHref);
+                }}
+              >
+                Copy and continue setup wizard
+              </button>
+            ) : null}
             <button
               type="button"
               className={`rounded-lg bg-accent px-4 py-2 font-medium text-background ${appBody}`}
@@ -148,9 +173,15 @@ export function ApiKeysPanel({
             <button
               type="button"
               className={`rounded-lg border border-border px-4 py-2 text-muted hover:text-foreground ${appBody}`}
-              onClick={() => setMinted(null)}
+              onClick={() => {
+                if (inApiKeyWizardStep) {
+                  window.location.assign(returnHref);
+                  return;
+                }
+                setMinted(null);
+              }}
             >
-              Done
+              {inApiKeyWizardStep ? "Continue setup wizard" : "Done"}
             </button>
           </div>
         </div>
