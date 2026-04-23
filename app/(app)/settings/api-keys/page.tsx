@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { ApiKeysPanel, type ApiKeyRow } from "@/components/settings/ApiKeysPanel";
@@ -16,7 +17,17 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function ApiKeysSettingsPage() {
+export default async function ApiKeysSettingsPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ next?: string }>;
+}) {
+  const sp = (await searchParams) ?? {};
+  const returnHref =
+    typeof sp.next === "string" && sp.next.startsWith("/")
+      ? sp.next
+      : null;
+
   if (!hasSupabaseAuth()) {
     const jar = await cookies();
     const tid = jar.get("shynvo_dev_tid")?.value ?? null;
@@ -28,6 +39,13 @@ export default async function ApiKeysSettingsPage() {
           title="API keys"
           description="Session mode: keys are stored in server memory per browser session (cookie). They authenticate /api/reasoning and /api/robot until Supabase is connected; then keys live in Postgres."
         />
+        {returnHref ? (
+          <p className={`mb-4 ${appBody}`}>
+            <Link href={returnHref} className="font-medium text-accent hover:underline">
+              ← Return to setup wizard
+            </Link>
+          </p>
+        ) : null}
         <ApiKeysPanel
           initialKeys={initialKeys}
           serviceRoleConfigured={false}
@@ -63,6 +81,13 @@ export default async function ApiKeysSettingsPage() {
         title="API keys"
         description="Authenticate server-side jobs and tools to the same-origin reasoning and robot proxies without a browser session."
       />
+      {returnHref ? (
+        <p className={`mb-4 ${appBody}`}>
+          <Link href={returnHref} className="font-medium text-accent hover:underline">
+            ← Return to setup wizard
+          </Link>
+        </p>
+      ) : null}
       {listError ? (
         <p className={`mb-6 max-w-2xl rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-amber-100/90 ${appBody}`}>
           Could not load keys: {listError}. If the table is missing, run{" "}

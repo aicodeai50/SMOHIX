@@ -156,7 +156,15 @@ export default async function OverviewPage() {
         </section>
 
         <section className="shynvo-glass rounded-2xl p-5 md:p-6">
-          <h2 className={appPanelTitle}>Deployment checklist</h2>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h2 className={appPanelTitle}>Deployment checklist</h2>
+            <Link
+              href="/settings#setup-wizard"
+              className={`rounded-lg border border-accent/45 bg-accent/10 px-3 py-1.5 font-medium text-accent transition-colors hover:border-accent/70 hover:bg-accent/20 ${appBody}`}
+            >
+              Open setup wizard
+            </Link>
+          </div>
           <ul className={`mt-4 space-y-2 ${appBody} text-foreground/90`}>
             {[
               { ok: setup.accounts, label: "Accounts & database", href: "/settings" },

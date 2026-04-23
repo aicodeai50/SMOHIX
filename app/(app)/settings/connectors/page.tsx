@@ -168,6 +168,7 @@ export default async function ConnectorsPage({
   searchParams,
 }: {
   searchParams: Promise<{
+    next?: string;
     vendor?: string;
     window?: string;
     sort?: string;
@@ -274,6 +275,10 @@ export default async function ConnectorsPage({
   }
 
   const sp = await searchParams;
+  const returnHref =
+    typeof sp.next === "string" && sp.next.startsWith("/")
+      ? sp.next
+      : null;
   const vendorFilterRaw = typeof sp.vendor === "string" ? sp.vendor.trim().toLowerCase() : "";
   const windowFilterRaw = typeof sp.window === "string" ? sp.window.trim().toLowerCase() : "";
   const sortFilterRaw = typeof sp.sort === "string" ? sp.sort.trim().toLowerCase() : "";
@@ -542,6 +547,13 @@ export default async function ConnectorsPage({
         title="Connectors"
         description="URLs are read from server environment variables. Health checks run on the server when you open this page."
       />
+      {returnHref ? (
+        <p className={`mb-3 ${appBody}`}>
+          <Link href={returnHref} className="font-medium text-accent hover:underline">
+            ← Return to setup wizard
+          </Link>
+        </p>
+      ) : null}
       <div id="connectors-top" className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <p className={appMeta}>
           Last refreshed: {refreshedAt.toLocaleString()}
