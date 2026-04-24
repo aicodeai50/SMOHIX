@@ -81,6 +81,12 @@ export const API_GROUPS: ApiGroup[] = [
         summary: "Run playbook dry-run; may persist and append audit when configured.",
         auth: "Session cookie",
       },
+      {
+        method: "POST",
+        path: "/api/automations/execute",
+        summary: "Record guarded execution after successful dry-run with approval note and rollback plan.",
+        auth: "Session cookie",
+      },
     ],
   },
   {

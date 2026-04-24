@@ -10,6 +10,7 @@ import { ExecutionModeCallout } from "@/components/guardrails/ExecutionModeCallo
 import { GuardedAutomationIdentity } from "@/components/guardrails/GuardedAutomationIdentity";
 import { appBody, appMeta, appPanelTitle } from "@/lib/app-typography";
 import { PLAYBOOKS } from "@/lib/automations/playbooks";
+import type { ExecutionReceipt } from "@/lib/automations/executions-dev";
 import type { AuditWhisper } from "@/lib/audit/whispers";
 import type { DryRunRecord } from "@/lib/automations/runs-dev";
 
@@ -39,6 +40,7 @@ export function AutomationsConsole({
   const [runs, setRuns] = useState(initialRuns);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
+  const [executions, setExecutions] = useState<ExecutionReceipt[]>([]);
 
   const rows = useMemo(
     () =>
@@ -108,6 +110,68 @@ export function AutomationsConsole({
     }
   }
 
+  async function execute(playbookId: string) {
+    const approvalNote = window.prompt(
+      "Approval note (must include two-person approval + change window for high-risk runs):",
+      "two-person approval | change window",
+    );
+    if (!approvalNote || !approvalNote.trim()) return;
+    const rollbackPlan = window.prompt(
+      "Rollback plan (required):",
+      "Rollback by restoring previous stable release and validating synthetic checks.",
+    );
+    if (!rollbackPlan || !rollbackPlan.trim()) return;
+
+    setBusyId(playbookId);
+    setMsg(null);
+    try {
+      const r = await fetch("/api/automations/execute", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          playbookId,
+          approvalNote,
+          rollbackPlan,
+          ...(linkedIncidentId && auditTrailOnDryRun
+            ? { incidentId: linkedIncidentId }
+            : {}),
+        }),
+      });
+      const j = (await r.json()) as {
+        ok?: boolean;
+        id?: string;
+        at?: string;
+        mode?: "simulated" | "connector";
+        detail?: string;
+        message?: string;
+        error?: string;
+      };
+      if (!r.ok) {
+        setMsg(j.message ?? j.error ?? "Execution blocked.");
+        return;
+      }
+      setExecutions((prev) => [
+        {
+          id: j.id ?? `exec-${Date.now()}`,
+          playbookId,
+          ok: true,
+          at: j.at ?? new Date().toISOString(),
+          mode: j.mode ?? "simulated",
+          approvalNote,
+          rollbackPlan,
+          ...(linkedIncidentId ? { incidentId: linkedIncidentId } : {}),
+        },
+        ...prev,
+      ]);
+      setMsg(j.detail ?? "Execution recorded.");
+    } catch (e) {
+      setMsg(e instanceof Error ? e.message : "Execution request failed");
+    } finally {
+      setBusyId(null);
+    }
+  }
+
   return (
     <div className="space-y-6">
       <GuardedAutomationIdentity />
@@ -153,7 +217,7 @@ export function AutomationsConsole({
               <th className="px-4 py-3.5">Control</th>
               <th className="px-4 py-3.5">Last dry-run</th>
               <th className="px-4 py-3.5">Risk</th>
-              <th className="px-4 py-3.5 w-36" />
+              <th className="px-4 py-3.5 w-52" />
             </tr>
           </thead>
           <tbody className="divide-y divide-white/[0.05]">
@@ -179,14 +243,24 @@ export function AutomationsConsole({
                   </span>
                 </td>
                 <td className="px-4 py-3">
-                  <button
-                    type="button"
-                    disabled={busyId !== null}
-                    onClick={() => void dryRun(row.id)}
-                    className={`rounded-lg border border-white/[0.1] bg-white/[0.02] px-2.5 py-1 font-medium text-muted transition-[border-color,background-color,color,box-shadow] hover:border-accent/35 hover:text-foreground hover:shadow-[0_0_20px_-10px_rgba(94,225,255,0.25)] disabled:opacity-50 ${appMeta}`}
-                  >
-                    {busyId === row.id ? "Running…" : "Dry-run"}
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      disabled={busyId !== null}
+                      onClick={() => void dryRun(row.id)}
+                      className={`rounded-lg border border-white/[0.1] bg-white/[0.02] px-2.5 py-1 font-medium text-muted transition-[border-color,background-color,color,box-shadow] hover:border-accent/35 hover:text-foreground hover:shadow-[0_0_20px_-10px_rgba(94,225,255,0.25)] disabled:opacity-50 ${appMeta}`}
+                    >
+                      {busyId === row.id ? "Running…" : "Dry-run"}
+                    </button>
+                    <button
+                      type="button"
+                      disabled={busyId !== null}
+                      onClick={() => void execute(row.id)}
+                      className={`rounded-lg border border-emerald-400/30 bg-emerald-500/[0.08] px-2.5 py-1 font-medium text-emerald-200 transition-[border-color,background-color,color] hover:border-emerald-300/55 hover:bg-emerald-500/[0.14] disabled:opacity-50 ${appMeta}`}
+                    >
+                      Execute
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
@@ -233,6 +307,26 @@ export function AutomationsConsole({
                     })}
                   </span>
                 </span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+      <section className="shynvo-glass rounded-2xl p-5 md:p-6">
+        <h2 className={`${appPanelTitle} text-foreground/90`}>Recent execution receipts</h2>
+        {executions.length === 0 ? (
+          <p className={`mt-3 rounded-xl border border-dashed border-white/[0.1] bg-white/[0.02] px-4 py-6 text-center ${appBody} text-muted`}>
+            No executions yet. Run a successful dry-run first, then execute with approval note and rollback plan.
+          </p>
+        ) : (
+          <ul className={`mt-3 space-y-2 ${appMeta}`}>
+            {executions.slice(0, 10).map((x) => (
+              <li key={x.id} className="rounded-lg border border-white/[0.08] bg-white/[0.02] px-3 py-2">
+                <p className="font-mono text-foreground/90">{x.playbookId}</p>
+                <p className="text-foreground/75">
+                  {x.mode} · {new Date(x.at).toLocaleString()}
+                </p>
+                <p className="text-foreground/65">Rollback: {x.rollbackPlan}</p>
               </li>
             ))}
           </ul>

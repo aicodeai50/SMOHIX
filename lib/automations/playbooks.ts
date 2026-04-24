@@ -29,3 +29,7 @@ export const PLAYBOOKS: PlaybookRow[] = [
     lastRun: "—",
   },
 ];
+
+export function getPlaybookById(id: string): PlaybookRow | null {
+  return PLAYBOOKS.find((p) => p.id === id) ?? null;
+}
