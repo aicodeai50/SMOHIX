@@ -189,6 +189,12 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
             Download markdown export
           </a>
           <a
+            href={`/api/incidents/${encodeURIComponent(row.id)}/review`}
+            className="font-medium text-accent hover:underline"
+          >
+            Download post-incident review (MD)
+          </a>
+          <a
             href={`/api/incidents/${encodeURIComponent(row.id)}/evidence`}
             className="font-medium text-accent hover:underline"
           >

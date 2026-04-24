@@ -43,6 +43,12 @@ export const API_GROUPS: ApiGroup[] = [
         summary: "Download incident evidence pack JSON (timeline, dry-run, audit-linked events).",
         auth: "Session cookie",
       },
+      {
+        method: "GET",
+        path: "/api/incidents/{id}/review",
+        summary: "Download post-incident review Markdown (narrative, timeline, execution evidence, audit snapshot).",
+        auth: "Session cookie",
+      },
     ],
   },
   {
