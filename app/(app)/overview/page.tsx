@@ -7,6 +7,9 @@ import { PageHeader } from "@/components/app/PageHeader";
 import { AppIcon } from "@/components/icons/AppIcon";
 import { OverviewDecisionSurface } from "@/components/overview/OverviewDecisionSurface";
 import { appBody, appMeta, appPanelTitle } from "@/lib/app-typography";
+import { listApprovalsForUser } from "@/lib/approvals/data";
+import { listAutomationDryRuns } from "@/lib/automations/dry-runs-db";
+import { listDryRuns } from "@/lib/automations/runs-dev";
 import { getConnectorHealthRows } from "@/lib/connectors-health";
 import { listIncidentsForUser } from "@/lib/incidents/data";
 import { loadOverviewCommandCenterData } from "@/lib/overview/command-center-data";
@@ -41,6 +44,16 @@ export default async function OverviewPage() {
     listIncidentsForUser(userId ?? "", devTenantKey),
     getConnectorHealthRows(),
   ]);
+  const approvals = await listApprovalsForUser({
+    userId: userId ?? "local",
+    devTenantId: devTenantKey,
+  });
+  let dryRuns = devTenantKey ? listDryRuns(devTenantKey) : [];
+  if (hasSupabaseAuth() && userId) {
+    const supabase = await createServerSupabaseClient();
+    const dryRunRes = await listAutomationDryRuns(supabase);
+    dryRuns = dryRunRes.runs;
+  }
 
   const command = await loadOverviewCommandCenterData({
     userId,
@@ -65,6 +78,11 @@ export default async function OverviewPage() {
   const setupDone = Object.values(setup).filter(Boolean).length;
   const connectorsConfigured = connectors.filter((c) => c.baseUrl).length;
   const connectorsUp = connectors.filter((c) => c.ok === true).length;
+  const approvalDecisions = approvals.recent.length;
+  const approvalsPending = approvals.pending.length;
+  const successfulDryRuns = dryRuns.filter((run) => run.ok).length;
+  const dryRunSuccessRate =
+    dryRuns.length > 0 ? Math.round((successfulDryRuns / dryRuns.length) * 100) : 0;
 
   return (
     <>
@@ -115,6 +133,42 @@ export default async function OverviewPage() {
       <OverviewDecisionSurface command={command} recentIncidents={incidents.slice(0, 8)} />
 
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
+        <section className="shynvo-glass rounded-2xl p-5 md:p-6">
+          <h2 className={appPanelTitle}>Operational proof metrics</h2>
+          <div className="mt-4 grid gap-3 sm:grid-cols-3">
+            <div className="rounded-xl border border-white/[0.08] bg-black/20 px-4 py-3">
+              <p className={appMeta}>Dry-run success</p>
+              <p className="mt-1 text-xl font-semibold text-foreground">{dryRunSuccessRate}%</p>
+              <p className={appMeta}>
+                {successfulDryRuns}/{dryRuns.length || 0} runs
+              </p>
+            </div>
+            <div className="rounded-xl border border-white/[0.08] bg-black/20 px-4 py-3">
+              <p className={appMeta}>Pending approvals</p>
+              <p className="mt-1 text-xl font-semibold text-foreground">{approvalsPending}</p>
+              <p className={appMeta}>Human gate queue</p>
+            </div>
+            <div className="rounded-xl border border-white/[0.08] bg-black/20 px-4 py-3">
+              <p className={appMeta}>Decisions recorded</p>
+              <p className="mt-1 text-xl font-semibold text-foreground">{approvalDecisions}</p>
+              <p className={appMeta}>Audit-friendly approvals</p>
+            </div>
+          </div>
+          <p className={`mt-4 ${appMeta}`}>
+            These metrics are designed to prove safety and execution confidence, not just activity.
+          </p>
+          <div className="mt-3 flex flex-wrap items-center gap-3">
+            <Link href="/approvals" className={`font-medium text-accent hover:underline ${appBody}`}>
+              Review approvals →
+            </Link>
+            <Link href="/automations" className={`font-medium text-accent hover:underline ${appBody}`}>
+              Review dry-runs →
+            </Link>
+            <Link href="/audit" className={`font-medium text-accent hover:underline ${appBody}`}>
+              Review audit trail →
+            </Link>
+          </div>
+        </section>
         <section className="shynvo-glass rounded-2xl p-5 md:p-6">
           <h2 className={appPanelTitle}>Integrations</h2>
           <ul className={`mt-4 space-y-3 ${appBody} text-foreground/90`}>

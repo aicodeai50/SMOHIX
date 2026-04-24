@@ -37,6 +37,12 @@ export const API_GROUPS: ApiGroup[] = [
         summary: "Download incident as Markdown (authenticated Supabase user).",
         auth: "Session cookie",
       },
+      {
+        method: "GET",
+        path: "/api/incidents/{id}/evidence",
+        summary: "Download incident evidence pack JSON (timeline, dry-run, audit-linked events).",
+        auth: "Session cookie",
+      },
     ],
   },
   {

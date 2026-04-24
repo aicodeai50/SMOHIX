@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 
 import { createApprovalRequest } from "@/lib/approvals/data";
 import { devDecideApproval } from "@/lib/approvals/dev-store";
+import { evaluateApprovalPolicy } from "@/lib/approvals/policy";
 import { appendAuditEvent } from "@/lib/audit/append";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -14,6 +15,13 @@ export async function createApprovalRequestAction(formData: FormData) {
   const actionLabel = String(formData.get("action_label") ?? "");
   const requestedBy = String(formData.get("requested_by") ?? "");
   const policyHint = String(formData.get("policy_hint") ?? "");
+  const policy = evaluateApprovalPolicy(actionLabel, policyHint);
+
+  if (policy.blockedReason) {
+    redirect(
+      `/approvals?error=create&message=${encodeURIComponent(policy.blockedReason)}`,
+    );
+  }
 
   let userId = "";
   let devTenantId: string | null = null;
@@ -38,7 +46,7 @@ export async function createApprovalRequestAction(formData: FormData) {
     devTenantId,
     actionLabel,
     requestedBy,
-    policyHint,
+    policyHint: policy.normalizedPolicyHint,
   });
 
   if (!result.ok) {

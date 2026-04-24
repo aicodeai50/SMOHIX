@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { launchKillerDemoAction } from "./actions";
 
 import { PageHeader } from "@/components/app/PageHeader";
 import { getUserDisplayName, getUserFirstName } from "@/lib/auth/display-name";
@@ -61,6 +62,13 @@ export default async function HubPage() {
   const description = signedIn
     ? "Your workspace is live. Start with the essentials below — the rail above reaches every module without repeating it here."
     : "Core flows work without accounts. Add organization sign-in when you want shared sessions, billing, and durable history.";
+  const killerFlow = [
+    "Alert opens incident",
+    "System proposes guarded action",
+    "Human approves high-risk change",
+    "Dry-run executes with evidence",
+    "Audit timeline captures proof",
+  ];
 
   return (
     <>
@@ -78,6 +86,29 @@ export default async function HubPage() {
           </Link>
         ))}
       </div>
+      <section className="shynvo-glass mt-6 rounded-2xl p-5 md:p-6">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 className={appPanelTitle}>Killer demo flow</h2>
+            <p className={`mt-1 ${appBody} text-muted`}>
+              Seed a realistic incident-to-approval-to-evidence scenario in one click.
+            </p>
+          </div>
+          <form action={launchKillerDemoAction}>
+            <button
+              type="submit"
+              className={`inline-flex h-10 items-center justify-center rounded-xl bg-accent px-4 font-semibold text-background shadow-[0_0_28px_-8px_rgba(94,225,255,0.45)] transition-[opacity,box-shadow] hover:opacity-95 hover:shadow-[0_0_36px_-6px_rgba(94,225,255,0.55)] ${appBody}`}
+            >
+              Run killer demo
+            </button>
+          </form>
+        </div>
+        <ol className={`mt-3 list-inside list-decimal space-y-1 ${appMeta}`}>
+          {killerFlow.map((step) => (
+            <li key={step}>{step}</li>
+          ))}
+        </ol>
+      </section>
       <p className={`mt-6 max-w-2xl text-pretty ${appBody} text-muted`}>
         Automations, runbooks, approvals, audit, billing, connectors, and the full module rail stay
         above — one navigation surface, no duplicate module grids.{" "}

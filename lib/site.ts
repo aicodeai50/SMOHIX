@@ -8,7 +8,16 @@ export const SITE_DOMAIN = "shynvo.app";
 export function getSiteUrl(): string {
   const fromEnv = process.env.NEXT_PUBLIC_SITE_URL?.trim();
   if (fromEnv) {
-    return fromEnv.replace(/\/$/, "");
+    const normalized = fromEnv.replace(/\/$/, "");
+    try {
+      const u = new URL(normalized);
+      if (u.hostname.toLowerCase() === `www.${SITE_DOMAIN}`) {
+        return `https://${SITE_DOMAIN}`;
+      }
+      return normalized;
+    } catch {
+      return normalized;
+    }
   }
   return `https://${SITE_DOMAIN}`;
 }

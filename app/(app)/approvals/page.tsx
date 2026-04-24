@@ -57,6 +57,11 @@ export default async function ApprovalsPage({ searchParams }: Props) {
         title="Approvals"
         description="Human-in-the-loop gates for destructive or high-blast-radius changes. Open a new request below, then approve or deny pending items; completed decisions appear in Recent."
       />
+      <p className={`mb-4 rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3 ${appMeta}`}>
+        Policy baseline: high-risk requests must declare both{" "}
+        <span className="font-mono text-foreground/85">two-person approval</span> and a{" "}
+        <span className="font-mono text-foreground/85">change window</span> in the policy note.
+      </p>
       <div className="mb-6 space-y-4">
         <GuardedAutomationIdentity />
         <ExecutionModeCallout
