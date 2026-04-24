@@ -1,4 +1,5 @@
 import type { AuditDisplayRow } from "@/lib/audit/types";
+import type { AuditWhisper } from "@/lib/audit/whispers";
 import type { DryRunRecord } from "@/lib/automations/runs-dev";
 import type { IncidentDetail } from "@/lib/incidents/types";
 import type { IncidentTimelineEntry } from "@/lib/incidents/timeline";
@@ -15,7 +16,7 @@ export function incidentReviewToMarkdown(input: {
   incident: IncidentDetail;
   timeline: IncidentTimelineEntry[];
   latestDryRun: DryRunRecord | null;
-  latestWhisper: { at: string; summary: string; signal: string } | null;
+  latestWhisper: AuditWhisper | null;
   auditRows: AuditDisplayRow[];
 }): string {
   const { incident, timeline, latestDryRun, latestWhisper, auditRows } = input;
@@ -66,7 +67,7 @@ export function incidentReviewToMarkdown(input: {
 
   if (latestWhisper) {
     lines.push(
-      `- Latest audit whisper: ${latestWhisper.at} | ${latestWhisper.signal} | ${latestWhisper.summary}`,
+      `- Latest audit whisper: ${latestWhisper.atLabel} | ${latestWhisper.eventType} | ${latestWhisper.summary}`,
     );
   } else {
     lines.push("- Latest audit whisper: _none_");
