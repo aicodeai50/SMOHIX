@@ -8,8 +8,9 @@
   "scripts": {
     "dev": "next dev",
     "verify:api-catalog": "node scripts/verify-api-catalog.mjs",
+    "verify:links": "node scripts/verify-internal-links.mjs",
     "test:security": "node scripts/security-regression.mjs",
-    "verify:release": "npm run verify:api-catalog && npm run test:security",
+    "verify:release": "npm run verify:api-catalog && npm run verify:links && npm run test:security",
     "gen:alert-signature": "node scripts/gen-alert-signature.mjs",
     "build": "npm run verify:release && next build",
     "start": "next start --hostname 0.0.0.0",
