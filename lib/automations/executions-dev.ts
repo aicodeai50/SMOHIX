@@ -1,3 +1,10 @@
+import type {
+  ActualOutcome,
+  DecisionBrief,
+  ExpectedOutcome,
+  PolicySuggestion,
+} from "@/lib/decision-intelligence";
+
 export type ExecutionReceipt = {
   id: string;
   playbookId: string;
@@ -7,6 +14,11 @@ export type ExecutionReceipt = {
   rollbackPlan: string;
   approvalNote: string;
   incidentId?: string | null;
+  decisionBrief?: DecisionBrief;
+  expectedOutcome?: ExpectedOutcome;
+  actualOutcome?: ActualOutcome;
+  decisionAccuracyScore?: number;
+  policySuggestions?: PolicySuggestion[];
 };
 
 const byTenant = new Map<string, ExecutionReceipt[]>();

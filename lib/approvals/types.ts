@@ -1,3 +1,5 @@
+import type { DecisionBrief } from "@/lib/decision-intelligence";
+
 export type ApprovalStatus = "pending" | "approved" | "denied";
 
 export type ApprovalRow = {
@@ -6,6 +8,7 @@ export type ApprovalRow = {
   requestedBy: string;
   policy: string;
   status: ApprovalStatus;
+  decisionBrief: DecisionBrief;
 };
 
 export type ApprovalsListResult = {

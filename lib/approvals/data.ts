@@ -1,5 +1,6 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
+import { buildDecisionBrief } from "@/lib/decision-intelligence";
 
 import { devCreateApproval, devListApprovals } from "./dev-store";
 import type { ApprovalRow, ApprovalsListResult } from "./types";
@@ -11,12 +12,18 @@ function mapRow(r: {
   policy_hint: string | null;
   status: string;
 }): ApprovalRow {
+  const action = r.action_label;
+  const policy = r.policy_hint ?? "—";
   return {
     id: r.id,
-    action: r.action_label,
+    action,
     requestedBy: r.requested_by ?? "—",
-    policy: r.policy_hint ?? "—",
+    policy,
     status: r.status as ApprovalRow["status"],
+    decisionBrief: buildDecisionBrief({
+      actionLabel: action,
+      policyHint: policy,
+    }),
   };
 }
 

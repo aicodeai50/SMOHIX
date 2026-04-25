@@ -8,6 +8,7 @@ import { createApprovalRequest } from "@/lib/approvals/data";
 import { devDecideApproval } from "@/lib/approvals/dev-store";
 import { evaluateApprovalPolicy } from "@/lib/approvals/policy";
 import { appendAuditEvent } from "@/lib/audit/append";
+import { buildDecisionBrief } from "@/lib/decision-intelligence";
 import { sendSlackNotificationWithAudit } from "@/lib/integrations/slack";
 import { getSiteUrl } from "@/lib/site";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
@@ -58,12 +59,17 @@ export async function createApprovalRequestAction(formData: FormData) {
   }
 
   if (auditUserId) {
+    const brief = buildDecisionBrief({
+      actionLabel: actionLabel.trim(),
+      policyHint: policy.normalizedPolicyHint,
+    });
     void appendAuditEvent({
       event_type: "approval.requested",
       user_id: auditUserId,
       details: {
         approval_id: result.id,
         action_label: actionLabel.trim().slice(0, 200),
+        decision_brief: brief,
       },
     });
   }
@@ -104,6 +110,12 @@ export async function approvalDecisionAction(formData: FormData) {
     redirect("/auth/sign-in?next=/approvals");
   }
 
+  const existing = await supabase
+    .from("approval_requests")
+    .select("action_label, policy_hint")
+    .eq("id", id)
+    .eq("user_id", user.id)
+    .maybeSingle();
   const updated_at = new Date().toISOString();
   const { data, error } = await supabase
     .from("approval_requests")
@@ -118,10 +130,14 @@ export async function approvalDecisionAction(formData: FormData) {
     redirect("/approvals?error=update_failed");
   }
 
+  const brief = buildDecisionBrief({
+    actionLabel: String(existing.data?.action_label ?? ""),
+    policyHint: String(existing.data?.policy_hint ?? ""),
+  });
   await appendAuditEvent({
     event_type: decision === "approved" ? "approval.approved" : "approval.denied",
     user_id: user.id,
-    details: { approval_id: id },
+    details: { approval_id: id, decision_brief: brief },
   });
   const approvalUrl = `${getSiteUrl()}/approvals`;
   void sendSlackNotificationWithAudit({

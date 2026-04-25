@@ -179,6 +179,37 @@ export default async function ApprovalsPage({ searchParams }: Props) {
                   <p className={`mt-1 ${appMeta}`}>
                     {p.requestedBy} · {p.policy}
                   </p>
+                  <div className="mt-3 rounded-lg border border-white/[0.08] bg-white/[0.02] p-3">
+                    <div className="flex flex-wrap gap-2">
+                      <span className={`rounded-full border border-white/[0.12] px-2 py-0.5 ${appMeta}`}>
+                        Risk: {p.decisionBrief.riskScore}
+                      </span>
+                      <span className={`rounded-full border border-white/[0.12] px-2 py-0.5 ${appMeta}`}>
+                        Confidence: {p.decisionBrief.confidenceScore}
+                      </span>
+                      <span className={`rounded-full border border-white/[0.12] px-2 py-0.5 ${appMeta}`}>
+                        Blast radius: {p.decisionBrief.blastRadius}
+                      </span>
+                    </div>
+                    <p className={`mt-2 ${appMeta}`}>Policy checks</p>
+                    <ul className="mt-1 space-y-1">
+                      {p.decisionBrief.policyChecks.map((check) => (
+                        <li key={check.label} className={`flex items-start gap-2 ${appMeta}`}>
+                          <span
+                            className={
+                              check.passed ? "mt-0.5 text-emerald-300" : "mt-0.5 text-amber-300"
+                            }
+                            aria-hidden
+                          >
+                            {check.passed ? "●" : "○"}
+                          </span>
+                          <span>
+                            <span className="text-foreground/90">{check.label}</span> — {check.note}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                   <div className="mt-4 flex gap-2">
                     <form action={approvalDecisionAction} className="flex-1">
                       <input type="hidden" name="id" value={p.id} />
@@ -242,6 +273,10 @@ export default async function ApprovalsPage({ searchParams }: Props) {
                     )}
                   </div>
                   <p className={`mt-1 font-mono ${appMeta}`}>{r.id}</p>
+                <p className={`${appMeta}`}>
+                  Risk {r.decisionBrief.riskScore} · Confidence {r.decisionBrief.confidenceScore} ·{" "}
+                  {r.decisionBrief.blastRadius}
+                </p>
                 </li>
               ))}
             </ul>

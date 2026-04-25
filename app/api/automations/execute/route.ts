@@ -9,6 +9,13 @@ import { listDryRuns } from "@/lib/automations/runs-dev";
 import { evaluateApprovalPolicy } from "@/lib/approvals/policy";
 import { appendAuditEvent } from "@/lib/audit/append";
 import { billingPlanFromSummary, getSubscriptionSummary } from "@/lib/billing/plan";
+import {
+  buildActualOutcome,
+  buildDecisionBrief,
+  buildExpectedOutcome,
+  decisionAccuracyScore,
+  suggestPolicyPromotions,
+} from "@/lib/decision-intelligence";
 import { sendSlackNotificationWithAudit } from "@/lib/integrations/slack";
 import { getSiteUrl } from "@/lib/site";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
@@ -163,6 +170,29 @@ export async function POST(req: NextRequest) {
   const robotBase = normalizeBase(process.env.SHYNVO_ROBOT_API_URL);
   const mode: "simulated" | "connector" = robotBase ? "connector" : "simulated";
   const ok = true;
+  const decisionBrief = buildDecisionBrief({
+    actionLabel: playbook.name,
+    policyHint: approvalNote,
+    rollbackPlan,
+  });
+  const expectedOutcome = buildExpectedOutcome({
+    playbookId,
+    decisionBrief,
+  });
+  const actualOutcome = buildActualOutcome({
+    ok,
+    mode,
+    expected: expectedOutcome,
+  });
+  const accuracyScore = decisionAccuracyScore({
+    expected: expectedOutcome,
+    actual: actualOutcome,
+  });
+  const policySuggestions = suggestPolicyPromotions({
+    playbookId,
+    decisionBrief,
+    accuracyScore,
+  });
 
   const receipt = recordExecution(ctx.tenantKey, {
     playbookId,
@@ -170,6 +200,11 @@ export async function POST(req: NextRequest) {
     mode,
     rollbackPlan: rollbackPlan.slice(0, 500),
     approvalNote: approvalNote.slice(0, 300),
+    decisionBrief,
+    expectedOutcome,
+    actualOutcome,
+    decisionAccuracyScore: accuracyScore,
+    policySuggestions,
     ...(incidentId ? { incidentId } : {}),
   });
 
@@ -191,6 +226,11 @@ export async function POST(req: NextRequest) {
         rollback_plan: rollbackPlan.slice(0, 240),
         approval_note: approvalNote.slice(0, 200),
         execution_receipt_id: receipt.id,
+        decision_brief: decisionBrief,
+        expected_outcome: expectedOutcome,
+        actual_outcome: actualOutcome,
+        decision_accuracy_score: accuracyScore,
+        policy_suggestions: policySuggestions,
         ...(incidentId ? { incident_id: incidentId } : {}),
       },
     });
@@ -214,6 +254,7 @@ export async function POST(req: NextRequest) {
         mode,
         execution_receipt_id: receipt.id,
         ...(incidentId ? { incident_id: incidentId } : {}),
+        decision_accuracy_score: accuracyScore,
       },
     });
     revalidatePath("/automations");
@@ -229,5 +270,10 @@ export async function POST(req: NextRequest) {
     playbookId,
     mode,
     detail: "Execution recorded with approval note and rollback plan.",
+    decisionBrief,
+    expectedOutcome,
+    actualOutcome,
+    decisionAccuracyScore: accuracyScore,
+    policySuggestions,
   });
 }

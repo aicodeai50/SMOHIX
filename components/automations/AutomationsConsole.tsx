@@ -13,6 +13,7 @@ import { PLAYBOOKS } from "@/lib/automations/playbooks";
 import type { ExecutionReceipt } from "@/lib/automations/executions-dev";
 import type { AuditWhisper } from "@/lib/audit/whispers";
 import type { DryRunRecord } from "@/lib/automations/runs-dev";
+import type { PolicySuggestion } from "@/lib/decision-intelligence";
 
 function labelFromRuns(runs: DryRunRecord[], playbookId: string): string {
   const hit = runs.find((r) => r.playbookId === playbookId);
@@ -41,6 +42,7 @@ export function AutomationsConsole({
   const [busyId, setBusyId] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
   const [executions, setExecutions] = useState<ExecutionReceipt[]>([]);
+  const [promotedSuggestionIds, setPromotedSuggestionIds] = useState<Set<string>>(new Set());
 
   const rows = useMemo(
     () =>
@@ -146,6 +148,11 @@ export function AutomationsConsole({
         detail?: string;
         message?: string;
         error?: string;
+        decisionBrief?: ExecutionReceipt["decisionBrief"];
+        expectedOutcome?: ExecutionReceipt["expectedOutcome"];
+        actualOutcome?: ExecutionReceipt["actualOutcome"];
+        decisionAccuracyScore?: number;
+        policySuggestions?: PolicySuggestion[];
       };
       if (!r.ok) {
         setMsg(j.message ?? j.error ?? "Execution blocked.");
@@ -160,6 +167,11 @@ export function AutomationsConsole({
           mode: j.mode ?? "simulated",
           approvalNote,
           rollbackPlan,
+          decisionBrief: j.decisionBrief,
+          expectedOutcome: j.expectedOutcome,
+          actualOutcome: j.actualOutcome,
+          decisionAccuracyScore: j.decisionAccuracyScore,
+          policySuggestions: j.policySuggestions,
           ...(linkedIncidentId ? { incidentId: linkedIncidentId } : {}),
         },
         ...prev,
@@ -169,6 +181,31 @@ export function AutomationsConsole({
       setMsg(e instanceof Error ? e.message : "Execution request failed");
     } finally {
       setBusyId(null);
+    }
+  }
+
+  async function promoteSuggestion(suggestionId: string, playbookId: string, confidence: number) {
+    setMsg(null);
+    try {
+      const r = await fetch("/api/approvals/policy-suggestions/promote", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ suggestionId, playbookId, confidence }),
+      });
+      if (!r.ok) {
+        const j = (await r.json()) as { error?: string };
+        setMsg(j.error ?? "Failed to promote policy suggestion.");
+        return;
+      }
+      setPromotedSuggestionIds((prev) => {
+        const next = new Set(prev);
+        next.add(suggestionId);
+        return next;
+      });
+      setMsg("Policy suggestion promoted and logged to audit.");
+    } catch (e) {
+      setMsg(e instanceof Error ? e.message : "Failed to promote policy suggestion.");
     }
   }
 
@@ -327,6 +364,45 @@ export function AutomationsConsole({
                   {x.mode} · {new Date(x.at).toLocaleString()}
                 </p>
                 <p className="text-foreground/65">Rollback: {x.rollbackPlan}</p>
+                {x.expectedOutcome ? (
+                  <p className="text-foreground/65">
+                    Expected: {x.expectedOutcome.summary} ({x.expectedOutcome.timeToStableMins}m)
+                  </p>
+                ) : null}
+                {x.actualOutcome ? (
+                  <p className="text-foreground/65">
+                    Actual: {x.actualOutcome.summary} ({x.actualOutcome.timeToStableMins}m)
+                  </p>
+                ) : null}
+                {typeof x.decisionAccuracyScore === "number" ? (
+                  <p className="text-foreground/70">Decision accuracy: {x.decisionAccuracyScore}/100</p>
+                ) : null}
+                {x.policySuggestions?.length ? (
+                  <div className="mt-2 rounded-md border border-white/[0.08] bg-white/[0.02] p-2">
+                    <p className="text-foreground/75">Policy suggestions</p>
+                    <ul className="mt-1 space-y-2">
+                      {x.policySuggestions.map((s) => (
+                        <li key={s.id} className="rounded border border-white/[0.06] p-2">
+                          <p className="text-foreground/85">{s.label}</p>
+                          <p className="text-foreground/65">{s.reason}</p>
+                          <p className="text-foreground/65">Confidence: {s.confidenceScore}</p>
+                          <button
+                            type="button"
+                            disabled={promotedSuggestionIds.has(s.id)}
+                            onClick={() => void promoteSuggestion(s.id, x.playbookId, s.confidenceScore)}
+                            className={`mt-2 rounded-md border px-2 py-1 text-xs ${
+                              promotedSuggestionIds.has(s.id)
+                                ? "border-emerald-400/30 bg-emerald-500/[0.1] text-emerald-200"
+                                : "border-white/[0.14] bg-white/[0.03] text-foreground/85 hover:border-accent/30"
+                            }`}
+                          >
+                            {promotedSuggestionIds.has(s.id) ? "Promoted" : "Promote to policy review"}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
               </li>
             ))}
           </ul>

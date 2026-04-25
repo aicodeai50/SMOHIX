@@ -75,6 +75,12 @@ export const API_GROUPS: ApiGroup[] = [
         summary: "Receive signed Slack action payloads and decide pending approvals.",
         auth: "Slack request signature (X-Slack-Signature)",
       },
+      {
+        method: "POST",
+        path: "/api/approvals/policy-suggestions/promote",
+        summary: "Promote a decision-intelligence policy suggestion into policy review and log audit evidence.",
+        auth: "Session cookie (or session mode fallback)",
+      },
     ],
   },
   {

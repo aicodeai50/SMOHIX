@@ -1,4 +1,5 @@
 import type { ApprovalRow } from "./types";
+import { buildDecisionBrief } from "@/lib/decision-intelligence";
 
 type Bucket = { pending: ApprovalRow[]; recent: ApprovalRow[] };
 
@@ -33,6 +34,10 @@ export function devCreateApproval(
     requestedBy: input.requestedBy,
     policy: input.policy,
     status: "pending",
+    decisionBrief: buildDecisionBrief({
+      actionLabel: input.action,
+      policyHint: input.policy,
+    }),
   });
   b.pending = b.pending.slice(0, 50);
   return id;
