@@ -43,6 +43,11 @@ const CARDS = [
     href: "/governance/policies",
   },
   {
+    title: "Security model",
+    body: "Runtime guardrails, metadata hardening, auditability requirements, and verification expectations.",
+    href: "/trust",
+  },
+  {
     title: "Vision & roadmap (console)",
     body: "Long-horizon direction inside the authenticated app.",
     href: "/auth/sign-in?next=/vision",

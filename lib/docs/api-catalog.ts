@@ -81,6 +81,13 @@ export const API_GROUPS: ApiGroup[] = [
         summary: "Promote a decision-intelligence policy suggestion into policy review and log audit evidence.",
         auth: "Session cookie (or session mode fallback)",
       },
+      {
+        method: "GET",
+        path: "/api/governance/policy-blocks/summary",
+        summary:
+          "Return policy-block analytics summary for current user (window=7d|30d, includes prior-window delta and reason distribution).",
+        auth: "Session cookie",
+      },
     ],
   },
   {

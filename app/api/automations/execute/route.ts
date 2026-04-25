@@ -9,7 +9,10 @@ import {
 import { recordExecution } from "@/lib/automations/executions-dev";
 import { getPlaybookById } from "@/lib/automations/playbooks";
 import { listDryRuns } from "@/lib/automations/runs-dev";
-import { evaluateApprovalPolicy } from "@/lib/approvals/policy";
+import {
+  evaluateAcceptedPolicyEnforcement,
+  evaluateApprovalPolicy,
+} from "@/lib/approvals/policy";
 import { appendAuditEvent } from "@/lib/audit/append";
 import { billingPlanFromSummary, getSubscriptionSummary } from "@/lib/billing/plan";
 import {
@@ -20,7 +23,11 @@ import {
   suggestPolicyPromotions,
 } from "@/lib/decision-intelligence";
 import { sendSlackNotificationWithAudit } from "@/lib/integrations/slack";
-import { upsertPolicySuggestion } from "@/lib/approvals/policy-suggestions";
+import {
+  listAcceptedPolicyGuardrailsForPlaybook,
+  upsertPolicySuggestion,
+} from "@/lib/approvals/policy-suggestions";
+import { policyBlockReasonCodeFromMessage } from "@/lib/approvals/policy-block-reasons";
 import { getSiteUrl } from "@/lib/site";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -171,14 +178,59 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const robotBase = normalizeBase(process.env.SHYNVO_ROBOT_API_URL);
-  const mode: "simulated" | "connector" = robotBase ? "connector" : "simulated";
-  const ok = true;
-  const decisionBrief = buildDecisionBrief({
+  const preDecisionBrief = buildDecisionBrief({
     actionLabel: playbook.name,
     policyHint: approvalNote,
     rollbackPlan,
   });
+
+  if (ctx.mode === "auth") {
+    const supabase = await createServerSupabaseClient();
+    const accepted = await listAcceptedPolicyGuardrailsForPlaybook(supabase, ctx.userId, playbookId);
+    const enforcement = evaluateAcceptedPolicyEnforcement({
+      approvalNote,
+      decisionBlastRadius: preDecisionBrief.blastRadius,
+      hasFreshDryRun: Boolean(recent && recent.ok && runAgeMs <= 2 * 60 * 60 * 1000),
+      enforced: accepted
+        ? {
+            requireDryRunFresh: accepted.requireDryRunFresh,
+            requireChangeWindow: accepted.requireChangeWindow,
+            maxBlastRadius: accepted.maxBlastRadius,
+          }
+        : null,
+    });
+    if (enforcement.blockedReason) {
+      const blockedReasonCode = policyBlockReasonCodeFromMessage(enforcement.blockedReason);
+      await appendAuditEvent({
+        event_type: "automation.execution_blocked_policy",
+        user_id: ctx.userId,
+        details: {
+          playbook_id: playbookId,
+          blocked_reason_code: blockedReasonCode,
+          blocked_reason: enforcement.blockedReason,
+          accepted_policy_suggestion_ids: accepted?.suggestionIds ?? [],
+          enforcement_checks: enforcement.checks,
+        },
+      });
+      return NextResponse.json(
+        {
+          error: "execution_blocked_by_accepted_policy",
+          message: enforcement.blockedReason,
+          enforcement: {
+            reasonCode: blockedReasonCode,
+            checks: enforcement.checks,
+            acceptedPolicySuggestionIds: accepted?.suggestionIds ?? [],
+          },
+        },
+        { status: 403 },
+      );
+    }
+  }
+
+  const robotBase = normalizeBase(process.env.SHYNVO_ROBOT_API_URL);
+  const mode: "simulated" | "connector" = robotBase ? "connector" : "simulated";
+  const ok = true;
+  const decisionBrief = preDecisionBrief;
   const expectedOutcome = buildExpectedOutcome({
     playbookId,
     decisionBrief,

@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { appendAuditEvent } from "@/lib/audit/append";
+import { hasMaxBlastToken, parseMaxBlastScope } from "@/lib/approvals/policy-scope";
+import { invalidMaxBlastRedirectPath } from "@/lib/approvals/policy-review-url";
 import { updatePolicySuggestionStatus } from "@/lib/approvals/policy-suggestions";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -28,6 +30,9 @@ export async function reviewPolicySuggestionAction(formData: FormData) {
   const notes = String(formData.get("notes") ?? "").trim();
   if (!id || (decision !== "accepted" && decision !== "rejected")) {
     return;
+  }
+  if (decision === "accepted" && hasMaxBlastToken(notes) && !parseMaxBlastScope(notes)) {
+    redirect(invalidMaxBlastRedirectPath({ suggestionId: id, notes }));
   }
   const { supabase, userId } = await currentUserIdOrRedirect();
   const ok = await updatePolicySuggestionStatus(supabase, {

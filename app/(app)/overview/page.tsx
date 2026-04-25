@@ -7,7 +7,13 @@ import { PageHeader } from "@/components/app/PageHeader";
 import { AppIcon } from "@/components/icons/AppIcon";
 import { OverviewDecisionSurface } from "@/components/overview/OverviewDecisionSurface";
 import { appBody, appMeta, appPanelTitle } from "@/lib/app-typography";
+import { getPolicyBlockSummaryForUser } from "@/lib/approvals/policy-block-analytics";
 import { listApprovalsForUser } from "@/lib/approvals/data";
+import {
+  policySuggestedReviewerNote,
+  type PolicyBlockReasonCode,
+} from "@/lib/approvals/policy-block-reasons";
+import { listAcceptedPolicyGuardrailsByPlaybook } from "@/lib/approvals/policy-suggestions";
 import { listAutomationDryRuns } from "@/lib/automations/dry-runs-db";
 import { listDryRuns } from "@/lib/automations/runs-dev";
 import { getConnectorHealthRows } from "@/lib/connectors-health";
@@ -106,6 +112,14 @@ export default async function OverviewPage() {
   let decisionAccuracyLabel = "—";
   let proposedSuggestions = 0;
   let acceptedSuggestions = 0;
+  let enforcementPlaybookCount = 0;
+  let enforcementBlastCapCount = 0;
+  let enforcementSummary = "Requires signed-in workspace data";
+  let policyBlocksLast7d = 0;
+  let policyBlockTrendLabel = "Requires signed-in workspace data";
+  let policyBlockDeltaLabel = "No baseline";
+  let topPolicyBlockReasonCode: PolicyBlockReasonCode = "unknown";
+  let topPolicyBlockSuggestedNote = "";
 
   if (supabaseClient && userId) {
     const { data: approvalRows } = await supabaseClient
@@ -164,6 +178,39 @@ export default async function OverviewPage() {
       .limit(200);
     proposedSuggestions = (suggestionRows ?? []).filter((r) => String(r.status) === "proposed").length;
     acceptedSuggestions = (suggestionRows ?? []).filter((r) => String(r.status) === "accepted").length;
+
+    const acceptedGuardrails = await listAcceptedPolicyGuardrailsByPlaybook(supabaseClient, userId);
+    const acceptedByPlaybook = Object.values(acceptedGuardrails);
+    enforcementPlaybookCount = acceptedByPlaybook.length;
+    enforcementBlastCapCount = acceptedByPlaybook.filter((g) => Boolean(g.maxBlastRadius)).length;
+    enforcementSummary =
+      enforcementPlaybookCount === 0
+        ? "No enforced policies yet"
+        : `${enforcementBlastCapCount} with explicit blast caps`;
+
+    const policyBlocks = await getPolicyBlockSummaryForUser(supabaseClient, userId, "7d");
+    policyBlocksLast7d = policyBlocks.count;
+    topPolicyBlockReasonCode = policyBlocks.topReasonCode ?? "unknown";
+    topPolicyBlockSuggestedNote = policySuggestedReviewerNote(topPolicyBlockReasonCode);
+    const compactTopReason =
+      policyBlocks.topReasonLabel && policyBlocks.topReasonLabel.length > 80
+        ? `${policyBlocks.topReasonLabel.slice(0, 79)}…`
+        : policyBlocks.topReasonLabel;
+    policyBlockTrendLabel =
+      policyBlocksLast7d === 0
+        ? "No policy-blocked executions in last 7d"
+        : compactTopReason
+          ? `Top reason: ${compactTopReason}`
+          : "Policy blocks recorded in last 7d";
+    const delta = policyBlocks.delta;
+    policyBlockDeltaLabel =
+      policyBlocks.priorCount === 0
+        ? "No prior-week baseline"
+        : delta === 0
+          ? "No change vs prior 7d"
+          : delta > 0
+            ? `Up ${delta} vs prior 7d`
+            : `Down ${Math.abs(delta)} vs prior 7d`;
   }
 
   return (
@@ -171,12 +218,12 @@ export default async function OverviewPage() {
       <PageHeader
         eyebrow="Operations"
         title="Command center"
-        description="Decisions first: what needs a human, what executed safely, and where connectors or billing block work. Deeper health and setup live below."
+        description="Prioritize decisions: what requires human approval, what executed safely, and where readiness constraints are blocking delivery."
       />
 
       <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div className="shynvo-glass rounded-2xl p-5">
-          <p className={`${appMeta} font-medium`}>Incidents tracked</p>
+          <p className={`${appMeta} font-medium`}>Incidents</p>
           <p className="mt-1 text-2xl font-semibold text-foreground">{incidents.length}</p>
           <p className={`mt-1 ${appMeta}`}>
             {open} open · {resolved} resolved
@@ -185,7 +232,7 @@ export default async function OverviewPage() {
         <div className="shynvo-glass rounded-2xl p-5">
           <p className={`${appMeta} font-medium`}>High / critical</p>
           <p className="mt-1 text-2xl font-semibold text-foreground">{hot}</p>
-          <p className={`mt-1 ${appMeta}`}>Needs attention</p>
+          <p className={`mt-1 ${appMeta}`}>Requires active response</p>
         </div>
         <div className="shynvo-glass rounded-2xl p-5">
           <p className={`${appMeta} font-medium`}>Connectors</p>
@@ -198,8 +245,8 @@ export default async function OverviewPage() {
           </p>
           <p className={`mt-1 ${appMeta}`}>
             {connectorsConfigured === 0
-              ? "No connector URLs configured"
-              : "Reachable of configured"}
+              ? "No connector endpoints configured"
+              : "Healthy endpoints of configured total"}
           </p>
         </div>
         <div className="shynvo-glass rounded-2xl p-5">
@@ -208,7 +255,7 @@ export default async function OverviewPage() {
             {setupDone}
             <span className={`${appPanelTitle} font-normal text-muted`}> / 4</span>
           </p>
-          <p className={`mt-1 ${appMeta}`}>Workspace readiness</p>
+          <p className={`mt-1 ${appMeta}`}>Operational readiness</p>
         </div>
       </div>
 
@@ -216,8 +263,8 @@ export default async function OverviewPage() {
 
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
         <section className="shynvo-glass rounded-2xl p-5 md:p-6">
-          <h2 className={appPanelTitle}>Operational proof metrics</h2>
-          <div className="mt-4 grid gap-3 sm:grid-cols-4">
+          <h2 className={appPanelTitle}>Operational trust metrics</h2>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
             <div className="rounded-xl border border-white/[0.08] bg-black/20 px-4 py-3">
               <p className={appMeta}>Dry-run success</p>
               <p className="mt-1 text-xl font-semibold text-foreground">{dryRunSuccessRate}%</p>
@@ -240,13 +287,30 @@ export default async function OverviewPage() {
             <div className="rounded-xl border border-white/[0.08] bg-black/20 px-4 py-3">
               <p className={appMeta}>Decision intelligence</p>
               <p className="mt-1 text-xl font-semibold text-foreground">{decisionAccuracyLabel}</p>
-              <p className={appMeta}>
-                {proposedSuggestions} proposed · {acceptedSuggestions} accepted suggestions
-              </p>
+              <p className={appMeta}>{proposedSuggestions} proposed · {acceptedSuggestions} accepted</p>
+            </div>
+            <div className="rounded-xl border border-white/[0.08] bg-black/20 px-4 py-3">
+              <p className={appMeta}>Enforcement coverage</p>
+              <p className="mt-1 text-xl font-semibold text-foreground">{enforcementPlaybookCount}</p>
+              <p className={appMeta}>{enforcementSummary}</p>
+            </div>
+            <div className="rounded-xl border border-white/[0.08] bg-black/20 px-4 py-3">
+              <p className={appMeta}>Policy blocks (7d)</p>
+              <p className="mt-1 text-xl font-semibold text-foreground">{policyBlocksLast7d}</p>
+              <p className={appMeta}>{policyBlockTrendLabel}</p>
+              <p className={appMeta}>{policyBlockDeltaLabel}</p>
+              {policyBlocksLast7d > 0 ? (
+                <Link
+                  href={`/governance/policies?status=proposed&seed_reason=${encodeURIComponent(topPolicyBlockReasonCode)}&seed_note=${encodeURIComponent(topPolicyBlockSuggestedNote)}`}
+                  className={`mt-1 inline-block font-medium text-accent hover:underline ${appMeta}`}
+                >
+                  Start policy response from top reason →
+                </Link>
+              ) : null}
             </div>
           </div>
           <p className={`mt-4 ${appMeta}`}>
-            These metrics are designed to prove safety and execution confidence, not just activity.
+            These indicators are designed to evidence safety and execution confidence, not just activity volume.
           </p>
           <div className="mt-3 flex flex-wrap items-center gap-3">
             <Link href="/approvals" className={`font-medium text-accent hover:underline ${appBody}`}>
@@ -259,7 +323,7 @@ export default async function OverviewPage() {
               Review audit trail →
             </Link>
             <Link href="/governance/policies" className={`font-medium text-accent hover:underline ${appBody}`}>
-              Review policy suggestions →
+              Review policy queue →
             </Link>
           </div>
         </section>

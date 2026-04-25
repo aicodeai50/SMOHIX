@@ -1,5 +1,9 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
+import {
+  parseMaxBlastScope,
+  type BlastRadiusScope,
+} from "@/lib/approvals/policy-scope";
 import type { PolicySuggestionStatus } from "@/lib/decision-intelligence";
 
 export type PolicySuggestionRow = {
@@ -16,6 +20,32 @@ export type PolicySuggestionRow = {
   reviewedAt: string | null;
   createdAt: string;
 };
+
+export type AcceptedPolicyGuardrails = {
+  playbookId: string;
+  maxBlastRadius: BlastRadiusScope | null;
+  requireDryRunFresh: boolean;
+  requireChangeWindow: boolean;
+  suggestionIds: string[];
+};
+
+type AcceptedGuardrailSourceRow = {
+  id: unknown;
+  playbook_id: unknown;
+  suggestion_key: unknown;
+  guardrails_json: unknown;
+  reviewer_notes: unknown;
+};
+
+function pickStrictestMaxBlastRadius(
+  current: AcceptedPolicyGuardrails["maxBlastRadius"],
+  next: AcceptedPolicyGuardrails["maxBlastRadius"],
+): AcceptedPolicyGuardrails["maxBlastRadius"] {
+  const rank = { service: 1, cluster: 2, region: 3, global: 4 } as const;
+  if (!current) return next;
+  if (!next) return current;
+  return rank[next] < rank[current] ? next : current;
+}
 
 export async function upsertPolicySuggestion(
   supabase: SupabaseClient,
@@ -73,6 +103,88 @@ export async function listPolicySuggestionsForUser(
     reviewedAt: r.reviewed_at ? String(r.reviewed_at) : null,
     createdAt: String(r.created_at),
   }));
+}
+
+function parseMaxBlastRadiusFromSuggestionKey(
+  suggestionKey: string | null,
+): AcceptedPolicyGuardrails["maxBlastRadius"] {
+  if (!suggestionKey) return null;
+  const lower = suggestionKey.toLowerCase();
+  if (lower.includes("-service-")) return "service";
+  if (lower.includes("-cluster-")) return "cluster";
+  if (lower.includes("-region-")) return "region";
+  if (lower.includes("-global-")) return "global";
+  return null;
+}
+
+export async function listAcceptedPolicyGuardrailsForPlaybook(
+  supabase: SupabaseClient,
+  userId: string,
+  playbookId: string,
+): Promise<AcceptedPolicyGuardrails | null> {
+  const { data, error } = await supabase
+    .from("policy_suggestions")
+    .select("id, suggestion_key, guardrails_json, reviewer_notes")
+    .eq("user_id", userId)
+    .eq("playbook_id", playbookId)
+    .eq("status", "accepted")
+    .limit(20);
+  if (error || !data || data.length === 0) return null;
+  const map = aggregateAcceptedPolicyGuardrails(data as AcceptedGuardrailSourceRow[]);
+  return map[playbookId] ?? null;
+}
+
+function aggregateAcceptedPolicyGuardrails(
+  rows: AcceptedGuardrailSourceRow[],
+): Record<string, AcceptedPolicyGuardrails> {
+  const grouped: Record<string, AcceptedPolicyGuardrails> = {};
+  for (const row of rows) {
+    const playbookId = String(row.playbook_id ?? "");
+    if (!playbookId) continue;
+    if (!grouped[playbookId]) {
+      grouped[playbookId] = {
+        playbookId,
+        maxBlastRadius: null,
+        requireDryRunFresh: false,
+        requireChangeWindow: false,
+        suggestionIds: [],
+      };
+    }
+    const item = grouped[playbookId];
+    const guardrails = Array.isArray(row.guardrails_json)
+      ? (row.guardrails_json as string[]).map((g) => g.toLowerCase())
+      : [];
+    if (guardrails.some((g) => g.includes("dry-run") || g.includes("dry run"))) {
+      item.requireDryRunFresh = true;
+    }
+    if (guardrails.some((g) => g.includes("change window"))) {
+      item.requireChangeWindow = true;
+    }
+    const parsedFromNotes = parseMaxBlastScope((row.reviewer_notes as string | null) ?? null);
+    const parsedFromKey = parseMaxBlastRadiusFromSuggestionKey(
+      (row.suggestion_key as string | null) ?? null,
+    );
+    item.maxBlastRadius = pickStrictestMaxBlastRadius(
+      item.maxBlastRadius,
+      parsedFromNotes ?? parsedFromKey,
+    );
+    item.suggestionIds.push(String(row.id));
+  }
+  return grouped;
+}
+
+export async function listAcceptedPolicyGuardrailsByPlaybook(
+  supabase: SupabaseClient,
+  userId: string,
+): Promise<Record<string, AcceptedPolicyGuardrails>> {
+  const { data, error } = await supabase
+    .from("policy_suggestions")
+    .select("id, playbook_id, suggestion_key, guardrails_json, reviewer_notes")
+    .eq("user_id", userId)
+    .eq("status", "accepted")
+    .limit(200);
+  if (error || !data || data.length === 0) return {};
+  return aggregateAcceptedPolicyGuardrails(data as AcceptedGuardrailSourceRow[]);
 }
 
 export async function updatePolicySuggestionStatus(

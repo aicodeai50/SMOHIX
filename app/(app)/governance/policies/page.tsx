@@ -3,10 +3,19 @@ import { redirect } from "next/navigation";
 
 import { PageHeader } from "@/components/app/PageHeader";
 import { appBody, appMeta, appOverline, appPanelTitle } from "@/lib/app-typography";
-import { listPolicySuggestionsForUser } from "@/lib/approvals/policy-suggestions";
+import {
+  policyBlockReasonLabel,
+  type PolicyBlockReasonCode,
+} from "@/lib/approvals/policy-block-reasons";
+import {
+  listAcceptedPolicyGuardrailsByPlaybook,
+  listPolicySuggestionsForUser,
+} from "@/lib/approvals/policy-suggestions";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
+import { PolicyBlockAnalyticsPanel } from "./PolicyBlockAnalyticsPanel";
+import { PolicyReviewerNotesField } from "./PolicyReviewerNotesField";
 import { reviewPolicySuggestionAction } from "./actions";
 
 export const metadata: Metadata = {
@@ -19,7 +28,14 @@ export const dynamic = "force-dynamic";
 export default async function GovernancePoliciesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string; error?: string }>;
+  searchParams: Promise<{
+    status?: string;
+    error?: string;
+    sid?: string;
+    notes?: string;
+    seed_reason?: string;
+    seed_note?: string;
+  }>;
 }) {
   if (!hasSupabaseAuth()) {
     return (
@@ -47,13 +63,26 @@ export default async function GovernancePoliciesPage({
     ? (statusRaw as "all" | "proposed" | "reviewed" | "accepted" | "rejected")
     : "proposed";
   const suggestions = await listPolicySuggestionsForUser(supabase, user.id, status);
+  const acceptedGuardrailsByPlaybook = await listAcceptedPolicyGuardrailsByPlaybook(supabase, user.id);
+  const errorCode = typeof sp.error === "string" ? sp.error.trim().toLowerCase() : "";
+  const failedSuggestionId = typeof sp.sid === "string" ? sp.sid.trim() : "";
+  const failedNotes = typeof sp.notes === "string" ? sp.notes : "";
+  const seedReasonRaw = typeof sp.seed_reason === "string" ? sp.seed_reason.trim().toLowerCase() : "";
+  const seedReason = (
+    ["dry_run_fresh_required", "change_window_required", "blast_radius_exceeded", "unknown"].includes(
+      seedReasonRaw,
+    )
+      ? seedReasonRaw
+      : "unknown"
+  ) as PolicyBlockReasonCode;
+  const seedNote = typeof sp.seed_note === "string" ? sp.seed_note.trim() : "";
 
   return (
     <>
       <PageHeader
         eyebrow="Governance"
         title="Policy suggestion review"
-        description="Decision intelligence proposes candidate policy promotions. Review and accept or reject with notes."
+        description="Decision intelligence proposes candidate guardrails. Review, annotate, and accept or reject each recommendation."
       />
       <div className="mb-4 flex flex-wrap gap-2">
         {(["proposed", "reviewed", "accepted", "rejected", "all"] as const).map((s) => (
@@ -70,14 +99,45 @@ export default async function GovernancePoliciesPage({
           </a>
         ))}
       </div>
+      {errorCode === "invalid_max_blast" ? (
+        <p className={`mb-4 rounded-xl border border-danger/45 bg-danger-dim/35 px-4 py-3 ${appMeta} text-danger`}>
+          Could not accept policy suggestion: invalid max blast scope. Use{" "}
+          <span className="font-mono text-danger">max-blast: service|cluster|region|global</span>.
+        </p>
+      ) : null}
+      {errorCode === "not_found" ? (
+        <p className={`mb-4 rounded-xl border border-danger/45 bg-danger-dim/35 px-4 py-3 ${appMeta} text-danger`}>
+          Could not update policy suggestion. It may have already been reviewed or is no longer available.
+        </p>
+      ) : null}
+      {seedNote ? (
+        <p className={`mb-4 rounded-xl border border-accent/30 bg-accent/[0.08] px-4 py-3 ${appMeta} text-foreground/90`}>
+          Recommended from policy-block trend ({policyBlockReasonLabel(seedReason)}):{" "}
+          <span className="font-mono text-foreground/95">{seedNote}</span>
+        </p>
+      ) : null}
+      <PolicyBlockAnalyticsPanel />
       <section className="shynvo-glass rounded-2xl p-5 md:p-6">
         <h2 className={appPanelTitle}>Suggestions</h2>
         {suggestions.length === 0 ? (
           <p className={`mt-3 ${appBody} text-muted`}>No suggestions for this filter.</p>
         ) : (
           <ul className="mt-3 space-y-3">
-            {suggestions.map((s) => (
+            {suggestions.map((s, index) => (
               <li key={s.id} className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-4">
+                {(() => {
+                  const effective = acceptedGuardrailsByPlaybook[s.playbookId];
+                  const chips: string[] = [];
+                  if (effective?.requireDryRunFresh) chips.push("fresh dry-run");
+                  if (effective?.requireChangeWindow) chips.push("change window");
+                  if (effective?.maxBlastRadius) chips.push(`max blast: ${effective.maxBlastRadius}`);
+                  if (chips.length === 0) return null;
+                  return (
+                    <p className={`mb-2 rounded-md border border-accent/20 bg-accent/[0.07] px-2.5 py-1.5 ${appMeta}`}>
+                      Effective enforcement: {chips.join(" · ")}
+                    </p>
+                  );
+                })()}
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <p className={`${appBody} font-medium text-foreground/90`}>{s.label}</p>
                   <span className={`rounded-full border border-white/[0.12] px-2 py-0.5 ${appMeta}`}>
@@ -101,28 +161,23 @@ export default async function GovernancePoliciesPage({
                 {s.status === "proposed" || s.status === "reviewed" ? (
                   <form action={reviewPolicySuggestionAction} className="mt-3 flex flex-wrap items-center gap-2">
                     <input type="hidden" name="id" value={s.id} />
-                    <input
-                      name="notes"
-                      maxLength={280}
-                      placeholder="Reviewer notes"
+                    <PolicyReviewerNotesField
+                      fieldId={s.id}
+                      initialValue={
+                        errorCode === "invalid_max_blast" && failedSuggestionId === s.id
+                          ? failedNotes
+                          : seedNote && index === 0 && (s.status === "proposed" || s.status === "reviewed")
+                            ? seedNote
+                            : ""
+                      }
+                      clearValidationParamsOnEdit={
+                        errorCode === "invalid_max_blast" && failedSuggestionId === s.id
+                      }
                       className={`h-9 min-w-[14rem] flex-1 rounded-lg border border-white/[0.1] bg-white/[0.02] px-3 text-foreground ${appMeta}`}
+                      helperClassName={appMeta}
+                      acceptButtonClassName={`h-9 rounded-lg border border-emerald-400/40 bg-emerald-500/[0.12] px-3 font-medium text-emerald-200 disabled:cursor-not-allowed disabled:opacity-50 ${appMeta}`}
+                      rejectButtonClassName={`h-9 rounded-lg border border-danger/40 bg-danger-dim/30 px-3 font-medium text-danger ${appMeta}`}
                     />
-                    <button
-                      type="submit"
-                      name="decision"
-                      value="accepted"
-                      className={`h-9 rounded-lg border border-emerald-400/40 bg-emerald-500/[0.12] px-3 font-medium text-emerald-200 ${appMeta}`}
-                    >
-                      Accept
-                    </button>
-                    <button
-                      type="submit"
-                      name="decision"
-                      value="rejected"
-                      className={`h-9 rounded-lg border border-danger/40 bg-danger-dim/30 px-3 font-medium text-danger ${appMeta}`}
-                    >
-                      Reject
-                    </button>
                   </form>
                 ) : null}
               </li>

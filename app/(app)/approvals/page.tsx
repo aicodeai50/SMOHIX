@@ -9,6 +9,7 @@ import { ExecutionBadge } from "@/components/guardrails/ExecutionBadge";
 import { ExecutionModeCallout } from "@/components/guardrails/ExecutionModeCallout";
 import { GuardedAutomationIdentity } from "@/components/guardrails/GuardedAutomationIdentity";
 import { listApprovalsForUser } from "@/lib/approvals/data";
+import { listAcceptedPolicyGuardrailsByPlaybook } from "@/lib/approvals/policy-suggestions";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { appBody, appLabel, appMeta, appOverline, appPanelTitle } from "@/lib/app-typography";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -32,9 +33,11 @@ export default async function ApprovalsPage({ searchParams }: Props) {
 
   let userId = "";
   let devTenantId: string | null = null;
+  let supabaseClient: Awaited<ReturnType<typeof createServerSupabaseClient>> | null = null;
 
   if (hasSupabaseAuth()) {
     const supabase = await createServerSupabaseClient();
+    supabaseClient = supabase;
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -50,15 +53,24 @@ export default async function ApprovalsPage({ searchParams }: Props) {
     userId: userId || "local",
     devTenantId,
   });
+  const pendingMissingChecks = pending.filter((p) =>
+    p.decisionBrief.policyChecks.some((check) => !check.passed),
+  ).length;
+  const pendingHighRisk = pending.filter((p) => p.decisionBrief.riskScore >= 70).length;
+  let enforcedPlaybookCount = 0;
+  if (supabaseClient && userId) {
+    const acceptedGuardrails = await listAcceptedPolicyGuardrailsByPlaybook(supabaseClient, userId);
+    enforcedPlaybookCount = Object.keys(acceptedGuardrails).length;
+  }
 
   return (
     <>
       <PageHeader
         title="Approvals"
-        description="Human-in-the-loop gates for destructive or high-blast-radius changes. Open a new request below, then approve or deny pending items; completed decisions appear in Recent."
+        description="Human approval controls for high-impact changes. Submit requests, decide pending items, and track completed outcomes."
       />
       <p className={`mb-4 rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3 ${appMeta}`}>
-        Policy baseline: high-risk requests must declare both{" "}
+        Policy baseline: high-risk requests must explicitly declare both{" "}
         <span className="font-mono text-foreground/85">two-person approval</span> and a{" "}
         <span className="font-mono text-foreground/85">change window</span> in the policy note.
       </p>
@@ -69,10 +81,27 @@ export default async function ApprovalsPage({ searchParams }: Props) {
           dryRunAvailable
           auditLogged={hasSupabaseAuth()}
         />
+        <div className="grid gap-3 sm:grid-cols-3">
+          <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3">
+            <p className={appMeta}>Pending approvals</p>
+            <p className={`mt-1 ${appBody} font-semibold text-foreground`}>{pending.length}</p>
+            <p className={appMeta}>{pendingMissingChecks} missing one or more required controls</p>
+          </div>
+          <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3">
+            <p className={appMeta}>High-risk pending</p>
+            <p className={`mt-1 ${appBody} font-semibold text-foreground`}>{pendingHighRisk}</p>
+            <p className={appMeta}>Risk score 70+ awaiting decision</p>
+          </div>
+          <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3">
+            <p className={appMeta}>Enforced playbooks</p>
+            <p className={`mt-1 ${appBody} font-semibold text-foreground`}>{enforcedPlaybookCount}</p>
+            <p className={appMeta}>Accepted policies actively enforced at execution time</p>
+          </div>
+        </div>
       </div>
       {createdOk ? (
         <p className={`mb-4 rounded-xl border border-emerald-400/20 bg-emerald-500/[0.08] px-4 py-3 text-emerald-100/90 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] backdrop-blur-sm ${appBody}`}>
-          Approval request created and is pending decision.
+          Approval request created and queued for decision.
         </p>
       ) : null}
       {errQ ? (

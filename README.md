@@ -372,3 +372,10 @@ Next.js 16, React 19, Tailwind CSS 4.
 ## Security policy
 
 For operational metadata exposure rules and required hardening headers, see `SECURITY.md`.
+
+### Security model (quick view)
+
+- Guardrails are enforced at runtime for automation execution (not UI-only checks).
+- High-risk execution gates require dry-run freshness, change-window compliance, and blast-radius scope adherence when policy rows require them.
+- Guardrail blocks are audited with both human-readable reasons and normalized reason codes to support governance trending.
+- Operational endpoints use no-store + noindex + browser hardening response headers.

@@ -1,27 +1,18 @@
-import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { runDecisionCoreChecks } from "./test-decision-core.mjs";
+import { runPolicyEnforcementChecks } from "./test-policy-enforcement.mjs";
+import { runPolicyReviewFlowChecks } from "./test-policy-review-flow.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const root = path.resolve(__dirname, "..");
 
-function assert(condition, message) {
-  if (!condition) throw new Error(message);
-}
-
 function main() {
-  return readFile(path.join(root, "lib/decision-intelligence.ts"), "utf8").then((source) => {
-    assert(source.includes("export function buildDecisionBrief"), "missing buildDecisionBrief export");
-    assert(source.includes("export function buildExpectedOutcome"), "missing buildExpectedOutcome export");
-    assert(source.includes("export function buildActualOutcome"), "missing buildActualOutcome export");
-    assert(source.includes("export function decisionAccuracyScore"), "missing decisionAccuracyScore export");
-    assert(
-      source.includes("export function suggestPolicyPromotions"),
-      "missing suggestPolicyPromotions export",
-    );
-    assert(source.includes("Two-person approval"), "policy check labels should include two-person approval");
-    assert(source.includes("Rollback plan"), "policy checks should enforce rollback plan");
+  return Promise.resolve().then(async () => {
+    await runDecisionCoreChecks(root);
+    await runPolicyEnforcementChecks(root);
+    await runPolicyReviewFlowChecks(root);
     console.log("test-decision-intelligence: all checks passed");
   });
 }
