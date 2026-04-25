@@ -103,6 +103,9 @@ export default async function OverviewPage() {
   let approvalP95Label = "—";
   let pendingOldestLabel = "—";
   let pendingRiskLabel = approvalsPending > 0 ? "Queue health unavailable in session mode" : "No pending backlog";
+  let decisionAccuracyLabel = "—";
+  let proposedSuggestions = 0;
+  let acceptedSuggestions = 0;
 
   if (supabaseClient && userId) {
     const { data: approvalRows } = await supabaseClient
@@ -139,6 +142,28 @@ export default async function OverviewPage() {
         : staleCount > 0
           ? `${staleCount} older than 24h`
           : "Fresh queue (no >24h pending)";
+
+    const { data: execRows } = await supabaseClient
+      .from("automation_executions")
+      .select("decision_accuracy_score")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false })
+      .limit(100);
+    const accValues = (execRows ?? [])
+      .map((r) => Number(r.decision_accuracy_score ?? NaN))
+      .filter((n) => Number.isFinite(n));
+    if (accValues.length) {
+      const avg = Math.round(accValues.reduce((a, b) => a + b, 0) / accValues.length);
+      decisionAccuracyLabel = `${avg}/100`;
+    }
+
+    const { data: suggestionRows } = await supabaseClient
+      .from("policy_suggestions")
+      .select("status")
+      .eq("user_id", userId)
+      .limit(200);
+    proposedSuggestions = (suggestionRows ?? []).filter((r) => String(r.status) === "proposed").length;
+    acceptedSuggestions = (suggestionRows ?? []).filter((r) => String(r.status) === "accepted").length;
   }
 
   return (
@@ -192,7 +217,7 @@ export default async function OverviewPage() {
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
         <section className="shynvo-glass rounded-2xl p-5 md:p-6">
           <h2 className={appPanelTitle}>Operational proof metrics</h2>
-          <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          <div className="mt-4 grid gap-3 sm:grid-cols-4">
             <div className="rounded-xl border border-white/[0.08] bg-black/20 px-4 py-3">
               <p className={appMeta}>Dry-run success</p>
               <p className="mt-1 text-xl font-semibold text-foreground">{dryRunSuccessRate}%</p>
@@ -212,6 +237,13 @@ export default async function OverviewPage() {
                 p95 {approvalP95Label} · oldest pending {pendingOldestLabel} · {approvalDecisions} decisions
               </p>
             </div>
+            <div className="rounded-xl border border-white/[0.08] bg-black/20 px-4 py-3">
+              <p className={appMeta}>Decision intelligence</p>
+              <p className="mt-1 text-xl font-semibold text-foreground">{decisionAccuracyLabel}</p>
+              <p className={appMeta}>
+                {proposedSuggestions} proposed · {acceptedSuggestions} accepted suggestions
+              </p>
+            </div>
           </div>
           <p className={`mt-4 ${appMeta}`}>
             These metrics are designed to prove safety and execution confidence, not just activity.
@@ -225,6 +257,9 @@ export default async function OverviewPage() {
             </Link>
             <Link href="/audit" className={`font-medium text-accent hover:underline ${appBody}`}>
               Review audit trail →
+            </Link>
+            <Link href="/governance/policies" className={`font-medium text-accent hover:underline ${appBody}`}>
+              Review policy suggestions →
             </Link>
           </div>
         </section>

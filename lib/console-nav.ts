@@ -93,6 +93,13 @@ export const CONSOLE_MODULES: readonly {
     live: true,
   },
   {
+    href: "/governance/policies",
+    label: "Policy review",
+    description: "DI suggestions",
+    icon: "scrollText",
+    live: true,
+  },
+  {
     href: "/automations",
     label: "Automations",
     description: "Playbooks",

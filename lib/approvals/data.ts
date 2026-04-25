@@ -1,6 +1,6 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
-import { buildDecisionBrief } from "@/lib/decision-intelligence";
+import { buildDecisionBrief, parseDecisionBrief } from "@/lib/decision-intelligence";
 
 import { devCreateApproval, devListApprovals } from "./dev-store";
 import type { ApprovalRow, ApprovalsListResult } from "./types";
@@ -11,6 +11,7 @@ function mapRow(r: {
   requested_by: string | null;
   policy_hint: string | null;
   status: string;
+  decision_brief_json?: unknown;
 }): ApprovalRow {
   const action = r.action_label;
   const policy = r.policy_hint ?? "—";
@@ -20,7 +21,7 @@ function mapRow(r: {
     requestedBy: r.requested_by ?? "—",
     policy,
     status: r.status as ApprovalRow["status"],
-    decisionBrief: buildDecisionBrief({
+    decisionBrief: parseDecisionBrief(r.decision_brief_json, {
       actionLabel: action,
       policyHint: policy,
     }),
@@ -52,14 +53,14 @@ export async function listApprovalsForUser(
     const supabase = await createServerSupabaseClient();
     const { data: pendData, error: pendErr } = await supabase
       .from("approval_requests")
-      .select("id, action_label, requested_by, policy_hint, status")
+      .select("id, action_label, requested_by, policy_hint, status, decision_brief_json")
       .eq("user_id", userId)
       .eq("status", "pending")
       .order("updated_at", { ascending: false });
 
     const { data: recentData, error: recentErr } = await supabase
       .from("approval_requests")
-      .select("id, action_label, requested_by, policy_hint, status")
+      .select("id, action_label, requested_by, policy_hint, status, decision_brief_json")
       .eq("user_id", userId)
       .in("status", ["approved", "denied"])
       .order("updated_at", { ascending: false })
@@ -76,6 +77,7 @@ export async function listApprovalsForUser(
         requested_by: r.requested_by as string | null,
         policy_hint: r.policy_hint as string | null,
         status: r.status as string,
+        decision_brief_json: r.decision_brief_json,
       }),
     );
 
@@ -86,6 +88,7 @@ export async function listApprovalsForUser(
         requested_by: r.requested_by as string | null,
         policy_hint: r.policy_hint as string | null,
         status: r.status as string,
+        decision_brief_json: r.decision_brief_json,
       }),
     );
 
@@ -109,6 +112,10 @@ export async function createApprovalRequest(input: {
 
   const rb = input.requestedBy.trim();
   const pol = input.policyHint.trim();
+  const brief = buildDecisionBrief({
+    actionLabel: action,
+    policyHint: pol,
+  });
 
   if (!hasSupabaseAuth()) {
     const tid = input.devTenantId;
@@ -132,6 +139,7 @@ export async function createApprovalRequest(input: {
         action_label: action,
         requested_by: rb || null,
         policy_hint: pol || null,
+        decision_brief_json: brief,
       })
       .select("id")
       .single();

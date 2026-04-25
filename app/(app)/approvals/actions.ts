@@ -112,14 +112,18 @@ export async function approvalDecisionAction(formData: FormData) {
 
   const existing = await supabase
     .from("approval_requests")
-    .select("action_label, policy_hint")
+    .select("action_label, policy_hint, decision_brief_json")
     .eq("id", id)
     .eq("user_id", user.id)
     .maybeSingle();
+  const brief = buildDecisionBrief({
+    actionLabel: String(existing.data?.action_label ?? "approval"),
+    policyHint: String(existing.data?.policy_hint ?? ""),
+  });
   const updated_at = new Date().toISOString();
   const { data, error } = await supabase
     .from("approval_requests")
-    .update({ status: decision, updated_at })
+    .update({ status: decision, updated_at, decision_brief_json: brief })
     .eq("id", id)
     .eq("user_id", user.id)
     .eq("status", "pending")
@@ -130,10 +134,6 @@ export async function approvalDecisionAction(formData: FormData) {
     redirect("/approvals?error=update_failed");
   }
 
-  const brief = buildDecisionBrief({
-    actionLabel: String(existing.data?.action_label ?? ""),
-    policyHint: String(existing.data?.policy_hint ?? ""),
-  });
   await appendAuditEvent({
     event_type: decision === "approved" ? "approval.approved" : "approval.denied",
     user_id: user.id,

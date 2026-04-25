@@ -3,6 +3,9 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 
 import { insertAutomationDryRun } from "@/lib/automations/dry-runs-db";
+import {
+  insertAutomationExecution,
+} from "@/lib/automations/executions-db";
 import { recordExecution } from "@/lib/automations/executions-dev";
 import { getPlaybookById } from "@/lib/automations/playbooks";
 import { listDryRuns } from "@/lib/automations/runs-dev";
@@ -17,6 +20,7 @@ import {
   suggestPolicyPromotions,
 } from "@/lib/decision-intelligence";
 import { sendSlackNotificationWithAudit } from "@/lib/integrations/slack";
+import { upsertPolicySuggestion } from "@/lib/approvals/policy-suggestions";
 import { getSiteUrl } from "@/lib/site";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -194,7 +198,7 @@ export async function POST(req: NextRequest) {
     accuracyScore,
   });
 
-  const receipt = recordExecution(ctx.tenantKey, {
+  const fallbackReceipt = recordExecution(ctx.tenantKey, {
     playbookId,
     ok,
     mode,
@@ -208,9 +212,40 @@ export async function POST(req: NextRequest) {
     ...(incidentId ? { incidentId } : {}),
   });
 
+  let executionId = fallbackReceipt.id;
+  let executionAt = fallbackReceipt.at;
+
   if (ctx.mode === "auth") {
-    // Also persist a dry-run row as execution receipt proxy until dedicated execution table ships.
     const supabase = await createServerSupabaseClient();
+    const execInsert = await insertAutomationExecution(supabase, {
+      userId: ctx.userId,
+      playbookId,
+      ok: true,
+      mode,
+      rollbackPlan: rollbackPlan.slice(0, 500),
+      approvalNote: approvalNote.slice(0, 300),
+      incidentId,
+      decisionBrief,
+      expectedOutcome,
+      actualOutcome,
+      decisionAccuracyScore: accuracyScore,
+      policySuggestions,
+    });
+    if (execInsert.ok) {
+      executionId = execInsert.id;
+      executionAt = execInsert.createdAt;
+    }
+    for (const s of policySuggestions) {
+      await upsertPolicySuggestion(supabase, {
+        userId: ctx.userId,
+        playbookId,
+        suggestionKey: s.id,
+        label: s.label,
+        reason: s.reason,
+        confidenceScore: s.confidenceScore,
+        guardrails: s.guardrails,
+      });
+    }
     await insertAutomationDryRun(supabase, ctx.userId, {
       playbookId,
       ok: true,
@@ -225,7 +260,7 @@ export async function POST(req: NextRequest) {
         mode,
         rollback_plan: rollbackPlan.slice(0, 240),
         approval_note: approvalNote.slice(0, 200),
-        execution_receipt_id: receipt.id,
+        execution_receipt_id: executionId,
         decision_brief: decisionBrief,
         expected_outcome: expectedOutcome,
         actual_outcome: actualOutcome,
@@ -244,7 +279,7 @@ export async function POST(req: NextRequest) {
       details: [
         `playbook_id: ${playbookId}`,
         `mode: ${mode}`,
-        `receipt_id: ${receipt.id}`,
+        `receipt_id: ${executionId}`,
         `open: ${incidentUrl ?? automationsUrl}`,
         ...(incidentId ? [`incident_id: ${incidentId}`] : []),
       ],
@@ -252,7 +287,7 @@ export async function POST(req: NextRequest) {
       auditDetails: {
         playbook_id: playbookId,
         mode,
-        execution_receipt_id: receipt.id,
+        execution_receipt_id: executionId,
         ...(incidentId ? { incident_id: incidentId } : {}),
         decision_accuracy_score: accuracyScore,
       },
@@ -265,8 +300,8 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({
     ok: true,
-    id: receipt.id,
-    at: receipt.at,
+    id: executionId,
+    at: executionAt,
     playbookId,
     mode,
     detail: "Execution recorded with approval note and rollback plan.",

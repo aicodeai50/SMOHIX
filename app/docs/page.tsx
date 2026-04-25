@@ -38,6 +38,11 @@ const CARDS = [
     href: "/integrations",
   },
   {
+    title: "Decision intelligence",
+    body: "How risk scoring, approval briefs, and predicted-vs-actual outcomes support safer changes.",
+    href: "/governance/policies",
+  },
+  {
     title: "Vision & roadmap (console)",
     body: "Long-horizon direction inside the authenticated app.",
     href: "/auth/sign-in?next=/vision",

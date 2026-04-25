@@ -27,12 +27,14 @@ function labelFromRuns(runs: DryRunRecord[], playbookId: string): string {
 
 export function AutomationsConsole({
   initialRuns,
+  initialExecutions,
   auditTrailOnDryRun,
   auditWhisper,
   robotConnectorConfigured,
   linkedIncidentId,
 }: {
   initialRuns: DryRunRecord[];
+  initialExecutions: ExecutionReceipt[];
   auditTrailOnDryRun: boolean;
   auditWhisper: AuditWhisper | null;
   robotConnectorConfigured: boolean;
@@ -41,7 +43,7 @@ export function AutomationsConsole({
   const [runs, setRuns] = useState(initialRuns);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
-  const [executions, setExecutions] = useState<ExecutionReceipt[]>([]);
+  const [executions, setExecutions] = useState<ExecutionReceipt[]>(initialExecutions);
   const [promotedSuggestionIds, setPromotedSuggestionIds] = useState<Set<string>>(new Set());
 
   const rows = useMemo(

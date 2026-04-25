@@ -9,7 +9,10 @@ import { ExecutionBadge } from "@/components/guardrails/ExecutionBadge";
 import { PageHeader } from "@/components/app/PageHeader";
 import { appBody, appPanelTitle } from "@/lib/app-typography";
 import { listAutomationDryRuns } from "@/lib/automations/dry-runs-db";
+import { listAutomationExecutionsForUser } from "@/lib/automations/executions-db";
+import type { ExecutionReceipt } from "@/lib/automations/executions-dev";
 import { listDryRuns } from "@/lib/automations/runs-dev";
+import type { DryRunRecord } from "@/lib/automations/runs-dev";
 import { getLatestAuditWhisper } from "@/lib/audit/whispers";
 import { billingPlanFromSummary, getSubscriptionSummary } from "@/lib/billing/plan";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
@@ -33,7 +36,8 @@ export default async function AutomationsPage({
   const sp = await searchParams;
   const rawInc = typeof sp.incident === "string" ? sp.incident.trim() : "";
   const linkedIncidentId = INCIDENT_UUID.test(rawInc) ? rawInc : null;
-  let runs;
+  let runs: DryRunRecord[] = [];
+  let initialExecutions: ExecutionReceipt[] = [];
   let auditTrailOnDryRun = false;
   let auditWhisper = null;
 
@@ -84,6 +88,23 @@ export default async function AutomationsPage({
     auditWhisper = await getLatestAuditWhisper(user.id);
     const { runs: dbRuns, fromDb } = await listAutomationDryRuns(supabase);
     runs = fromDb ? dbRuns : listDryRuns(`u:${user.id}`);
+    initialExecutions = (await listAutomationExecutionsForUser(supabase, user.id, 12)).map((x) => ({
+      id: x.id,
+      playbookId: x.playbookId,
+      ok: x.ok,
+      at: x.createdAt,
+      mode: x.mode,
+      rollbackPlan: x.rollbackPlan,
+      approvalNote: x.approvalNote,
+      ...(x.incidentId ? { incidentId: x.incidentId } : {}),
+      ...(x.decisionBrief ? { decisionBrief: x.decisionBrief } : {}),
+      ...(x.expectedOutcome ? { expectedOutcome: x.expectedOutcome } : {}),
+      ...(x.actualOutcome ? { actualOutcome: x.actualOutcome } : {}),
+      ...(typeof x.decisionAccuracyScore === "number"
+        ? { decisionAccuracyScore: x.decisionAccuracyScore }
+        : {}),
+      ...(x.policySuggestions?.length ? { policySuggestions: x.policySuggestions } : {}),
+    }));
   } else {
     const tenantKey = (await cookies()).get("shynvo_dev_tid")?.value ?? "anon";
     runs = listDryRuns(tenantKey);
@@ -103,6 +124,7 @@ export default async function AutomationsPage({
         auditWhisper={auditWhisper}
         robotConnectorConfigured={robotConnectorConfigured}
         linkedIncidentId={linkedIncidentId}
+        initialExecutions={initialExecutions}
       />
     </>
   );

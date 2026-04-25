@@ -65,6 +65,11 @@ const cards = [
     description: "MFA and privileged-account governance snapshots.",
   },
   {
+    href: "/governance/policies",
+    title: "Policy review",
+    description: "Review decision-intelligence suggestions and promote safe automation policy.",
+  },
+  {
     href: "/changes",
     title: "Change calendar",
     description: "Maintenance windows and action execution log.",

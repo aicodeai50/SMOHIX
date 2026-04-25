@@ -35,6 +35,8 @@ export type PolicySuggestion = {
   guardrails: string[];
 };
 
+export type PolicySuggestionStatus = "proposed" | "reviewed" | "accepted" | "rejected";
+
 function hasAny(haystack: string, needles: string[]): boolean {
   return needles.some((n) => haystack.includes(n));
 }
@@ -203,4 +205,43 @@ export function suggestPolicyPromotions(input: {
       ],
     },
   ];
+}
+
+export function parseDecisionBrief(
+  value: unknown,
+  fallback: { actionLabel: string; policyHint: string; rollbackPlan?: string },
+): DecisionBrief {
+  if (!value || typeof value !== "object") {
+    return buildDecisionBrief(fallback);
+  }
+  const v = value as Partial<DecisionBrief>;
+  const validChecks = Array.isArray(v.policyChecks)
+    ? v.policyChecks.filter(
+        (c): c is DecisionPolicyCheck =>
+          Boolean(c) &&
+          typeof c.label === "string" &&
+          typeof c.passed === "boolean" &&
+          typeof c.note === "string",
+      )
+    : [];
+  if (
+    typeof v.riskScore !== "number" ||
+    typeof v.confidenceScore !== "number" ||
+    typeof v.blastRadius !== "string" ||
+    !["service", "cluster", "region", "global"].includes(v.blastRadius)
+  ) {
+    return buildDecisionBrief(fallback);
+  }
+  return {
+    riskScore: clamp(Math.round(v.riskScore), 0, 100),
+    confidenceScore: clamp(Math.round(v.confidenceScore), 0, 100),
+    blastRadius: v.blastRadius as BlastRadius,
+    rollbackPlan:
+      typeof v.rollbackPlan === "string" && v.rollbackPlan.trim()
+        ? v.rollbackPlan
+        : fallback.rollbackPlan?.trim() || "Rollback plan not provided.",
+    policyChecks: validChecks.length
+      ? validChecks
+      : buildDecisionBrief(fallback).policyChecks,
+  };
 }
