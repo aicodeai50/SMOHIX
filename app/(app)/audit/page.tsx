@@ -6,6 +6,7 @@ import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
 import { AuditIntentTags } from "@/components/guardrails/AuditIntentTags";
 import { listAuditEntriesForUser } from "@/lib/audit/data";
+import { auditSinceIsoFromWindow, auditWindowToSinceIso } from "@/lib/audit/export-window";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { appBody, appMeta } from "@/lib/app-typography";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -17,7 +18,18 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function AuditPage() {
+export default async function AuditPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ scope?: string; window?: string }>;
+}) {
+  const sp = await searchParams;
+  const scopeRaw = typeof sp.scope === "string" ? sp.scope.trim().toLowerCase() : "";
+  const windowRaw = typeof sp.window === "string" ? sp.window.trim().toLowerCase() : "";
+  const scope = scopeRaw === "slack" ? "slack" : "all";
+  const slackOnly = scope === "slack";
+  const windowValue = auditWindowToSinceIso(windowRaw);
+  const sinceIso = auditSinceIsoFromWindow(windowValue);
   let userId: string | null = null;
   if (hasSupabaseAuth()) {
     const supabase = await createServerSupabaseClient();
@@ -25,12 +37,37 @@ export default async function AuditPage() {
       data: { user },
     } = await supabase.auth.getUser();
     if (!user) {
-      redirect("/auth/sign-in?next=/audit");
+      const nextParams = new URLSearchParams();
+      if (slackOnly) nextParams.set("scope", "slack");
+      if (windowValue !== "all") nextParams.set("window", windowValue);
+      const nextAudit = nextParams.toString() ? `/audit?${nextParams}` : "/audit";
+      redirect(`/auth/sign-in?next=${encodeURIComponent(nextAudit)}`);
     }
     userId = user.id;
   }
 
-  const { source, rows } = await listAuditEntriesForUser(userId);
+  const { source, rows } = await listAuditEntriesForUser(userId, {
+    eventPrefix: slackOnly ? "slack." : null,
+    sinceIso,
+  });
+  const slackSentCount = rows.filter((r) => r.action === "slack.sent").length;
+  const slackSkippedCount = rows.filter((r) => r.action === "slack.skipped").length;
+  const slackFailedCount = rows.filter((r) => r.action === "slack.failed").length;
+  const allHref = windowValue === "all" ? "/audit" : `/audit?window=${encodeURIComponent(windowValue)}`;
+  const slackHref =
+    windowValue === "all" ? "/audit?scope=slack" : `/audit?scope=slack&window=${encodeURIComponent(windowValue)}`;
+  const allWindowHref = (w: "24h" | "7d" | "30d" | "all") =>
+    w === "all" ? "/audit" : `/audit?window=${w}`;
+  const slackWindowHref = (w: "24h" | "7d" | "30d" | "all") =>
+    w === "all" ? "/audit?scope=slack" : `/audit?scope=slack&window=${w}`;
+  const slackExportHref =
+    windowValue === "all"
+      ? "/api/audit/slack-events/export"
+      : `/api/audit/slack-events/export?window=${encodeURIComponent(windowValue)}`;
+  const allExportHref =
+    windowValue === "all"
+      ? "/api/audit/export"
+      : `/api/audit/export?window=${encodeURIComponent(windowValue)}`;
 
   return (
     <>
@@ -38,6 +75,98 @@ export default async function AuditPage() {
         title="Audit log"
         description="Append-only log for billing sync, API keys, approvals, and automation events. Export hooks can build on this table."
       />
+      <div className="mb-4 flex flex-wrap items-center gap-2">
+        <Link
+          href={allHref}
+          className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide transition-colors ${
+            !slackOnly
+              ? "border-accent/45 bg-accent/10 text-accent"
+              : "border-white/[0.14] text-foreground/75 hover:border-accent/35 hover:text-foreground"
+          }`}
+          aria-current={!slackOnly ? "page" : undefined}
+        >
+          All events
+        </Link>
+        <Link
+          href={slackHref}
+          className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide transition-colors ${
+            slackOnly
+              ? "border-accent/45 bg-accent/10 text-accent"
+              : "border-white/[0.14] text-foreground/75 hover:border-accent/35 hover:text-foreground"
+          }`}
+          aria-current={slackOnly ? "page" : undefined}
+        >
+          Slack events
+        </Link>
+      </div>
+      {!slackOnly ? (
+        <div className="mb-4 flex flex-wrap items-center gap-2">
+          {(["24h", "7d", "30d", "all"] as const).map((w) => (
+            <Link
+              key={w}
+              href={allWindowHref(w)}
+              className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide transition-colors ${
+                windowValue === w
+                  ? "border-accent/45 bg-accent/10 text-accent"
+                  : "border-white/[0.14] text-foreground/75 hover:border-accent/35 hover:text-foreground"
+              }`}
+              aria-current={windowValue === w ? "page" : undefined}
+            >
+              {w}
+            </Link>
+          ))}
+          {source === "database" ? (
+            <a
+              href={allExportHref}
+              className="rounded-full border border-white/[0.14] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-foreground/75 transition-colors hover:border-accent/35 hover:text-foreground"
+            >
+              Export CSV
+            </a>
+          ) : null}
+        </div>
+      ) : null}
+      {slackOnly ? (
+        <div className="mb-4 space-y-2">
+          <div className="flex flex-wrap items-center gap-2">
+            {(["24h", "7d", "30d", "all"] as const).map((w) => (
+              <Link
+                key={w}
+                href={slackWindowHref(w)}
+                className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide transition-colors ${
+                  windowValue === w
+                    ? "border-accent/45 bg-accent/10 text-accent"
+                    : "border-white/[0.14] text-foreground/75 hover:border-accent/35 hover:text-foreground"
+                }`}
+                aria-current={windowValue === w ? "page" : undefined}
+              >
+                {w}
+              </Link>
+            ))}
+            {source === "database" ? (
+              <a
+                href={slackExportHref}
+                className={`rounded-full border border-white/[0.14] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-foreground/75 transition-colors hover:border-accent/35 hover:text-foreground`}
+              >
+                Export CSV
+              </a>
+            ) : null}
+          </div>
+          <div className="grid gap-2 sm:grid-cols-3">
+            <div className="rounded-xl border border-emerald-400/35 bg-emerald-400/10 px-3 py-2">
+              <p className={`text-emerald-300 ${appMeta}`}>Sent</p>
+              <p className={`font-semibold text-emerald-200 ${appBody}`}>{slackSentCount}</p>
+            </div>
+            <div className="rounded-xl border border-amber-400/35 bg-amber-400/10 px-3 py-2">
+              <p className={`text-amber-300 ${appMeta}`}>Skipped</p>
+              <p className={`font-semibold text-amber-200 ${appBody}`}>{slackSkippedCount}</p>
+            </div>
+            <div className="rounded-xl border border-danger/35 bg-danger-dim/30 px-3 py-2">
+              <p className={`text-danger ${appMeta}`}>Failed</p>
+              <p className={`font-semibold text-danger ${appBody}`}>{slackFailedCount}</p>
+            </div>
+          </div>
+        </div>
+      ) : null}
       {source === "session" ? (
         <p className={`shynvo-glass-subtle mb-4 rounded-xl px-4 py-3 ${appMeta}`}>
           Sign in with Supabase auth to load your <span className="font-mono">audit_log</span>{" "}

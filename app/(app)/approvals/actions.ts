@@ -8,6 +8,8 @@ import { createApprovalRequest } from "@/lib/approvals/data";
 import { devDecideApproval } from "@/lib/approvals/dev-store";
 import { evaluateApprovalPolicy } from "@/lib/approvals/policy";
 import { appendAuditEvent } from "@/lib/audit/append";
+import { sendSlackNotificationWithAudit } from "@/lib/integrations/slack";
+import { getSiteUrl } from "@/lib/site";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
@@ -120,6 +122,15 @@ export async function approvalDecisionAction(formData: FormData) {
     event_type: decision === "approved" ? "approval.approved" : "approval.denied",
     user_id: user.id,
     details: { approval_id: id },
+  });
+  const approvalUrl = `${getSiteUrl()}/approvals`;
+  void sendSlackNotificationWithAudit({
+    userId: user.id,
+    title: `Approval ${decision}`,
+    body: `An approval request was ${decision} in Shynvo.`,
+    details: [`approval_id: ${id}`, `open: ${approvalUrl}`],
+    kind: "approval_decision",
+    auditDetails: { approval_id: id, decision },
   });
 
   revalidatePath("/approvals");

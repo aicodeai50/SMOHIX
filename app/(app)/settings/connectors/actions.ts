@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { ingestAlertCreateIncident, normalizeAlertIngestPayload } from "@/lib/integrations/alert-ingest";
+import { sendSlackNotificationWithAudit } from "@/lib/integrations/slack";
+import { getSiteUrl } from "@/lib/site";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
@@ -282,5 +284,50 @@ export async function acknowledgeUnknownSyntheticIngestAction(formData: FormData
     redirect(wizard.next);
   }
   const q = [`ack_ok=${updated}`, wizard.suffix].filter(Boolean).join("&");
+  redirect(`/settings/connectors?${q}`);
+}
+
+export async function sendSlackTestMessageAction(formData: FormData) {
+  const wizard = readWizardIntent(formData);
+  if (!hasSupabaseAuth()) {
+    redirect("/hub");
+  }
+
+  const supabase = await createServerSupabaseClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    redirect(`/auth/sign-in?next=${encodeURIComponent(connectorsPathWithWizard(wizard))}`);
+  }
+
+  const result = await sendSlackNotificationWithAudit({
+    userId: user.id,
+    title: "Shynvo Slack integration test",
+    body: "Your Slack webhook is connected and ready for approval and execution notifications.",
+    details: [`open: ${getSiteUrl()}/settings/connectors`],
+    kind: "manual_test",
+    auditDetails: { source: "settings.connectors" },
+  });
+
+  if (!result.ok) {
+    const q = [
+      `error=${encodeURIComponent(
+        result.reason === "slack_not_configured"
+          ? "Slack webhook not configured. Set SHYNVO_SLACK_WEBHOOK_URL in Railway variables."
+          : `Slack test failed: ${result.reason}`,
+      )}`,
+      wizard.suffix,
+    ]
+      .filter(Boolean)
+      .join("&");
+    redirect(`/settings/connectors?${q}`);
+  }
+
+  revalidatePath("/settings/connectors");
+  if (wizard.next) {
+    redirect(wizard.next);
+  }
+  const q = [`slack_ok=1`, wizard.suffix].filter(Boolean).join("&");
   redirect(`/settings/connectors?${q}`);
 }

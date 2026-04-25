@@ -69,6 +69,12 @@ export const API_GROUPS: ApiGroup[] = [
         summary: "Probe configured reasoning/automation connector URLs.",
         auth: "Session cookie when Supabase auth is enabled",
       },
+      {
+        method: "POST",
+        path: "/api/integrations/slack/approvals",
+        summary: "Receive signed Slack action payloads and decide pending approvals.",
+        auth: "Slack request signature (X-Slack-Signature)",
+      },
     ],
   },
   {
@@ -177,6 +183,24 @@ export const API_GROUPS: ApiGroup[] = [
         method: "GET|POST|PUT|PATCH|DELETE",
         path: "/api/robot/*",
         summary: "Proxy to automation robot backend.",
+        auth: "Session cookie",
+      },
+    ],
+  },
+  {
+    id: "audit",
+    title: "Audit",
+    operations: [
+      {
+        method: "GET",
+        path: "/api/audit/export",
+        summary: "Download all audit_log rows for the signed-in user as CSV (optional window=24h|7d|30d|all).",
+        auth: "Session cookie",
+      },
+      {
+        method: "GET",
+        path: "/api/audit/slack-events/export",
+        summary: "Download Slack delivery audit rows as CSV (optional window=24h|7d|30d|all).",
         auth: "Session cookie",
       },
     ],
