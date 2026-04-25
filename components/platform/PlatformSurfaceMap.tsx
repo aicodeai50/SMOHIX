@@ -3,10 +3,8 @@ import Link from "next/link";
 import { MarketingReveal } from "@/components/marketing/MarketingReveal";
 import {
   mArticle,
-  mBody,
   mCardLink,
   mEyebrow,
-  mH1,
   mH2,
 } from "@/lib/marketing-layout";
 import { SITE_BRAND_NAME } from "@/lib/site-brand";

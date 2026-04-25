@@ -24,7 +24,12 @@ async function main() {
   const connectorsPage = await read("app/(app)/settings/connectors/page.tsx");
   const statusPage = await read("app/status/page.tsx");
   const rootLayout = await read("app/layout.tsx");
-  const rootMiddleware = await read("middleware.ts");
+  let rootProxyOrMiddleware = "";
+  try {
+    rootProxyOrMiddleware = await read("proxy.ts");
+  } catch {
+    rootProxyOrMiddleware = await read("middleware.ts");
+  }
   const siteLib = await read("lib/site.ts");
   const robots = await read("app/robots.ts");
   const sitemap = await read("app/sitemap.ts");
@@ -114,23 +119,23 @@ async function main() {
   assert(robots.includes('"/api/connectors/status"'), "robots missing /api/connectors/status disallow");
   assert(!sitemap.includes('path: "/status"'), "sitemap should not include /status");
 
-  // Canonical host consistency: enforce apex canonical and www->apex redirect in middleware.
+  // Canonical host consistency: enforce apex canonical and www->apex redirect in edge routing.
   assert(siteLib.includes('SITE_DOMAIN = "shynvo.app"'), "site domain should be apex shynvo.app");
   assert(
     rootLayout.includes("alternates:") && rootLayout.includes("canonical: siteUrl"),
     "root metadata missing canonical alternates wiring",
   );
   assert(
-    rootMiddleware.includes("host.startsWith(\"www.\")"),
-    "middleware missing www host detection",
+    rootProxyOrMiddleware.includes("host.startsWith(\"www.\")"),
+    "proxy/middleware missing www host detection",
   );
   assert(
-    rootMiddleware.includes("url.hostname = host.replace(/^www\\./, \"\")"),
-    "middleware missing www-to-apex hostname rewrite",
+    rootProxyOrMiddleware.includes("url.hostname = host.replace(/^www\\./, \"\")"),
+    "proxy/middleware missing www-to-apex hostname rewrite",
   );
   assert(
-    rootMiddleware.includes("NextResponse.redirect(url"),
-    "middleware missing canonical redirect response",
+    rootProxyOrMiddleware.includes("NextResponse.redirect(url"),
+    "proxy/middleware missing canonical redirect response",
   );
 
   // Guard key public/operational files against accidental deployment fingerprint leakage.

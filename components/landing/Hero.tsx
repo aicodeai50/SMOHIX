@@ -28,11 +28,8 @@ export function Hero({
           A safety layer on top of the automations you already run, not a vague &ldquo;AI platform.&rdquo;
         </p>
         <p className={`mt-3 max-w-2xl ${mBody}`}>
-          vs legacy paging: we are not claiming full on-call replacement on day one. vs ITSM
-          suites: we are not claiming enterprise change modules yet. We are claiming{" "}
-          <strong className="font-medium text-foreground/90">
-            run automation safely with human approval and full traceability
-          </strong>.
+          Built for teams that need a reliable control layer during incidents: clear ownership,
+          guarded execution, and an auditable record of every high-impact action.
         </p>
 
         <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">

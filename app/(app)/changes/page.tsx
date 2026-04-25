@@ -51,7 +51,8 @@ export default async function ChangesPage({
     listChangeWindowsForUser(user.id),
     listChangeActionsForUser(user.id),
   ]);
-  const upcoming = windows.filter((w) => new Date(w.endsAt).valueOf() >= Date.now()).length;
+  const nowMs = new Date().valueOf();
+  const upcoming = windows.filter((w) => new Date(w.endsAt).valueOf() >= nowMs).length;
 
   const sp = await searchParams;
   const err = typeof sp.error === "string" ? sp.error : undefined;

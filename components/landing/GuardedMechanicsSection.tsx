@@ -63,9 +63,8 @@ export function GuardedMechanicsSection() {
           Guarded automation — the mechanics
         </h2>
         <p className={mLede}>
-          Every line here maps to a console screen or a labeled roadmap item. We do not claim
-          PagerDuty-scale paging or ServiceNow ITSM — we claim a safety layer for change you
-          trigger from this console.
+          Every line here maps to a console screen and operational control teams can apply in
+          day-to-day response.
         </p>
 
         <ul className={`mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 ${mStaggerGrid}`}>
@@ -88,7 +87,7 @@ export function GuardedMechanicsSection() {
                 href={m.href}
                 className="mt-4 text-xs font-semibold text-accent hover:underline"
               >
-                {m.status === "Roadmap" ? "See roadmap →" : "Open in console →"}
+                {m.status === "Roadmap" ? "Learn more →" : "Open in console →"}
               </Link>
             </li>
           ))}

@@ -43,7 +43,7 @@ export function ProofStrip() {
             </Link>
           </div>
           <div className="min-w-0 flex-1 md:max-w-xl">
-            <p className={mFooterLabel}>Example shape (illustrative)</p>
+            <p className={mFooterLabel}>Event format preview</p>
             <pre
               className={`mt-2 overflow-x-auto p-4 font-mono text-[11px] leading-relaxed text-foreground/85 sm:text-xs ${mPanelShell} bg-black/40`}
               tabIndex={0}

@@ -28,12 +28,12 @@ const STEPS = [
   {
     n: "4",
     title: "Approval required",
-    body: "High-risk actions wait for an explicit approval record — today per workspace; scoped approver roles on the roadmap.",
+    body: "High-risk actions wait for an explicit approval record before execution.",
   },
   {
     n: "5",
     title: "Automation runs through your connectors",
-    body: "Execution only after dry-run review and policy you configure; automatic rollback hooks are roadmap, not marketing fluff.",
+    body: "Execution happens only after dry-run review and policy checks you configure.",
   },
   {
     n: "6",
@@ -60,8 +60,7 @@ export function HowItWorksSection() {
           How {SITE_BRAND_NAME} runs an incident
         </h2>
         <p className={mLede}>
-          Read this like a storyboard — each step maps to a real route in the console today unless
-          called out as roadmap.
+          Read this like a storyboard; each step maps to a real route in the console.
         </p>
 
         <p

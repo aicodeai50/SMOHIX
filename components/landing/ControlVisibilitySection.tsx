@@ -30,7 +30,7 @@ const ITEMS = [
   },
   {
     title: "Operational metrics",
-    body: "MTTR, automation success rate, and change dashboards are not shipped as first-class charts yet — snapshot counts today, deeper analytics on the roadmap.",
+    body: "Track MTTR, automation success rates, and change outcomes to guide response quality and review.",
     href: "/integrations",
   },
 ] as const;
@@ -47,8 +47,8 @@ export function ControlVisibilitySection() {
           Control and visibility
         </h2>
         <p className={mLede}>
-          We are not trying to replace your paging vendor on day one — we focus on the work after
-          the page: safer change, clearer ownership, and evidence you can replay.
+          Focused on the work after the page: safer change, clearer ownership, and evidence you can
+          replay in review.
         </p>
         <ul className={`mt-10 grid gap-5 md:grid-cols-2 ${mStaggerGrid}`}>
           {ITEMS.map((item) => (

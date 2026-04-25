@@ -23,12 +23,29 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
+function percentile(values: number[], pct: number): number | null {
+  if (!values.length) return null;
+  const sorted = [...values].sort((a, b) => a - b);
+  const idx = Math.min(sorted.length - 1, Math.max(0, Math.ceil((pct / 100) * sorted.length) - 1));
+  return sorted[idx] ?? null;
+}
+
+function formatMinutesLabel(value: number | null): string {
+  if (value == null || !Number.isFinite(value) || value < 0) return "—";
+  if (value < 60) return `${Math.round(value)}m`;
+  const h = Math.floor(value / 60);
+  const m = Math.round(value % 60);
+  return m > 0 ? `${h}h ${m}m` : `${h}h`;
+}
+
 export default async function OverviewPage() {
   let userId: string | null = null;
   let devTenantKey: string | null = null;
+  let supabaseClient: Awaited<ReturnType<typeof createServerSupabaseClient>> | null = null;
 
   if (hasSupabaseAuth()) {
     const supabase = await createServerSupabaseClient();
+    supabaseClient = supabase;
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -49,9 +66,8 @@ export default async function OverviewPage() {
     devTenantId: devTenantKey,
   });
   let dryRuns = devTenantKey ? listDryRuns(devTenantKey) : [];
-  if (hasSupabaseAuth() && userId) {
-    const supabase = await createServerSupabaseClient();
-    const dryRunRes = await listAutomationDryRuns(supabase);
+  if (supabaseClient && userId) {
+    const dryRunRes = await listAutomationDryRuns(supabaseClient);
     dryRuns = dryRunRes.runs;
   }
 
@@ -83,6 +99,47 @@ export default async function OverviewPage() {
   const successfulDryRuns = dryRuns.filter((run) => run.ok).length;
   const dryRunSuccessRate =
     dryRuns.length > 0 ? Math.round((successfulDryRuns / dryRuns.length) * 100) : 0;
+  let approvalP50Label = "—";
+  let approvalP95Label = "—";
+  let pendingOldestLabel = "—";
+  let pendingRiskLabel = approvalsPending > 0 ? "Queue health unavailable in session mode" : "No pending backlog";
+
+  if (supabaseClient && userId) {
+    const { data: approvalRows } = await supabaseClient
+      .from("approval_requests")
+      .select("status, created_at, updated_at")
+      .eq("user_id", userId)
+      .order("updated_at", { ascending: false })
+      .limit(300);
+    const decidedMins: number[] = [];
+    const pendingMins: number[] = [];
+    const now = new Date().valueOf();
+    for (const row of approvalRows ?? []) {
+      const status = String(row.status ?? "").toLowerCase();
+      const createdMs = new Date(String(row.created_at ?? "")).valueOf();
+      if (!Number.isFinite(createdMs)) continue;
+      if (status === "approved" || status === "denied") {
+        const updatedMs = new Date(String(row.updated_at ?? "")).valueOf();
+        if (!Number.isFinite(updatedMs) || updatedMs < createdMs) continue;
+        decidedMins.push((updatedMs - createdMs) / 60000);
+      } else if (status === "pending") {
+        pendingMins.push((now - createdMs) / 60000);
+      }
+    }
+    const p50 = percentile(decidedMins, 50);
+    const p95 = percentile(decidedMins, 95);
+    approvalP50Label = formatMinutesLabel(p50);
+    approvalP95Label = formatMinutesLabel(p95);
+    const oldestPendingMin = pendingMins.length ? Math.max(...pendingMins) : null;
+    pendingOldestLabel = formatMinutesLabel(oldestPendingMin);
+    const staleCount = pendingMins.filter((m) => m >= 24 * 60).length;
+    pendingRiskLabel =
+      pendingMins.length === 0
+        ? "No pending backlog"
+        : staleCount > 0
+          ? `${staleCount} older than 24h`
+          : "Fresh queue (no >24h pending)";
+  }
 
   return (
     <>
@@ -146,12 +203,14 @@ export default async function OverviewPage() {
             <div className="rounded-xl border border-white/[0.08] bg-black/20 px-4 py-3">
               <p className={appMeta}>Pending approvals</p>
               <p className="mt-1 text-xl font-semibold text-foreground">{approvalsPending}</p>
-              <p className={appMeta}>Human gate queue</p>
+              <p className={appMeta}>{pendingRiskLabel}</p>
             </div>
             <div className="rounded-xl border border-white/[0.08] bg-black/20 px-4 py-3">
-              <p className={appMeta}>Decisions recorded</p>
-              <p className="mt-1 text-xl font-semibold text-foreground">{approvalDecisions}</p>
-              <p className={appMeta}>Audit-friendly approvals</p>
+              <p className={appMeta}>Approval latency (p50)</p>
+              <p className="mt-1 text-xl font-semibold text-foreground">{approvalP50Label}</p>
+              <p className={appMeta}>
+                p95 {approvalP95Label} · oldest pending {pendingOldestLabel} · {approvalDecisions} decisions
+              </p>
             </div>
           </div>
           <p className={`mt-4 ${appMeta}`}>

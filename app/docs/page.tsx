@@ -8,7 +8,7 @@ import { SITE_BRAND_NAME } from "@/lib/site-brand";
 
 export const metadata: Metadata = {
   title: "Docs",
-  description: "Learn hub — platform narrative, integrations roadmap, and console entry points.",
+  description: "Learn hub — platform narrative, integrations, and console entry points.",
 };
 
 const CARDS = [
@@ -33,8 +33,8 @@ const CARDS = [
     href: "/why",
   },
   {
-    title: "Integrations roadmap",
-    body: "What ships today vs planned vendor connectors and categories.",
+    title: "Integrations",
+    body: "Current connector categories and platform integration guidance.",
     href: "/integrations",
   },
   {

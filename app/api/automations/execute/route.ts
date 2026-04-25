@@ -3,12 +3,14 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 
 import { insertAutomationDryRun } from "@/lib/automations/dry-runs-db";
-import { listExecutions, recordExecution } from "@/lib/automations/executions-dev";
+import { recordExecution } from "@/lib/automations/executions-dev";
 import { getPlaybookById } from "@/lib/automations/playbooks";
 import { listDryRuns } from "@/lib/automations/runs-dev";
 import { evaluateApprovalPolicy } from "@/lib/approvals/policy";
 import { appendAuditEvent } from "@/lib/audit/append";
 import { billingPlanFromSummary, getSubscriptionSummary } from "@/lib/billing/plan";
+import { sendSlackNotificationWithAudit } from "@/lib/integrations/slack";
+import { getSiteUrl } from "@/lib/site";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
@@ -188,6 +190,28 @@ export async function POST(req: NextRequest) {
         mode,
         rollback_plan: rollbackPlan.slice(0, 240),
         approval_note: approvalNote.slice(0, 200),
+        execution_receipt_id: receipt.id,
+        ...(incidentId ? { incident_id: incidentId } : {}),
+      },
+    });
+    const siteUrl = getSiteUrl();
+    const incidentUrl = incidentId ? `${siteUrl}/incidents/${incidentId}` : null;
+    const automationsUrl = `${siteUrl}/automations`;
+    void sendSlackNotificationWithAudit({
+      userId: ctx.userId,
+      title: "Automation executed",
+      body: "A guarded automation execution was recorded in Shynvo.",
+      details: [
+        `playbook_id: ${playbookId}`,
+        `mode: ${mode}`,
+        `receipt_id: ${receipt.id}`,
+        `open: ${incidentUrl ?? automationsUrl}`,
+        ...(incidentId ? [`incident_id: ${incidentId}`] : []),
+      ],
+      kind: "execution_receipt",
+      auditDetails: {
+        playbook_id: playbookId,
+        mode,
         execution_receipt_id: receipt.id,
         ...(incidentId ? { incident_id: incidentId } : {}),
       },

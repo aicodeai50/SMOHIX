@@ -39,11 +39,11 @@ function noStoreHtml(response: NextResponse, pathname: string) {
 }
 
 /**
- * 1) www → apex for the primary host.
+ * 1) www -> apex for the primary host.
  * 2) Supabase session refresh (when env is set).
  * 3) Protect console routes; send signed-in users away from sign-in/up.
  */
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const host = request.headers.get("host") ?? "";
   if (host.startsWith("www.") && !host.includes("localhost") && !host.includes("127.0.0.1")) {
     const url = request.nextUrl.clone();

@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/app/PageHeader";
 import { AlertIngestPanel } from "@/components/settings/AlertIngestPanel";
 import { appBody, appMeta, appPanelTitle } from "@/lib/app-typography";
 import { getConnectorHealthRows } from "@/lib/connectors-health";
+import { getSlackNotificationConfig, isSlackWebhookConfigured } from "@/lib/integrations/slack";
 import { getSiteUrl } from "@/lib/site";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -16,6 +17,7 @@ import {
   cleanupSyntheticIngestTestsAction,
   generateTestIngestIncidentAction,
   generateVendorTestEventsAction,
+  sendSlackTestMessageAction,
 } from "./actions";
 
 export const metadata: Metadata = {
@@ -182,6 +184,7 @@ export default async function ConnectorsPage({
     batch_ok?: string;
     clean_ok?: string;
     ack_ok?: string;
+    slack_ok?: string;
     error?: string;
   }>;
 }) {
@@ -194,6 +197,16 @@ export default async function ConnectorsPage({
   const signatureModeEnabled = Boolean(
     process.env.SHYNVO_ALERT_WEBHOOK_SIGNING_SECRET?.trim(),
   );
+  const slackWebhookConfigured = isSlackWebhookConfigured();
+  const slackNotificationConfig = getSlackNotificationConfig();
+  const slackModeLabel =
+    slackNotificationConfig.approvals && slackNotificationConfig.executions
+      ? "Approvals + executions"
+      : slackNotificationConfig.approvals
+        ? "Approvals only"
+        : slackNotificationConfig.executions
+          ? "Executions only"
+          : "Disabled";
   let recentIngest: {
     id: string;
     title: string;
@@ -294,6 +307,7 @@ export default async function ConnectorsPage({
   const successBatchCount = typeof sp.batch_ok === "string" ? sp.batch_ok.trim() : "";
   const successCleanCount = typeof sp.clean_ok === "string" ? sp.clean_ok.trim() : "";
   const successAcknowledgeCount = typeof sp.ack_ok === "string" ? sp.ack_ok.trim() : "";
+  const successSlackTest = typeof sp.slack_ok === "string" ? sp.slack_ok.trim() : "";
   const actionError = typeof sp.error === "string" ? sp.error.trim() : "";
   const allowedFilters = new Set(["", "datadog", "prometheus", "pagerduty", "newrelic", "unknown"]);
   const vendorFilter = allowedFilters.has(vendorFilterRaw) ? vendorFilterRaw : "";
@@ -328,7 +342,7 @@ export default async function ConnectorsPage({
   const setupStepPosition =
     setupStep === "ingest-token" ? 3 : setupStep === "connectors" ? 4 : null;
   const inSetupFlow = Boolean(returnHref && setupStepPosition);
-  const now = Date.now();
+  const now = new Date().valueOf();
   const windowMs =
     windowFilter === "24h"
       ? 24 * 60 * 60 * 1000
@@ -950,11 +964,51 @@ export default async function ConnectorsPage({
           Acknowledged {successAcknowledgeCount} unknown unresolved synthetic incident(s).
         </p>
       ) : null}
+      {successSlackTest ? (
+        <p className={`mb-4 rounded-xl border border-success/25 bg-success-dim/50 px-4 py-3 text-success ${appBody}`}>
+          Slack test sent successfully.
+        </p>
+      ) : null}
       {actionError ? (
         <p className={`mb-4 rounded-xl border border-danger/25 bg-danger-dim/50 px-4 py-3 text-danger ${appBody}`}>
           {actionError}
         </p>
       ) : null}
+      <section className="mb-6 rounded-xl border border-border bg-surface/70 p-4">
+        <h2 className={appPanelTitle}>Slack approvals and execution receipts</h2>
+        <p className={`mt-1 text-muted ${appBody}`}>
+          Send key governance events to Slack with an incoming webhook.
+        </p>
+        <p className={`mt-2 ${appBody}`}>
+          {slackWebhookConfigured ? (
+            <span className="text-emerald-300">Configured · notifications enabled</span>
+          ) : (
+            <span className="text-amber-300">
+              Not configured · set <span className="font-mono text-foreground/90">SHYNVO_SLACK_WEBHOOK_URL</span>{" "}
+              in Railway variables to enable
+            </span>
+          )}
+        </p>
+        <p className={`mt-1 text-foreground/70 ${appMeta}`}>
+          Notification mode: <span className="text-foreground/85">{slackModeLabel}</span>
+        </p>
+        <form action={sendSlackTestMessageAction} className="mt-3">
+          {returnHref ? <input type="hidden" name="next" value={returnHref} /> : null}
+          {setupStep ? <input type="hidden" name="setup_step" value={setupStep} /> : null}
+          <button
+            type="submit"
+            className={`rounded-lg border border-accent/45 bg-accent/10 px-3 py-1.5 font-medium text-accent transition-colors hover:border-accent/70 hover:bg-accent/15 disabled:cursor-not-allowed disabled:border-white/[0.12] disabled:bg-transparent disabled:text-foreground/40 ${appBody}`}
+            disabled={!slackWebhookConfigured}
+            title={
+              slackWebhookConfigured
+                ? "Send a test message to your configured Slack channel."
+                : "Set SHYNVO_SLACK_WEBHOOK_URL to enable Slack test messages."
+            }
+          >
+            Send Slack test message
+          </button>
+        </form>
+      </section>
       {noneConfigured ? (
         <div className="mb-6">
           <ConsoleEmptyState

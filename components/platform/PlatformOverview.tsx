@@ -77,7 +77,7 @@ export function PlatformOverview() {
         {SITE_BRAND_NAME} console — what it is
       </h1>
       <p className={`mt-3 ${mBody}`}>
-        For investors, buyers, and new engineers: meaning first, routes second.
+        A clear product overview for teams evaluating and operating the platform.
       </p>
 
       <nav aria-label="On this page" className={`mt-8 p-4 text-sm ${mPanelShell}`}>
@@ -128,8 +128,7 @@ export function PlatformOverview() {
           approvals before side effects), and an{" "}
           <strong className="font-medium text-foreground/90">auditable trail</strong> of operational activity
           in one web console. Teams use it to respond when things break, propose mechanical remediation, get
-          explicit sign-off where policy requires it, and leave evidence that stands up in review — without
-          pretending to replace every legacy ITSM or paging vendor on day one.
+          explicit sign-off where policy requires it, and leave evidence that stands up in review.
         </p>
       </section>
 
@@ -146,7 +145,7 @@ export function PlatformOverview() {
       <section id="flow" className="mt-12 scroll-mt-24">
         <h2 className={mH2}>Core operational flow</h2>
         <p className={`mt-3 ${mBody}`}>
-          This is how modules connect in practice — the story buyers should replay in their heads.
+          This is how modules connect in day-to-day incident response.
         </p>
         <ol className={`mt-6 space-y-5 ${mBody}`}>
           <li className="border-l-2 border-accent/40 pl-4">
@@ -281,7 +280,7 @@ export function PlatformOverview() {
               <code className="font-mono text-xs text-accent/90">/api/integrations/alerts</code>,{" "}
               <code className="font-mono text-xs text-accent/90">/api/connectors/status</code>,{" "}
               <Link href="/integrations" className="text-accent hover:underline">
-                public roadmap
+                integrations details
               </Link>
               .
             </dd>
@@ -305,9 +304,9 @@ export function PlatformOverview() {
             Lemon Squeezy is wired.
           </li>
           <li>
-            <strong className="text-foreground/90">Session / demo mode</strong> — When Supabase env is not
-            configured, parts of the console (including incidents) can run on a browser-scoped session so the UI is
-            explorable without standing up a database. Data is not shared across users or devices.
+            <strong className="text-foreground/90">Evaluation mode</strong> — When Supabase is not
+            configured, parts of the console run in an isolated browser session so teams can explore
+            workflows without provisioning a database.
           </li>
         </ul>
       </section>
@@ -316,13 +315,13 @@ export function PlatformOverview() {
         <h2 className={mH2}>What makes this different</h2>
         <ul className={`mt-3 space-y-3 ${mBody}`}>
           <li>
-            <strong className="text-foreground/90">PagerDuty-class tools</strong> skew alerting and paging first.
-            {SITE_BRAND_NAME} does not claim full parity on schedules on day one; it emphasizes{" "}
-            <strong className="text-foreground/90">controlled change and proof</strong> after the page.
+            <strong className="text-foreground/90">Alerting platforms</strong> focus on detection and paging.
+            {SITE_BRAND_NAME} emphasizes <strong className="text-foreground/90">controlled change and proof</strong>{" "}
+            after the alert.
           </li>
           <li>
-            <strong className="text-foreground/90">ServiceNow-class suites</strong> skew heavyweight ITSM process.
-            {SITE_BRAND_NAME} is lighter: opinionated console flows with room to grow — not a full CMDB replacement in v1.
+            <strong className="text-foreground/90">Traditional ITSM suites</strong> emphasize broad process coverage.
+            {SITE_BRAND_NAME} delivers focused console workflows for incident response and guarded automation.
           </li>
           <li>
             {SITE_BRAND_NAME}&apos;s wedge is{" "}
