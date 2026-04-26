@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 
 import {
+  generateIncidentRcaAction,
   updateIncidentContextAction,
   updateIncidentPostmortemAction,
   updateIncidentStatusAction,
@@ -21,6 +22,7 @@ import { getIncidentForUser } from "@/lib/incidents/data";
 import { listRunbooks } from "@/lib/runbooks/catalog";
 import { appBody, appLabel, appMeta, appOverline } from "@/lib/app-typography";
 import { getIncidentTimeline } from "@/lib/incidents/timeline";
+import { getLatestIncidentRcaRun } from "@/lib/incidents/rca";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
@@ -85,9 +87,11 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
   const robotConnectorConfigured = Boolean(process.env.SHYNVO_ROBOT_API_URL?.trim());
 
   let lastIncidentDryRun: DryRunRecord | null = null;
+  let latestRcaRun: Awaited<ReturnType<typeof getLatestIncidentRcaRun>> = null;
   if (hasSupabaseAuth() && userId && source === "database") {
     const supabase = await createServerSupabaseClient();
     lastIncidentDryRun = await getLatestDryRunForIncident(supabase, userId, id);
+    latestRcaRun = await getLatestIncidentRcaRun(supabase, userId, id);
   }
 
   return (
@@ -160,6 +164,59 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
           </Link>{" "}
           to attach automation evidence with this incident id.
         </p>
+      ) : null}
+      {source === "database" && hasSupabaseAuth() ? (
+        <div className="shynvo-glass mb-6 space-y-3 rounded-2xl p-4 md:p-5">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className={appOverline}>RCA Copilot</p>
+              <p className={`mt-1 text-foreground/90 ${appBody}`}>
+                Generate a probable root-cause hypothesis with confidence and evidence references.
+              </p>
+            </div>
+            <form action={generateIncidentRcaAction}>
+              <input type="hidden" name="id" value={row.id} />
+              <button
+                type="submit"
+                className={`h-10 rounded-xl bg-accent px-5 font-semibold text-background shadow-[0_0_28px_-8px_rgba(94,225,255,0.45)] transition-[opacity,box-shadow] hover:opacity-95 hover:shadow-[0_0_36px_-6px_rgba(94,225,255,0.55)] ${appBody}`}
+              >
+                Generate RCA
+              </button>
+            </form>
+          </div>
+          {latestRcaRun ? (
+            <div className="space-y-2 rounded-xl border border-white/[0.08] bg-white/[0.02] p-3">
+              <p className={`${appLabel}`}>
+                Confidence: <span className="text-foreground/90">{latestRcaRun.confidenceScore}%</span>
+              </p>
+              <p className={`text-foreground/90 ${appBody}`}>{latestRcaRun.hypothesis.likelyCause}</p>
+              {latestRcaRun.hypothesis.recommendedActions.length > 0 ? (
+                <ul className={`list-disc space-y-1 pl-5 text-muted ${appBody}`}>
+                  {latestRcaRun.hypothesis.recommendedActions.map((action, idx) => (
+                    <li key={`${latestRcaRun.id}-action-${idx}`}>{action}</li>
+                  ))}
+                </ul>
+              ) : null}
+              {latestRcaRun.evidenceRefs.length > 0 ? (
+                <div>
+                  <p className={appLabel}>Evidence</p>
+                  <ul className={`mt-1 space-y-1 ${appMeta}`}>
+                    {latestRcaRun.evidenceRefs.map((ref, idx) => (
+                      <li key={`${latestRcaRun.id}-e-${idx}`} className="text-muted">
+                        {ref.type}: {ref.label}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+              <p className={appMeta}>Last generated: {new Date(latestRcaRun.createdAt).toLocaleString()}</p>
+            </div>
+          ) : (
+            <p className={appMeta}>
+              No RCA run yet for this incident. Generate one to snapshot likely cause and response next steps.
+            </p>
+          )}
+        </div>
       ) : null}
       {source === "database" && row.serviceId ? (
         <p className={`mb-4 text-muted ${appBody}`}>

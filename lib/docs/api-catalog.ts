@@ -49,6 +49,18 @@ export const API_GROUPS: ApiGroup[] = [
         summary: "Download post-incident review Markdown (narrative, timeline, execution evidence, audit snapshot).",
         auth: "Session cookie",
       },
+      {
+        method: "POST",
+        path: "/api/incidents/{id}/rca/run",
+        summary: "Generate and persist an incident RCA hypothesis with confidence and evidence references.",
+        auth: "Session cookie",
+      },
+      {
+        method: "GET",
+        path: "/api/incidents/{id}/rca/latest",
+        summary: "Fetch latest persisted RCA run for an incident.",
+        auth: "Session cookie",
+      },
     ],
   },
   {

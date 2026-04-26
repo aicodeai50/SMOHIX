@@ -6,10 +6,12 @@ import { redirect } from "next/navigation";
 
 import { appendAuditEvent } from "@/lib/audit/append";
 import {
+  getIncidentForUser,
   updateIncidentContextForUser,
   updateIncidentPostmortemForUser,
   updateIncidentStatusForUser,
 } from "@/lib/incidents/data";
+import { createIncidentRcaRun } from "@/lib/incidents/rca";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
@@ -154,6 +156,55 @@ export async function updateIncidentPostmortemAction(formData: FormData) {
 
   revalidatePath("/incidents");
   revalidatePath(`/incidents/${id}`);
+  revalidatePath("/overview");
+  redirect(`/incidents/${id}`);
+}
+
+export async function generateIncidentRcaAction(formData: FormData) {
+  const id = String(formData.get("id") ?? "").trim();
+  if (!id) {
+    return;
+  }
+
+  if (!hasSupabaseAuth()) {
+    redirect(`/incidents/${encodeURIComponent(id)}?error=${encodeURIComponent("RCA requires Supabase auth.")}`);
+  }
+
+  const supabase = await createServerSupabaseClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    redirect(`/auth/sign-in?next=/incidents/${encodeURIComponent(id)}`);
+  }
+
+  const resolved = await getIncidentForUser(user.id, id, null);
+  if (!resolved || resolved.source !== "database") {
+    redirect(`/incidents/${encodeURIComponent(id)}?error=${encodeURIComponent("Incident not found.")}`);
+  }
+
+  const run = await createIncidentRcaRun({
+    supabase,
+    userId: user.id,
+    incident: resolved.row,
+  });
+  if (!run) {
+    redirect(`/incidents/${encodeURIComponent(id)}?error=${encodeURIComponent("Could not generate RCA.")}`);
+  }
+
+  await appendAuditEvent({
+    event_type: "incident.rca_generated",
+    user_id: user.id,
+    details: {
+      incident_id: id,
+      confidence_score: run.confidenceScore,
+      evidence_count: run.evidenceRefs.length,
+      rca_run_id: run.id,
+    },
+  });
+
+  revalidatePath(`/incidents/${id}`);
+  revalidatePath("/incidents");
   revalidatePath("/overview");
   redirect(`/incidents/${id}`);
 }

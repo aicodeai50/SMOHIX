@@ -163,7 +163,7 @@ export function ConsoleNavPanel() {
       window.localStorage.setItem(RECENT_MODULES_STORAGE_KEY, JSON.stringify(next));
       return next;
     });
-  }, []);
+  }, [setRecentModuleHrefs]);
 
   useEffect(() => {
     const matchedModule = CONSOLE_MODULES.find(
