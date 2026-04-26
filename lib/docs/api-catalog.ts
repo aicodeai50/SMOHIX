@@ -61,6 +61,18 @@ export const API_GROUPS: ApiGroup[] = [
         summary: "Fetch latest persisted RCA run for an incident.",
         auth: "Session cookie",
       },
+      {
+        method: "GET",
+        path: "/api/services/{id}/slo",
+        summary: "Fetch service SLO profile plus latest error budget windows (7d/30d).",
+        auth: "Session cookie",
+      },
+      {
+        method: "GET",
+        path: "/api/overview/error-budget-summary",
+        summary: "Fetch SLO error budget overview across services (critical/warning burn and average used budget).",
+        auth: "Session cookie",
+      },
     ],
   },
   {

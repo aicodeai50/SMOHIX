@@ -9,6 +9,7 @@ import { PlaceholderCard } from "@/components/app/PlaceholderCard";
 import { appBody, appLabel, appMeta, appOverline, appPanelTitle } from "@/lib/app-typography";
 import { billingPlanFromSummary, getSubscriptionSummary } from "@/lib/billing/plan";
 import { listServicesForUser } from "@/lib/services/data";
+import { getErrorBudgetOverviewSummary } from "@/lib/services/slo";
 import { createServiceSupabaseClient } from "@/lib/supabase/admin";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -57,6 +58,7 @@ export default async function ServicesPage({
   const err = typeof sp.error === "string" ? sp.error : undefined;
 
   const rows = await listServicesForUser(user.id);
+  const sloSummary = await getErrorBudgetOverviewSummary(supabase, user.id);
   const serviceRoleConfigured = Boolean(createServiceSupabaseClient());
 
   if (subscriptionGatedFree) {
@@ -103,6 +105,24 @@ export default async function ServicesPage({
 
       <div className="grid gap-6 lg:grid-cols-2">
         <PlaceholderCard title="Catalog">
+          <div className="mb-4 grid gap-3 sm:grid-cols-3">
+            <div className="rounded-lg border border-white/[0.08] bg-white/[0.02] px-3 py-2">
+              <p className={appMeta}>SLO-covered services</p>
+              <p className="text-lg font-semibold text-foreground">{sloSummary.servicesWithSlo}</p>
+            </div>
+            <div className="rounded-lg border border-white/[0.08] bg-white/[0.02] px-3 py-2">
+              <p className={appMeta}>Critical burn</p>
+              <p className="text-lg font-semibold text-foreground">{sloSummary.criticalBurnServices}</p>
+            </div>
+            <div className="rounded-lg border border-white/[0.08] bg-white/[0.02] px-3 py-2">
+              <p className={appMeta}>Avg budget used</p>
+              <p className="text-lg font-semibold text-foreground">
+                {sloSummary.averageBudgetUsedPercent == null
+                  ? "—"
+                  : `${sloSummary.averageBudgetUsedPercent}%`}
+              </p>
+            </div>
+          </div>
           <form action={createServiceAction} className="space-y-3">
             <div>
               <label htmlFor="svc-name" className={`mb-1 block ${appLabel}`}>

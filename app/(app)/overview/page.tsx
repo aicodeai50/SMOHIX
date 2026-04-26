@@ -19,6 +19,7 @@ import { listDryRuns } from "@/lib/automations/runs-dev";
 import { getConnectorHealthRows } from "@/lib/connectors-health";
 import { listIncidentsForUser } from "@/lib/incidents/data";
 import { loadOverviewCommandCenterData } from "@/lib/overview/command-center-data";
+import { getErrorBudgetOverviewSummary } from "@/lib/services/slo";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
@@ -120,6 +121,10 @@ export default async function OverviewPage() {
   let policyBlockDeltaLabel = "No baseline";
   let topPolicyBlockReasonCode: PolicyBlockReasonCode = "unknown";
   let topPolicyBlockSuggestedNote = "";
+  let errorBudgetServices = 0;
+  let criticalBurnServices = 0;
+  let warningBurnServices = 0;
+  let avgBudgetUsedPercent: number | null = null;
 
   if (supabaseClient && userId) {
     const { data: approvalRows } = await supabaseClient
@@ -211,6 +216,12 @@ export default async function OverviewPage() {
           : delta > 0
             ? `Up ${delta} vs prior 7d`
             : `Down ${Math.abs(delta)} vs prior 7d`;
+
+    const errorBudget = await getErrorBudgetOverviewSummary(supabaseClient, userId);
+    errorBudgetServices = errorBudget.servicesWithSlo;
+    criticalBurnServices = errorBudget.criticalBurnServices;
+    warningBurnServices = errorBudget.warningBurnServices;
+    avgBudgetUsedPercent = errorBudget.averageBudgetUsedPercent;
   }
 
   return (
@@ -264,7 +275,7 @@ export default async function OverviewPage() {
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
         <section className="shynvo-glass rounded-2xl p-5 md:p-6">
           <h2 className={appPanelTitle}>Operational trust metrics</h2>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
+          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-7">
             <div className="rounded-xl border border-white/[0.08] bg-black/20 px-4 py-3">
               <p className={appMeta}>Dry-run success</p>
               <p className="mt-1 text-xl font-semibold text-foreground">{dryRunSuccessRate}%</p>
@@ -307,6 +318,17 @@ export default async function OverviewPage() {
                   Start policy response from top reason →
                 </Link>
               ) : null}
+            </div>
+            <div className="rounded-xl border border-white/[0.08] bg-black/20 px-4 py-3">
+              <p className={appMeta}>Error budget (7d)</p>
+              <p className="mt-1 text-xl font-semibold text-foreground">
+                {errorBudgetServices > 0 ? `${criticalBurnServices} critical` : "—"}
+              </p>
+              <p className={appMeta}>
+                {errorBudgetServices > 0
+                  ? `${warningBurnServices} warning · avg used ${avgBudgetUsedPercent ?? 0}%`
+                  : "No SLO windows yet"}
+              </p>
             </div>
           </div>
           <p className={`mt-4 ${appMeta}`}>

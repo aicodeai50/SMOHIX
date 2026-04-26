@@ -1,0 +1,253 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
+
+type ServiceSloRow = {
+  id: string;
+  serviceId: string;
+  sloName: string;
+  targetPercent: number;
+  windowDays: number;
+  enabled: boolean;
+};
+
+export type ServiceSloSummary = {
+  serviceId: string;
+  serviceName: string;
+  slo: ServiceSloRow | null;
+  windows: {
+    label: "7d" | "30d";
+    incidentsCount: number;
+    budgetUsedPercent: number;
+    burnRate: number;
+    state: "healthy" | "warning" | "critical";
+  }[];
+};
+
+export type ErrorBudgetOverviewSummary = {
+  servicesWithSlo: number;
+  criticalBurnServices: number;
+  warningBurnServices: number;
+  averageBudgetUsedPercent: number | null;
+};
+
+function clampPercent(v: number): number {
+  return Math.max(0, Math.min(100, Math.round(v * 100) / 100));
+}
+
+function burnStateFromUsed(used: number): "healthy" | "warning" | "critical" {
+  if (used >= 90) return "critical";
+  if (used >= 70) return "warning";
+  return "healthy";
+}
+
+export async function upsertDefaultSloForService(
+  supabase: SupabaseClient,
+  userId: string,
+  serviceId: string,
+): Promise<void> {
+  await supabase.from("service_slos").upsert(
+    {
+      user_id: userId,
+      service_id: serviceId,
+      slo_name: "Availability",
+      target_percent: 99.9,
+      window_days: 30,
+      enabled: true,
+    },
+    { onConflict: "user_id,service_id,slo_name" },
+  );
+}
+
+export async function refreshErrorBudgetWindowsForUser(
+  supabase: SupabaseClient,
+  userId: string,
+): Promise<void> {
+  const [servicesRes, slosRes, incidentsRes] = await Promise.all([
+    supabase.from("services").select("id").eq("user_id", userId),
+    supabase
+      .from("service_slos")
+      .select("id, service_id, target_percent, enabled")
+      .eq("user_id", userId)
+      .eq("enabled", true),
+    supabase
+      .from("incidents")
+      .select("service_id, severity, created_at")
+      .eq("user_id", userId)
+      .not("service_id", "is", null)
+      .gte("created_at", new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()),
+  ]);
+
+  const serviceIds = (servicesRes.data ?? []).map((r) => String(r.id));
+  if (!serviceIds.length) return;
+
+  const sloByService = new Map(
+    (slosRes.data ?? []).map((row) => [
+      String(row.service_id),
+      {
+        id: String(row.id),
+        targetPercent: Number(row.target_percent ?? 99.9),
+      },
+    ]),
+  );
+  const incidents = (incidentsRes.data ?? []).map((row) => ({
+    serviceId: String(row.service_id),
+    severity: String(row.severity ?? "low").toLowerCase(),
+    createdAtMs: new Date(String(row.created_at)).valueOf(),
+  }));
+  const now = Date.now();
+
+  const inserts: Record<string, unknown>[] = [];
+  for (const serviceId of serviceIds) {
+    const slo = sloByService.get(serviceId);
+    if (!slo) continue;
+
+    for (const [label, days] of [
+      ["7d", 7],
+      ["30d", 30],
+    ] as const) {
+      const windowStartMs = now - days * 24 * 60 * 60 * 1000;
+      const scoped = incidents.filter(
+        (i) => i.serviceId === serviceId && i.createdAtMs >= windowStartMs,
+      );
+      const weightedIncidents = scoped.reduce((acc, i) => {
+        if (i.severity === "critical") return acc + 3;
+        if (i.severity === "high") return acc + 2;
+        if (i.severity === "medium") return acc + 1;
+        return acc + 0.5;
+      }, 0);
+
+      const errorBudgetPercent = clampPercent(100 - slo.targetPercent);
+      const budgetUsedPercent =
+        errorBudgetPercent <= 0
+          ? 100
+          : clampPercent((weightedIncidents * (days === 7 ? 6 : 2.2)) / errorBudgetPercent);
+      const burnRate = clampPercent(budgetUsedPercent / 100);
+      inserts.push({
+        user_id: userId,
+        service_id: serviceId,
+        slo_id: slo.id,
+        window_label: label,
+        incidents_count: scoped.length,
+        budget_used_percent: budgetUsedPercent,
+        burn_rate: burnRate,
+        state: burnStateFromUsed(budgetUsedPercent),
+      });
+    }
+  }
+
+  if (inserts.length > 0) {
+    await supabase.from("error_budget_windows").insert(inserts);
+  }
+}
+
+export async function getServiceSloSummary(
+  supabase: SupabaseClient,
+  userId: string,
+  serviceId: string,
+): Promise<ServiceSloSummary | null> {
+  await upsertDefaultSloForService(supabase, userId, serviceId);
+  await refreshErrorBudgetWindowsForUser(supabase, userId);
+
+  const [serviceRes, sloRes, windowsRes] = await Promise.all([
+    supabase.from("services").select("id, name").eq("user_id", userId).eq("id", serviceId).maybeSingle(),
+    supabase
+      .from("service_slos")
+      .select("id, service_id, slo_name, target_percent, window_days, enabled")
+      .eq("user_id", userId)
+      .eq("service_id", serviceId)
+      .eq("enabled", true)
+      .order("updated_at", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+    supabase
+      .from("error_budget_windows")
+      .select("window_label, incidents_count, budget_used_percent, burn_rate, state, recorded_at")
+      .eq("user_id", userId)
+      .eq("service_id", serviceId)
+      .order("recorded_at", { ascending: false })
+      .limit(30),
+  ]);
+  if (!serviceRes.data) return null;
+
+  type BudgetWindowDbRow = {
+    window_label: unknown;
+    incidents_count: unknown;
+    budget_used_percent: unknown;
+    burn_rate: unknown;
+    state: unknown;
+  };
+
+  const latestByLabel = new Map<"7d" | "30d", BudgetWindowDbRow>();
+  for (const row of (windowsRes.data ?? []) as BudgetWindowDbRow[]) {
+    const label = String(row.window_label) === "7d" ? "7d" : "30d";
+    if (!latestByLabel.has(label)) latestByLabel.set(label, row);
+  }
+
+  const windows: ServiceSloSummary["windows"] = (["7d", "30d"] as const).map((label) => {
+    const row = latestByLabel.get(label);
+    return {
+      label,
+      incidentsCount: Number(row?.incidents_count ?? 0),
+      budgetUsedPercent: Number(row?.budget_used_percent ?? 0),
+      burnRate: Number(row?.burn_rate ?? 0),
+      state: (String(row?.state ?? "healthy") as "healthy" | "warning" | "critical"),
+    };
+  });
+
+  return {
+    serviceId,
+    serviceName: String(serviceRes.data.name ?? "Service"),
+    slo: sloRes.data
+      ? {
+          id: String(sloRes.data.id),
+          serviceId: String(sloRes.data.service_id),
+          sloName: String(sloRes.data.slo_name),
+          targetPercent: Number(sloRes.data.target_percent),
+          windowDays: Number(sloRes.data.window_days),
+          enabled: Boolean(sloRes.data.enabled),
+        }
+      : null,
+    windows,
+  };
+}
+
+export async function getErrorBudgetOverviewSummary(
+  supabase: SupabaseClient,
+  userId: string,
+): Promise<ErrorBudgetOverviewSummary> {
+  await refreshErrorBudgetWindowsForUser(supabase, userId);
+  const { data } = await supabase
+    .from("error_budget_windows")
+    .select("service_id, window_label, budget_used_percent, state, recorded_at")
+    .eq("user_id", userId)
+    .eq("window_label", "7d")
+    .order("recorded_at", { ascending: false })
+    .limit(200);
+
+  type BudgetOverviewDbRow = {
+    service_id: unknown;
+    budget_used_percent: unknown;
+    state: unknown;
+  };
+  const latestByService = new Map<string, BudgetOverviewDbRow>();
+  for (const row of (data ?? []) as BudgetOverviewDbRow[]) {
+    const key = String(row.service_id);
+    if (!latestByService.has(key)) latestByService.set(key, row);
+  }
+  const rows = [...latestByService.values()];
+  const critical = rows.filter((r) => String(r.state) === "critical").length;
+  const warning = rows.filter((r) => String(r.state) === "warning").length;
+  const avg =
+    rows.length > 0
+      ? Math.round(
+          (rows.reduce((acc, row) => acc + Number(row.budget_used_percent ?? 0), 0) / rows.length) *
+            10,
+        ) / 10
+      : null;
+
+  return {
+    servicesWithSlo: rows.length,
+    criticalBurnServices: critical,
+    warningBurnServices: warning,
+    averageBudgetUsedPercent: avg,
+  };
+}
