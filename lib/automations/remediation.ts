@@ -31,6 +31,12 @@ export type RemediationRunRow = {
   };
 };
 
+function normalizeBase(url: string | undefined): string | null {
+  const t = url?.trim();
+  if (!t) return null;
+  return t.replace(/\/+$/, "");
+}
+
 export async function runGuardedRemediation(input: {
   supabase: SupabaseClient;
   userId: string;
@@ -76,7 +82,29 @@ export async function runGuardedRemediation(input: {
       : null,
   });
 
-  const executeOk = !enforcement.blockedReason;
+  let blockedReason = enforcement.blockedReason;
+  let executionMode: "simulated" | "connector" = "simulated";
+  const robotBase = normalizeBase(process.env.SHYNVO_ROBOT_API_URL);
+  if (robotBase) {
+    executionMode = "connector";
+    try {
+      const health = await fetch(`${robotBase}/health`, {
+        method: "GET",
+        cache: "no-store",
+        signal: AbortSignal.timeout(8000),
+        headers: { accept: "application/json, text/plain, */*" },
+      });
+      if (!health.ok && !blockedReason) {
+        blockedReason = `Execution blocked: remediation connector health check failed (${health.status}).`;
+      }
+    } catch {
+      if (!blockedReason) {
+        blockedReason = "Execution blocked: remediation connector is unreachable.";
+      }
+    }
+  }
+
+  const executeOk = !blockedReason;
   const insertRes = await input.supabase
     .from("remediation_runs")
     .insert({
@@ -88,8 +116,8 @@ export async function runGuardedRemediation(input: {
       approval_note: input.approvalNote.slice(0, 300),
       rollback_plan: input.rollbackPlan.slice(0, 500),
       execution_ok: executeOk,
-      execution_mode: "simulated",
-      blocked_reason: enforcement.blockedReason,
+      execution_mode: executionMode,
+      blocked_reason: blockedReason,
       guardrail_checks_json: enforcement.checks,
     })
     .select("id")
@@ -97,7 +125,7 @@ export async function runGuardedRemediation(input: {
 
   return {
     ok: executeOk,
-    blockedReason: enforcement.blockedReason,
+    blockedReason,
     runId: insertRes.data?.id ? String(insertRes.data.id) : null,
     checks: enforcement.checks,
   };
