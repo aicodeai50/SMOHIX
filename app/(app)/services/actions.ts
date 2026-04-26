@@ -3,6 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import {
+  createServiceDependencyForUser,
+  deleteServiceDependencyForUser,
+} from "@/lib/services/dependencies";
 import { createServiceForUser, deleteServiceForUser } from "@/lib/services/data";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -64,5 +68,62 @@ export async function deleteServiceAction(formData: FormData) {
 
   revalidatePath("/services");
   revalidatePath("/incidents/new");
+  redirect("/services");
+}
+
+export async function createServiceDependencyAction(formData: FormData) {
+  if (!hasSupabaseAuth()) return;
+  const supabase = await createServerSupabaseClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return;
+
+  const serviceId = String(formData.get("service_id") ?? "").trim();
+  const dependsOnServiceId = String(formData.get("depends_on_service_id") ?? "").trim();
+  const relationship = String(formData.get("relationship") ?? "runtime").trim() as
+    | "runtime"
+    | "data"
+    | "network"
+    | "auth"
+    | "other";
+  const criticality = String(formData.get("criticality") ?? "medium").trim() as
+    | "low"
+    | "medium"
+    | "high";
+
+  const result = await createServiceDependencyForUser(supabase, {
+    userId: user.id,
+    serviceId,
+    dependsOnServiceId,
+    relationship,
+    criticality,
+  });
+  if (!result.ok) {
+    redirect(`/services?error=${encodeURIComponent(result.reason)}`);
+  }
+  revalidatePath("/services");
+  redirect("/services");
+}
+
+export async function deleteServiceDependencyAction(formData: FormData) {
+  if (!hasSupabaseAuth()) return;
+  const supabase = await createServerSupabaseClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return;
+  const serviceId = String(formData.get("service_id") ?? "").trim();
+  const dependsOnServiceId = String(formData.get("depends_on_service_id") ?? "").trim();
+
+  const result = await deleteServiceDependencyForUser(supabase, {
+    userId: user.id,
+    serviceId,
+    dependsOnServiceId,
+  });
+  if (!result.ok) {
+    redirect(`/services?error=${encodeURIComponent(result.reason)}`);
+  }
+  revalidatePath("/services");
   redirect("/services");
 }

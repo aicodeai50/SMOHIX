@@ -14,6 +14,13 @@ export type ServiceDependencyGraph = {
   edges: ServiceDependencyEdge[];
 };
 
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+function isUuid(v: string): boolean {
+  return UUID_RE.test(v);
+}
+
 export async function listServiceDependencyGraphForUser(
   supabase: SupabaseClient,
   userId: string,
@@ -41,4 +48,57 @@ export async function listServiceDependencyGraphForUser(
   }));
 
   return { nodes, edges };
+}
+
+export async function createServiceDependencyForUser(
+  supabase: SupabaseClient,
+  input: {
+    userId: string;
+    serviceId: string;
+    dependsOnServiceId: string;
+    relationship?: ServiceDependencyEdge["relationship"];
+    criticality?: ServiceDependencyEdge["criticality"];
+  },
+): Promise<{ ok: true } | { ok: false; reason: string }> {
+  const serviceId = input.serviceId.trim();
+  const dependsOnServiceId = input.dependsOnServiceId.trim();
+  if (!isUuid(serviceId) || !isUuid(dependsOnServiceId)) {
+    return { ok: false, reason: "Valid service ids are required." };
+  }
+  if (serviceId === dependsOnServiceId) {
+    return { ok: false, reason: "A service cannot depend on itself." };
+  }
+
+  const relationship = input.relationship ?? "runtime";
+  const criticality = input.criticality ?? "medium";
+  const { error } = await supabase.from("service_dependencies").insert({
+    user_id: input.userId,
+    service_id: serviceId,
+    depends_on_service_id: dependsOnServiceId,
+    relationship,
+    criticality,
+  });
+  if (error) return { ok: false, reason: error.message };
+  return { ok: true };
+}
+
+export async function deleteServiceDependencyForUser(
+  supabase: SupabaseClient,
+  input: {
+    userId: string;
+    serviceId: string;
+    dependsOnServiceId: string;
+  },
+): Promise<{ ok: true } | { ok: false; reason: string }> {
+  if (!isUuid(input.serviceId) || !isUuid(input.dependsOnServiceId)) {
+    return { ok: false, reason: "Invalid dependency edge." };
+  }
+  const { error } = await supabase
+    .from("service_dependencies")
+    .delete()
+    .eq("user_id", input.userId)
+    .eq("service_id", input.serviceId)
+    .eq("depends_on_service_id", input.dependsOnServiceId);
+  if (error) return { ok: false, reason: error.message };
+  return { ok: true };
 }

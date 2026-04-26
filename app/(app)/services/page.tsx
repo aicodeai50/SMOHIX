@@ -15,7 +15,12 @@ import { createServiceSupabaseClient } from "@/lib/supabase/admin";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-import { createServiceAction, deleteServiceAction } from "./actions";
+import {
+  createServiceAction,
+  createServiceDependencyAction,
+  deleteServiceAction,
+  deleteServiceDependencyAction,
+} from "./actions";
 
 export const metadata: Metadata = {
   title: "Services",
@@ -230,11 +235,75 @@ export default async function ServicesPage({
             <p className={`mt-2 ${appMeta}`}>
               {dependencyGraph.edges.length} edges across {dependencyGraph.nodes.length} services.
             </p>
+            <form action={createServiceDependencyAction} className="mt-3 grid gap-2 sm:grid-cols-2">
+              <select
+                name="service_id"
+                required
+                className={`h-10 rounded-lg border border-border bg-background px-3 text-foreground outline-none ring-ring/40 focus:ring-2 ${appBody}`}
+              >
+                <option value="">Service</option>
+                {dependencyGraph.nodes.map((node) => (
+                  <option key={`dep-from-${node.id}`} value={node.id}>
+                    {node.name}
+                  </option>
+                ))}
+              </select>
+              <select
+                name="depends_on_service_id"
+                required
+                className={`h-10 rounded-lg border border-border bg-background px-3 text-foreground outline-none ring-ring/40 focus:ring-2 ${appBody}`}
+              >
+                <option value="">Depends on</option>
+                {dependencyGraph.nodes.map((node) => (
+                  <option key={`dep-to-${node.id}`} value={node.id}>
+                    {node.name}
+                  </option>
+                ))}
+              </select>
+              <select
+                name="relationship"
+                className={`h-10 rounded-lg border border-border bg-background px-3 text-foreground outline-none ring-ring/40 focus:ring-2 ${appBody}`}
+              >
+                <option value="runtime">Runtime</option>
+                <option value="data">Data</option>
+                <option value="network">Network</option>
+                <option value="auth">Auth</option>
+                <option value="other">Other</option>
+              </select>
+              <div className="flex items-center gap-2">
+                <select
+                  name="criticality"
+                  className={`h-10 flex-1 rounded-lg border border-border bg-background px-3 text-foreground outline-none ring-ring/40 focus:ring-2 ${appBody}`}
+                >
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
+                </select>
+                <button
+                  type="submit"
+                  className={`h-10 rounded-lg bg-accent px-4 font-medium text-background hover:opacity-90 ${appBody}`}
+                >
+                  Add edge
+                </button>
+              </div>
+            </form>
             {dependencyGraph.edges.length > 0 ? (
               <ul className={`mt-2 space-y-1 ${appMeta}`}>
                 {dependencyGraph.edges.slice(0, 8).map((edge, idx) => (
-                  <li key={`${edge.fromServiceId}-${edge.toServiceId}-${idx}`}>
-                    {edge.fromServiceName} → {edge.toServiceName} ({edge.relationship}, {edge.criticality})
+                  <li
+                    key={`${edge.fromServiceId}-${edge.toServiceId}-${idx}`}
+                    className="flex items-center justify-between gap-2 rounded-lg border border-white/[0.06] bg-white/[0.02] px-2 py-1.5"
+                  >
+                    <span>
+                      {edge.fromServiceName} → {edge.toServiceName} ({edge.relationship}, {edge.criticality})
+                    </span>
+                    <form action={deleteServiceDependencyAction}>
+                      <input type="hidden" name="service_id" value={edge.fromServiceId} />
+                      <input type="hidden" name="depends_on_service_id" value={edge.toServiceId} />
+                      <button type="submit" className="text-danger hover:underline">
+                        Remove
+                      </button>
+                    </form>
                   </li>
                 ))}
               </ul>
