@@ -18,6 +18,7 @@ import { AuditWhisperInline } from "@/components/guardrails/AuditWhisperInline";
 import { ExecutionOutcomeBadge } from "@/components/guardrails/ExecutionOutcomeBadge";
 import { getLatestAuditWhisperForIncident } from "@/lib/audit/whispers";
 import { getLatestDryRunForIncident } from "@/lib/automations/dry-runs-db";
+import { listRemediationRunsForIncident } from "@/lib/automations/remediation";
 import type { DryRunRecord } from "@/lib/automations/runs-dev";
 import { getIncidentForUser } from "@/lib/incidents/data";
 import { listRunbooks } from "@/lib/runbooks/catalog";
@@ -89,10 +90,12 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
 
   let lastIncidentDryRun: DryRunRecord | null = null;
   let latestRcaRun: Awaited<ReturnType<typeof getLatestIncidentRcaRun>> = null;
+  let remediationRuns: Awaited<ReturnType<typeof listRemediationRunsForIncident>> = [];
   if (hasSupabaseAuth() && userId && source === "database") {
     const supabase = await createServerSupabaseClient();
     lastIncidentDryRun = await getLatestDryRunForIncident(supabase, userId, id);
     latestRcaRun = await getLatestIncidentRcaRun(supabase, userId, id);
+    remediationRuns = await listRemediationRunsForIncident(supabase, userId, id, 8);
   }
 
   return (
@@ -237,6 +240,31 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
               Run guarded remediation
             </button>
           </form>
+          {remediationRuns.length > 0 ? (
+            <ul className={`mt-3 space-y-2 ${appMeta}`}>
+              {remediationRuns.map((run) => (
+                <li
+                  key={run.id}
+                  className="rounded-lg border border-white/[0.08] bg-white/[0.02] px-3 py-2"
+                >
+                  <p className="text-foreground/90">
+                    {run.playbookId} · {run.executionOk ? "executed" : "blocked"} ·{" "}
+                    {new Date(run.createdAt).toLocaleString()}
+                  </p>
+                  <p className="text-muted">
+                    checks: dry-run {run.checks.dryRunFresh ? "ok" : "fail"}, window{" "}
+                    {run.checks.changeWindow ? "ok" : "fail"}, blast{" "}
+                    {run.checks.blastRadiusAllowed ? "ok" : "fail"}
+                  </p>
+                  {run.blockedReason ? (
+                    <p className="text-danger">{run.blockedReason}</p>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className={`mt-2 ${appMeta}`}>No remediation runs logged for this incident yet.</p>
+          )}
         </div>
       ) : null}
       {source === "database" && row.serviceId ? (

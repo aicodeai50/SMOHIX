@@ -15,6 +15,22 @@ export type GuardedRemediationResult = {
   };
 };
 
+export type RemediationRunRow = {
+  id: string;
+  playbookId: string;
+  triggerSource: "incident" | "automation" | "manual";
+  dryRunOk: boolean;
+  executionOk: boolean;
+  executionMode: "simulated" | "connector";
+  blockedReason: string | null;
+  createdAt: string;
+  checks: {
+    dryRunFresh: boolean;
+    changeWindow: boolean;
+    blastRadiusAllowed: boolean;
+  };
+};
+
 export async function runGuardedRemediation(input: {
   supabase: SupabaseClient;
   userId: string;
@@ -85,4 +101,46 @@ export async function runGuardedRemediation(input: {
     runId: insertRes.data?.id ? String(insertRes.data.id) : null,
     checks: enforcement.checks,
   };
+}
+
+export async function listRemediationRunsForIncident(
+  supabase: SupabaseClient,
+  userId: string,
+  incidentId: string,
+  limit = 10,
+): Promise<RemediationRunRow[]> {
+  const { data, error } = await supabase
+    .from("remediation_runs")
+    .select(
+      "id, playbook_id, trigger_source, dry_run_ok, execution_ok, execution_mode, blocked_reason, created_at, guardrail_checks_json",
+    )
+    .eq("user_id", userId)
+    .eq("incident_id", incidentId)
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  if (error || !data) return [];
+
+  return data.map((row) => {
+    const checksRaw =
+      (row.guardrail_checks_json as {
+        dryRunFresh?: boolean;
+        changeWindow?: boolean;
+        blastRadiusAllowed?: boolean;
+      } | null) ?? null;
+    return {
+      id: String(row.id),
+      playbookId: String(row.playbook_id),
+      triggerSource: String(row.trigger_source) as RemediationRunRow["triggerSource"],
+      dryRunOk: Boolean(row.dry_run_ok),
+      executionOk: Boolean(row.execution_ok),
+      executionMode: String(row.execution_mode) as RemediationRunRow["executionMode"],
+      blockedReason: row.blocked_reason ? String(row.blocked_reason) : null,
+      createdAt: String(row.created_at),
+      checks: {
+        dryRunFresh: Boolean(checksRaw?.dryRunFresh),
+        changeWindow: Boolean(checksRaw?.changeWindow),
+        blastRadiusAllowed: Boolean(checksRaw?.blastRadiusAllowed),
+      },
+    };
+  });
 }
