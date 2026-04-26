@@ -5,6 +5,7 @@ import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
 import { PlaceholderCard } from "@/components/app/PlaceholderCard";
 import { appBody, appLabel, appMeta, appOverline } from "@/lib/app-typography";
+import { listRecentChangeRiskScoresForUser } from "@/lib/approvals/change-risk-db";
 import { listChangeActionsForUser, listChangeWindowsForUser } from "@/lib/equipment/data";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -51,8 +52,14 @@ export default async function ChangesPage({
     listChangeWindowsForUser(user.id),
     listChangeActionsForUser(user.id),
   ]);
+  const riskScores = await listRecentChangeRiskScoresForUser(supabase, user.id, 50);
   const nowMs = new Date().valueOf();
   const upcoming = windows.filter((w) => new Date(w.endsAt).valueOf() >= nowMs).length;
+  const blockedRiskCount = riskScores.filter((row) => row.blocked).length;
+  const avgRiskScore =
+    riskScores.length > 0
+      ? Math.round(riskScores.reduce((acc, row) => acc + row.riskScore, 0) / riskScores.length)
+      : null;
 
   const sp = await searchParams;
   const err = typeof sp.error === "string" ? sp.error : undefined;
@@ -70,7 +77,7 @@ export default async function ChangesPage({
         </p>
       ) : null}
 
-      <div className="mb-6 grid gap-4 sm:grid-cols-2">
+      <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div className="shynvo-glass rounded-2xl p-5">
           <p className={`${appMeta} font-medium`}>Scheduled windows</p>
           <p className="mt-1 text-2xl font-semibold text-foreground">{windows.length}</p>
@@ -78,6 +85,14 @@ export default async function ChangesPage({
         <div className="shynvo-glass rounded-2xl p-5">
           <p className={`${appMeta} font-medium`}>Upcoming / active</p>
           <p className="mt-1 text-2xl font-semibold text-foreground">{upcoming}</p>
+        </div>
+        <div className="shynvo-glass rounded-2xl p-5">
+          <p className={`${appMeta} font-medium`}>Avg change risk (50)</p>
+          <p className="mt-1 text-2xl font-semibold text-foreground">{avgRiskScore ?? "—"}</p>
+        </div>
+        <div className="shynvo-glass rounded-2xl p-5">
+          <p className={`${appMeta} font-medium`}>Risk blocks</p>
+          <p className="mt-1 text-2xl font-semibold text-foreground">{blockedRiskCount}</p>
         </div>
       </div>
 

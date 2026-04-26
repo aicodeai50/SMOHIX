@@ -104,6 +104,22 @@ export default async function AutomationsPage({
         ? { decisionAccuracyScore: x.decisionAccuracyScore }
         : {}),
       ...(x.policySuggestions?.length ? { policySuggestions: x.policySuggestions } : {}),
+      ...(x.decisionBrief
+        ? {
+            changeRisk: {
+              score: x.decisionBrief.riskScore,
+              tier:
+                x.decisionBrief.riskScore >= 85
+                  ? "critical"
+                  : x.decisionBrief.riskScore >= 70
+                    ? "high"
+                    : x.decisionBrief.riskScore >= 45
+                      ? "medium"
+                      : "low",
+              factors: [],
+            },
+          }
+        : {}),
     }));
   } else {
     const tenantKey = (await cookies()).get("shynvo_dev_tid")?.value ?? "anon";

@@ -155,9 +155,18 @@ export function AutomationsConsole({
         actualOutcome?: ExecutionReceipt["actualOutcome"];
         decisionAccuracyScore?: number;
         policySuggestions?: PolicySuggestion[];
+        changeRisk?: {
+          score: number;
+          tier: "low" | "medium" | "high" | "critical";
+          factors: string[];
+        };
       };
       if (!r.ok) {
-        setMsg(j.message ?? j.error ?? "Execution blocked.");
+        const riskHint =
+          j.changeRisk && typeof j.changeRisk.score === "number"
+            ? ` Risk: ${j.changeRisk.tier} (${j.changeRisk.score}).`
+            : "";
+        setMsg((j.message ?? j.error ?? "Execution blocked.") + riskHint);
         return;
       }
       setExecutions((prev) => [
@@ -174,6 +183,7 @@ export function AutomationsConsole({
           actualOutcome: j.actualOutcome,
           decisionAccuracyScore: j.decisionAccuracyScore,
           policySuggestions: j.policySuggestions,
+          ...(j.changeRisk ? { changeRisk: j.changeRisk } : {}),
           ...(linkedIncidentId ? { incidentId: linkedIncidentId } : {}),
         },
         ...prev,
@@ -378,6 +388,11 @@ export function AutomationsConsole({
                 ) : null}
                 {typeof x.decisionAccuracyScore === "number" ? (
                   <p className="text-foreground/70">Decision accuracy: {x.decisionAccuracyScore}/100</p>
+                ) : null}
+                {x.changeRisk ? (
+                  <p className="text-foreground/70">
+                    Change risk: {x.changeRisk.tier} ({x.changeRisk.score}/100)
+                  </p>
                 ) : null}
                 {x.policySuggestions?.length ? (
                   <div className="mt-2 rounded-md border border-white/[0.08] bg-white/[0.02] p-2">

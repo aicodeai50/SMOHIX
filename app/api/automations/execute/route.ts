@@ -28,6 +28,11 @@ import {
   upsertPolicySuggestion,
 } from "@/lib/approvals/policy-suggestions";
 import { policyBlockReasonCodeFromMessage } from "@/lib/approvals/policy-block-reasons";
+import {
+  assessChangeRisk,
+  evaluateChangeRiskApprovalTightening,
+} from "@/lib/approvals/change-risk";
+import { insertChangeRiskScore } from "@/lib/approvals/change-risk-db";
 import { getSiteUrl } from "@/lib/site";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -183,9 +188,48 @@ export async function POST(req: NextRequest) {
     policyHint: approvalNote,
     rollbackPlan,
   });
+  const changeRisk = assessChangeRisk({
+    playbook,
+    decisionBrief: preDecisionBrief,
+    approvalNote,
+    hasIncidentLinked: Boolean(incidentId),
+  });
+  const riskApprovalBlock = evaluateChangeRiskApprovalTightening({
+    assessment: changeRisk,
+    approvalNote,
+  });
 
   if (ctx.mode === "auth") {
     const supabase = await createServerSupabaseClient();
+    if (riskApprovalBlock) {
+      await insertChangeRiskScore(supabase, {
+        userId: ctx.userId,
+        playbookId,
+        incidentId,
+        assessment: changeRisk,
+        blocked: true,
+        blockedReason: riskApprovalBlock,
+      });
+      await appendAuditEvent({
+        event_type: "automation.execution_blocked_risk",
+        user_id: ctx.userId,
+        details: {
+          playbook_id: playbookId,
+          risk_score: changeRisk.score,
+          risk_tier: changeRisk.tier,
+          risk_factors: changeRisk.factors,
+          blocked_reason: riskApprovalBlock,
+        },
+      });
+      return NextResponse.json(
+        {
+          error: "execution_blocked_by_change_risk",
+          message: riskApprovalBlock,
+          changeRisk,
+        },
+        { status: 403 },
+      );
+    }
     const accepted = await listAcceptedPolicyGuardrailsForPlaybook(supabase, ctx.userId, playbookId);
     const enforcement = evaluateAcceptedPolicyEnforcement({
       approvalNote,
@@ -261,6 +305,7 @@ export async function POST(req: NextRequest) {
     actualOutcome,
     decisionAccuracyScore: accuracyScore,
     policySuggestions,
+    changeRisk,
     ...(incidentId ? { incidentId } : {}),
   });
 
@@ -287,6 +332,14 @@ export async function POST(req: NextRequest) {
       executionId = execInsert.id;
       executionAt = execInsert.createdAt;
     }
+    await insertChangeRiskScore(supabase, {
+      userId: ctx.userId,
+      playbookId,
+      incidentId,
+      executionId: execInsert.ok ? execInsert.id : null,
+      assessment: changeRisk,
+      blocked: false,
+    });
     for (const s of policySuggestions) {
       await upsertPolicySuggestion(supabase, {
         userId: ctx.userId,
@@ -318,6 +371,7 @@ export async function POST(req: NextRequest) {
         actual_outcome: actualOutcome,
         decision_accuracy_score: accuracyScore,
         policy_suggestions: policySuggestions,
+        change_risk: changeRisk,
         ...(incidentId ? { incident_id: incidentId } : {}),
       },
     });
@@ -342,6 +396,8 @@ export async function POST(req: NextRequest) {
         execution_receipt_id: executionId,
         ...(incidentId ? { incident_id: incidentId } : {}),
         decision_accuracy_score: accuracyScore,
+        change_risk_score: changeRisk.score,
+        change_risk_tier: changeRisk.tier,
       },
     });
     revalidatePath("/automations");
@@ -362,5 +418,6 @@ export async function POST(req: NextRequest) {
     actualOutcome,
     decisionAccuracyScore: accuracyScore,
     policySuggestions,
+    changeRisk,
   });
 }

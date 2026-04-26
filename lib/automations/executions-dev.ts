@@ -19,6 +19,11 @@ export type ExecutionReceipt = {
   actualOutcome?: ActualOutcome;
   decisionAccuracyScore?: number;
   policySuggestions?: PolicySuggestion[];
+  changeRisk?: {
+    score: number;
+    tier: "low" | "medium" | "high" | "critical";
+    factors: string[];
+  };
 };
 
 const byTenant = new Map<string, ExecutionReceipt[]>();
