@@ -2,18 +2,178 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { AppIcon } from "@/components/icons/AppIcon";
 import { getConsoleBreadcrumbs } from "@/lib/console-breadcrumbs";
 import { appMeta } from "@/lib/app-typography";
 import { CONSOLE_MODULES } from "@/lib/console-nav";
 
+const SEARCH_ALIASES: ReadonlyArray<{ alias: string; targets: readonly string[] }> = [
+  { alias: "gov", targets: ["/governance/policies", "/governance/access"] },
+  { alias: "policy", targets: ["/governance/policies"] },
+  { alias: "rbac", targets: ["/governance/access"] },
+  { alias: "mfa", targets: ["/governance/access"] },
+  { alias: "cert", targets: ["/assets/certificates"] },
+  { alias: "secret", targets: ["/assets/secrets"] },
+  { alias: "net", targets: ["/assets/network"] },
+  { alias: "dr", targets: ["/resilience/backups"] },
+  { alias: "backup", targets: ["/resilience/backups"] },
+  { alias: "playbook", targets: ["/automations"] },
+  { alias: "workflow", targets: ["/automations", "/changes"] },
+  { alias: "approval", targets: ["/approvals"] },
+  { alias: "compliance", targets: ["/audit"] },
+  { alias: "apikey", targets: ["/settings/api-keys"] },
+  { alias: "api", targets: ["/settings/api-keys", "/docs/api"] },
+  { alias: "billing", targets: ["/settings/billing"] },
+  { alias: "connector", targets: ["/settings/connectors"] },
+  { alias: "incident", targets: ["/incidents"] },
+  { alias: "service", targets: ["/services"] },
+  { alias: "runbook", targets: ["/runbooks"] },
+];
+const RECENT_MODULES_STORAGE_KEY = "shynvo.console.recent-modules";
+const MAX_RECENT_MODULES = 5;
+const SEARCH_LINKS = [
+  { href: "/docs", label: "Docs", description: "Knowledge base" },
+  { href: "/docs/api", label: "API", description: "API reference" },
+  { href: "/platform", label: "Platform", description: "Product surface" },
+  { href: "/", label: "Website", description: "Public homepage" },
+] as const;
+
+function fuzzyScore(query: string, text: string): number {
+  if (!query) return 0;
+  if (text.includes(query)) return 1000 - text.indexOf(query);
+
+  let qi = 0;
+  let lastMatch = -1;
+  let score = 0;
+  for (let i = 0; i < text.length && qi < query.length; i += 1) {
+    if (text[i] !== query[qi]) continue;
+    score += lastMatch >= 0 && i === lastMatch + 1 ? 4 : 2;
+    lastMatch = i;
+    qi += 1;
+  }
+  if (qi !== query.length) return -1;
+  return score;
+}
+
+function renderHighlightedText(text: string, query: string): React.ReactNode {
+  const q = query.trim();
+  if (!q) return text;
+  const lowerText = text.toLowerCase();
+  const lowerQuery = q.toLowerCase();
+  const start = lowerText.indexOf(lowerQuery);
+  if (start < 0) return text;
+  const end = start + q.length;
+  return (
+    <>
+      {text.slice(0, start)}
+      <mark className="rounded bg-accent/20 px-0.5 text-foreground">{text.slice(start, end)}</mark>
+      {text.slice(end)}
+    </>
+  );
+}
+
 export function ConsoleNavPanel() {
   const pathname = usePathname();
   const router = useRouter();
   const crumbs = getConsoleBreadcrumbs(pathname);
   const [jumpReset, setJumpReset] = useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeSearchIndex, setActiveSearchIndex] = useState(-1);
+  const [recentModuleHrefs, setRecentModuleHrefs] = useState<string[]>([]);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
+  const searchPanelRef = useRef<HTMLDivElement | null>(null);
+  const searchCatalog = useMemo(
+    () => [
+      ...CONSOLE_MODULES.map((m) => ({ href: m.href, label: m.label, description: m.description })),
+      ...SEARCH_LINKS,
+    ],
+    [],
+  );
+  const searchResults = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return [];
+    const aliasHit = SEARCH_ALIASES.find((entry) => q.includes(entry.alias));
+    const aliasTargetBoost = new Set(aliasHit?.targets ?? []);
+    return searchCatalog.map((m) => {
+      const haystack = `${m.label} ${m.description} ${m.href}`.toLowerCase();
+      const baseScore = fuzzyScore(q, haystack);
+      if (baseScore < 0) {
+        return { module: m, score: -1 };
+      }
+      const boostedScore = baseScore + (aliasTargetBoost.has(m.href) ? 500 : 0);
+      return { module: m, score: boostedScore };
+    })
+      .filter((entry) => entry.score >= 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 8)
+      .map((entry) => entry.module);
+  }, [searchCatalog, searchQuery]);
+  const visibleSearchResults = searchQuery.trim()
+    ? searchResults
+    : CONSOLE_MODULES.filter((m) => recentModuleHrefs.includes(m.href)).sort(
+        (a, b) => recentModuleHrefs.indexOf(a.href) - recentModuleHrefs.indexOf(b.href),
+      );
+
+  useEffect(() => {
+    if (searchResults.length === 0) {
+      queueMicrotask(() => setActiveSearchIndex(-1));
+      return;
+    }
+    if (activeSearchIndex >= searchResults.length) {
+      queueMicrotask(() => setActiveSearchIndex(0));
+    }
+  }, [activeSearchIndex, searchResults]);
+
+  useEffect(() => {
+    const raw = window.localStorage.getItem(RECENT_MODULES_STORAGE_KEY);
+    if (!raw) return;
+    try {
+      const parsed = JSON.parse(raw) as unknown;
+      if (!Array.isArray(parsed)) return;
+      const valid = parsed
+        .filter((value): value is string => typeof value === "string")
+        .filter((href) => CONSOLE_MODULES.some((module) => module.href === href))
+        .slice(0, MAX_RECENT_MODULES);
+      queueMicrotask(() => setRecentModuleHrefs(valid));
+    } catch {
+      // Ignore malformed storage payloads and continue with empty recents.
+    }
+  }, []);
+
+  useEffect(() => {
+    const onPointerDown = (event: PointerEvent) => {
+      const targetNode = event.target as Node | null;
+      if (!targetNode) return;
+      if (searchPanelRef.current?.contains(targetNode)) return;
+      queueMicrotask(() => {
+        setSearchOpen(false);
+        setActiveSearchIndex(-1);
+      });
+    };
+    window.addEventListener("pointerdown", onPointerDown);
+    return () => window.removeEventListener("pointerdown", onPointerDown);
+  }, []);
+
+  const recordRecentModule = useCallback((href: string) => {
+    setRecentModuleHrefs((prev) => {
+      const next = [href, ...prev.filter((item) => item !== href)].slice(0, MAX_RECENT_MODULES);
+      window.localStorage.setItem(RECENT_MODULES_STORAGE_KEY, JSON.stringify(next));
+      return next;
+    });
+  }, []);
+
+  useEffect(() => {
+    const matchedModule = CONSOLE_MODULES.find(
+      (module) => pathname === module.href || pathname.startsWith(`${module.href}/`),
+    );
+    if (!matchedModule) return;
+    queueMicrotask(() => {
+      recordRecentModule(matchedModule.href);
+    });
+  }, [pathname, recordRecentModule]);
 
   const goBack = useCallback(() => {
     router.back();
@@ -22,6 +182,20 @@ export function ConsoleNavPanel() {
   const goForward = useCallback(() => {
     router.forward();
   }, [router]);
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      const isQuickOpen = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k";
+      if (!isQuickOpen) return;
+
+      event.preventDefault();
+      searchInputRef.current?.focus();
+      searchInputRef.current?.select();
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
 
   return (
     <nav
@@ -76,6 +250,138 @@ export function ConsoleNavPanel() {
         </div>
 
         <div className="flex shrink-0 items-center gap-2">
+          <div ref={searchPanelRef} className="relative">
+            <label htmlFor="console-search" className="sr-only">
+              Search console modules
+            </label>
+            <input
+              id="console-search"
+              ref={searchInputRef}
+              value={searchQuery}
+              role="combobox"
+              aria-expanded={searchOpen}
+              aria-controls="console-search-results"
+              aria-autocomplete="list"
+              aria-activedescendant={
+                activeSearchIndex >= 0
+                  ? `console-search-option-${visibleSearchResults[activeSearchIndex]?.href ?? "none"}`
+                  : undefined
+              }
+              onFocus={() => setSearchOpen(true)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setActiveSearchIndex(-1);
+                setSearchOpen(true);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "ArrowDown" && visibleSearchResults.length > 0) {
+                  e.preventDefault();
+                  setActiveSearchIndex((i) => (i + 1) % visibleSearchResults.length);
+                  return;
+                }
+                if (e.key === "ArrowUp" && visibleSearchResults.length > 0) {
+                  e.preventDefault();
+                  setActiveSearchIndex((i) => (i <= 0 ? visibleSearchResults.length - 1 : i - 1));
+                  return;
+                }
+                if (
+                  e.key === "Enter" &&
+                  (visibleSearchResults[activeSearchIndex] ?? visibleSearchResults[0])
+                ) {
+                  e.preventDefault();
+                  const selected = visibleSearchResults[activeSearchIndex] ?? visibleSearchResults[0];
+                  router.push(selected.href);
+                  recordRecentModule(selected.href);
+                  setSearchQuery("");
+                  setActiveSearchIndex(-1);
+                  setSearchOpen(false);
+                }
+                if (e.key === "Escape") {
+                  setSearchQuery("");
+                  setActiveSearchIndex(-1);
+                  setSearchOpen(false);
+                }
+              }}
+              placeholder="Search modules or paths... (Ctrl/Cmd+K)"
+              className={`h-9 w-[13rem] rounded-lg border border-white/[0.1] bg-white/[0.04] px-2.5 text-foreground/90 outline-none ring-accent/25 placeholder:text-muted/80 focus:border-accent/40 focus:ring-2 sm:w-[16rem] ${appMeta}`}
+            />
+            {searchOpen && visibleSearchResults.length > 0 ? (
+              <div className="absolute right-0 top-[calc(100%+0.4rem)] z-40 w-[min(22rem,80vw)] rounded-xl border border-white/[0.1] bg-[rgba(10,12,18,0.98)] p-1.5 shadow-[0_18px_48px_-22px_rgba(0,0,0,0.9)] backdrop-blur-xl">
+                <div className="flex items-center justify-between gap-2 px-2 py-1">
+                  <p className={`${appMeta} text-muted`}>
+                    {searchQuery.trim() ? "Search results" : "Recently opened"}
+                  </p>
+                  {!searchQuery.trim() && recentModuleHrefs.length > 0 ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setRecentModuleHrefs([]);
+                        window.localStorage.removeItem(RECENT_MODULES_STORAGE_KEY);
+                        setActiveSearchIndex(-1);
+                      }}
+                      className={`${appMeta} rounded-md px-1.5 py-0.5 text-muted transition-colors hover:bg-white/[0.06] hover:text-foreground`}
+                    >
+                      Clear recent
+                    </button>
+                  ) : null}
+                </div>
+                <ul id="console-search-results" role="listbox" className="max-h-64 overflow-y-auto">
+                  {visibleSearchResults.map((m, index) => (
+                    <li key={m.href} role="presentation">
+                      <button
+                        id={`console-search-option-${m.href}`}
+                        type="button"
+                        role="option"
+                        aria-selected={activeSearchIndex === index}
+                        onClick={() => {
+                          router.push(m.href);
+                          recordRecentModule(m.href);
+                          setSearchQuery("");
+                          setActiveSearchIndex(-1);
+                          setSearchOpen(false);
+                        }}
+                        onMouseEnter={() =>
+                          setActiveSearchIndex(
+                            visibleSearchResults.findIndex((r) => r.href === m.href),
+                          )
+                        }
+                        className={`flex w-full items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-left transition-colors ${appMeta} ${
+                          visibleSearchResults[activeSearchIndex]?.href === m.href
+                            ? "bg-white/[0.07]"
+                            : "hover:bg-white/[0.05]"
+                        }`}
+                      >
+                        <span className="truncate text-foreground/90">
+                          {renderHighlightedText(m.label, searchQuery)}
+                          <span className="ml-1 text-muted">
+                            ({renderHighlightedText(m.description, searchQuery)})
+                          </span>
+                        </span>
+                        <span className="shrink-0 font-mono text-[10px] text-muted">
+                          {renderHighlightedText(m.href, searchQuery)}
+                        </span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+                <div
+                  className={`mt-1 flex items-center justify-between border-t border-white/[0.08] px-2 py-1.5 text-muted ${appMeta}`}
+                  aria-hidden
+                >
+                  <span>↑↓ Navigate</span>
+                  <span>Enter Open</span>
+                  <span>Esc Close</span>
+                </div>
+              </div>
+            ) : searchOpen && searchQuery.trim() ? (
+              <div className="absolute right-0 top-[calc(100%+0.4rem)] z-40 w-[min(22rem,80vw)] rounded-xl border border-white/[0.1] bg-[rgba(10,12,18,0.98)] p-3 shadow-[0_18px_48px_-22px_rgba(0,0,0,0.9)] backdrop-blur-xl">
+                <p className={`text-foreground/90 ${appMeta}`}>No matches found.</p>
+                <p className={`mt-1 text-muted ${appMeta}`}>
+                  Try a shorter term like incident, policy, or settings.
+                </p>
+              </div>
+            ) : null}
+          </div>
           <label htmlFor="console-jump" className="sr-only">
             Jump to module
           </label>
