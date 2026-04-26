@@ -8,6 +8,7 @@ import { PageHeader } from "@/components/app/PageHeader";
 import { PlaceholderCard } from "@/components/app/PlaceholderCard";
 import { appBody, appLabel, appMeta, appOverline, appPanelTitle } from "@/lib/app-typography";
 import { billingPlanFromSummary, getSubscriptionSummary } from "@/lib/billing/plan";
+import { listServiceDependencyGraphForUser } from "@/lib/services/dependencies";
 import { listServicesForUser } from "@/lib/services/data";
 import { getErrorBudgetOverviewSummary } from "@/lib/services/slo";
 import { createServiceSupabaseClient } from "@/lib/supabase/admin";
@@ -58,6 +59,7 @@ export default async function ServicesPage({
   const err = typeof sp.error === "string" ? sp.error : undefined;
 
   const rows = await listServicesForUser(user.id);
+  const dependencyGraph = await listServiceDependencyGraphForUser(supabase, user.id);
   const sloSummary = await getErrorBudgetOverviewSummary(supabase, user.id);
   const serviceRoleConfigured = Boolean(createServiceSupabaseClient());
 
@@ -221,6 +223,23 @@ export default async function ServicesPage({
                   </li>
                 ))}
               </ul>
+            )}
+          </div>
+          <div className="mt-6 border-t border-white/[0.06] pt-5">
+            <h3 className={appOverline}>Dependency graph</h3>
+            <p className={`mt-2 ${appMeta}`}>
+              {dependencyGraph.edges.length} edges across {dependencyGraph.nodes.length} services.
+            </p>
+            {dependencyGraph.edges.length > 0 ? (
+              <ul className={`mt-2 space-y-1 ${appMeta}`}>
+                {dependencyGraph.edges.slice(0, 8).map((edge, idx) => (
+                  <li key={`${edge.fromServiceId}-${edge.toServiceId}-${idx}`}>
+                    {edge.fromServiceName} → {edge.toServiceName} ({edge.relationship}, {edge.criticality})
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className={`mt-2 ${appMeta}`}>No dependencies recorded yet.</p>
             )}
           </div>
         </PlaceholderCard>

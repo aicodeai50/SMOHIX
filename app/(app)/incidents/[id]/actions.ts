@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { appendAuditEvent } from "@/lib/audit/append";
+import { runGuardedRemediation } from "@/lib/automations/remediation";
 import {
   getIncidentForUser,
   updateIncidentContextForUser,
@@ -207,4 +208,61 @@ export async function generateIncidentRcaAction(formData: FormData) {
   revalidatePath("/incidents");
   revalidatePath("/overview");
   redirect(`/incidents/${id}`);
+}
+
+export async function runIncidentRemediationAction(formData: FormData) {
+  const id = String(formData.get("id") ?? "").trim();
+  if (!id) return;
+  if (!hasSupabaseAuth()) {
+    redirect(`/incidents/${encodeURIComponent(id)}?error=${encodeURIComponent("Remediation requires Supabase auth.")}`);
+  }
+
+  const playbookId = String(formData.get("playbook_id") ?? "").trim() || "pb-restart-workers";
+  const approvalNote =
+    String(formData.get("approval_note") ?? "").trim() ||
+    "two-person approval | change window | senior on-call acknowledged";
+  const rollbackPlan =
+    String(formData.get("rollback_plan") ?? "").trim() ||
+    "Rollback by restoring last stable release and validating service health checks.";
+
+  const supabase = await createServerSupabaseClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    redirect(`/auth/sign-in?next=/incidents/${encodeURIComponent(id)}`);
+  }
+
+  const result = await runGuardedRemediation({
+    supabase,
+    userId: user.id,
+    playbookId,
+    approvalNote,
+    rollbackPlan,
+    incidentId: id,
+    triggerSource: "incident",
+  });
+
+  await appendAuditEvent({
+    event_type: result.ok ? "automation.remediation_executed" : "automation.remediation_blocked",
+    user_id: user.id,
+    details: {
+      incident_id: id,
+      playbook_id: playbookId,
+      remediation_run_id: result.runId,
+      blocked_reason: result.blockedReason,
+      checks: result.checks,
+    },
+  });
+
+  revalidatePath(`/incidents/${id}`);
+  revalidatePath("/overview");
+  if (result.ok) {
+    redirect(`/incidents/${id}?demo=1`);
+  }
+  redirect(
+    `/incidents/${id}?error=${encodeURIComponent(
+      result.blockedReason ?? "Remediation blocked by guardrails.",
+    )}`,
+  );
 }

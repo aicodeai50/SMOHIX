@@ -5,6 +5,7 @@ import { notFound, redirect } from "next/navigation";
 
 import {
   generateIncidentRcaAction,
+  runIncidentRemediationAction,
   updateIncidentContextAction,
   updateIncidentPostmortemAction,
   updateIncidentStatusAction,
@@ -216,6 +217,26 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
               No RCA run yet for this incident. Generate one to snapshot likely cause and response next steps.
             </p>
           )}
+        </div>
+      ) : null}
+      {source === "database" && hasSupabaseAuth() ? (
+        <div className="mb-6 rounded-2xl border border-white/[0.08] bg-white/[0.02] p-4">
+          <p className={appOverline}>Guarded remediation</p>
+          <p className={`mt-1 text-foreground/90 ${appBody}`}>
+            Execute a remediation run through the same guardrail path (fresh dry-run, policy checks, and audit).
+          </p>
+          <form action={runIncidentRemediationAction} className="mt-3">
+            <input type="hidden" name="id" value={row.id} />
+            <input type="hidden" name="playbook_id" value="pb-restart-workers" />
+            <input type="hidden" name="approval_note" value="two-person approval | change window | senior on-call acknowledged" />
+            <input type="hidden" name="rollback_plan" value="Rollback by restoring last stable release and validating service health checks." />
+            <button
+              type="submit"
+              className={`h-10 rounded-xl border border-accent/40 bg-accent/15 px-5 font-semibold text-accent hover:bg-accent/20 ${appBody}`}
+            >
+              Run guarded remediation
+            </button>
+          </form>
         </div>
       ) : null}
       {source === "database" && row.serviceId ? (

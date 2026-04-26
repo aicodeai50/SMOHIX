@@ -130,6 +130,18 @@ export const API_GROUPS: ApiGroup[] = [
         summary: "Record guarded execution after successful dry-run with approval note and rollback plan.",
         auth: "Session cookie",
       },
+      {
+        method: "POST",
+        path: "/api/automations/remediate",
+        summary: "Run guarded remediation with dry-run freshness and accepted policy checks.",
+        auth: "Session cookie",
+      },
+      {
+        method: "GET",
+        path: "/api/services/dependency-graph",
+        summary: "Fetch service dependency graph (nodes and directed edges).",
+        auth: "Session cookie",
+      },
     ],
   },
   {
