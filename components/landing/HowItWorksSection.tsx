@@ -13,7 +13,7 @@ const STEPS = [
   {
     n: "1",
     title: "Incident detected",
-    body: "Monitoring webhook, HTTP ingest token, or a responder opens an incident manually — one controlled record.",
+    body: "A monitoring webhook, HTTP ingest token, or responder opens the incident as one controlled record.",
   },
   {
     n: "2",
@@ -23,7 +23,7 @@ const STEPS = [
   {
     n: "3",
     title: "Suggested automation appears",
-    body: "Playbooks (and Copilot triage) propose the next mechanical step — still read-only until you promote it.",
+    body: "Playbooks and Copilot triage propose the next mechanical step, still read-only until promoted.",
   },
   {
     n: "4",
@@ -33,7 +33,7 @@ const STEPS = [
   {
     n: "5",
     title: "Automation runs through your connectors",
-    body: "Execution happens only after dry-run review and policy checks you configure.",
+    body: "Execution proceeds only after dry-run review and policy checks configured by your team.",
   },
   {
     n: "6",
@@ -60,7 +60,7 @@ export function HowItWorksSection() {
           How {SITE_BRAND_NAME} runs an incident
         </h2>
         <p className={mLede}>
-          Read this as an operator workflow from alert to verified execution and evidence.
+          This is the operator workflow from alert intake to verified execution and audit evidence.
         </p>
 
         <p
@@ -95,7 +95,7 @@ export function HowItWorksSection() {
               Why &ldquo;guarded&rdquo;?
             </h3>
             <p className="mt-2 text-sm leading-relaxed text-muted">
-              Automation that never skips the control plane you can show in review:
+              Automation that does not bypass the control plane you can show in every review:
             </p>
             <ul className="mt-4 space-y-3 text-sm leading-relaxed text-foreground/90">
               {GUARDED.map((line) => (

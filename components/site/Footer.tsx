@@ -7,7 +7,7 @@ import {
   getSupportMailtoHref,
 } from "@/lib/billing";
 import { mBody, mContainer, mFooterLabel } from "@/lib/marketing-layout";
-import { SITE_BRAND_NAME } from "@/lib/site-brand";
+import { SITE_BRAND_NAME, SITE_PRIMARY_DOMAIN } from "@/lib/site-brand";
 import { Logo } from "./Logo";
 
 const legal = [
@@ -15,6 +15,7 @@ const legal = [
   { href: "/privacy", label: "Privacy Policy" },
   { href: "/cookies", label: "Cookie Policy" },
   { href: "/acceptable-use", label: "Acceptable Use" },
+  { href: "/security", label: "Security & trust" },
   { href: "/refund", label: "Refunds & billing" },
 ] as const;
 
@@ -33,6 +34,9 @@ export function Footer() {
             <p className={mBody}>
               Safe automation for IT operations — incident response with approvals, dry-runs, and
               proof in one console.
+            </p>
+            <p className="text-xs text-muted">
+              Product: {SITE_BRAND_NAME} <span aria-hidden>·</span> Domain: {SITE_PRIMARY_DOMAIN}
             </p>
           </div>
 
@@ -63,6 +67,9 @@ export function Footer() {
                 </Link>
                 <Link href="/trust" className="w-fit hover:text-foreground md:ml-auto">
                   Trust &amp; governance
+                </Link>
+                <Link href="/security" className="w-fit hover:text-foreground md:ml-auto">
+                  Security
                 </Link>
                 <Link href="/status" className="w-fit hover:text-foreground md:ml-auto">
                   Status

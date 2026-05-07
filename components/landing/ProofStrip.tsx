@@ -33,17 +33,17 @@ export function ProofStrip() {
         >
           <div className="min-w-0 md:max-w-md">
             <h2 id="proof-heading" className={mH2Sm}>
-              Evidence you can show auditors
+              Evidence for audits and post-incident review
             </h2>
             <p className={mLede}>
-              Capture approvals, status changes, and automation evidence in one audit-oriented record
-              so teams can review what changed, who approved it, and when it happened.
+              Capture approvals, status changes, and automation evidence in one audit-oriented
+              record so teams can verify what changed, who approved it, and when it happened.
             </p>
             <Link
               href="/auth/sign-in?next=/audit"
               className="mt-4 inline-block text-[0.9375rem] font-medium leading-relaxed text-accent hover:underline"
             >
-              Preview after sign-in →
+              Open audit preview →
             </Link>
           </div>
           <div className="min-w-0 flex-1 md:max-w-xl">

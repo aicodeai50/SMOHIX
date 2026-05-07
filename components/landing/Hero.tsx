@@ -17,15 +17,14 @@ export function Hero({
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(94,225,255,0.08),transparent)]" />
       <div className={`relative py-16 sm:py-24 ${mContainer}`}>
         <p className={mEyebrow}>Trusted operations</p>
-        <h1 className={`shynvo-headline mt-2 max-w-3xl ${mH1}`}>
-          Safe automation for IT operations
-        </h1>
+        <h1 className={`shynvo-headline mt-2 max-w-3xl ${mH1}`}>Controlled incident response for IT teams</h1>
         <p className={mHeroLede}>
           <span className="text-foreground/90">
-            Zentro helps IT teams run incident response with approvals, guardrails, and complete
-            audit evidence.
+            Zentro helps IT teams coordinate incident response with approvals, policy guardrails,
+            and complete execution evidence.
           </span>{" "}
-          A professional control layer for teams that need reliability and accountability.
+          A professional control plane for teams that need reliability, accountability, and change
+          discipline.
         </p>
         <p className={`mt-3 max-w-2xl ${mBody}`}>
           Built for teams that need a reliable control layer during incidents: clear ownership,
@@ -37,13 +36,13 @@ export function Hero({
             href="/auth/sign-in?next=/hub"
             className="inline-flex h-11 items-center justify-center rounded-lg bg-accent px-5 text-sm font-semibold text-background transition-opacity hover:opacity-90"
           >
-            Open workspace
+            Open platform workspace
           </Link>
           <Link
             href="/platform"
             className="inline-flex h-11 items-center justify-center rounded-lg border border-white/[0.12] bg-white/[0.03] px-5 text-sm font-medium text-foreground/90 transition-colors hover:border-accent/35 hover:text-accent"
           >
-            See platform overview
+            View platform overview
           </Link>
         </div>
 

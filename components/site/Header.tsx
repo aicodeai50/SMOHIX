@@ -10,6 +10,7 @@ const nav = [
   { href: "/pricing", label: "Pricing" },
   { href: "/integrations", label: "Integrations" },
   { href: "/trust", label: "Trust" },
+  { href: "/security", label: "Security" },
   { href: "/status", label: "Status" },
   { href: "/changelog", label: "Changelog" },
   { href: "/why", label: "Why" },

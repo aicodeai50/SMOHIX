@@ -1,5 +1,7 @@
+import { SITE_PRIMARY_DOMAIN } from "@/lib/site-brand";
+
 /** Apex domain (no `www`). Primary production host. */
-export const SITE_DOMAIN = "zentro.run";
+export const SITE_DOMAIN = SITE_PRIMARY_DOMAIN;
 
 /**
  * Canonical site origin. Used for metadata, Open Graph, and absolute links.

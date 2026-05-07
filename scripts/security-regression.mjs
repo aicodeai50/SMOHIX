@@ -31,6 +31,7 @@ async function main() {
     rootProxyOrMiddleware = await read("middleware.ts");
   }
   const siteLib = await read("lib/site.ts");
+  const siteBrandLib = await read("lib/site-brand.ts");
   const robots = await read("app/robots.ts");
   const sitemap = await read("app/sitemap.ts");
   const apiCatalog = await read("lib/docs/api-catalog.ts");
@@ -120,7 +121,14 @@ async function main() {
   assert(!sitemap.includes('path: "/status"'), "sitemap should not include /status");
 
   // Canonical host consistency: enforce apex canonical and www->apex redirect in edge routing.
-  assert(siteLib.includes('SITE_DOMAIN = "zentro.run"'), "site domain should be apex zentro.run");
+  assert(
+    siteBrandLib.includes('SITE_PRIMARY_DOMAIN = "zentro.run"'),
+    "site primary domain should be apex zentro.run",
+  );
+  assert(
+    siteLib.includes("SITE_DOMAIN = SITE_PRIMARY_DOMAIN"),
+    "site domain should derive from primary domain constant",
+  );
   assert(
     rootLayout.includes("alternates:") && rootLayout.includes("canonical: siteUrl"),
     "root metadata missing canonical alternates wiring",

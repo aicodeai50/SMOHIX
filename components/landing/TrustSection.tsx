@@ -27,7 +27,7 @@ const links = [
   {
     href: "/trust",
     title: "Security & governance",
-    line: "Public trust posture, legal commitments, and operational governance principles.",
+    line: "Public trust posture, legal commitments, and governance principles for high-impact operations.",
     action: "Read",
     actionAria: "Read trust page",
   },
@@ -37,10 +37,10 @@ export function TrustSection() {
   return (
     <MarketingReveal id="trust" className={mSection}>
       <div className={mContainer}>
-        <h2 className={mH2}>Governance and access</h2>
+        <h2 className={mH2}>Governance, security, and access</h2>
         <p className={mLede}>
-          Evidence, authorization, and credentials — alongside the modules above, not bolted on as
-          an afterthought.
+          Evidence, authorization, and credentials are built into the operating model, not bolted on
+          as an afterthought.
         </p>
 
         <div className={`mt-8 overflow-hidden ${mPanelShell}`}>
