@@ -30,7 +30,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 type Props = {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ error?: string; demo?: string }>;
+  searchParams: Promise<{ error?: string; scenario?: string; remediation?: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -44,7 +44,8 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
   const { id } = await params;
   const sp = await searchParams;
   const err = typeof sp.error === "string" ? sp.error : undefined;
-  const demoSeeded = sp.demo === "1";
+  const scenarioSeeded = sp.scenario === "1";
+  const remediationRan = sp.remediation === "1";
 
   let userId = "";
   let devTenantKey: string | null = null;
@@ -118,10 +119,10 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
           row.serviceName ? ` · ${row.serviceName}` : ""
         }${row.ownerHint ? ` · ${row.ownerHint}` : ""}`}
       />
-      {demoSeeded ? (
+      {scenarioSeeded ? (
         <p className={`mb-4 rounded-xl border border-emerald-400/25 bg-emerald-500/[0.08] px-4 py-3 text-emerald-100/90 ${appBody}`}>
-          Demo flow seeded: incident created, approval queued, and dry-run evidence attached. Next:
-          review{" "}
+          Guided scenario ready: incident created, approval queued, and dry-run evidence attached.
+          Next, review{" "}
           <Link href="/approvals" className="font-semibold text-emerald-200 underline-offset-2 hover:underline">
             approvals
           </Link>{" "}
@@ -130,6 +131,11 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
             automations
           </Link>
           .
+        </p>
+      ) : null}
+      {remediationRan ? (
+        <p className={`mb-4 rounded-xl border border-emerald-400/25 bg-emerald-500/[0.08] px-4 py-3 text-emerald-100/90 ${appBody}`}>
+          Guarded remediation executed and recorded in audit evidence for this incident.
         </p>
       ) : null}
       {lastIncidentDryRun ? (

@@ -16,16 +16,16 @@ export function Hero({
     <MarketingReveal className="relative overflow-hidden border-b border-white/[0.06]">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(94,225,255,0.08),transparent)]" />
       <div className={`relative py-16 sm:py-24 ${mContainer}`}>
-        <p className={mEyebrow}>Controlled operations</p>
+        <p className={mEyebrow}>Trusted operations</p>
         <h1 className={`shynvo-headline mt-2 max-w-3xl ${mH1}`}>
           Safe automation for IT operations
         </h1>
         <p className={mHeroLede}>
           <span className="text-foreground/90">
-            We help IT teams safely run automated actions during incidents with approvals and full
-            audit logs.
+            Zentro helps IT teams run incident response with approvals, guardrails, and complete
+            audit evidence.
           </span>{" "}
-          A safety layer on top of the automations you already run, not a vague &ldquo;AI platform.&rdquo;
+          A professional control layer for teams that need reliability and accountability.
         </p>
         <p className={`mt-3 max-w-2xl ${mBody}`}>
           Built for teams that need a reliable control layer during incidents: clear ownership,
@@ -34,28 +34,16 @@ export function Hero({
 
         <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
           <Link
-            href="/hub"
+            href="/auth/sign-in?next=/hub"
             className="inline-flex h-11 items-center justify-center rounded-lg bg-accent px-5 text-sm font-semibold text-background transition-opacity hover:opacity-90"
           >
-            Open console
+            Open workspace
           </Link>
           <Link
-            href="/auth/sign-in?next=/incidents/new"
+            href="/platform"
             className="inline-flex h-11 items-center justify-center rounded-lg border border-white/[0.12] bg-white/[0.03] px-5 text-sm font-medium text-foreground/90 transition-colors hover:border-accent/35 hover:text-accent"
           >
-            Start: open an incident
-          </Link>
-          <Link
-            href="/auth/sign-in?next=/settings"
-            className="inline-flex h-11 items-center justify-center rounded-lg border border-white/[0.12] bg-transparent px-5 text-sm font-medium text-muted transition-colors hover:border-white/[0.2] hover:text-foreground"
-          >
-            Connect alert ingest
-          </Link>
-          <Link
-            href="/auth/sign-in?next=/runbooks"
-            className="inline-flex h-11 items-center justify-center rounded-lg border border-transparent px-5 text-sm font-medium text-muted underline-offset-4 hover:text-accent hover:underline"
-          >
-            Browse runbooks
+            See platform overview
           </Link>
         </div>
 

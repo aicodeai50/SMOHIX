@@ -258,7 +258,7 @@ export async function runIncidentRemediationAction(formData: FormData) {
   revalidatePath(`/incidents/${id}`);
   revalidatePath("/overview");
   if (result.ok) {
-    redirect(`/incidents/${id}?demo=1`);
+    redirect(`/incidents/${id}?remediation=1`);
   }
   redirect(
     `/incidents/${id}?error=${encodeURIComponent(

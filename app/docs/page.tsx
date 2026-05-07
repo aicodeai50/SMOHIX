@@ -8,18 +8,18 @@ import { SITE_BRAND_NAME } from "@/lib/site-brand";
 
 export const metadata: Metadata = {
   title: "Docs",
-  description: "Learn hub — platform narrative, integrations, and console entry points.",
+  description: "Product, API, trust, and onboarding documentation for Zentro.",
 };
 
 const CARDS = [
   {
-    title: "How it works — film",
-    body: "Auto-playing narrated slides about incidents → guardrails → audit; record as MP4 or copy prompt for AI video tools.",
+    title: "How it works",
+    body: "Narrated walkthrough of incident handling, approvals, and audit evidence.",
     href: "/docs/film",
   },
   {
-    title: "Product demo",
-    body: "Interactive tour (auto-advance + keyboard) plus shot list if you record an MP4 later.",
+    title: "Interactive product demo",
+    body: "Guided product tour for operators, technical buyers, and stakeholders.",
     href: "/docs/demo",
   },
   {
@@ -39,7 +39,7 @@ const CARDS = [
   },
   {
     title: `Why ${SITE_BRAND_NAME}`,
-    body: "Short philosophy — accountability over hype, guarded automation as thesis.",
+    body: "Product principles: accountability, operational safety, and practical automation.",
     href: "/why",
   },
   {
@@ -50,7 +50,7 @@ const CARDS = [
   {
     title: "Decision intelligence",
     body: "How risk scoring, approval briefs, and predicted-vs-actual outcomes support safer changes.",
-    href: "/governance/policies",
+    href: "/auth/sign-in?next=/governance/policies",
   },
   {
     title: "Security model",
@@ -58,8 +58,8 @@ const CARDS = [
     href: "/trust",
   },
   {
-    title: "Vision & roadmap (console)",
-    body: "Long-horizon direction inside the authenticated app.",
+    title: "Vision & roadmap",
+    body: "Product direction and longer-term roadmap (available in the app).",
     href: "/auth/sign-in?next=/vision",
   },
   {
@@ -87,8 +87,8 @@ export default function DocsPage() {
         <div className={`${mContainer} py-12 sm:py-16`}>
           <h1 className={mH1}>Learn hub</h1>
           <p className={`mt-4 max-w-2xl ${mBody}`}>
-            Open documentation for narrative and entry points. Deep API reference can grow here over
-            time; today the highest-signal doc is the{" "}
+            Start with the platform overview for a quick understanding, then move into API, trust,
+            and operational guides based on your role.{" "}
             <Link href="/platform" className="font-medium text-accent hover:underline">
               platform overview
             </Link>

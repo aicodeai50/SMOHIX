@@ -52,11 +52,8 @@ export default async function IncidentsPage() {
       </div>
       {source === "session" ? (
         <p className={`shynvo-glass-subtle mb-4 rounded-xl px-4 py-3 ${appMeta}`}>
-          Incidents are scoped to this browser session until Supabase is connected. Run{" "}
-          <code className="rounded bg-surface px-1 font-mono text-accent">
-            supabase/migrations/20260418130000_incidents.sql
-          </code>{" "}
-          and sign in for account-wide, persistent incidents.
+          Incidents are currently scoped to this browser session. Sign in to a configured workspace
+          for shared, persistent incident history and team visibility.
         </p>
       ) : null}
       {rows.length === 0 ? (

@@ -57,7 +57,7 @@ export function AutomationsConsole({
 
   async function dryRun(playbookId: string) {
     const confirmed = window.confirm(
-      "Run this dry-run? The result can be stored and written to your audit log when your deployment supports it. This is not a live execution — production changes still require approvals and connector policy.",
+      "Run this dry-run? This validates the automation path without applying production changes. When supported, the result is recorded in your audit history.",
     );
     if (!confirmed) {
       return;
@@ -85,7 +85,7 @@ export function AutomationsConsole({
         persisted?: boolean;
       };
       if (!r.ok) {
-        setMsg(j.error ?? "Dry-run failed");
+        setMsg(j.error ?? "Dry-run could not be completed. Review configuration and try again.");
         return;
       }
       setRuns((prev) => {
@@ -102,10 +102,10 @@ export function AutomationsConsole({
         j.persisted
           ? j.ok
             ? "Dry-run saved and logged to your audit trail."
-            : "Dry-run saved (issues detected) — see robot health and Audit."
+            : "Dry-run saved with issues detected. Review connector health and audit details."
           : j.ok
             ? "Dry-run recorded for this session."
-            : "Dry-run completed with issues — see robot health.",
+            : "Dry-run completed with issues. Review connector health before execution.",
       );
     } catch (e) {
       setMsg(e instanceof Error ? e.message : "Request failed");
@@ -116,7 +116,7 @@ export function AutomationsConsole({
 
   async function execute(playbookId: string) {
     const approvalNote = window.prompt(
-      "Approval note (include two-person approval + change window; for critical SLO burn include senior acknowledgement too):",
+      "Approval note (include reviewers and approved change window):",
       "two-person approval | change window | senior on-call acknowledged",
     );
     if (!approvalNote || !approvalNote.trim()) return;
@@ -197,9 +197,9 @@ export function AutomationsConsole({
         },
         ...prev,
       ]);
-      setMsg(j.detail ?? "Execution recorded.");
+      setMsg(j.detail ?? "Execution recorded with audit evidence.");
     } catch (e) {
-      setMsg(e instanceof Error ? e.message : "Execution request failed");
+      setMsg(e instanceof Error ? e.message : "Execution request failed. Please try again.");
     } finally {
       setBusyId(null);
     }

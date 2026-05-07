@@ -12,8 +12,12 @@ import {
 } from "@/lib/marketing-layout";
 
 const SAMPLE = `{
-  "event_type": "incident.context_updated",
-  "details": { "incident_id": "a1b2c3d4-…" }
+  "event_type": "automation.dry_run_recorded",
+  "details": {
+    "incident_id": "a1b2c3d4-...",
+    "playbook_id": "pb-restart-workers",
+    "result": "ok"
+  }
 }`;
 
 export function ProofStrip() {
@@ -32,8 +36,8 @@ export function ProofStrip() {
               Evidence you can show auditors
             </h2>
             <p className={mLede}>
-              The activity log is append-oriented: billing webhooks, API keys, approvals, status
-              changes, and automation events in one place. Export paths grow with your plan.
+              Capture approvals, status changes, and automation evidence in one audit-oriented record
+              so teams can review what changed, who approved it, and when it happened.
             </p>
             <Link
               href="/auth/sign-in?next=/audit"

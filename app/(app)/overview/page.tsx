@@ -110,15 +110,18 @@ export default async function OverviewPage() {
   let approvalP50Label = "—";
   let approvalP95Label = "—";
   let pendingOldestLabel = "—";
-  let pendingRiskLabel = approvalsPending > 0 ? "Queue health unavailable in session mode" : "No pending backlog";
+  let pendingRiskLabel =
+    approvalsPending > 0
+      ? "Pending approvals detected (detailed queue health requires workspace data)"
+      : "No pending backlog";
   let decisionAccuracyLabel = "—";
   let proposedSuggestions = 0;
   let acceptedSuggestions = 0;
   let enforcementPlaybookCount = 0;
   let enforcementBlastCapCount = 0;
-  let enforcementSummary = "Requires signed-in workspace data";
+  let enforcementSummary = "Available in signed-in workspaces";
   let policyBlocksLast7d = 0;
-  let policyBlockTrendLabel = "Requires signed-in workspace data";
+  let policyBlockTrendLabel = "Available in signed-in workspaces";
   let policyBlockDeltaLabel = "No baseline";
   let topPolicyBlockReasonCode: PolicyBlockReasonCode = "unknown";
   let topPolicyBlockSuggestedNote = "";

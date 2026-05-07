@@ -31,16 +31,16 @@ export default function PricingPage() {
             Pricing
           </h1>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted">
-            Transparent tiers build trust even when the product is young. Limits and entitlements
-            evolve with billing webhooks — check the checkout for the current commercial packaging.
+            Clear plans for teams adopting operational automation. Feature availability and limits are
+            shown at checkout and inside your workspace billing view.
           </p>
 
           <div className="mt-10 grid gap-6 lg:grid-cols-3">
             <div className="rounded-2xl border border-white/[0.1] bg-white/[0.02] p-6">
               <h2 className="text-lg font-semibold text-foreground">Pro</h2>
               <p className="mt-2 text-sm leading-relaxed text-muted">
-                Individual or small team serious about incidents, ingest tokens, and paid-gated
-                automation paths when enabled in your deployment.
+                For individual operators and smaller teams managing incidents, approvals, and audit
+                records.
               </p>
               {checkout ? (
                 <a
@@ -52,18 +52,14 @@ export default function PricingPage() {
                   Subscribe — Pro
                 </a>
               ) : (
-                <p className="mt-6 text-xs text-muted">
-                  Configure <code className="font-mono text-accent/90">NEXT_PUBLIC_LEMONSQUEEZY_CHECKOUT_URL</code>{" "}
-                  to enable checkout.
-                </p>
+                <p className="mt-6 text-xs text-muted">Checkout is not currently available for this plan.</p>
               )}
             </div>
 
             <div className="rounded-2xl border border-accent/25 bg-accent/[0.04] p-6">
               <h2 className="text-lg font-semibold text-foreground">Team</h2>
               <p className="mt-2 text-sm leading-relaxed text-muted">
-                Second checkout when you offer a team SKU — same console, packaging aimed at shared
-                operational use (details in your Lemon product setup).
+                For teams running shared operations with centralized ownership and governance workflows.
               </p>
               {teamCheckout ? (
                 <a
@@ -75,18 +71,15 @@ export default function PricingPage() {
                   Subscribe — Team
                 </a>
               ) : (
-                <p className="mt-6 text-xs text-muted">
-                  Optional: set{" "}
-                  <code className="font-mono text-accent/90">NEXT_PUBLIC_LEMONSQUEEZY_TEAM_CHECKOUT_URL</code>.
-                </p>
+                <p className="mt-6 text-xs text-muted">Team checkout is currently offered through sales.</p>
               )}
             </div>
 
             <div className="rounded-2xl border border-white/[0.1] bg-white/[0.02] p-6">
               <h2 className="text-lg font-semibold text-foreground">Enterprise</h2>
               <p className="mt-2 text-sm leading-relaxed text-muted">
-                SSO, custom SLAs, procurement, and integration priority — conversation-led. We will
-                not pretend those are self-serve buttons before they exist.
+                For larger rollouts requiring procurement support, custom terms, and advanced
+                operational controls.
               </p>
               <a
                 href={`mailto:${SITE_EMAIL_CONTACT}?subject=${encodeURIComponent("Zentro enterprise")}`}

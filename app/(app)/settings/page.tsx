@@ -396,7 +396,7 @@ export default async function SettingsIndexPage({
           </Link>
           <a
             href={setupReportHref}
-            download="shynvo-setup-readiness.md"
+            download="zentro-setup-readiness.md"
             className={`rounded-full border border-white/[0.14] px-2.5 py-1 text-foreground/75 transition-colors hover:border-accent/35 hover:text-foreground ${appMeta}`}
           >
             Download setup report

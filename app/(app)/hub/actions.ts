@@ -14,11 +14,11 @@ import { createIncidentForUser } from "@/lib/incidents/data";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-export async function launchKillerDemoAction() {
+export async function launchGuidedScenarioAction() {
   const nowTag = new Date().toISOString().replace("T", " ").slice(0, 16);
-  const demoTitle = `Demo: Checkout failover risk review (${nowTag})`;
-  const demoAction = `Execute database failover for checkout service (${nowTag})`;
-  const demoPolicy = "two-person approval | change window | risk:high";
+  const scenarioTitle = `Guided scenario: Checkout failover readiness (${nowTag})`;
+  const scenarioAction = `Execute database failover for checkout service (${nowTag})`;
+  const scenarioPolicy = "two-person approval | change window | risk:high";
 
   if (hasSupabaseAuth()) {
     const supabase = await createServerSupabaseClient();
@@ -30,41 +30,41 @@ export async function launchKillerDemoAction() {
     }
 
     const incident = await createIncidentForUser(user.id, {
-      title: demoTitle,
+      title: scenarioTitle,
       severity: "critical",
       status: "investigating",
       ownerHint: "platform-oncall",
       runbookSlug: "db-failover",
-      externalRef: `demo:${Date.now()}`,
+      externalRef: `guided:${Date.now()}`,
     });
     if (!incident.ok) {
-      redirect(`/hub?demo_error=${encodeURIComponent(incident.reason)}`);
+      redirect(`/hub?scenario_error=${encodeURIComponent(incident.reason)}`);
     }
 
     const approval = await createApprovalRequest({
       userId: user.id,
       devTenantId: null,
-      actionLabel: demoAction,
-      requestedBy: "demo-seeder",
-      policyHint: demoPolicy,
+      actionLabel: scenarioAction,
+      requestedBy: "guided-scenario-seeder",
+      policyHint: scenarioPolicy,
     });
     if (!approval.ok) {
-      redirect(`/hub?demo_error=${encodeURIComponent(approval.reason)}`);
+      redirect(`/hub?scenario_error=${encodeURIComponent(approval.reason)}`);
     }
 
     await insertAutomationDryRun(supabase, user.id, {
       playbookId: "db-failover",
       ok: true,
-      detail: "Dry-run only: previewed command set and blast radius checks for demo.",
+      detail: "Dry-run only: previewed command set and blast radius checks.",
       incidentId: incident.id,
     });
 
     await appendAuditEvent({
-      event_type: "demo.killer_flow_seeded",
+      event_type: "guided.scenario_seeded",
       user_id: user.id,
       details: {
         incident_id: incident.id,
-        approval_action: demoAction,
+        approval_action: scenarioAction,
       },
     });
 
@@ -72,26 +72,26 @@ export async function launchKillerDemoAction() {
     revalidatePath("/overview");
     revalidatePath("/approvals");
     revalidatePath(`/incidents/${incident.id}`);
-    redirect(`/incidents/${incident.id}?demo=1`);
+    redirect(`/incidents/${incident.id}?scenario=1`);
   }
 
   const tid = (await cookies()).get("zentro_dev_tid")?.value ?? "anon";
   const incidentId = recordDevIncident(tid, {
-    title: demoTitle,
+    title: scenarioTitle,
     severity: "critical",
     status: "investigating",
     ownerHint: "platform-oncall",
     runbookSlug: "db-failover",
   });
   devCreateApproval(tid, {
-    action: demoAction,
-    requestedBy: "demo-seeder",
-    policy: demoPolicy,
+    action: scenarioAction,
+    requestedBy: "guided-scenario-seeder",
+    policy: scenarioPolicy,
   });
   recordDryRun(tid, {
     playbookId: "db-failover",
     ok: true,
-    detail: "Dry-run only: previewed command set and blast radius checks for demo.",
+    detail: "Dry-run only: previewed command set and blast radius checks.",
     incidentId,
   });
 
@@ -99,5 +99,5 @@ export async function launchKillerDemoAction() {
   revalidatePath("/overview");
   revalidatePath("/approvals");
   revalidatePath(`/incidents/${incidentId}`);
-  redirect(`/incidents/${incidentId}?demo=1`);
+  redirect(`/incidents/${incidentId}?scenario=1`);
 }

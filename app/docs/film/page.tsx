@@ -22,8 +22,8 @@ export default function DocsFilmPage() {
             How {SITE_BRAND_NAME} works
           </h1>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted">
-            This page is an auto-playing walkthrough you can screen-record as your demo MP4, or use the copied prompt in an
-            external AI video generator for a rendered clip.
+            This page provides an auto-playing walkthrough of core product workflows for stakeholder
+            review.
           </p>
 
           <div className="mt-10">
@@ -36,7 +36,7 @@ export default function DocsFilmPage() {
             </Link>
             {" · "}
             <Link href="/docs/demo" className="font-medium text-accent hover:underline">
-              Interactive + embed URL
+              Interactive walkthrough
             </Link>
             {" · "}
             <Link href="/#how-it-works" className="font-medium text-accent hover:underline">

@@ -11,25 +11,25 @@ import {
 
 const links = [
   {
-    href: "/audit",
+    href: "/auth/sign-in?next=/audit",
     title: "Audit log",
     line: "Billing sync, API keys, approvals, and automation events in one append-only log.",
-    action: "View",
+    action: "Review",
     actionAria: "View audit log",
   },
   {
-    href: "/approvals",
+    href: "/auth/sign-in?next=/approvals",
     title: "Approvals",
     line: "Review and record decisions before high-risk changes proceed.",
     action: "Open",
     actionAria: "Open approvals",
   },
   {
-    href: "/settings",
-    title: "Settings",
-    line: "API keys, connectors, billing, and organization options.",
-    action: "Configure",
-    actionAria: "Open settings",
+    href: "/trust",
+    title: "Security & governance",
+    line: "Public trust posture, legal commitments, and operational governance principles.",
+    action: "Read",
+    actionAria: "Read trust page",
   },
 ] as const;
 

@@ -11,9 +11,8 @@ export default function CookiesPage() {
   return (
     <LegalLayout title="Cookie Policy" lastUpdated="April 2026">
       <div className="legal-callout">
-        <strong>Transparency.</strong> This policy describes categories of cookies and
-        similar technologies we may use. Maintain a live cookie inventory in your
-        consent tool if you operate in the EEA/UK and enable non-essential scripts.
+        <strong>Transparency.</strong> This policy describes the cookie categories
+        used by Zentro across public and authenticated product surfaces.
       </div>
 
       <h2>1. What are cookies?</h2>
@@ -66,9 +65,9 @@ export default function CookiesPage() {
         trackers by default.
       </p>
 
-      <h2>4. Example inventory (template)</h2>
+      <h2>4. Cookie inventory snapshot</h2>
       <p>
-        Replace names and durations with your actual stack. Durations are indicative.
+        Representative cookies and storage keys currently used in the platform.
       </p>
       <table>
         <thead>
@@ -99,10 +98,10 @@ export default function CookiesPage() {
             <td>6–12 months</td>
           </tr>
           <tr>
-            <td>Analytics vendor (TBD)</td>
-            <td>Product analytics</td>
+            <td>Telemetry events</td>
+            <td>Reliability and product usage analytics</td>
             <td>Analytics</td>
-            <td>Per vendor</td>
+            <td>Per processor policy</td>
           </tr>
         </tbody>
       </table>

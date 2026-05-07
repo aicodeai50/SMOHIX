@@ -432,7 +432,7 @@ export default async function ConnectorsPage({
   ];
   const csvContent = csvRows.map((r) => r.map((cell) => csvEscape(String(cell))).join(",")).join("\n");
   const csvHref = `data:text/csv;charset=utf-8,${encodeURIComponent(csvContent)}`;
-  const csvFilename = `shynvo-ingest-events-${windowFilter}-${vendorFilter || "all"}.csv`;
+  const csvFilename = `zentro-ingest-events-${windowFilter}-${vendorFilter || "all"}.csv`;
   const markdownReport = [
     `## Zentro Ingest Diagnostics`,
     ``,
@@ -455,7 +455,7 @@ export default async function ConnectorsPage({
     .filter(Boolean)
     .join("\n");
   const markdownHref = `data:text/markdown;charset=utf-8,${encodeURIComponent(markdownReport)}`;
-  const markdownFilename = `shynvo-ingest-events-${windowFilter}-${vendorFilter || "all"}.md`;
+  const markdownFilename = `zentro-ingest-events-${windowFilter}-${vendorFilter || "all"}.md`;
   const jsonReport = JSON.stringify(
     {
       generated_at: new Date().toISOString(),
@@ -483,7 +483,7 @@ export default async function ConnectorsPage({
     2,
   );
   const jsonHref = `data:application/json;charset=utf-8,${encodeURIComponent(jsonReport)}`;
-  const jsonFilename = `shynvo-ingest-events-${windowFilter}-${vendorFilter || "all"}.json`;
+  const jsonFilename = `zentro-ingest-events-${windowFilter}-${vendorFilter || "all"}.json`;
   const wizardContextQuery = [
     returnHref ? `next=${encodeURIComponent(returnHref)}` : null,
     setupStep ? `setup_step=${encodeURIComponent(setupStep)}` : null,

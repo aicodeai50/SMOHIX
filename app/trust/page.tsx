@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
 import { mArticle, mBody, mCard, mH1, mH2, mPanelShell } from "@/lib/marketing-layout";
-import { SITE_BRAND_NAME } from "@/lib/site-brand";
+import { SITE_BRAND_NAME, SITE_PRIMARY_DOMAIN } from "@/lib/site-brand";
 
 export const metadata: Metadata = {
   title: "Trust & governance",
@@ -47,8 +47,8 @@ export default function TrustPage() {
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent/90">Trust</p>
           <h1 className={`mt-2 ${mH1}`}>Trust &amp; governance</h1>
           <p className={`mt-4 ${mBody}`}>
-            {SITE_BRAND_NAME} is built for teams that get reviewed — whether by security, finance, or their own
-            future selves at 3 a.m. These are the control surfaces that make automation defensible.
+            {SITE_BRAND_NAME} is built for teams that are accountable for operational changes. This
+            page summarizes the control surfaces and commitments customers can rely on.
           </p>
 
           <section className="mt-12 space-y-4" aria-labelledby="pillars-heading">
@@ -80,31 +80,42 @@ export default function TrustPage() {
 
           <section className="mt-12" aria-labelledby="execution-heading">
             <h2 id="execution-heading" className={mH2}>
-              Execution posture
+              Operational execution posture
             </h2>
             <p className={`mt-3 ${mBody}`}>
-              The console surfaces an execution mode callout on automations and approvals: dry-run first when
-              available, approvals for gated work, and audit visibility for what changed. Defaults favor proof over
-              speed.
+              The product is designed for review-first operations: dry-run and approval workflows for
+              high-impact actions, with auditable records of approved execution paths.
             </p>
           </section>
 
           <section className="mt-12" aria-labelledby="limits-heading">
             <h2 id="limits-heading" className={mH2}>
-              Rate limits &amp; abuse resistance
+              Availability and abuse resistance
             </h2>
             <p className={`mt-3 ${mBody}`}>
-              Public and sensitive routes use lightweight in-memory rate limiting where configured, so incidental
-              traffic spikes do not overwhelm your deployment. Tune limits in your hosting layer as traffic grows.
+              Public and sensitive routes are protected with authentication boundaries and request
+              controls designed to reduce abuse and preserve service availability.
             </p>
             <div className={`mt-6 p-5 ${mPanelShell}`}>
-              <p className={`text-sm font-medium text-foreground`}>Operators should expect</p>
+              <p className={`text-sm font-medium text-foreground`}>Customers can expect</p>
               <ul className={`mt-3 list-inside list-disc space-y-2 ${mBody}`}>
                 <li>Explicit authentication for user APIs and alert ingest</li>
-                <li>Append-oriented audit when the database and service role are configured</li>
-                <li>Clear separation between session demo mode and production-backed workspaces</li>
+                <li>Audit-focused operational records for key platform actions</li>
+                <li>Clear separation between evaluation mode and production-backed workspaces</li>
               </ul>
             </div>
+          </section>
+
+          <section className="mt-12" aria-labelledby="disclosure-heading">
+            <h2 id="disclosure-heading" className={mH2}>
+              Security communication
+            </h2>
+            <p className={`mt-3 ${mBody}`}>
+              For security disclosures, data handling questions, and procurement review requests,
+              contact support via <a href={`https://${SITE_PRIMARY_DOMAIN}`}>{SITE_PRIMARY_DOMAIN}</a>{" "}
+              channels. Customer-specific architecture and implementation details are shared through
+              authenticated support and enterprise review workflows.
+            </p>
           </section>
 
           <p className={`mt-12 flex flex-wrap gap-x-4 gap-y-2 ${mBody}`}>

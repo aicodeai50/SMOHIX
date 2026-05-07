@@ -56,8 +56,8 @@ export default async function NewIncidentPage({
         title="New incident"
         description={
           hasSupabaseAuth()
-            ? "Creates a row in your Supabase incidents table when the migration is applied."
-            : "Creates a session-scoped incident for this browser. Connect Supabase for persistent, per-account incidents."
+            ? "Create a tracked incident with owner, severity, and runbook context for your team."
+            : "Create an incident for this workspace session. Sign in to a configured workspace for persistent, shared incident history."
         }
       />
       {error ? (

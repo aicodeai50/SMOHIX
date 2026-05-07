@@ -37,7 +37,7 @@ export function AlertIngestPanel({
       error?: string;
     };
     if (!r.ok) {
-      setLoadErr(j.message ?? "Could not load ingest tokens.");
+      setLoadErr(j.message ?? "Could not load ingest tokens. Refresh and try again.");
       setTokens([]);
       return;
     }
@@ -65,7 +65,7 @@ export function AlertIngestPanel({
       });
       const j = (await r.json()) as { token?: string; message?: string };
       if (!r.ok) {
-        setErr(j.message ?? "Could not create token.");
+        setErr(j.message ?? "Could not create ingest token. Verify configuration and retry.");
         return;
       }
       if (j.token) setMinted(j.token);
@@ -77,7 +77,7 @@ export function AlertIngestPanel({
   }
 
   async function revoke(id: string) {
-    if (!confirm("Revoke this ingest token? Monitoring webhooks using it will fail.")) {
+    if (!confirm("Revoke this ingest token? Alert webhooks using it will fail immediately.")) {
       return;
     }
     setBusy(true);
@@ -89,7 +89,7 @@ export function AlertIngestPanel({
       });
       const j = (await r.json()) as { message?: string };
       if (!r.ok) {
-        setErr(j.message ?? "Could not revoke.");
+        setErr(j.message ?? "Could not revoke ingest token. Please retry.");
         return;
       }
       await refresh();

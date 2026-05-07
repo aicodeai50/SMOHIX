@@ -60,14 +60,14 @@ export function HowItWorksSection() {
           How {SITE_BRAND_NAME} runs an incident
         </h2>
         <p className={mLede}>
-          Read this like a storyboard; each step maps to a real route in the console.
+          Read this as an operator workflow from alert to verified execution and evidence.
         </p>
 
         <p
           className={`mt-6 px-4 py-3 font-mono text-[11px] leading-relaxed text-foreground/85 sm:text-xs ${mPanelShell}`}
         >
-          <span className="text-muted">Example:</span> server signal → incident opens → runbook +
-          Copilot → dry-run playbook → approval recorded → execute via connector → audit + export
+          <span className="text-muted">Typical flow:</span> signal received → incident opened →
+          runbook selected → dry-run validated → approval recorded → guarded execution → audit trail
         </p>
 
         <div

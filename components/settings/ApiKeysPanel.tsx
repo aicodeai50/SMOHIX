@@ -38,7 +38,7 @@ export function ApiKeysPanel({
     const r = await fetch("/api/user/api-keys", { credentials: "include" });
     const j = (await r.json()) as { keys?: ApiKeyRow[]; message?: string };
     if (!r.ok) {
-      setErr(j.message ?? "Could not refresh the list.");
+      setErr(j.message ?? "Could not refresh API keys. Please try again.");
       return;
     }
     setKeys(j.keys ?? []);
@@ -67,7 +67,7 @@ export function ApiKeysPanel({
       });
       const j = (await r.json()) as { key?: string; message?: string };
       if (!r.ok) {
-        setErr(j.message ?? "Could not create a key.");
+        setErr(j.message ?? "Could not create API key. Check workspace configuration and retry.");
         return;
       }
       if (j.key) {
@@ -81,7 +81,7 @@ export function ApiKeysPanel({
   }
 
   async function revoke(id: string) {
-    if (!confirm("Revoke this key? Scripts using it will stop working.")) {
+    if (!confirm("Revoke this API key? Requests using this key will stop immediately.")) {
       return;
     }
     setBusy(true);
@@ -93,7 +93,7 @@ export function ApiKeysPanel({
       });
       const j = (await r.json()) as { message?: string };
       if (!r.ok) {
-        setErr(j.message ?? "Could not revoke.");
+        setErr(j.message ?? "Could not revoke API key. Please retry.");
         return;
       }
       await refresh();

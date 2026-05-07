@@ -11,10 +11,10 @@ export default function PrivacyPage() {
   return (
     <LegalLayout title="Privacy Policy" lastUpdated="April 2026">
       <div className="legal-callout">
-        <strong>Important.</strong> This Privacy Policy is a comprehensive template.
-        Zentro is not your lawyer. Finalize data categories, subprocessors, retention
-        schedules, and regional addenda (EEA/UK, US state laws, etc.) with qualified
-        privacy counsel before enterprise sales and DPIAs.
+        <strong>Commitment.</strong> Zentro processes personal information only to
+        deliver, secure, and support the service, and to meet legal obligations. We
+        design our privacy controls to support customer review and enterprise
+        procurement requirements.
       </div>
 
       <h2>1. Who we are</h2>
@@ -126,9 +126,8 @@ export default function PrivacyPage() {
         </li>
       </ul>
       <p>
-        A current list of key subprocessors should be published separately (e.g., a
-        “Subprocessors” page) and updated when vendors change for enterprise
-        customers.
+        We maintain and update a list of key subprocessors as vendors change.
+        Customers can request the current list through support.
       </p>
 
       <h2>7. International transfers</h2>
@@ -142,8 +141,8 @@ export default function PrivacyPage() {
       <p>
         We retain information as long as needed to provide the Services, comply with
         law, resolve disputes, and enforce agreements. Retention periods may depend
-        on plan settings, backups, and legal holds. Customer-configured retention for
-        audit logs and incidents should be documented in admin tooling.
+        on plan settings, backups, and legal holds. Where available, retention
+        controls for audit and incident data are exposed in product settings.
       </p>
 
       <h2>9. Security</h2>

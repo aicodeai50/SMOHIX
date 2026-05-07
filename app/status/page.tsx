@@ -10,10 +10,6 @@ import { getSiteUrl } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Status",
   description: `${SITE_BRAND_NAME} API health check for the configured deployment.`,
-  robots: {
-    index: false,
-    follow: false,
-  },
 };
 
 export const dynamic = "force-dynamic";
@@ -56,9 +52,9 @@ export default async function StatusPage() {
           </p>
           <h1 className={`mt-2 ${mH1}`}>Service status</h1>
           <p className={`mt-4 ${mBody}`}>
-            Lightweight signal from <code className="font-mono text-xs text-accent/90">GET /api/health</code> on
-            the canonical deployment (<span className="font-mono text-xs">{getSiteUrl()}</span>). This is not a
-            full incident history page — it answers &ldquo;is the web tier up?&rdquo;
+            Live availability signal from{" "}
+            <code className="font-mono text-xs text-accent/90">GET /api/health</code> on the canonical
+            deployment (<span className="font-mono text-xs">{getSiteUrl()}</span>).
           </p>
 
           <div
@@ -87,8 +83,7 @@ export default async function StatusPage() {
           </div>
 
           <p className={`mt-10 ${mBody}`}>
-            Maintenance windows and dependency incidents will move to a richer status system as the
-            product matures. For now, see also{" "}
+            For release notes and product updates, see{" "}
             <Link href="/changelog" className="font-medium text-accent hover:underline">
               Changelog
             </Link>

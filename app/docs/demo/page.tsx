@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Product demo",
-  description: `Interactive walkthrough and recording guide for ${SITE_BRAND_NAME}.`,
+  description: `Interactive walkthrough for ${SITE_BRAND_NAME}.`,
 };
 
 export default function DocsDemoPage() {
@@ -32,21 +32,12 @@ export default function DocsDemoPage() {
           <p className="mt-3 text-sm leading-relaxed text-muted">
             {videoEmbed ? (
               <>
-                Video below uses{" "}
-                <code className="rounded bg-white/[0.06] px-1.5 py-0.5 font-mono text-[11px] text-accent/90">
-                  DEMO_VIDEO_URL
-                </code>
-                . Use any AI tool → export or upload to YouTube / Loom → paste the watch or share link. The interactive
-                tour stays underneath for hands-on exploration.
+                Watch the embedded walkthrough, then use the interactive tour below for hands-on
+                exploration.
               </>
             ) : (
               <>
-                Set{" "}
-                <code className="rounded bg-white/[0.06] px-1.5 py-0.5 font-mono text-[11px] text-accent/90">
-                  DEMO_VIDEO_URL
-                </code>{" "}
-                (YouTube, Loom, Vimeo, or direct MP4) to show your AI-generated walkthrough here — or use the interactive
-                tour below without a video.
+                Use the interactive tour below to explore core product workflows.
               </>
             )}
           </p>
@@ -56,18 +47,12 @@ export default function DocsDemoPage() {
           <InteractiveProductDemo />
 
           <section className="mt-14 rounded-xl border border-white/[0.08] bg-white/[0.02] p-5 sm:p-6">
-            <h2 className="text-base font-semibold text-foreground">Recording a real video later</h2>
+            <h2 className="text-base font-semibold text-foreground">Review checklist</h2>
             <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-muted">
-              <li>Use a demo tenant or scrubbed data — no production secrets.</li>
-              <li>
-                Hide browser bookmarks bar; use a clean profile or incognito if extensions might leak data.
-              </li>
-              <li>
-                1080p, 30fps is enough; narrate in one continuous take or edit chapter markers per scene below.
-              </li>
-              <li>
-                Export finished MP4; upload to your help center or embed on `/changelog` or marketing as needed.
-              </li>
+              <li>Use representative sample data in product walkthroughs.</li>
+              <li>Keep customer and credential information out of shared recordings.</li>
+              <li>Follow your organization’s review and publishing standards.</li>
+              <li>Use the scene list below to present workflows consistently.</li>
             </ul>
           </section>
 

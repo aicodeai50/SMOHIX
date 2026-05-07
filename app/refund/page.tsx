@@ -11,10 +11,9 @@ export default function RefundPage() {
   return (
     <LegalLayout title="Refunds & billing" lastUpdated="April 2026">
       <div className="legal-callout">
-        <strong>Align with your payment provider.</strong> If you use Lemon Squeezy
-        (or another processor), mirror their buyer policies here and link to their
-        customer portal. Enterprise contracts may override online terms—track Order
-        forms separately.
+        <strong>Billing clarity.</strong> This page explains how renewals,
+        cancellations, and refunds are handled for self-serve subscriptions. Signed
+        enterprise orders may define different commercial terms.
       </div>
 
       <h2>1. Plans and pricing</h2>
@@ -63,13 +62,12 @@ export default function RefundPage() {
         </li>
       </ul>
 
-      <h2>5. EU/UK consumers (template)</h2>
+      <h2>5. EU/UK consumers</h2>
       <p>
         If you market to consumers in the European Union or United Kingdom, you may
         need to provide a 14-day statutory right of withdrawal for distance contracts,
         with exceptions for digital content once performance begins with consent.
-        Document the consent flow and “performance begins” moment in your checkout
-        UI. This section is a draft—verify with counsel.
+        Zentro applies mandatory local consumer rights where required by law.
       </p>
 
       <h2>6. Downgrades and mid-cycle changes</h2>

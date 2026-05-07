@@ -16,11 +16,9 @@ export default function TermsPage() {
   return (
     <LegalLayout title="Terms of Service" lastUpdated="April 2026">
       <div className="legal-callout">
-        <strong>Important.</strong> This is a detailed template for an early-stage
-        product. Zentro does not provide legal advice. Before selling to enterprise
-        customers or operating at scale in regulated industries, have qualified
-        counsel adapt these Terms for your entity, jurisdictions, data flows, and
-        go-to-market.
+        <strong>Scope.</strong> These Terms apply to your use of Zentro websites,
+        applications, APIs, and related services. Enterprise orders may include
+        additional negotiated terms that supersede conflicting sections here.
       </div>
 
       <h2>1. Agreement to these Terms</h2>
@@ -155,9 +153,9 @@ export default function TermsPage() {
       <h2>11. Warranties disclaimer</h2>
       <p>
         THE SERVICES AND DOCUMENTATION ARE PROVIDED “AS IS” AND “AS AVAILABLE.” TO
-        THE MAXIMUM EXTENT PERMITTED BY LAW, SHYNVO DISCLAIMS ALL IMPLIED WARRANTIES,
+        THE MAXIMUM EXTENT PERMITTED BY LAW, ZENTRO DISCLAIMS ALL IMPLIED WARRANTIES,
         INCLUDING MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND
-        NON-INFRINGEMENT. SHYNVO DOES NOT WARRANT THAT THE SERVICES WILL BE
+        NON-INFRINGEMENT. ZENTRO DOES NOT WARRANT THAT THE SERVICES WILL BE
         UNINTERRUPTED, ERROR-FREE, OR THAT AI-GENERATED OUTPUTS WILL BE ACCURATE OR
         SUITABLE FOR ANY DECISION WITHOUT HUMAN REVIEW.
       </p>
@@ -167,9 +165,9 @@ export default function TermsPage() {
         TO THE MAXIMUM EXTENT PERMITTED BY LAW, NEITHER PARTY WILL BE LIABLE FOR ANY
         INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, EXEMPLARY, OR PUNITIVE DAMAGES,
         OR FOR LOSS OF PROFITS, REVENUE, GOODWILL, OR DATA, EVEN IF ADVISED OF THE
-        POSSIBILITY. SHYNVO’S AGGREGATE LIABILITY ARISING OUT OF OR RELATED TO THE
+        POSSIBILITY. ZENTRO’S AGGREGATE LIABILITY ARISING OUT OF OR RELATED TO THE
         SERVICES OR THESE TERMS WILL NOT EXCEED THE GREATER OF (A) THE AMOUNTS YOU
-        PAID SHYNVO FOR THE SERVICES IN THE TWELVE (12) MONTHS BEFORE THE CLAIM OR (B)
+        PAID ZENTRO FOR THE SERVICES IN THE TWELVE (12) MONTHS BEFORE THE CLAIM OR (B)
         ONE HUNDRED U.S. DOLLARS (US$100) IF YOU HAVE NOT HAD FEES APPLICABLE IN THAT
         PERIOD.
       </p>
