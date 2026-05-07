@@ -9,7 +9,7 @@ import {
 
 export const metadata: Metadata = {
   title: "Terms of Service",
-  description: "Terms of Service for the Shynvo platform.",
+  description: "Terms of Service for the Zentro platform.",
 };
 
 export default function TermsPage() {
@@ -17,7 +17,7 @@ export default function TermsPage() {
     <LegalLayout title="Terms of Service" lastUpdated="April 2026">
       <div className="legal-callout">
         <strong>Important.</strong> This is a detailed template for an early-stage
-        product. Shynvo does not provide legal advice. Before selling to enterprise
+        product. Zentro does not provide legal advice. Before selling to enterprise
         customers or operating at scale in regulated industries, have qualified
         counsel adapt these Terms for your entity, jurisdictions, data flows, and
         go-to-market.
@@ -26,8 +26,8 @@ export default function TermsPage() {
       <h2>1. Agreement to these Terms</h2>
       <p>
         These Terms of Service (“<strong>Terms</strong>”) form a binding agreement
-        between you and Shynvo (“<strong>Shynvo</strong>,” “<strong>we</strong>,” “
-        <strong>us</strong>”) governing access to and use of the Shynvo websites,
+        between you and Zentro (“<strong>Zentro</strong>,” “<strong>we</strong>,” “
+        <strong>us</strong>”) governing access to and use of the Zentro websites,
         applications, APIs, documentation, and related services (collectively, the “
         <strong>Services</strong>”).
       </p>
@@ -49,7 +49,7 @@ export default function TermsPage() {
         <li>
           <strong>“Customer Data”</strong> means data, content, configurations, logs,
           credentials metadata, and other materials that you or your users submit to
-          or generate through the Services, excluding Shynvo’s own systems telemetry
+          or generate through the Services, excluding Zentro’s own systems telemetry
           described in the Privacy Policy.
         </li>
         <li>
@@ -72,13 +72,13 @@ export default function TermsPage() {
       <p>
         You are responsible for maintaining the confidentiality of credentials,
         configuring roles and permissions appropriately, and for all activity under
-        your accounts except where caused solely by Shynvo’s gross negligence or
+        your accounts except where caused solely by Zentro’s gross negligence or
         willful misconduct.
       </p>
 
       <h2>4. Description of Services</h2>
       <p>
-        Shynvo provides a software platform oriented toward IT operations, including
+        Zentro provides a software platform oriented toward IT operations, including
         capabilities such as incident workflows, AI-assisted guidance, automation with
         approvals, audit-oriented logging patterns, and integrations with systems you
         connect. Features may vary by plan, region, or beta program. We may modify,
@@ -89,8 +89,8 @@ export default function TermsPage() {
 
       <h2>5. Customer Data and processing</h2>
       <p>
-        As between you and Shynvo, you retain ownership of Customer Data. You grant
-        Shynvo a worldwide, non-exclusive license to host, process, transmit, display,
+        As between you and Zentro, you retain ownership of Customer Data. You grant
+        Zentro a worldwide, non-exclusive license to host, process, transmit, display,
         and otherwise use Customer Data solely to provide, secure, improve, and
         support the Services and as required by law. You represent that you have all
         rights and consents necessary to submit Customer Data and that its processing
@@ -114,7 +114,7 @@ export default function TermsPage() {
       <p>
         The Services may interoperate with third-party APIs, identity providers,
         ticketing systems, cloud providers, and payment processors. Those services
-        are governed by their own terms. Shynvo is not responsible for third-party
+        are governed by their own terms. Zentro is not responsible for third-party
         outages, pricing, or conduct except as expressly stated in an Order.
       </p>
 
@@ -124,7 +124,7 @@ export default function TermsPage() {
         your Order, or in an enterprise agreement. Fees are non-refundable except as
         stated in our <a href="/refund">Refunds &amp; billing</a> page or required by
         law. You are responsible for applicable taxes, duties, and government
-        charges, excluding taxes on Shynvo’s net income.
+        charges, excluding taxes on Zentro’s net income.
       </p>
       <p>
         Trials convert to paid subscriptions according to the terms presented at
@@ -135,7 +135,7 @@ export default function TermsPage() {
 
       <h2>9. Intellectual property</h2>
       <p>
-        Shynvo and its licensors own the Services, software, branding, and
+        Zentro and its licensors own the Services, software, branding, and
         Documentation, including all associated intellectual property rights. Except
         for the limited rights expressly granted in these Terms, no rights are
         transferred to you. Feedback you provide may be used without obligation or
@@ -180,12 +180,12 @@ export default function TermsPage() {
 
       <h2>13. Indemnification</h2>
       <p>
-        You will defend, indemnify, and hold harmless Shynvo and its affiliates,
+        You will defend, indemnify, and hold harmless Zentro and its affiliates,
         officers, directors, employees, and agents from and against any claims,
         damages, losses, liabilities, costs, and expenses (including reasonable
         attorneys’ fees) arising out of or related to Customer Data, your use of the
         Services in violation of these Terms or law, or a dispute between you and
-        your users or third parties—except to the extent caused by Shynvo’s breach of
+        your users or third parties—except to the extent caused by Zentro’s breach of
         these Terms or gross negligence.
       </p>
 

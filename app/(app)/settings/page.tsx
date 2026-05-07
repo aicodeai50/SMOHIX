@@ -213,7 +213,7 @@ export default async function SettingsIndexPage({
       };
     });
   const setupReport = [
-    "# Shynvo Setup Readiness",
+    "# Zentro Setup Readiness",
     "",
     `Progress: ${setupComplete}/${setupSteps.length} (${progressPercent}%)`,
     `Data source: ${setupMode === "supabase" ? "live Supabase workspace state" : "session mode (local/dev)"}`,

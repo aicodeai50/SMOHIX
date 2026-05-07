@@ -4,7 +4,7 @@ import { SITE_EMAIL_SUPPORT, getSupportMailtoHref } from "@/lib/billing";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "How Shynvo collects, uses, and protects personal information.",
+  description: "How Zentro collects, uses, and protects personal information.",
 };
 
 export default function PrivacyPage() {
@@ -12,17 +12,17 @@ export default function PrivacyPage() {
     <LegalLayout title="Privacy Policy" lastUpdated="April 2026">
       <div className="legal-callout">
         <strong>Important.</strong> This Privacy Policy is a comprehensive template.
-        Shynvo is not your lawyer. Finalize data categories, subprocessors, retention
+        Zentro is not your lawyer. Finalize data categories, subprocessors, retention
         schedules, and regional addenda (EEA/UK, US state laws, etc.) with qualified
         privacy counsel before enterprise sales and DPIAs.
       </div>
 
       <h2>1. Who we are</h2>
       <p>
-        Shynvo (“<strong>Shynvo</strong>,” “<strong>we</strong>,” “<strong>us</strong>”)
+        Zentro (“<strong>Zentro</strong>,” “<strong>we</strong>,” “<strong>us</strong>”)
         operates the websites and services described at{" "}
-        <a href="https://shynvo.app">shynvo.app</a>. Depending on your region, the
-        data controller may be the Shynvo entity identified in your contract or
+        <a href="https://zentro.run">zentro.run</a>. Depending on your region, the
+        data controller may be the Zentro entity identified in your contract or
         checkout flow. For privacy questions, contact{" "}
         <a href={getSupportMailtoHref()}>{SITE_EMAIL_SUPPORT}</a>.
       </p>
@@ -30,7 +30,7 @@ export default function PrivacyPage() {
       <h2>2. Scope</h2>
       <p>
         This Policy explains how we process information when you visit our marketing
-        sites, create an account, use the Shynvo platform, communicate with support,
+        sites, create an account, use the Zentro platform, communicate with support,
         or interact with our APIs and integrations. It does not govern third-party
         sites linked from our Services; those sites have their own policies.
       </p>
@@ -44,7 +44,7 @@ export default function PrivacyPage() {
         </li>
         <li>
           <strong>Payment data:</strong> processed by our payment partners (e.g.,
-          card data is not stored on Shynvo servers where the processor tokenizes
+          card data is not stored on Zentro servers where the processor tokenizes
           payments).
         </li>
         <li>

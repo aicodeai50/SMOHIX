@@ -5,7 +5,7 @@ export const runtime = "nodejs";
 
 type Ctx = { params: Promise<{ path?: string[] }> };
 
-/** Client: `fetch("/api/robot/health")` → `${SHYNVO_ROBOT_API_URL}/health` */
+/** Client: `fetch("/api/robot/health")` → `${ZENTRO_ROBOT_API_URL}/health` */
 export async function GET(req: NextRequest, { params }: Ctx) {
   const { path } = await params;
   return proxyToUpstream("robot", req, path);

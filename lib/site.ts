@@ -1,5 +1,5 @@
 /** Apex domain (no `www`). Primary production host. */
-export const SITE_DOMAIN = "shynvo.app";
+export const SITE_DOMAIN = "zentro.run";
 
 /**
  * Canonical site origin. Used for metadata, Open Graph, and absolute links.

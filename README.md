@@ -1,6 +1,6 @@
-# Shynvo Platform (web)
+# Zentro Platform (web)
 
-Next.js app for [shynvo.app](https://shynvo.app): marketing site + console shell.
+Next.js app for [zentro.run](https://zentro.run): marketing site + console shell.
 
 **Roadmap & completion checklist:** [`docs/PLATFORM_PLAN.md`](docs/PLATFORM_PLAN.md) · **Vision & long-term direction:** [`docs/VISION_AND_ROADMAP.md`](docs/VISION_AND_ROADMAP.md) (also **`/vision`** in the signed-in console). **Database (Supabase):** run SQL migrations **in order** in the Supabase SQL editor (same filenames under [`supabase/migrations/`](supabase/migrations/)): `platform_spine` → `incidents` → `console_extensions` → `api_keys` → `automation_dry_runs` → `automation_dry_runs_incident_id` → `services_alert_ingest` → `equipment_operations` (see files for exact timestamps).
 
@@ -13,9 +13,9 @@ npm run dev
 
 Open **http://localhost:3000** (marketing) and **http://localhost:3000/hub** (console hub — works without Supabase; Copilot uses `/api/copilot/chat` with offline or OpenAI).
 
-## GitHub: `SHYNVO`
+## GitHub: `ZENTRO`
 
-1. On GitHub, create a new repo named **SHYNVO** (empty — no README/License if you want zero merge friction).
+1. On GitHub, create a new repo named **ZENTRO** (empty — no README/License if you want zero merge friction).
 2. From the folder that contains this project:
 
 **Option A — this `web` folder is the repo root** (simplest for Railway):
@@ -24,9 +24,9 @@ Open **http://localhost:3000** (marketing) and **http://localhost:3000/hub** (co
 cd web
 git init
 git add .
-git commit -m "Initial Shynvo web app"
+git commit -m "Initial Zentro web app"
 git branch -M main
-git remote add origin https://github.com/Sanher50/SHYNVO.git
+git remote add origin https://github.com/aicodeai50/ZENTRO.git
 git push -u origin main
 ```
 
@@ -38,9 +38,9 @@ git pull origin main --allow-unrelated-histories
 
 Resolve any merge (keep this project’s `README.md` if asked), then `git push -u origin main`.
 
-**Windows:** install [Git for Windows](https://git-scm.com/download/win) or use **GitHub Desktop** → add the `web` folder → publish to `Sanher50/SHYNVO`.
+**Windows:** install [Git for Windows](https://git-scm.com/download/win) or use **GitHub Desktop** → add the `web` folder → publish to `aicodeai50/ZENTRO`.
 
-**Option B — monorepo** (e.g. `SHYNVO/web`):
+**Option B — monorepo** (e.g. `ZENTRO/web`):
 
 Push the parent folder instead and set **Railway Root Directory** to `web`.
 
@@ -56,13 +56,24 @@ Copy `.env.example` to `.env.local` and fill in values.
 | `NEXT_PUBLIC_LEMONSQUEEZY_CHECKOUT_URL` | Lemon product checkout link (CTAs use this when set). |
 | `LEMONSQUEEZY_WEBHOOK_SIGNING_SECRET` | Lemon webhook signing secret. |
 
-Webhook URL in Lemon: `https://shynvo.app/api/webhooks/lemonsqueezy` (use your production domain).
+Webhook URL in Lemon: `https://zentro.run/api/webhooks/lemonsqueezy` (use your production domain).
 
-**Checkout → user link:** paid flows should use `getCheckoutUrlForUser(userId)` from `lib/billing.ts` so Lemon sends `meta.custom_data.shynvo_user_id` and webhooks can attach rows in `public.subscriptions`.
+**Checkout → user link:** paid flows should use `getCheckoutUrlForUser(userId)` from `lib/billing.ts` so Lemon sends `meta.custom_data.zentro_user_id` (plus legacy key) and webhooks can attach rows in `public.subscriptions`.
+
+**Checkout key migration (temporary compatibility):**
+
+- New canonical key: `zentro_user_id`
+- Current checkout helpers send **both** keys for safe rollout across environments.
+- Recommended sunset for legacy key: **2026-08-31** (or after one full billing cycle in your prod workspace).
+- Sunset steps:
+  1. Confirm incoming Lemon webhook payloads include `zentro_user_id`.
+  2. Keep parser strict to `zentro_user_id` (+ optional `supabase_user_id` fallback only).
+  3. Keep checkout helpers writing only `zentro_user_id`.
+  4. Run `npm run test:security` and a test checkout/webhook in staging before production deploy.
 
 ## Railway (deploy now)
 
-Repo: **`Sanher50/SHYNVO`**, branch **`main`**. This project ships **`railway.json`**: Railpack runs **`npm run build`**, start **`npm run start`**, healthcheck **`/api/health`** (see `app/api/health/route.ts`).
+Repo: **`aicodeai50/ZENTRO`**, branch **`main`**. This project ships **`railway.json`**: Railpack runs **`npm run build`**, start **`npm run start`**, healthcheck **`/api/health`** (see `app/api/health/route.ts`).
 
 **Deploy-first (smoke test before building more):**
 
@@ -75,9 +86,9 @@ Repo: **`Sanher50/SHYNVO`**, branch **`main`**. This project ships **`railway.js
 ### 1. Service → Source
 
 1. Open your Railway project → the **web** service (or create a service from **Empty** then attach GitHub).
-2. **Settings** → **Source** → **Connect Repo** → pick **`Sanher50/SHYNVO`**.
+2. **Settings** → **Source** → **Connect Repo** → pick **`aicodeai50/ZENTRO`**.
 3. **Branch**: **`main`**.
-4. **Root Directory**: leave **empty** (repo root is the Next app). Only set **`web`** if your GitHub layout is `SHYNVO/web/...`.
+4. **Root Directory**: leave **empty** (repo root is the Next app). Only set **`web`** if your GitHub layout is `ZENTRO/web/...`.
 
 Save. Railway should start a deploy within a minute.
 
@@ -87,14 +98,15 @@ Add anything you use in production (same names as `.env.example`):
 
 | Name | Notes |
 |------|--------|
-| `NEXT_PUBLIC_SITE_URL` | `https://shynvo.app` (optional; helps metadata when not using the default). |
+| `NEXT_PUBLIC_SITE_URL` | `https://zentro.run` (optional; helps metadata when not using the default). |
 | `NEXT_PUBLIC_LEMONSQUEEZY_CHECKOUT_URL` | Your Lemon checkout link. |
 | `LEMONSQUEEZY_WEBHOOK_SIGNING_SECRET` | Webhook signing secret (server only). |
-| `SHYNVO_REASONING_API_URL` | Your reasoning API base URL (**server only**; set in Railway, not `NEXT_PUBLIC_`). |
-| `SHYNVO_ROBOT_API_URL` | Your automation service base URL (**server only**). Used on **Settings → Connectors** for health checks. |
+| `ZENTRO_REASONING_API_URL` | Your reasoning API base URL (**server only**; set in Railway, not `NEXT_PUBLIC_`). |
+| `ZENTRO_ROBOT_API_URL` | Your automation service base URL (**server only**). Used on **Settings → Connectors** for health checks. |
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL (see **Supabase (auth)** below). |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon key (set with URL above). |
 | `SUPABASE_SERVICE_ROLE_KEY` | Service role key (**server only**); required for `/api/webhooks/lemonsqueezy` to write subscriptions. |
+| `DEMO_VIDEO_URL` | Optional. Full HTTPS URL of your hosted product demo (YouTube watch link, Loom share, Vimeo, or direct `.mp4`). **Server-only** — `/docs/demo` reads it at runtime; changing it in Railway updates the embed after redeploy/restart without rebuilding from scratch for that alone. Not a secret; convenient as a variable. |
 
 `PORT`: Railway often injects **`PORT` automatically** (commonly **`8080`** on new services). **Next.js always listens on whatever `PORT` is set to** — check your **Deploy logs** for the line `Network: http://0.0.0.0:XXXX`; that **`XXXX` is the only port** your public domain’s **Target port** must use (unless you override `PORT`).
 
@@ -112,18 +124,18 @@ If target port ≠ listen port, you’ll get **502 / connection refused** even w
 
 **Networking** → **Generate Domain** (or use your `*.up.railway.app` URL). Open it — you should see the marketing home page.
 
-### 4. Custom domain `shynvo.app`
+### 4. Custom domain `zentro.run`
 
-**Networking** → **Custom Domain** → add **`shynvo.app`** (and **`www.shynvo.app`** if you use it).  
+**Networking** → **Custom Domain** → add **`zentro.run`** (and **`www.zentro.run`** if you use it).  
 Set **Target port** to the same value as **`PORT`** / the **`Network: … 0.0.0.0:PORT`** line in deploy logs (often **8080** unless you set **`PORT=3000`**).  
 At your DNS provider, add the **CNAME / ALIAS** records Railway shows.  
 The app’s **middleware** redirects `www` → apex.
 
 ### 5. Lemon webhooks
 
-After `shynvo.app` resolves to Railway, set the Lemon webhook URL to:
+After `zentro.run` resolves to Railway, set the Lemon webhook URL to:
 
-`https://shynvo.app/api/webhooks/lemonsqueezy`
+`https://zentro.run/api/webhooks/lemonsqueezy`
 
 ### Troubleshooting
 
@@ -144,7 +156,7 @@ After `shynvo.app` resolves to Railway, set the Lemon webhook URL to:
 **Still seeing the old UI after a git push?**
 
 1. **Deployments** → click the **latest** deploy. If it is **FAILED** or **CRASHED**, open **Build logs** / **Deploy logs** — Railway keeps serving the **last successful** deploy until a new one goes green.
-2. **Settings → Source**: confirm **Branch** is **`main`** and the repo is **`Sanher50/SHYNVO`**. Use **Disconnect** / **Reconnect** if pushes never trigger a deploy.
+2. **Settings → Source**: confirm **Branch** is **`main`** and the repo is **`aicodeai50/ZENTRO`**. Use **Disconnect** / **Reconnect** if pushes never trigger a deploy.
 3. **Redeploy**: on the latest deployment menu, choose **Redeploy** (or **Restart** only restarts the same image — you want a **new build** when code changed). If Railway offers **Clear build cache**, use it once.
 4. **One-shot cache bust**: add variable **`NIXPACKS_NO_CACHE`** = **`1`**, redeploy, then **remove** the variable (optional; forces Nixpacks to rebuild layers).
 5. **Confirm web tier is up**: `curl -sS "https://YOUR-URL.up.railway.app/api/health"` — expect **`ok: true`** and a valid **`uptime_s`** value.
@@ -158,8 +170,8 @@ The app uses **email + password** via **`@supabase/ssr`**. Routes: **`/auth/sign
 
 **Supabase dashboard → Authentication → URL configuration**
 
-- **Site URL:** your production origin (e.g. `https://shynvo.app`).
-- **Redirect URLs:** include `https://shynvo.app/auth/callback` and `http://localhost:3000/auth/callback` for local dev.
+- **Site URL:** your production origin (e.g. `https://zentro.run`).
+- **Redirect URLs:** include `https://zentro.run/auth/callback` and `http://localhost:3000/auth/callback` for local dev.
 
 When both public Supabase vars are set, **middleware** requires a session for **`/hub`**, **`/overview`**, **`/copilot`**, **`/incidents`**, **`/services`**, **`/automations`**, **`/runbooks`**, **`/approvals`**, **`/audit`**, and **`/settings/**`**. If the vars are **omitted**, the console stays open without login (useful for local UI work).
 
@@ -171,21 +183,21 @@ Browsers should **not** call your `*.up.railway.app` URLs directly (CORS, and yo
 
 ### Railway Variables (server only)
 
-- `SHYNVO_REASONING_API_URL` — base URL, no trailing slash (e.g. `https://your-api.up.railway.app`).
-- `SHYNVO_ROBOT_API_URL` — same for the automation service.
+- `ZENTRO_REASONING_API_URL` — base URL, no trailing slash (e.g. `https://your-api.up.railway.app`).
+- `ZENTRO_ROBOT_API_URL` — same for the automation service.
 
 ### Reverse proxy routes (send any path)
 
 | Your frontend calls | Upstream request |
 |---------------------|------------------|
-| `GET /api/reasoning/health` | `GET {SHYNVO_REASONING_API_URL}/health` |
-| `POST /api/reasoning/v1/chat` | `POST {SHYNVO_REASONING_API_URL}/v1/chat` |
-| `GET /api/robot/docs` | `GET {SHYNVO_ROBOT_API_URL}/docs` |
-| `GET /api/robot/health` | `GET {SHYNVO_ROBOT_API_URL}/health` |
+| `GET /api/reasoning/health` | `GET {ZENTRO_REASONING_API_URL}/health` |
+| `POST /api/reasoning/v1/chat` | `POST {ZENTRO_REASONING_API_URL}/v1/chat` |
+| `GET /api/robot/docs` | `GET {ZENTRO_ROBOT_API_URL}/docs` |
+| `GET /api/robot/health` | `GET {ZENTRO_ROBOT_API_URL}/health` |
 
-Query string, method, and body are forwarded. Headers forwarded: **`Content-Type`**, **`Accept`**, and **`Authorization`** only when it is **not** a Shynvo API key (`shynvo_sk_…`), so your upstream never receives Shynvo credentials.
+Query string, method, and body are forwarded. Headers forwarded: **`Content-Type`**, **`Accept`**, and **`Authorization`** only when it is **not** a Zentro API key (`zentro_sk_...`), so your upstream never receives credentials issued by this app.
 
-When Supabase auth env vars are set, callers must use a **browser session** or an **API key** from **Settings → API keys** (`Authorization: Bearer <key>` or `X-Shynvo-Api-Key`). Resolving keys by hash uses **`SUPABASE_SERVICE_ROLE_KEY`** on the server.
+When Supabase auth env vars are set, callers must use a **browser session** or an **API key** from **Settings → API keys** (`Authorization: Bearer <key>` or `X-Zentro-Api-Key`). Resolving keys by hash uses **`SUPABASE_SERVICE_ROLE_KEY`** on the server.
 
 **Examples (client or Server Component):**
 
@@ -211,7 +223,7 @@ Path segments cannot contain `..` or `/` (basic hardening). For public internet 
 | Route | Role |
 |--------|------|
 | **`GET /api/connectors/status`** | JSON snapshot of reasoning + automation reachability (health probe). |
-| **`/settings/billing`** | Plan, Lemon checkout with `shynvo_user_id`, subscription snapshot. |
+| **`/settings/billing`** | Plan, Lemon checkout with `zentro_user_id`, subscription snapshot. |
 | **`/settings/connectors`** | UI for the same probes. |
 | **`/copilot`** | Shows connection status from the server. |
 
@@ -219,26 +231,26 @@ Path segments cannot contain `..` or `/` (basic hardening). For public internet 
 
 `POST /api/integrations/alerts` accepts:
 
-- **Native Shynvo ingest shape** (`title`, `severity`, `service_name`, `dedupe_key`, etc.)
+- **Native Zentro ingest shape** (`title`, `severity`, `service_name`, `dedupe_key`, etc.)
 - **Datadog event/webhook-like payloads** (auto-normalized to incidents)
 
 For Datadog:
 
 - If payload includes event id, dedupe uses `external_ref = datadog:<event_id>`.
-- `alert_type` / `priority` are mapped to Shynvo severity.
+- `alert_type` / `priority` are mapped to Zentro severity.
 - Tags like `service:<name>`, `owner:<team>`, `runbook:<slug>` are mapped when present.
 
 Optional header for explicit source hint:
 
-- `X-Shynvo-Alert-Source: datadog`
+- `X-Zentro-Alert-Source: datadog`
 
 Example:
 
 ```bash
-curl -X POST "https://shynvo.app/api/integrations/alerts" \
-  -H "Authorization: Bearer shynvo_ingest_xxx" \
+curl -X POST "https://zentro.run/api/integrations/alerts" \
+  -H "Authorization: Bearer zentro_ingest_xxx" \
   -H "Content-Type: application/json" \
-  -H "X-Shynvo-Alert-Source: datadog" \
+  -H "X-Zentro-Alert-Source: datadog" \
   -d '{
     "id": 987654321,
     "title": "API 5xx spike",
@@ -255,7 +267,7 @@ The same endpoint also accepts Alertmanager payload shape (`status`, `alerts[]`,
 
 For Prometheus/Grafana:
 
-- `labels.severity` maps to Shynvo severity (`critical`/`warning`/`info` etc).
+- `labels.severity` maps to Zentro severity (`critical`/`warning`/`info` etc).
 - `labels.service`/`job`/`app` can map `service_name`.
 - `labels.owner` or `labels.team` can map `owner_hint`.
 - `labels.runbook` can map `runbook_slug` when valid.
@@ -263,15 +275,15 @@ For Prometheus/Grafana:
 
 Optional header for explicit source hint:
 
-- `X-Shynvo-Alert-Source: prometheus` (or `grafana`)
+- `X-Zentro-Alert-Source: prometheus` (or `grafana`)
 
 Example:
 
 ```bash
-curl -X POST "https://shynvo.app/api/integrations/alerts" \
-  -H "Authorization: Bearer shynvo_ingest_xxx" \
+curl -X POST "https://zentro.run/api/integrations/alerts" \
+  -H "Authorization: Bearer zentro_ingest_xxx" \
   -H "Content-Type: application/json" \
-  -H "X-Shynvo-Alert-Source: prometheus" \
+  -H "X-Zentro-Alert-Source: prometheus" \
   -d '{
     "status": "firing",
     "alerts": [
@@ -297,22 +309,22 @@ curl -X POST "https://shynvo.app/api/integrations/alerts" \
 The same endpoint accepts PagerDuty Events-style payloads and maps:
 
 - `event_action` (`trigger`/`resolve`) to incident status.
-- `payload.severity` / `payload.urgency` to Shynvo severity.
+- `payload.severity` / `payload.urgency` to Zentro severity.
 - `dedup_key` to `external_ref` as `pagerduty:<dedup_key>`.
 - `payload.component`/`source` to `service_name`.
 - optional `payload.custom_details.owner_hint`, `team`, `runbook_slug`.
 
 Optional header for explicit source hint:
 
-- `X-Shynvo-Alert-Source: pagerduty`
+- `X-Zentro-Alert-Source: pagerduty`
 
 Example:
 
 ```bash
-curl -X POST "https://shynvo.app/api/integrations/alerts" \
-  -H "Authorization: Bearer shynvo_ingest_xxx" \
+curl -X POST "https://zentro.run/api/integrations/alerts" \
+  -H "Authorization: Bearer zentro_ingest_xxx" \
   -H "Content-Type: application/json" \
-  -H "X-Shynvo-Alert-Source: pagerduty" \
+  -H "X-Zentro-Alert-Source: pagerduty" \
   -d '{
     "event_action": "trigger",
     "dedup_key": "payments-api-5xx",
@@ -334,24 +346,24 @@ curl -X POST "https://shynvo.app/api/integrations/alerts" \
 The same endpoint accepts New Relic-style incident webhook payloads and maps:
 
 - `current_state` (`open`/`closed`) to incident status.
-- `severity`/`priority` to Shynvo severity.
+- `severity`/`priority` to Zentro severity.
 - `incident_id` (or violation id in details) to dedupe key `newrelic:<id>`.
 - `labels.service` or target labels to `service_name`.
 
 Optional header for explicit source hint:
 
-- `X-Shynvo-Alert-Source: newrelic`
+- `X-Zentro-Alert-Source: newrelic`
 
 ### Optional webhook signature verification (recommended)
 
 To require HMAC verification on `/api/integrations/alerts`, set:
 
-- `SHYNVO_ALERT_WEBHOOK_SIGNING_SECRET`
+- `ZENTRO_ALERT_WEBHOOK_SIGNING_SECRET`
 
 When set, requests must include:
 
-- `X-Shynvo-Signature: <hex>` or `sha256=<hex>`
-- Optional: `X-Shynvo-Signature-Timestamp` (if provided, verifier checks `${timestamp}.${rawBody}`)
+- `X-Zentro-Signature: <hex>` or `sha256=<hex>`
+- Optional: `X-Zentro-Signature-Timestamp` (if provided, verifier checks `${timestamp}.${rawBody}`)
 
 Digest algorithm: **HMAC-SHA256** over raw request body (or timestamp + body mode above).
 

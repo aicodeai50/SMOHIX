@@ -120,7 +120,7 @@ async function main() {
   assert(!sitemap.includes('path: "/status"'), "sitemap should not include /status");
 
   // Canonical host consistency: enforce apex canonical and www->apex redirect in edge routing.
-  assert(siteLib.includes('SITE_DOMAIN = "shynvo.app"'), "site domain should be apex shynvo.app");
+  assert(siteLib.includes('SITE_DOMAIN = "zentro.run"'), "site domain should be apex zentro.run");
   assert(
     rootLayout.includes("alternates:") && rootLayout.includes("canonical: siteUrl"),
     "root metadata missing canonical alternates wiring",

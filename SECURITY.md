@@ -1,6 +1,6 @@
 # Security Guidelines
 
-Shynvo treats both metadata exposure and unsafe execution paths as security concerns.
+Zentro treats both metadata exposure and unsafe execution paths as security concerns.
 
 ## Public Exposure Rules
 

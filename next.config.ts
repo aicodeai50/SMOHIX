@@ -16,8 +16,8 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/:path*",
-        has: [{ type: "host", value: "www.shynvo.app" }],
-        destination: "https://shynvo.app/:path*",
+        has: [{ type: "host", value: "www.zentro.run" }],
+        destination: "https://zentro.run/:path*",
         permanent: true,
       },
     ];

@@ -1,4 +1,4 @@
-# Shynvo platform completion plan
+# Zentro platform completion plan
 
 This document is the **source of truth** for what “done” means beyond marketing and auth shells. Supabase **Auth** is assumed; this plan covers **data**, **billing**, **product verticals**, and **hardening**.
 
@@ -11,19 +11,20 @@ Apply database changes from `supabase/migrations/` in the Supabase SQL Editor (o
 ## Done in repo (spine)
 
 - [x] **SQL migration** `supabase/migrations/20260418120000_platform_spine.sql` — `profiles`, `subscriptions`, `webhook_event_deliveries`, profile auto-create trigger, RLS.
-- [x] **Lemon webhook** — signature verify, **SHA-256 idempotent** deliveries, subscription upsert when `meta.custom_data.shynvo_user_id` (or legacy `supabase_user_id`) is present.
+- [x] **Lemon webhook** — signature verify, **SHA-256 idempotent** deliveries, subscription upsert when `meta.custom_data.zentro_user_id` (or `supabase_user_id`) is present.
+- [x] **Deprecation follow-up** — legacy key fallback removed; checkout + webhooks use `zentro_user_id`.
 - [x] **Service role client** — `lib/supabase/admin.ts` (server-only; never expose key).
 - [x] **Plan helper** — `lib/billing/plan.ts` — `free` vs `paid` from subscription `status`.
 - [x] **Checkout URL helpers** — `getCheckoutUrlForUser` / `appendCheckoutCustomData` in `lib/billing.ts`.
-- [x] **Marketing CTAs (signed-in)** — homepage `Header` / `Hero` / `ConnectCTA` use `getSignedInCheckoutUrl()` so trial links include `shynvo_user_id` when auth + `NEXT_PUBLIC_LEMONSQUEEZY_CHECKOUT_URL` are set; anonymous visitors keep generic checkout or `#trial`.
+- [x] **Marketing CTAs (signed-in)** — homepage `Header` / `Hero` / `ConnectCTA` use `getSignedInCheckoutUrl()` so trial links include `zentro_user_id` when auth + `NEXT_PUBLIC_LEMONSQUEEZY_CHECKOUT_URL` are set; anonymous visitors keep generic checkout or `#trial`.
 - [x] **Lemon customer portal link** — optional `NEXT_PUBLIC_LEMONSQUEEZY_CUSTOMER_PORTAL_URL` / `LEMONSQUEEZY_CUSTOMER_PORTAL_URL`; **Billing** shows **Customer portal** when plan reads as paid.
-- [x] **Settings → Billing** — `/settings/billing` shows plan, subscription snapshot, **Open checkout** (with `shynvo_user_id`), and migration hints if the DB is not ready.
+- [x] **Settings → Billing** — `/settings/billing` shows plan, subscription snapshot, **Open checkout** (with `zentro_user_id`), and migration hints if the DB is not ready.
 - [x] **Console nav** — **clickable module boxes** (`CONSOLE_MODULES` + `/hub` home); **Settings** hub, **Billing**, **API keys**, and **Connectors** included.
-- [x] **Copilot without upstream** — `POST /api/copilot/chat` uses **OpenAI** when `OPENAI_API_KEY` is set, else **offline** replies; default chat path no longer requires `SHYNVO_REASONING_API_URL`.
-- [x] **API keys without Supabase** — **session-scoped keys** in server memory (per `shynvo_dev_tid` cookie) + proxy validation for `/api/reasoning` and `/api/robot` when auth env is off; Postgres-backed keys when auth is on.
+- [x] **Copilot without upstream** — `POST /api/copilot/chat` uses **OpenAI** when `OPENAI_API_KEY` is set, else **offline** replies; default chat path no longer requires `ZENTRO_REASONING_API_URL`.
+- [x] **API keys without Supabase** — **session-scoped keys** in server memory (per `zentro_dev_tid` cookie) + proxy validation for `/api/reasoning` and `/api/robot` when auth env is off; Postgres-backed keys when auth is on.
 - [x] **Runbooks** — `/runbooks` catalog + detail pages (in-repo procedures; export to Git/docs later).
 - [x] **Automations** — playbooks + **dry-run** API (`/api/automations/dry-run`) with optional robot health check; run history in session memory or Supabase (`automation_dry_runs`) when signed in.
-- [x] **Proxy auth gate** — `/api/reasoning` and `/api/robot` require a **session or `shynvo_sk_` API key** when auth env vars are set; keys stored hashed in `api_keys` (`20260418150000_api_keys.sql`).
+- [x] **Proxy auth gate** — `/api/reasoning` and `/api/robot` require a **session or `zentro_sk_` API key** when auth env vars are set; keys stored hashed in `api_keys` (`20260418150000_api_keys.sql`).
 - [x] **Security headers** — global headers in `next.config.ts`.
 - [x] **Incidents migration + data layer** — SQL file + `lib/incidents/*`: **database** rows when Supabase + table are used; **session-scoped** incidents (same cookie) when auth env is off—only user-created rows, no seeded data.
 - [x] **Services + alert ingest** — migration `20260419120000_services_alert_ingest.sql`: `services`, `alert_ingest_tokens`, incident columns `service_id`, `postmortem`, `external_ref`; **`/services`** (catalog + paid ingest UI); **`POST /api/integrations/alerts`** (Bearer ingest token); token mint **`/api/user/alert-ingest-tokens`** (paid plan); incidents list/detail wired to service + postmortem.
@@ -78,7 +79,7 @@ Apply database changes from `supabase/migrations/` in the Supabase SQL Editor (o
 **Shipped in repo**
 
 - [x] **Service catalog** — name, environment, owner hint, description; link incidents via `service_id`.
-- [x] **Alert → incident** — monitoring stacks POST JSON to `/api/integrations/alerts` with `Authorization: Bearer <shynvo_ingest_…>`; optional `dedupe_key` for idempotency; optional `service_id` / `service_name`; `summary` stored as initial **postmortem** text.
+- [x] **Alert → incident** — monitoring stacks POST JSON to `/api/integrations/alerts` with `Authorization: Bearer <zentro_ingest_...>`; optional `dedupe_key` for idempotency; optional `service_id` / `service_name`; `summary` stored as initial **postmortem** text.
 - [x] **Postmortem field** — long-form notes on incident detail (database incidents).
 
 **Next builds (engineering backlog)** — expanded and maintained in **[`VISION_AND_ROADMAP.md`](./VISION_AND_ROADMAP.md)** (tracks + horizon). Short list: change calendar, on-call, service graph, SLOs, ITSM sync, status page, structured alert adapters.
@@ -274,4 +275,4 @@ This section turns the equipment roadmap into concrete build steps and data mode
 - **Idempotent webhooks** — safe under Lemon retries.
 - **No service role in the browser** — only server routes.
 - **RLS** on user-owned tables; subscriptions **read** for owner, **writes** via service role webhook only.
-- **Explicit checkout custom data** — without `shynvo_user_id`, subscription webhooks return **422** and release the delivery idempotency slot so Lemon can retry after you fix checkout.
+- **Explicit checkout custom data** — without `zentro_user_id`, subscription webhooks return **422** and release the delivery idempotency slot so Lemon can retry after you fix checkout.

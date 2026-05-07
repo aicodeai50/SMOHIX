@@ -12,7 +12,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   title: "API keys",
-  description: "Create keys for scripts and integrations calling Shynvo proxies.",
+  description: "Create keys for scripts and integrations calling Zentro proxies.",
 };
 
 export const dynamic = "force-dynamic";
@@ -44,7 +44,7 @@ export default async function ApiKeysSettingsPage({
 
   if (!hasSupabaseAuth()) {
     const jar = await cookies();
-    const tid = jar.get("shynvo_dev_tid")?.value ?? null;
+    const tid = jar.get("zentro_dev_tid")?.value ?? null;
     const initialKeys = (tid ? devListKeys(tid) : []) as ApiKeyRow[];
     const hasActiveKey = initialKeys.some((k) => !k.revoked_at);
 

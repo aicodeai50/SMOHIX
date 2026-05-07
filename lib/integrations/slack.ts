@@ -7,7 +7,7 @@ type SlackPayload = {
 export type SlackNotificationKind = "approval_decision" | "execution_receipt" | "manual_test";
 
 function slackWebhookUrl(): string | null {
-  const value = process.env.SHYNVO_SLACK_WEBHOOK_URL?.trim();
+  const value = process.env.ZENTRO_SLACK_WEBHOOK_URL?.trim();
   return value ? value : null;
 }
 
@@ -28,8 +28,8 @@ export function getSlackNotificationConfig(): {
   executions: boolean;
 } {
   return {
-    approvals: envEnabled(process.env.SHYNVO_SLACK_NOTIFY_APPROVALS, true),
-    executions: envEnabled(process.env.SHYNVO_SLACK_NOTIFY_EXECUTIONS, true),
+    approvals: envEnabled(process.env.ZENTRO_SLACK_NOTIFY_APPROVALS, true),
+    executions: envEnabled(process.env.ZENTRO_SLACK_NOTIFY_EXECUTIONS, true),
   };
 }
 

@@ -7,7 +7,7 @@
  *   node scripts/gen-alert-signature.mjs --secret "my-secret" --body-file payload.json --timestamp 1715000000
  *
  * Env fallback:
- *   SHYNVO_ALERT_WEBHOOK_SIGNING_SECRET
+ *   ZENTRO_ALERT_WEBHOOK_SIGNING_SECRET
  */
 import fs from "node:fs";
 import { createHmac } from "node:crypto";
@@ -39,7 +39,7 @@ function usageAndExit(message) {
   node scripts/gen-alert-signature.mjs --secret "<secret>" --body-file payload.json --timestamp 1715000000
 
 Options:
-  --secret       HMAC secret (fallback: SHYNVO_ALERT_WEBHOOK_SIGNING_SECRET)
+  --secret       HMAC secret (fallback: ZENTRO_ALERT_WEBHOOK_SIGNING_SECRET)
   --body         Raw JSON/body string
   --body-file    File path to raw body payload
   --timestamp    Optional timestamp for timestamped mode
@@ -56,9 +56,9 @@ if (args.help === "true") {
   usageAndExit();
 }
 
-const secret = (args.secret || process.env.SHYNVO_ALERT_WEBHOOK_SIGNING_SECRET || "").trim();
+const secret = (args.secret || process.env.ZENTRO_ALERT_WEBHOOK_SIGNING_SECRET || "").trim();
 if (!secret) {
-  usageAndExit("missing --secret (or SHYNVO_ALERT_WEBHOOK_SIGNING_SECRET)");
+  usageAndExit("missing --secret (or ZENTRO_ALERT_WEBHOOK_SIGNING_SECRET)");
 }
 
 let body = "";
@@ -78,15 +78,15 @@ const rawSig = hmacHex(secret, body);
 const ts = typeof args.timestamp === "string" ? args.timestamp.trim() : "";
 
 console.log("Headers (raw-body mode):");
-console.log(`X-Shynvo-Signature: ${rawSig}`);
-console.log(`X-Shynvo-Signature: sha256=${rawSig}`);
+console.log(`X-Zentro-Signature: ${rawSig}`);
+console.log(`X-Zentro-Signature: sha256=${rawSig}`);
 
 if (ts) {
   const tsSig = hmacHex(secret, `${ts}.${body}`);
   console.log("");
   console.log("Headers (timestamp mode):");
-  console.log(`X-Shynvo-Signature-Timestamp: ${ts}`);
-  console.log(`X-Shynvo-Signature: ${tsSig}`);
-  console.log(`X-Shynvo-Signature: sha256=${tsSig}`);
+  console.log(`X-Zentro-Signature-Timestamp: ${ts}`);
+  console.log(`X-Zentro-Signature: ${tsSig}`);
+  console.log(`X-Zentro-Signature: sha256=${tsSig}`);
 }
 

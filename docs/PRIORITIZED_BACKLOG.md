@@ -1,4 +1,4 @@
-# Shynvo Prioritized Backlog (Execution Plan)
+# Zentro Prioritized Backlog (Execution Plan)
 
 This file turns strategy into shipping order. Priorities optimize for:
 - Faster buyer trust

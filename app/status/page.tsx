@@ -38,7 +38,7 @@ export default async function StatusPage() {
   const statusView = health
     ? {
         ok: health.ok === true,
-        service: typeof health.service === "string" ? health.service : "shynvo-web",
+        service: typeof health.service === "string" ? health.service : "zentro-web",
         uptime_s:
           typeof health.uptime_s === "number" && Number.isFinite(health.uptime_s)
             ? Math.max(0, Math.round(health.uptime_s))

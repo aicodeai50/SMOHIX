@@ -1,8 +1,13 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-import { evaluateAcceptedPolicyEnforcement } from "@/lib/approvals/policy";
+import {
+  evaluateAcceptedPolicyEnforcement,
+  parseApprovalNoteSignals,
+  SLO_BURN_POLICY_BLOCKED_REASON,
+} from "@/lib/approvals/policy";
 import { listAcceptedPolicyGuardrailsForPlaybook } from "@/lib/approvals/policy-suggestions";
 import { buildDecisionBrief } from "@/lib/decision-intelligence";
+import { getLatestBurnStateForService } from "@/lib/services/slo";
 
 export type GuardedRemediationResult = {
   ok: boolean;
@@ -83,8 +88,26 @@ export async function runGuardedRemediation(input: {
   });
 
   let blockedReason = enforcement.blockedReason;
+  if (!blockedReason && input.incidentId) {
+    const incidentRes = await input.supabase
+      .from("incidents")
+      .select("service_id")
+      .eq("id", input.incidentId)
+      .eq("user_id", input.userId)
+      .maybeSingle();
+    const serviceId = incidentRes.data?.service_id ? String(incidentRes.data.service_id) : null;
+    if (serviceId) {
+      const burnState = await getLatestBurnStateForService(input.supabase, input.userId, serviceId);
+      const signals = parseApprovalNoteSignals(input.approvalNote);
+      const hasSenior = signals.hasSeniorAcknowledgement;
+      const hasWindow = signals.hasChangeWindow;
+      if (burnState === "critical" && (!hasSenior || !hasWindow)) {
+        blockedReason = SLO_BURN_POLICY_BLOCKED_REASON;
+      }
+    }
+  }
   let executionMode: "simulated" | "connector" = "simulated";
-  const robotBase = normalizeBase(process.env.SHYNVO_ROBOT_API_URL);
+  const robotBase = normalizeBase(process.env.ZENTRO_ROBOT_API_URL);
   if (robotBase) {
     executionMode = "connector";
     try {

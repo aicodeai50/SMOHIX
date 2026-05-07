@@ -58,7 +58,7 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
     }
     userId = user.id;
   } else {
-    devTenantKey = (await cookies()).get("shynvo_dev_tid")?.value ?? "anon";
+    devTenantKey = (await cookies()).get("zentro_dev_tid")?.value ?? "anon";
   }
 
   const resolved = await getIncidentForUser(userId, id, devTenantKey);
@@ -86,7 +86,7 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
       ? `/automations?incident=${encodeURIComponent(id)}`
       : "/automations";
 
-  const robotConnectorConfigured = Boolean(process.env.SHYNVO_ROBOT_API_URL?.trim());
+  const robotConnectorConfigured = Boolean(process.env.ZENTRO_ROBOT_API_URL?.trim());
 
   let lastIncidentDryRun: DryRunRecord | null = null;
   let latestRcaRun: Awaited<ReturnType<typeof getLatestIncidentRcaRun>> = null;
@@ -227,6 +227,11 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
           <p className={appOverline}>Guarded remediation</p>
           <p className={`mt-1 text-foreground/90 ${appBody}`}>
             Execute a remediation run through the same guardrail path (fresh dry-run, policy checks, and audit).
+          </p>
+          <p className={`mt-2 rounded-lg border border-amber-400/25 bg-amber-500/[0.08] px-3 py-2 text-amber-100/90 ${appMeta}`}>
+            If the linked service is in critical SLO burn state, remediation requires an approval note
+            that explicitly includes <span className="font-medium">senior acknowledgement</span> and
+            a <span className="font-medium">change window</span>.
           </p>
           <form action={runIncidentRemediationAction} className="mt-3">
             <input type="hidden" name="id" value={row.id} />

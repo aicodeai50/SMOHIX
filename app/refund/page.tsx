@@ -4,7 +4,7 @@ import { SITE_EMAIL_SUPPORT, getSupportMailtoHref } from "@/lib/billing";
 
 export const metadata: Metadata = {
   title: "Refunds & billing",
-  description: "Billing cycles, refunds, and subscription terms for Shynvo.",
+  description: "Billing cycles, refunds, and subscription terms for Zentro.",
 };
 
 export default function RefundPage() {

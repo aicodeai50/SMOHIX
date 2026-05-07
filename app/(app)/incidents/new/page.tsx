@@ -19,7 +19,13 @@ export const dynamic = "force-dynamic";
 export default async function NewIncidentPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{
+    error?: string;
+    service_id?: string;
+    severity?: string;
+    title?: string;
+    owner_hint?: string;
+  }>;
 }) {
   let services: Awaited<ReturnType<typeof listServicesForUser>> = [];
   if (hasSupabaseAuth()) {
@@ -33,7 +39,15 @@ export default async function NewIncidentPage({
     services = await listServicesForUser(user.id);
   }
 
-  const { error } = await searchParams;
+  const { error, service_id, severity, title, owner_hint } = await searchParams;
+  const preselectedServiceId =
+    typeof service_id === "string" && services.some((s) => s.id === service_id) ? service_id : "";
+  const preselectedSeverity =
+    severity === "low" || severity === "medium" || severity === "high" || severity === "critical"
+      ? severity
+      : "medium";
+  const prefilledTitle = typeof title === "string" ? title.slice(0, 500) : "";
+  const prefilledOwnerHint = typeof owner_hint === "string" ? owner_hint.slice(0, 200) : "";
   const runbooks = listRunbooks();
 
   return (
@@ -65,6 +79,7 @@ export default async function NewIncidentPage({
             required
             maxLength={500}
             placeholder="Short description for responders"
+            defaultValue={prefilledTitle}
             className={`h-11 w-full rounded-lg border border-border bg-background px-3 text-foreground outline-none ring-ring/50 focus:ring-2 ${appBody}`}
           />
         </div>
@@ -77,7 +92,7 @@ export default async function NewIncidentPage({
               id="service_id"
               name="service_id"
               className={`h-11 w-full rounded-lg border border-border bg-background px-3 text-foreground outline-none ring-ring/50 focus:ring-2 ${appBody}`}
-              defaultValue=""
+              defaultValue={preselectedServiceId}
             >
               <option value="">— None —</option>
               {services.map((s) => (
@@ -98,6 +113,7 @@ export default async function NewIncidentPage({
             name="owner_hint"
             maxLength={200}
             placeholder="@team-platform or pager rotation"
+            defaultValue={prefilledOwnerHint}
             className={`h-11 w-full rounded-lg border border-border bg-background px-3 text-foreground outline-none ring-ring/50 focus:ring-2 ${appBody}`}
           />
         </div>
@@ -134,7 +150,7 @@ export default async function NewIncidentPage({
             id="severity"
             name="severity"
             className={`h-11 w-full rounded-lg border border-border bg-background px-3 text-foreground outline-none ring-ring/50 focus:ring-2 ${appBody}`}
-            defaultValue="medium"
+            defaultValue={preselectedSeverity}
           >
             <option value="low">Low</option>
             <option value="medium">Medium</option>

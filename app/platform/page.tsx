@@ -7,7 +7,7 @@ import { Header } from "@/components/site/Header";
 export const metadata: Metadata = {
   title: "Platform",
   description:
-    "Operational module map for Shynvo: incidents, automations, approvals, audit, runbooks, connectors, governance, and reasoning.",
+    "Operational module map for Zentro: incidents, automations, approvals, audit, runbooks, connectors, governance, and reasoning.",
 };
 
 export default function PlatformPage() {

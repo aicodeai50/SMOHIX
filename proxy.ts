@@ -57,8 +57,8 @@ export async function proxy(request: NextRequest) {
 
   if (!hasSupabaseAuth()) {
     const res = NextResponse.next();
-    if (!request.cookies.get("shynvo_dev_tid")?.value) {
-      res.cookies.set("shynvo_dev_tid", globalThis.crypto.randomUUID(), {
+    if (!request.cookies.get("zentro_dev_tid")?.value) {
+      res.cookies.set("zentro_dev_tid", globalThis.crypto.randomUUID(), {
         path: "/",
         maxAge: 60 * 60 * 24 * 365,
         sameSite: "lax",

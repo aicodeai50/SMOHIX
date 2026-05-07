@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 import { devResolveTenantFromPlainKey } from "@/lib/api-keys/dev-store";
 import {
-  extractShynvoApiKey,
+  extractZentroApiKey,
   resolveUserIdFromApiKeyPlaintext,
 } from "@/lib/api-keys/resolve";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
@@ -22,14 +22,14 @@ async function resolveProxyUserId(req: NextRequest): Promise<string | null> {
   if (user) {
     return user.id;
   }
-  const plain = extractShynvoApiKey(req);
+  const plain = extractZentroApiKey(req);
   if (!plain) {
     return null;
   }
   return resolveUserIdFromApiKeyPlaintext(plain);
 }
 
-/** When Supabase auth env is set, proxy allows a session cookie or a valid `shynvo_sk_` API key. */
+/** When Supabase auth env is set, proxy allows a session cookie or a valid `zentro_sk_` API key. */
 async function denyIfProxyUnauthenticated(
   req: NextRequest,
 ): Promise<NextResponse | null> {
@@ -43,7 +43,7 @@ async function denyIfProxyUnauthenticated(
         {
           error: "Unauthorized",
           message:
-            "Sign in, or call with Authorization: Bearer <shynvo_sk_…> or X-Shynvo-Api-Key (see Settings → API keys). API key validation needs SUPABASE_SERVICE_ROLE_KEY on the server.",
+            "Sign in, or call with Authorization: Bearer <zentro_sk_…> or X-Zentro-Api-Key (see Settings -> API keys). API key validation needs SUPABASE_SERVICE_ROLE_KEY on the server.",
         },
         { status: 401 },
       );
@@ -81,7 +81,7 @@ function denyIfProxyDevOrAnon(req: NextRequest): NextResponse | null {
     return null;
   }
   const ip = clientIpFromRequest(req);
-  const plain = extractShynvoApiKey(req);
+  const plain = extractZentroApiKey(req);
   if (plain) {
     const dev = devResolveTenantFromPlainKey(plain);
     if (!dev) {
@@ -119,8 +119,8 @@ function denyIfProxyDevOrAnon(req: NextRequest): NextResponse | null {
 function baseUrl(kind: "reasoning" | "robot"): string | null {
   const raw =
     kind === "reasoning"
-      ? process.env.SHYNVO_REASONING_API_URL
-      : process.env.SHYNVO_ROBOT_API_URL;
+      ? process.env.ZENTRO_REASONING_API_URL
+      : process.env.ZENTRO_ROBOT_API_URL;
   const t = raw?.trim().replace(/\/+$/, "");
   return t || null;
 }
@@ -147,7 +147,7 @@ function pickForwardHeaders(req: NextRequest): Headers {
   const auth = req.headers.get("authorization");
   if (auth?.startsWith("Bearer ")) {
     const token = auth.slice("Bearer ".length).trim();
-    if (token && !token.startsWith("shynvo_sk_")) {
+    if (token && !token.startsWith("zentro_sk_")) {
       out.set("authorization", auth);
     }
   }

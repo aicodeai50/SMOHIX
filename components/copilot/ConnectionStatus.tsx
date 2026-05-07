@@ -5,7 +5,7 @@ import { getConnectorHealthRows } from "@/lib/connectors-health";
 export async function ConnectionStatus() {
   const rows = await getConnectorHealthRows();
   const openai = Boolean(process.env.OPENAI_API_KEY?.trim());
-  const reasoning = Boolean(process.env.SHYNVO_REASONING_API_URL?.trim());
+  const reasoning = Boolean(process.env.ZENTRO_REASONING_API_URL?.trim());
   const brainLine = openai
     ? "Full cloud model — Copilot can draft rich, contextual responses."
     : reasoning

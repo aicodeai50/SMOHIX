@@ -24,7 +24,7 @@ export async function updateIncidentStatusAction(formData: FormData) {
   }
 
   if (!hasSupabaseAuth()) {
-    const tid = (await cookies()).get("shynvo_dev_tid")?.value ?? "anon";
+    const tid = (await cookies()).get("zentro_dev_tid")?.value ?? "anon";
     const result = await updateIncidentStatusForUser("", id, status, {
       devTenantKey: tid,
     });
@@ -75,7 +75,7 @@ export async function updateIncidentContextAction(formData: FormData) {
   }
 
   if (!hasSupabaseAuth()) {
-    const tid = (await cookies()).get("shynvo_dev_tid")?.value ?? "anon";
+    const tid = (await cookies()).get("zentro_dev_tid")?.value ?? "anon";
     const result = await updateIncidentContextForUser(
       "",
       id,

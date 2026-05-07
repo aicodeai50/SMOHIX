@@ -13,7 +13,7 @@ import {
 
 export const metadata: Metadata = {
   title: "Pricing",
-  description: "Shynvo plans — Pro, Team, and how to talk to us for larger rollouts.",
+  description: "Zentro plans — Pro, Team, and how to talk to us for larger rollouts.",
 };
 
 export default function PricingPage() {
@@ -89,7 +89,7 @@ export default function PricingPage() {
                 not pretend those are self-serve buttons before they exist.
               </p>
               <a
-                href={`mailto:${SITE_EMAIL_CONTACT}?subject=${encodeURIComponent("Shynvo enterprise")}`}
+                href={`mailto:${SITE_EMAIL_CONTACT}?subject=${encodeURIComponent("Zentro enterprise")}`}
                 className="mt-6 inline-flex h-10 items-center justify-center rounded-lg border border-white/[0.12] px-4 text-sm font-medium text-foreground/90 hover:border-accent/35"
               >
                 Contact sales

@@ -25,9 +25,9 @@ function safeEqualHex(expectedHex: string, providedHex: string): boolean {
 /**
  * Optional alert-webhook signature verification.
  * Supports:
- * - `X-Shynvo-Signature: <hex>`
- * - `X-Shynvo-Signature: sha256=<hex>`
- * If `X-Shynvo-Signature-Timestamp` is present, verifies `${timestamp}.${rawBody}` first,
+ * - `X-Zentro-Signature: <hex>`
+ * - `X-Zentro-Signature: sha256=<hex>`
+ * If `X-Zentro-Signature-Timestamp` is present, verifies `${timestamp}.${rawBody}` first,
  * then falls back to raw-body HMAC for compatibility.
  */
 export function verifyAlertWebhookSignature(input: VerifyInput): boolean {

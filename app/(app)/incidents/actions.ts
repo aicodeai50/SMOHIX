@@ -24,7 +24,7 @@ export async function createIncidentAction(formData: FormData) {
     : "medium";
 
   if (!hasSupabaseAuth()) {
-    const tid = (await cookies()).get("shynvo_dev_tid")?.value ?? "anon";
+    const tid = (await cookies()).get("zentro_dev_tid")?.value ?? "anon";
     if (!title.trim()) {
       redirect(`/incidents/new?error=${encodeURIComponent("Title is required.")}`);
     }

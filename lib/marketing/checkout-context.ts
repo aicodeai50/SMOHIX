@@ -7,7 +7,7 @@ export type SignedInCheckoutUrls = {
   team?: string;
 };
 
-/** Signed-in Lemon checkout URLs with `shynvo_user_id` (Pro + optional Team). */
+/** Signed-in Lemon checkout URLs with `zentro_user_id` (Pro + optional Team). */
 export async function getSignedInCheckoutUrls(): Promise<SignedInCheckoutUrls> {
   if (!hasSupabaseAuth()) {
     return {};

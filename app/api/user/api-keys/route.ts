@@ -14,7 +14,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 export const runtime = "nodejs";
 
 function devTenantOr400(req: NextRequest) {
-  const tid = req.cookies.get("shynvo_dev_tid")?.value;
+  const tid = req.cookies.get("zentro_dev_tid")?.value;
   if (!tid) {
     return null;
   }

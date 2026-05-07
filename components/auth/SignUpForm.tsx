@@ -67,7 +67,7 @@ export function SignUpForm() {
   return (
     <AuthCard
       title="Sign up"
-      subtitle="Create a Shynvo account to use the console. Billing tiers can be added later."
+      subtitle="Create a Zentro account to use the console. Billing tiers can be added later."
     >
       <form onSubmit={onSubmit} className="space-y-4">
         <div>

@@ -50,11 +50,11 @@ export async function generateTestIngestIncidentAction(formData: FormData) {
 
   const ts = Date.now();
   const result = await ingestAlertCreateIncident(user.id, "manual-test", {
-    title: "Shynvo ingest pipeline test",
+    title: "Zentro ingest pipeline test",
     severity: "medium",
     status: "investigating",
     summary: "Synthetic event from Settings > Connectors to validate ingest flow end-to-end.",
-    dedupe_key: `shynvo-test:${ts}`,
+    dedupe_key: `zentro-test:${ts}`,
     owner_hint: "platform",
   });
 
@@ -186,7 +186,7 @@ export async function cleanupSyntheticIngestTestsAction(formData: FormData) {
     const externalRef =
       typeof r.external_ref === "string" ? r.external_ref.trim().toLowerCase() : "";
     const isSyntheticTitle =
-      title === "shynvo ingest pipeline test" ||
+      title === "zentro ingest pipeline test" ||
       title === "datadog test event" ||
       title === "syntheticprometheusalert" ||
       title === "synthetic pagerduty payload from connectors diagnostics." ||
@@ -251,7 +251,7 @@ export async function acknowledgeUnknownSyntheticIngestAction(formData: FormData
       externalRef.startsWith("pagerduty:") ||
       externalRef.startsWith("newrelic:");
     const isSyntheticTitle =
-      title === "shynvo ingest pipeline test" ||
+      title === "zentro ingest pipeline test" ||
       title === "datadog test event" ||
       title === "syntheticprometheusalert" ||
       title === "synthetic pagerduty payload from connectors diagnostics." ||
@@ -303,7 +303,7 @@ export async function sendSlackTestMessageAction(formData: FormData) {
 
   const result = await sendSlackNotificationWithAudit({
     userId: user.id,
-    title: "Shynvo Slack integration test",
+    title: "Zentro Slack integration test",
     body: "Your Slack webhook is connected and ready for approval and execution notifications.",
     details: [`open: ${getSiteUrl()}/settings/connectors`],
     kind: "manual_test",
@@ -314,7 +314,7 @@ export async function sendSlackTestMessageAction(formData: FormData) {
     const q = [
       `error=${encodeURIComponent(
         result.reason === "slack_not_configured"
-          ? "Slack webhook not configured. Set SHYNVO_SLACK_WEBHOOK_URL in Railway variables."
+          ? "Slack webhook not configured. Set ZENTRO_SLACK_WEBHOOK_URL in Railway variables."
           : `Slack test failed: ${result.reason}`,
       )}`,
       wizard.suffix,

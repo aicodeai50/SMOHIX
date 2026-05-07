@@ -112,7 +112,7 @@ export default async function CertificatesPage({
                   id="cert-cn"
                   name="cn"
                   maxLength={255}
-                  placeholder="api.shynvo.app"
+                  placeholder="api.zentro.run"
                   className={`h-10 w-full rounded-lg border border-border bg-background px-3 text-foreground outline-none ring-ring/40 focus:ring-2 ${appBody}`}
                 />
               </div>
@@ -137,7 +137,7 @@ export default async function CertificatesPage({
                 id="cert-sans"
                 name="sans"
                 maxLength={1000}
-                placeholder="api.shynvo.app, *.shynvo.app"
+                placeholder="api.zentro.run, *.zentro.run"
                 className={`h-10 w-full rounded-lg border border-border bg-background px-3 text-foreground outline-none ring-ring/40 focus:ring-2 ${appBody}`}
               />
             </div>

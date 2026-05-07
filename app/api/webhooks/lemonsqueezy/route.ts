@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 
 import { appendAuditEvent } from "@/lib/audit/append";
 import { verifyLemonSqueezySignature } from "@/lib/lemonsqueezy-verify";
-import { extractShynvoUserId, parseWebhookJson } from "@/lib/lemonsqueezy/parse-webhook";
+import { extractZentroUserId, parseWebhookJson } from "@/lib/lemonsqueezy/parse-webhook";
 import { syncSubscriptionFromWebhook } from "@/lib/billing/sync-lemon-subscription";
 import {
   claimWebhookDelivery,
@@ -22,12 +22,12 @@ function deliveryIdFromBody(rawBody: string): string {
 
 /**
  * Lemon Squeezy → Settings → Webhooks → URL:
- * `https://shynvo.app/api/webhooks/lemonsqueezy`
+ * `https://zentro.run/api/webhooks/lemonsqueezy`
  *
  * Env: `LEMONSQUEEZY_WEBHOOK_SIGNING_SECRET`, `NEXT_PUBLIC_SUPABASE_URL`,
  * `SUPABASE_SERVICE_ROLE_KEY` (required to persist subscriptions).
  *
- * Checkout **custom data** must include `shynvo_user_id` = the signed-in user’s UUID
+ * Checkout **custom data** must include `zentro_user_id` = the signed-in user’s UUID
  * (same as `auth.users.id`) so webhooks can attach the subscription.
  */
 export async function POST(request: Request) {
@@ -112,7 +112,7 @@ export async function POST(request: Request) {
     }
 
     if (sync.action === "upserted" && sync.lemon_subscription_id) {
-      const uid = extractShynvoUserId(payload.meta);
+      const uid = extractZentroUserId(payload.meta);
       if (uid) {
         await appendAuditEvent({
           event_type: "billing.subscription_synced",

@@ -2,7 +2,7 @@
  * Canonical product name — use for all user-visible branding and default metadata.
  * Do not introduce alternate spellings in UI copy or SEO fields.
  */
-export const SITE_BRAND_NAME = "Shynvo" as const;
+export const SITE_BRAND_NAME = "zentro.run" as const;
 
 export const SITE_MARKETING_TITLE = `${SITE_BRAND_NAME} — IT operations console` as const;
 

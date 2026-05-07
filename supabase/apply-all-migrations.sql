@@ -1,4 +1,4 @@
--- Shynvo: all migrations in one file (run once in Supabase → SQL Editor → Run).
+-- Zentro: all migrations in one file (run once in Supabase -> SQL Editor -> Run).
 -- Fresh project only. Re-running may error on existing policies/objects.
 -- Order: platform_spine → incidents → console_extensions → api_keys → automation_dry_runs.
 -- Note: equipment operations tables live in `supabase/migrations/20260420120000_equipment_operations.sql`
@@ -7,7 +7,7 @@
 -- =============================================================================
 -- 20260418120000_platform_spine.sql
 -- =============================================================================
--- Shynvo platform spine: profiles, billing subscriptions, webhook idempotency.
+-- Zentro platform spine: profiles, billing subscriptions, webhook idempotency.
 -- Apply in Supabase → SQL Editor (or `supabase db push` if you use the CLI).
 -- Requires: extensions pgcrypto (usually enabled on Supabase).
 

@@ -39,7 +39,7 @@ async function runContextFromRequest(req: NextRequest): Promise<RunContext | Nex
     }
     return { mode: "auth", userId: user.id, tenantKey: `u:${user.id}` };
   }
-  const tid = req.cookies.get("shynvo_dev_tid")?.value;
+  const tid = req.cookies.get("zentro_dev_tid")?.value;
   if (!tid) {
     return NextResponse.json(
       { error: "missing_dev_session", message: "Reload once to obtain a session cookie." },
@@ -111,7 +111,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const robotBase = normalizeBase(process.env.SHYNVO_ROBOT_API_URL);
+  const robotBase = normalizeBase(process.env.ZENTRO_ROBOT_API_URL);
   let ok = true;
   let detail = "Simulated dry-run (no robot URL configured).";
 

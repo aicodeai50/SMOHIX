@@ -1,7 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 import {
-  extractShynvoUserId,
+  extractZentroUserId,
   isSubscriptionResource,
   normalizeSubscriptionAttributes,
   type LemonWebhookPayload,
@@ -25,7 +25,7 @@ export type SyncSubscriptionResult =
 
 /**
  * Upserts a row in `public.subscriptions` from a Lemon subscription webhook.
- * Requires `shynvo_user_id` (or legacy `supabase_user_id`) in `meta.custom_data` to link `user_id`.
+ * Requires `zentro_user_id` (or `supabase_user_id`) in `meta.custom_data`.
  */
 export async function syncSubscriptionFromWebhook(
   supabase: SupabaseClient,
@@ -47,14 +47,14 @@ export async function syncSubscriptionFromWebhook(
 
   const lemon_subscription_id = data.id;
   const attrs = normalizeSubscriptionAttributes(data.attributes);
-  const userId = extractShynvoUserId(payload.meta);
+  const userId = extractZentroUserId(payload.meta);
 
   if (!userId) {
     return {
       ok: false,
       permanent: true,
       reason:
-        "missing_custom_data_shynvo_user_id — add shynvo_user_id to Lemon checkout custom data",
+        "missing_custom_data_zentro_user_id — add zentro_user_id to Lemon checkout custom data",
     };
   }
 

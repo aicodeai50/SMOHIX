@@ -75,7 +75,7 @@ export async function launchKillerDemoAction() {
     redirect(`/incidents/${incident.id}?demo=1`);
   }
 
-  const tid = (await cookies()).get("shynvo_dev_tid")?.value ?? "anon";
+  const tid = (await cookies()).get("zentro_dev_tid")?.value ?? "anon";
   const incidentId = recordDevIncident(tid, {
     title: demoTitle,
     severity: "critical",

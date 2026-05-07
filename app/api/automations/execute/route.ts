@@ -12,6 +12,8 @@ import { listDryRuns } from "@/lib/automations/runs-dev";
 import {
   evaluateAcceptedPolicyEnforcement,
   evaluateApprovalPolicy,
+  parseApprovalNoteSignals,
+  SLO_BURN_POLICY_BLOCKED_REASON,
 } from "@/lib/approvals/policy";
 import { appendAuditEvent } from "@/lib/audit/append";
 import { billingPlanFromSummary, getSubscriptionSummary } from "@/lib/billing/plan";
@@ -34,6 +36,7 @@ import {
 } from "@/lib/approvals/change-risk";
 import { insertChangeRiskScore } from "@/lib/approvals/change-risk-db";
 import { getSiteUrl } from "@/lib/site";
+import { getLatestBurnStateForService } from "@/lib/services/slo";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
@@ -67,7 +70,7 @@ async function runContextFromRequest(req: NextRequest): Promise<RunContext | Nex
     }
     return { mode: "auth", userId: user.id, tenantKey: `u:${user.id}` };
   }
-  const tid = req.cookies.get("shynvo_dev_tid")?.value;
+  const tid = req.cookies.get("zentro_dev_tid")?.value;
   if (!tid) {
     return NextResponse.json(
       { error: "missing_dev_session", message: "Reload once to obtain a session cookie." },
@@ -201,6 +204,43 @@ export async function POST(req: NextRequest) {
 
   if (ctx.mode === "auth") {
     const supabase = await createServerSupabaseClient();
+    if (incidentId) {
+      const { data: incidentRow } = await supabase
+        .from("incidents")
+        .select("service_id")
+        .eq("id", incidentId)
+        .eq("user_id", ctx.userId)
+        .maybeSingle();
+      const serviceId = incidentRow?.service_id ? String(incidentRow.service_id) : null;
+      if (serviceId) {
+        const burnState = await getLatestBurnStateForService(supabase, ctx.userId, serviceId);
+        const signals = parseApprovalNoteSignals(approvalNote);
+        const hasSenior = signals.hasSeniorAcknowledgement;
+        const hasWindow = signals.hasChangeWindow;
+        if (burnState === "critical" && (!hasSenior || !hasWindow)) {
+          const blockedReason = SLO_BURN_POLICY_BLOCKED_REASON;
+          await appendAuditEvent({
+            event_type: "automation.execution_blocked_slo",
+            user_id: ctx.userId,
+            details: {
+              playbook_id: playbookId,
+              incident_id: incidentId,
+              service_id: serviceId,
+              burn_state: burnState,
+              blocked_reason: blockedReason,
+            },
+          });
+          return NextResponse.json(
+            {
+              error: "execution_blocked_by_slo",
+              message: blockedReason,
+              sloPolicy: { burnState, requiresSeniorAcknowledgement: true, requiresChangeWindow: true },
+            },
+            { status: 403 },
+          );
+        }
+      }
+    }
     if (riskApprovalBlock) {
       await insertChangeRiskScore(supabase, {
         userId: ctx.userId,
@@ -271,7 +311,7 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const robotBase = normalizeBase(process.env.SHYNVO_ROBOT_API_URL);
+  const robotBase = normalizeBase(process.env.ZENTRO_ROBOT_API_URL);
   const mode: "simulated" | "connector" = robotBase ? "connector" : "simulated";
   const ok = true;
   const decisionBrief = preDecisionBrief;
@@ -381,7 +421,7 @@ export async function POST(req: NextRequest) {
     void sendSlackNotificationWithAudit({
       userId: ctx.userId,
       title: "Automation executed",
-      body: "A guarded automation execution was recorded in Shynvo.",
+      body: "A guarded automation execution was recorded in Zentro.",
       details: [
         `playbook_id: ${playbookId}`,
         `mode: ${mode}`,

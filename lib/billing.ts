@@ -35,18 +35,18 @@ export function appendCheckoutCustomData(
   return u.toString();
 }
 
-/** Paid checkout URL including `shynvo_user_id` for the webhook upsert. */
+/** Paid checkout URL including `zentro_user_id` for webhook upsert. */
 export function getCheckoutUrlForUser(userId: string): string | undefined {
   const base = getCheckoutUrl();
   if (!base) return undefined;
-  return appendCheckoutCustomData(base, { shynvo_user_id: userId });
+  return appendCheckoutCustomData(base, { zentro_user_id: userId });
 }
 
-/** Team (or second tier) checkout with `shynvo_user_id` when `NEXT_PUBLIC_LEMONSQUEEZY_TEAM_CHECKOUT_URL` is set. */
+/** Team checkout with `zentro_user_id` when team URL is set. */
 export function getTeamCheckoutUrlForUser(userId: string): string | undefined {
   const base = getTeamCheckoutUrl();
   if (!base) return undefined;
-  return appendCheckoutCustomData(base, { shynvo_user_id: userId });
+  return appendCheckoutCustomData(base, { zentro_user_id: userId });
 }
 
 /**
@@ -61,17 +61,17 @@ export function getCustomerPortalUrl(): string | undefined {
 }
 
 /** General / contact (hello, partnerships, sales). */
-export const SITE_EMAIL_CONTACT = "hi@shynvo.app";
+export const SITE_EMAIL_CONTACT = "hi@zentro.run";
 
 /** Product, billing, and technical support. */
-export const SITE_EMAIL_SUPPORT = "support@shynvo.app";
+export const SITE_EMAIL_SUPPORT = "support@zentro.run";
 
 export function getGeneralMailtoHref(): string {
-  return `mailto:${SITE_EMAIL_CONTACT}?subject=${encodeURIComponent("Shynvo inquiry")}`;
+  return `mailto:${SITE_EMAIL_CONTACT}?subject=${encodeURIComponent("Zentro inquiry")}`;
 }
 
 export function getSupportMailtoHref(): string {
-  return `mailto:${SITE_EMAIL_SUPPORT}?subject=${encodeURIComponent("Shynvo support")}`;
+  return `mailto:${SITE_EMAIL_SUPPORT}?subject=${encodeURIComponent("Zentro support")}`;
 }
 
 /** @deprecated Prefer getGeneralMailtoHref or getSupportMailtoHref */

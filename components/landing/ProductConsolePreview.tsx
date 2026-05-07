@@ -37,7 +37,7 @@ export function ProductConsolePreview() {
               <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
               <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
             </span>
-            <span className="font-mono text-[11px] text-muted">shynvo.app / console</span>
+            <span className="font-mono text-[11px] text-muted">zentro.run / console</span>
           </div>
           <div className="grid gap-px bg-white/[0.06] md:grid-cols-3">
             <div className="bg-background p-4 sm:p-5">

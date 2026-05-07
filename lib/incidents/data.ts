@@ -91,7 +91,7 @@ function sessionRows(devTenantKey: string | null): IncidentRow[] {
 
 /**
  * Lists incidents: Supabase `incidents` when auth is configured; otherwise session-scoped rows
- * (`shynvo_dev_tid` cookie).
+ * (`zentro_dev_tid` cookie).
  */
 export async function listIncidentsForUser(
   userId: string,

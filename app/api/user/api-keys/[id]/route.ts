@@ -17,7 +17,7 @@ export async function DELETE(req: NextRequest, { params }: Ctx) {
   }
 
   if (!hasSupabaseAuth()) {
-    const tid = req.cookies.get("shynvo_dev_tid")?.value;
+    const tid = req.cookies.get("zentro_dev_tid")?.value;
     if (!tid) {
       return NextResponse.json(
         { error: "missing_dev_session", message: "Reload the page to pick up a browser session." },

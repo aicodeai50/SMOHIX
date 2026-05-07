@@ -161,8 +161,8 @@ export default async function BillingPage({
           <p className="mt-2 text-2xl font-semibold text-foreground">{planDisplayName}</p>
           {plan === "paid" && paidTier === "unknown" && !queryError ? (
             <p className={`mt-2 ${appMeta}`}>
-              To show <span className="text-foreground/80">Shynvo Pro</span> or{" "}
-              <span className="text-foreground/80">Shynvo Team</span> here, set{" "}
+              To show <span className="text-foreground/80">Zentro Pro</span> or{" "}
+              <span className="text-foreground/80">Zentro Team</span> here, set{" "}
               <code className={`rounded bg-surface px-1 font-mono text-accent ${appMeta}`}>
                 NEXT_PUBLIC_LEMONSQUEEZY_PRO_VARIANT_ID
               </code>{" "}
@@ -284,10 +284,10 @@ export default async function BillingPage({
         <p className={appMeta}>
           Billing changes at your provider (cancel, payment method) sync via webhook. Questions?{" "}
           <Link
-            href={encodeURI("mailto:support@shynvo.app?subject=Billing")}
+            href={encodeURI("mailto:support@zentro.run?subject=Billing")}
             className="text-accent hover:underline"
           >
-            support@shynvo.app
+            support@zentro.run
           </Link>
         </p>
       </div>

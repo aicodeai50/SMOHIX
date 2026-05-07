@@ -118,7 +118,7 @@ export function ApiKeysPanel({
       {sessionScoped ? (
         <p className={`rounded-lg border border-cyan-500/25 bg-cyan-500/10 px-4 py-3 text-cyan-100/90 ${appBody}`}>
           <span className="font-medium text-foreground/90">Session-scoped keys.</span> Stored in
-          server memory for your <span className="font-mono">shynvo_dev_tid</span> cookie and used
+          server memory for your <span className="font-mono">zentro_dev_tid</span> cookie and used
           to authenticate <span className="font-mono">/api/reasoning/*</span> and{" "}
           <span className="font-mono">/api/robot/*</span> without Supabase. They do not survive
           deploy or cold start; connect Supabase for durable keys.
@@ -221,7 +221,7 @@ export function ApiKeysPanel({
               Authorization: Bearer &lt;key&gt;
             </span>{" "}
             or header{" "}
-            <span className="font-mono text-foreground/80">X-Shynvo-Api-Key</span> on same-origin
+            <span className="font-mono text-foreground/80">X-Zentro-Api-Key</span> on same-origin
             requests to <span className="font-mono">/api/reasoning/…</span> and{" "}
             <span className="font-mono">/api/robot/…</span>.
           </p>
@@ -242,7 +242,7 @@ export function ApiKeysPanel({
                     Authorization: Bearer &lt;key&gt;
                   </span>{" "}
                   or header{" "}
-                  <span className="font-mono text-foreground/80">X-Shynvo-Api-Key</span> on
+                  <span className="font-mono text-foreground/80">X-Zentro-Api-Key</span> on
                   requests to <span className="font-mono">/api/reasoning/…</span> and{" "}
                   <span className="font-mono">/api/robot/…</span>. Other REST routes use your
                   session or specialized tokens (see API docs).

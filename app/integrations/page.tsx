@@ -8,7 +8,7 @@ import { SITE_EMAIL_CONTACT, getGeneralMailtoHref } from "@/lib/billing";
 export const metadata: Metadata = {
   title: "Integrations",
   description:
-    "What Shynvo connects to today and what is on the roadmap — monitoring, chat, cloud, and ticketing.",
+    "What Zentro connects to today and what is on the roadmap — monitoring, chat, cloud, and ticketing.",
 };
 
 const TODAY = [
@@ -53,7 +53,7 @@ export default function IntegrationsPage() {
               Integrations — today and next
             </h1>
             <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted sm:text-lg">
-              Shynvo is useful without a wall of logos: you can run incidents, runbooks, and
+              Zentro is useful without a wall of logos: you can run incidents, runbooks, and
               guarded automations on day one. Below is what works now versus what we expect to add
               as teams adopt the platform.
             </p>

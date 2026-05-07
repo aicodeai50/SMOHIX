@@ -41,7 +41,7 @@ export async function createApprovalRequestAction(formData: FormData) {
     userId = user.id;
     auditUserId = user.id;
   } else {
-    devTenantId = (await cookies()).get("shynvo_dev_tid")?.value ?? null;
+    devTenantId = (await cookies()).get("zentro_dev_tid")?.value ?? null;
   }
 
   const result = await createApprovalRequest({
@@ -89,7 +89,7 @@ export async function approvalDecisionAction(formData: FormData) {
   }
 
   if (!hasSupabaseAuth()) {
-    const tid = (await cookies()).get("shynvo_dev_tid")?.value;
+    const tid = (await cookies()).get("zentro_dev_tid")?.value;
     if (!tid) {
       redirect("/approvals?error=no_session");
     }
@@ -143,7 +143,7 @@ export async function approvalDecisionAction(formData: FormData) {
   void sendSlackNotificationWithAudit({
     userId: user.id,
     title: `Approval ${decision}`,
-    body: `An approval request was ${decision} in Shynvo.`,
+    body: `An approval request was ${decision} in Zentro.`,
     details: [`approval_id: ${id}`, `open: ${approvalUrl}`],
     kind: "approval_decision",
     auditDetails: { approval_id: id, decision },

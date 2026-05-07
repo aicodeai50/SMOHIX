@@ -30,7 +30,7 @@ export default async function IncidentsPage() {
     }
     userId = user.id;
   } else {
-    devTenantKey = (await cookies()).get("shynvo_dev_tid")?.value ?? "anon";
+    devTenantKey = (await cookies()).get("zentro_dev_tid")?.value ?? "anon";
   }
 
   const { source, rows } = await listIncidentsForUser(userId ?? "", devTenantKey);

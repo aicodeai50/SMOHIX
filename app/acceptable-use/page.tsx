@@ -9,14 +9,14 @@ import {
 
 export const metadata: Metadata = {
   title: "Acceptable Use Policy",
-  description: "Acceptable use rules for the Shynvo platform and APIs.",
+  description: "Acceptable use rules for the Zentro platform and APIs.",
 };
 
 export default function AcceptableUsePage() {
   return (
     <LegalLayout title="Acceptable Use Policy" lastUpdated="April 2026">
       <div className="legal-callout">
-        <strong>Safety and trust.</strong> Shynvo is designed for legitimate IT
+        <strong>Safety and trust.</strong> Zentro is designed for legitimate IT
         operations with approvals and audit trails. This policy sets minimum
         standards. Your organization may impose stricter internal policies.
       </div>
@@ -24,7 +24,7 @@ export default function AcceptableUsePage() {
       <h2>1. Scope</h2>
       <p>
         This Acceptable Use Policy (“<strong>AUP</strong>”) applies to all users of
-        the Shynvo Services, including visitors, trial users, paying customers, and
+        the Zentro Services, including visitors, trial users, paying customers, and
         anyone who accesses our APIs, automation runners, or integrations. It
         supplements our <a href="/terms">Terms of Service</a>.
       </p>
@@ -52,7 +52,7 @@ export default function AcceptableUsePage() {
       <p>You must not:</p>
       <ul>
         <li>
-          Probe, scan, or test the vulnerability of Shynvo systems without prior
+          Probe, scan, or test the vulnerability of Zentro systems without prior
           written authorization from our security team;
         </li>
         <li>
@@ -65,7 +65,7 @@ export default function AcceptableUsePage() {
           documented, authorized testing in your own environments;
         </li>
         <li>
-          Send unsolicited bulk communications (“spam”) from Shynvo infrastructure
+          Send unsolicited bulk communications (“spam”) from Zentro infrastructure
           or use the Services to harvest addresses without consent.
         </li>
       </ul>
@@ -83,7 +83,7 @@ export default function AcceptableUsePage() {
           organization has validated workflows.
         </li>
         <li>
-          Do not use the Services to train competing generalized AI models on Shynvo
+          Do not use the Services to train competing generalized AI models on Zentro
           confidential materials without a separate written agreement.
         </li>
       </ul>

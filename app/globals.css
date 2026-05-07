@@ -249,11 +249,30 @@ body {
   }
 }
 
+@keyframes product-film-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.product-film-scene {
+  animation: product-film-enter 0.55s ease-out both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .m-marketing-section-enter,
   .m-marketing-section-enter .m-marketing-stagger-grid > * {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
+  }
+
+  .product-film-scene {
+    animation: none;
   }
 }

@@ -12,7 +12,7 @@ export async function GET() {
   return NextResponse.json(
     {
       ok: true,
-      service: "shynvo-web",
+      service: "zentro-web",
       uptime_s: Math.round(process.uptime()),
     },
     {

@@ -1,5 +1,5 @@
 {
-  "name": "shynvo-web",
+  "name": "zentro-web",
   "version": "0.1.0",
   "private": true,
   "engines": {
@@ -14,7 +14,9 @@
     "test:policy-enforcement": "node scripts/test-policy-enforcement.mjs",
     "test:policy-review-flow": "node scripts/test-policy-review-flow.mjs",
     "test:decision-intelligence": "node scripts/test-decision-intelligence.mjs",
-    "verify:release": "npm run verify:api-catalog && npm run verify:links && npm run test:security && npm run test:decision-intelligence",
+    "test:approval-policy": "node scripts/test-approval-policy.mjs",
+    "test:slo-triage-ui": "node scripts/test-slo-triage-ui.mjs",
+    "verify:release": "npm run verify:api-catalog && npm run verify:links && npm run test:security && npm run test:decision-core && npm run test:decision-intelligence && npm run test:approval-policy && npm run test:policy-enforcement && npm run test:policy-review-flow && npm run test:slo-triage-ui",
     "gen:alert-signature": "node scripts/gen-alert-signature.mjs",
     "build": "npm run verify:release && next build",
     "start": "next start --hostname 0.0.0.0",

@@ -6,7 +6,7 @@ import { SITE_BRAND_NAME } from "@/lib/site-brand";
 
 export function Logo({ className = "" }: { className?: string }) {
   const markId = useId().replace(/:/g, "");
-  const gradId = `shynvo-mark-${markId}`;
+  const gradId = `zentro-mark-${markId}`;
 
   return (
     <div className={`flex items-center gap-2 ${className}`}>

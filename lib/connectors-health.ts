@@ -45,8 +45,8 @@ export type ConnectorRow = {
 };
 
 export async function getConnectorHealthRows(): Promise<ConnectorRow[]> {
-  const reasoningBase = normalizeBase(process.env.SHYNVO_REASONING_API_URL);
-  const robotBase = normalizeBase(process.env.SHYNVO_ROBOT_API_URL);
+  const reasoningBase = normalizeBase(process.env.ZENTRO_REASONING_API_URL);
+  const robotBase = normalizeBase(process.env.ZENTRO_ROBOT_API_URL);
 
   const reasoning: ConnectorRow = {
     id: "reasoning",

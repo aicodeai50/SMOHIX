@@ -1,20 +1,21 @@
 import { hashApiKeyPlaintext } from "@/lib/api-keys/token";
 import { createServiceSupabaseClient } from "@/lib/supabase/admin";
 
-export function extractShynvoApiKey(req: { headers: Headers }): string | null {
+export function extractZentroApiKey(req: { headers: Headers }): string | null {
   const auth = req.headers.get("authorization");
   if (auth?.startsWith("Bearer ")) {
     const t = auth.slice("Bearer ".length).trim();
-    if (t.startsWith("shynvo_sk_")) {
+    if (t.startsWith("zentro_sk_")) {
       return t;
     }
   }
-  const h = req.headers.get("x-shynvo-api-key")?.trim();
-  if (h?.startsWith("shynvo_sk_")) {
+  const h = req.headers.get("x-zentro-api-key")?.trim();
+  if (h?.startsWith("zentro_sk_")) {
     return h;
   }
   return null;
 }
+
 
 /**
  * Resolve owning user for proxy auth. Requires service role to read by `secret_hash`

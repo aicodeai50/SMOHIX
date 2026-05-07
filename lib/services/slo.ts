@@ -29,6 +29,16 @@ export type ErrorBudgetOverviewSummary = {
   averageBudgetUsedPercent: number | null;
 };
 
+export type ServiceBurnState = "healthy" | "warning" | "critical";
+export type ServiceSloConfigRow = {
+  id: string;
+  serviceId: string;
+  sloName: string;
+  targetPercent: number;
+  windowDays: 7 | 30 | 90;
+  enabled: boolean;
+};
+
 function clampPercent(v: number): number {
   return Math.max(0, Math.min(100, Math.round(v * 100) / 100));
 }
@@ -55,6 +65,63 @@ export async function upsertDefaultSloForService(
     },
     { onConflict: "user_id,service_id,slo_name" },
   );
+}
+
+export async function upsertServiceSloForUser(
+  supabase: SupabaseClient,
+  input: {
+    userId: string;
+    serviceId: string;
+    targetPercent: number;
+    windowDays: 7 | 30 | 90;
+    enabled: boolean;
+  },
+): Promise<{ ok: true } | { ok: false; reason: string }> {
+  if (!input.serviceId) return { ok: false, reason: "Service id is required." };
+  if (!Number.isFinite(input.targetPercent) || input.targetPercent <= 0 || input.targetPercent >= 100) {
+    return { ok: false, reason: "SLO target must be between 0 and 100." };
+  }
+  if (input.windowDays !== 7 && input.windowDays !== 30 && input.windowDays !== 90) {
+    return { ok: false, reason: "SLO window must be one of 7d, 30d, or 90d." };
+  }
+  const { error } = await supabase.from("service_slos").upsert(
+    {
+      user_id: input.userId,
+      service_id: input.serviceId,
+      slo_name: "Availability",
+      target_percent: clampPercent(input.targetPercent),
+      window_days: input.windowDays,
+      enabled: input.enabled,
+    },
+    { onConflict: "user_id,service_id,slo_name" },
+  );
+  if (error) return { ok: false, reason: error.message };
+  return { ok: true };
+}
+
+export async function listServiceSloConfigsForUser(
+  supabase: SupabaseClient,
+  userId: string,
+): Promise<ServiceSloConfigRow[]> {
+  const { data, error } = await supabase
+    .from("service_slos")
+    .select("id, service_id, slo_name, target_percent, window_days, enabled, updated_at")
+    .eq("user_id", userId)
+    .order("updated_at", { ascending: false });
+  if (error || !data) return [];
+  const firstByService = new Map<string, (typeof data)[number]>();
+  for (const row of data) {
+    const key = String(row.service_id);
+    if (!firstByService.has(key)) firstByService.set(key, row);
+  }
+  return [...firstByService.values()].map((row) => ({
+    id: String(row.id),
+    serviceId: String(row.service_id),
+    sloName: String(row.slo_name ?? "Availability"),
+    targetPercent: Number(row.target_percent ?? 99.9),
+    windowDays: Number(row.window_days ?? 30) as 7 | 30 | 90,
+    enabled: Boolean(row.enabled),
+  }));
 }
 
 export async function refreshErrorBudgetWindowsForUser(
@@ -250,4 +317,46 @@ export async function getErrorBudgetOverviewSummary(
     warningBurnServices: warning,
     averageBudgetUsedPercent: avg,
   };
+}
+
+export async function getLatestBurnStateForService(
+  supabase: SupabaseClient,
+  userId: string,
+  serviceId: string,
+): Promise<ServiceBurnState> {
+  await refreshErrorBudgetWindowsForUser(supabase, userId);
+  const { data } = await supabase
+    .from("error_budget_windows")
+    .select("state")
+    .eq("user_id", userId)
+    .eq("service_id", serviceId)
+    .eq("window_label", "7d")
+    .order("recorded_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  const state = String(data?.state ?? "healthy");
+  if (state === "critical" || state === "warning") return state;
+  return "healthy";
+}
+
+export async function listLatestBurnStatesForUser(
+  supabase: SupabaseClient,
+  userId: string,
+): Promise<Map<string, ServiceBurnState>> {
+  await refreshErrorBudgetWindowsForUser(supabase, userId);
+  const { data } = await supabase
+    .from("error_budget_windows")
+    .select("service_id, state, recorded_at")
+    .eq("user_id", userId)
+    .eq("window_label", "7d")
+    .order("recorded_at", { ascending: false })
+    .limit(500);
+  const byService = new Map<string, ServiceBurnState>();
+  for (const row of data ?? []) {
+    const serviceId = String(row.service_id);
+    if (byService.has(serviceId)) continue;
+    const state = String(row.state);
+    byService.set(serviceId, state === "critical" || state === "warning" ? state : "healthy");
+  }
+  return byService;
 }

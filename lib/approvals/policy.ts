@@ -21,6 +21,15 @@ type EnforcementEvaluation = {
   };
 };
 
+export type ApprovalNoteSignals = {
+  hasChangeWindow: boolean;
+  hasSeniorAcknowledgement: boolean;
+  hasTwoPersonApproval: boolean;
+};
+
+export const SLO_BURN_POLICY_BLOCKED_REASON =
+  "Execution blocked by SLO burn policy: critical burn state requires senior acknowledgement and explicit change window in approval note.";
+
 const HIGH_RISK_KEYWORDS = [
   "production",
   "prod",
@@ -37,6 +46,24 @@ const HIGH_RISK_KEYWORDS = [
 
 function hasAnyKeyword(value: string, keywords: string[]): boolean {
   return keywords.some((keyword) => value.includes(keyword));
+}
+
+export function parseApprovalNoteSignals(approvalNote: string): ApprovalNoteSignals {
+  const note = approvalNote.trim().toLowerCase();
+  return {
+    hasChangeWindow: note.includes("change window") || note.includes("maintenance window"),
+    hasSeniorAcknowledgement:
+      note.includes("senior") || note.includes("principal") || note.includes("staff on-call"),
+    hasTwoPersonApproval:
+      note.includes("two-person") ||
+      note.includes("two person") ||
+      note.includes("2-person") ||
+      note.includes("2 person"),
+  };
+}
+
+export function isSloBurnPolicyBlockedReason(reason: string | null | undefined): boolean {
+  return String(reason ?? "").trim() === SLO_BURN_POLICY_BLOCKED_REASON;
 }
 
 export function evaluateApprovalPolicy(
@@ -57,13 +84,9 @@ export function evaluateApprovalPolicy(
   const requiresChangeWindow =
     risky || policy.includes("change window") || policy.includes("maintenance window");
 
-  const hasTwoPersonCommitment =
-    policy.includes("two-person") ||
-    policy.includes("two person") ||
-    policy.includes("2-person") ||
-    policy.includes("2 person");
-  const hasWindowCommitment =
-    policy.includes("change window") || policy.includes("maintenance window");
+  const signals = parseApprovalNoteSignals(policyHint);
+  const hasTwoPersonCommitment = signals.hasTwoPersonApproval;
+  const hasWindowCommitment = signals.hasChangeWindow;
 
   let riskTier: ApprovalPolicyEvaluation["riskTier"] = "low";
   if (risky) {
@@ -114,8 +137,8 @@ export function evaluateAcceptedPolicyEnforcement(input: {
       checks: { dryRunFresh: true, changeWindow: true, blastRadiusAllowed: true },
     };
   }
-  const note = input.approvalNote.toLowerCase();
-  const hasWindow = note.includes("change window") || note.includes("maintenance window");
+  const signals = parseApprovalNoteSignals(input.approvalNote);
+  const hasWindow = signals.hasChangeWindow;
   const blastAllowed = e.maxBlastRadius
     ? RADIUS_RANK[input.decisionBlastRadius] <= RADIUS_RANK[e.maxBlastRadius]
     : true;

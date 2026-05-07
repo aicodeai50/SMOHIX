@@ -219,7 +219,7 @@ export async function loadOverviewCommandCenterData(input: {
   incidents: IncidentRow[];
   connectors: ConnectorRow[];
 }): Promise<OverviewCommandCenterData> {
-  const robotEnvConfigured = Boolean(process.env.SHYNVO_ROBOT_API_URL?.trim());
+  const robotEnvConfigured = Boolean(process.env.ZENTRO_ROBOT_API_URL?.trim());
   const triageGapCount = input.incidents.filter((r) => {
     const g = openIncidentContextGaps(r);
     return g.missingOwner || g.missingRunbook;

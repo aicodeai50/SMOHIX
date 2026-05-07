@@ -83,7 +83,7 @@ function parseIncomingAction(req: Request, rawBody: string): ParsedAction | null
 }
 
 export async function POST(req: Request) {
-  const signingSecret = process.env.SHYNVO_SLACK_SIGNING_SECRET?.trim();
+  const signingSecret = process.env.ZENTRO_SLACK_SIGNING_SECRET?.trim();
   if (!signingSecret) {
     return NextResponse.json(
       { error: "slack_signing_secret_not_configured" },

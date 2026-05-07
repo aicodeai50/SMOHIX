@@ -41,10 +41,10 @@ export async function POST(req: NextRequest) {
   }
 
   const rawBody = await req.text();
-  const signingSecret = process.env.SHYNVO_ALERT_WEBHOOK_SIGNING_SECRET?.trim();
+  const signingSecret = process.env.ZENTRO_ALERT_WEBHOOK_SIGNING_SECRET?.trim();
   if (signingSecret) {
-    const signatureHeader = req.headers.get("x-shynvo-signature");
-    const timestampHeader = req.headers.get("x-shynvo-signature-timestamp");
+    const signatureHeader = req.headers.get("x-zentro-signature");
+    const timestampHeader = req.headers.get("x-zentro-signature-timestamp");
     const ok = verifyAlertWebhookSignature({
       rawBody,
       signatureHeader,
@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
         {
           error: "unauthorized",
           message:
-            "Invalid alert webhook signature. Expected X-Shynvo-Signature HMAC-SHA256.",
+            "Invalid alert webhook signature. Expected X-Zentro-Signature HMAC-SHA256.",
         },
         { status: 401 },
       );
@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
     resolved.tokenId,
     normalizeAlertIngestPayload(
       body as AlertIngestPayload,
-      req.headers.get("x-shynvo-alert-source") ?? req.headers.get("user-agent"),
+      req.headers.get("x-zentro-alert-source") ?? req.headers.get("user-agent"),
     ),
   );
 

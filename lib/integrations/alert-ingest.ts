@@ -29,7 +29,7 @@ function asObject(value: unknown): Record<string, unknown> | null {
   return value as Record<string, unknown>;
 }
 
-function vendorSeverityToShynvo(value: string): IncidentSeverity {
+function vendorSeverityToZentro(value: string): IncidentSeverity {
   const v = value.trim().toLowerCase();
   if (v === "critical" || v === "error" || v === "fatal" || v === "p1" || v === "sev1") {
     return "critical";
@@ -387,7 +387,7 @@ export function normalizeAlertIngestPayload(
 
   return {
     title: title.slice(0, 500),
-    severity: vendorSeverityToShynvo(alertType || priority),
+    severity: vendorSeverityToZentro(alertType || priority),
     status: statusFromDatadogPayload(obj),
     summary: summaryParts.join("\n").slice(0, 12000),
     service_name: tagMapped.serviceName,

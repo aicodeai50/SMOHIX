@@ -122,17 +122,17 @@ export default async function AutomationsPage({
         : {}),
     }));
   } else {
-    const tenantKey = (await cookies()).get("shynvo_dev_tid")?.value ?? "anon";
+    const tenantKey = (await cookies()).get("zentro_dev_tid")?.value ?? "anon";
     runs = listDryRuns(tenantKey);
   }
 
-  const robotConnectorConfigured = Boolean(process.env.SHYNVO_ROBOT_API_URL?.trim());
+  const robotConnectorConfigured = Boolean(process.env.ZENTRO_ROBOT_API_URL?.trim());
 
   return (
     <>
       <PageHeader
         title="Automations"
-        description="Playbooks with dry-runs against your robot service when SHYNVO_ROBOT_API_URL is set; otherwise simulated runs are recorded. Signed-in accounts persist dry-runs and emit audit events when the automation_dry_runs migration is applied."
+        description="Playbooks with dry-runs against your robot service when ZENTRO_ROBOT_API_URL is set; otherwise simulated runs are recorded. Signed-in accounts persist dry-runs and emit audit events when the automation_dry_runs migration is applied."
       />
       <AutomationsConsole
         initialRuns={runs}

@@ -19,7 +19,8 @@ import { listDryRuns } from "@/lib/automations/runs-dev";
 import { getConnectorHealthRows } from "@/lib/connectors-health";
 import { listIncidentsForUser } from "@/lib/incidents/data";
 import { loadOverviewCommandCenterData } from "@/lib/overview/command-center-data";
-import { getErrorBudgetOverviewSummary } from "@/lib/services/slo";
+import { listServicesForUser } from "@/lib/services/data";
+import { getErrorBudgetOverviewSummary, listLatestBurnStatesForUser } from "@/lib/services/slo";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
@@ -61,7 +62,7 @@ export default async function OverviewPage() {
     }
     userId = user.id;
   } else {
-    devTenantKey = (await cookies()).get("shynvo_dev_tid")?.value ?? "anon";
+    devTenantKey = (await cookies()).get("zentro_dev_tid")?.value ?? "anon";
   }
 
   const [{ rows: incidents }, connectors] = await Promise.all([
@@ -94,8 +95,8 @@ export default async function OverviewPage() {
   const setup = {
     accounts: hasSupabaseAuth(),
     openai: Boolean(process.env.OPENAI_API_KEY?.trim()),
-    robot: Boolean(process.env.SHYNVO_ROBOT_API_URL?.trim()),
-    reasoning: Boolean(process.env.SHYNVO_REASONING_API_URL?.trim()),
+    robot: Boolean(process.env.ZENTRO_ROBOT_API_URL?.trim()),
+    reasoning: Boolean(process.env.ZENTRO_REASONING_API_URL?.trim()),
   };
 
   const setupDone = Object.values(setup).filter(Boolean).length;
@@ -125,6 +126,7 @@ export default async function OverviewPage() {
   let criticalBurnServices = 0;
   let warningBurnServices = 0;
   let avgBudgetUsedPercent: number | null = null;
+  let topCriticalServices: Array<{ id: string; name: string }> = [];
 
   if (supabaseClient && userId) {
     const { data: approvalRows } = await supabaseClient
@@ -222,6 +224,15 @@ export default async function OverviewPage() {
     criticalBurnServices = errorBudget.criticalBurnServices;
     warningBurnServices = errorBudget.warningBurnServices;
     avgBudgetUsedPercent = errorBudget.averageBudgetUsedPercent;
+    const [serviceRows, burnStates] = await Promise.all([
+      listServicesForUser(userId),
+      listLatestBurnStatesForUser(supabaseClient, userId),
+    ]);
+    topCriticalServices = serviceRows
+      .filter((svc) => (burnStates.get(svc.id) ?? "healthy") === "critical")
+      .map((svc) => ({ id: svc.id, name: svc.name }))
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .slice(0, 5);
   }
 
   return (
@@ -233,19 +244,19 @@ export default async function OverviewPage() {
       />
 
       <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="shynvo-glass rounded-2xl p-5">
+        <div className="zentro-glass rounded-2xl p-5">
           <p className={`${appMeta} font-medium`}>Incidents</p>
           <p className="mt-1 text-2xl font-semibold text-foreground">{incidents.length}</p>
           <p className={`mt-1 ${appMeta}`}>
             {open} open · {resolved} resolved
           </p>
         </div>
-        <div className="shynvo-glass rounded-2xl p-5">
+        <div className="zentro-glass rounded-2xl p-5">
           <p className={`${appMeta} font-medium`}>High / critical</p>
           <p className="mt-1 text-2xl font-semibold text-foreground">{hot}</p>
           <p className={`mt-1 ${appMeta}`}>Requires active response</p>
         </div>
-        <div className="shynvo-glass rounded-2xl p-5">
+        <div className="zentro-glass rounded-2xl p-5">
           <p className={`${appMeta} font-medium`}>Connectors</p>
           <p className="mt-1 text-2xl font-semibold text-foreground">
             {connectorsUp}
@@ -260,7 +271,7 @@ export default async function OverviewPage() {
               : "Healthy endpoints of configured total"}
           </p>
         </div>
-        <div className="shynvo-glass rounded-2xl p-5">
+        <div className="zentro-glass rounded-2xl p-5">
           <p className={`${appMeta} font-medium`}>Setup checklist</p>
           <p className="mt-1 text-2xl font-semibold text-foreground">
             {setupDone}
@@ -273,7 +284,7 @@ export default async function OverviewPage() {
       <OverviewDecisionSurface command={command} recentIncidents={incidents.slice(0, 8)} />
 
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
-        <section className="shynvo-glass rounded-2xl p-5 md:p-6">
+        <section className="zentro-glass rounded-2xl p-5 md:p-6">
           <h2 className={appPanelTitle}>Operational trust metrics</h2>
           <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-7">
             <div className="rounded-xl border border-white/[0.08] bg-black/20 px-4 py-3">
@@ -348,8 +359,71 @@ export default async function OverviewPage() {
               Review policy queue →
             </Link>
           </div>
+          <div className="mt-4 rounded-xl border border-white/[0.08] bg-black/20 px-4 py-3">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className={appMeta}>Burn triage shortcuts</p>
+              <div className="flex items-center gap-1">
+                <Link
+                  href="/services"
+                  className={`rounded-full border border-white/[0.12] bg-white/[0.02] px-2.5 py-0.5 text-[10px] uppercase tracking-wide text-muted hover:text-foreground`}
+                >
+                  all
+                </Link>
+                <Link
+                  href="/services?burn=critical"
+                  className={`rounded-full border border-danger/40 bg-danger/10 px-2.5 py-0.5 text-[10px] uppercase tracking-wide text-danger`}
+                >
+                  critical
+                </Link>
+                <Link
+                  href="/services?burn=warning"
+                  className={`rounded-full border border-amber-400/40 bg-amber-500/10 px-2.5 py-0.5 text-[10px] uppercase tracking-wide text-amber-300`}
+                >
+                  warning
+                </Link>
+                <Link
+                  href="/services?burn=healthy"
+                  className={`rounded-full border border-emerald-400/35 bg-emerald-500/10 px-2.5 py-0.5 text-[10px] uppercase tracking-wide text-emerald-300`}
+                >
+                  healthy
+                </Link>
+              </div>
+            </div>
+            <p className={`mt-2 ${appMeta}`}>
+              {errorBudgetServices > 0
+                ? `${criticalBurnServices} critical, ${warningBurnServices} warning out of ${errorBudgetServices} SLO-tracked services.`
+                : "No burn-state telemetry available yet. Configure service SLOs to activate triage."}
+            </p>
+            <div className="mt-2 flex flex-wrap items-center gap-3">
+              <Link href="/incidents" className={`font-medium text-accent hover:underline ${appMeta}`}>
+                Open incidents →
+              </Link>
+              <Link href="/automations" className={`font-medium text-accent hover:underline ${appMeta}`}>
+                Open automations →
+              </Link>
+              <Link href="/services?burn=critical" className={`font-medium text-accent hover:underline ${appMeta}`}>
+                Open critical services →
+              </Link>
+            </div>
+            {topCriticalServices.length > 0 ? (
+              <div className="mt-3 rounded-lg border border-danger/30 bg-danger/10 px-3 py-2">
+                <p className={`${appMeta} text-danger`}>Top critical services</p>
+                <div className="mt-1 flex flex-wrap gap-1.5">
+                  {topCriticalServices.map((service) => (
+                    <Link
+                      key={`critical-svc-${service.id}`}
+                      href={`/incidents/new?service_id=${encodeURIComponent(service.id)}&severity=critical&title=${encodeURIComponent(`Critical burn budget risk: ${service.name}`)}`}
+                      className="rounded-full border border-danger/40 bg-danger/15 px-2 py-0.5 text-[10px] uppercase tracking-wide text-danger"
+                    >
+                      {service.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+          </div>
         </section>
-        <section className="shynvo-glass rounded-2xl p-5 md:p-6">
+        <section className="zentro-glass rounded-2xl p-5 md:p-6">
           <h2 className={appPanelTitle}>Integrations</h2>
           <ul className={`mt-4 space-y-3 ${appBody} text-foreground/90`}>
             {connectors.map((c) => (
@@ -389,7 +463,7 @@ export default async function OverviewPage() {
           </Link>
         </section>
 
-        <section className="shynvo-glass rounded-2xl p-5 md:p-6">
+        <section className="zentro-glass rounded-2xl p-5 md:p-6">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h2 className={appPanelTitle}>Deployment checklist</h2>
             <Link

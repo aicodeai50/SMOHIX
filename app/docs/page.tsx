@@ -13,6 +13,16 @@ export const metadata: Metadata = {
 
 const CARDS = [
   {
+    title: "How it works — film",
+    body: "Auto-playing narrated slides about incidents → guardrails → audit; record as MP4 or copy prompt for AI video tools.",
+    href: "/docs/film",
+  },
+  {
+    title: "Product demo",
+    body: "Interactive tour (auto-advance + keyboard) plus shot list if you record an MP4 later.",
+    href: "/docs/demo",
+  },
+  {
     title: "HTTP API reference",
     body: "Methods, paths, auth — grouped catalog plus OpenAPI sketch for tooling.",
     href: "/docs/api",

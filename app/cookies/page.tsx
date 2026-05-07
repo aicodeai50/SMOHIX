@@ -4,7 +4,7 @@ import { SITE_EMAIL_SUPPORT, getSupportMailtoHref } from "@/lib/billing";
 
 export const metadata: Metadata = {
   title: "Cookie Policy",
-  description: "How Shynvo uses cookies and similar technologies.",
+  description: "How Zentro uses cookies and similar technologies.",
 };
 
 export default function CookiesPage() {
@@ -27,8 +27,8 @@ export default function CookiesPage() {
       <h2>2. Who sets cookies?</h2>
       <ul>
         <li>
-          <strong>First-party cookies</strong> are set by Shynvo domains (e.g.,{" "}
-          <code className="text-accent">shynvo.app</code>).
+          <strong>First-party cookies</strong> are set by Zentro domains (e.g.,{" "}
+          <code className="text-accent">zentro.run</code>).
         </li>
         <li>
           <strong>Third-party cookies</strong> are set by partners we embed (e.g.,
@@ -81,7 +81,7 @@ export default function CookiesPage() {
         </thead>
         <tbody>
           <tr>
-            <td>session_id (Shynvo)</td>
+            <td>session_id (Zentro)</td>
             <td>Authentication</td>
             <td>Strictly necessary</td>
             <td>Session / rolling</td>

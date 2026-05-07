@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { appendAuditEvent } from "@/lib/audit/append";
 import { runGuardedRemediation } from "@/lib/automations/remediation";
+import { isSloBurnPolicyBlockedReason } from "@/lib/approvals/policy";
 import { OPERATIONAL_RESPONSE_HEADERS } from "@/lib/security/operational-headers";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -73,6 +74,18 @@ export async function POST(req: Request) {
       ...(incidentId ? { incident_id: incidentId } : {}),
     },
   });
+  if (!result.ok && isSloBurnPolicyBlockedReason(result.blockedReason)) {
+    await appendAuditEvent({
+      user_id: user.id,
+      event_type: "automation.execution_blocked_slo",
+      details: {
+        playbook_id: playbookId,
+        remediation_run_id: result.runId,
+        blocked_reason: result.blockedReason,
+        ...(incidentId ? { incident_id: incidentId } : {}),
+      },
+    });
+  }
 
   return NextResponse.json(
     { result },

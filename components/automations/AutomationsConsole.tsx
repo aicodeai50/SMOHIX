@@ -116,8 +116,8 @@ export function AutomationsConsole({
 
   async function execute(playbookId: string) {
     const approvalNote = window.prompt(
-      "Approval note (must include two-person approval + change window for high-risk runs):",
-      "two-person approval | change window",
+      "Approval note (include two-person approval + change window; for critical SLO burn include senior acknowledgement too):",
+      "two-person approval | change window | senior on-call acknowledged",
     );
     if (!approvalNote || !approvalNote.trim()) return;
     const rollbackPlan = window.prompt(
@@ -150,6 +150,11 @@ export function AutomationsConsole({
         detail?: string;
         message?: string;
         error?: string;
+        sloPolicy?: {
+          burnState?: "healthy" | "warning" | "critical";
+          requiresSeniorAcknowledgement?: boolean;
+          requiresChangeWindow?: boolean;
+        };
         decisionBrief?: ExecutionReceipt["decisionBrief"];
         expectedOutcome?: ExecutionReceipt["expectedOutcome"];
         actualOutcome?: ExecutionReceipt["actualOutcome"];
@@ -166,7 +171,11 @@ export function AutomationsConsole({
           j.changeRisk && typeof j.changeRisk.score === "number"
             ? ` Risk: ${j.changeRisk.tier} (${j.changeRisk.score}).`
             : "";
-        setMsg((j.message ?? j.error ?? "Execution blocked.") + riskHint);
+        const sloHint =
+          j.error === "execution_blocked_by_slo" || j.sloPolicy?.burnState === "critical"
+            ? " SLO gate: add 'senior on-call acknowledged' and an explicit 'change window' in the approval note."
+            : "";
+        setMsg((j.message ?? j.error ?? "Execution blocked.") + riskHint + sloHint);
         return;
       }
       setExecutions((prev) => [

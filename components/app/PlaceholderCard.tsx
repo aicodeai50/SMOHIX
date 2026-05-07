@@ -8,7 +8,7 @@ export function PlaceholderCard({
   children: React.ReactNode;
 }) {
   return (
-    <section className="shynvo-glass rounded-2xl">
+    <section className="zentro-glass rounded-2xl">
       <div className="border-b border-white/[0.06] bg-gradient-to-r from-transparent via-accent/[0.06] to-transparent px-5 py-4">
         <h2 className={`${appPanelTitle} text-foreground/95`}>{title}</h2>
       </div>

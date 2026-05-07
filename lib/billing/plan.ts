@@ -65,8 +65,8 @@ export function paidProductDisplayName(
 ): string {
   if (plan === "free") return "Free";
   const tier = paidProductTierFromSummary(summary, plan);
-  if (tier === "pro") return "Shynvo Pro";
-  if (tier === "team") return "Shynvo Team";
+  if (tier === "pro") return "Zentro Pro";
+  if (tier === "team") return "Zentro Team";
   return "Paid";
 }
 

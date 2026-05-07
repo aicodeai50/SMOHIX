@@ -85,7 +85,7 @@ export const API_GROUPS: ApiGroup[] = [
         summary: "Create or dedupe incident from monitoring (Bearer alert ingest token).",
         auth: "Bearer ingest token",
         notes:
-          "Paid-gated per deployment; validates token server-side. Supports normalized Shynvo payload, Datadog, Prometheus/Grafana Alertmanager, PagerDuty, and New Relic payloads (vendor-specific dedupe keys). Optional HMAC signature check via SHYNVO_ALERT_WEBHOOK_SIGNING_SECRET.",
+          "Paid-gated per deployment; validates token server-side. Supports normalized Zentro payload, Datadog, Prometheus/Grafana Alertmanager, PagerDuty, and New Relic payloads (vendor-specific dedupe keys). Optional HMAC signature check via ZENTRO_ALERT_WEBHOOK_SIGNING_SECRET.",
       },
       {
         method: "GET",
@@ -220,7 +220,7 @@ export const API_GROUPS: ApiGroup[] = [
   {
     id: "proxy",
     title: "Connector proxies",
-    description: "Forward to SHYNVO_REASONING_API_URL and SHYNVO_ROBOT_API_URL when set.",
+    description: "Forward to ZENTRO_REASONING_API_URL and ZENTRO_ROBOT_API_URL when set.",
     operations: [
       {
         method: "GET|POST|PUT|PATCH|DELETE",

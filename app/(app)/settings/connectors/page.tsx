@@ -22,7 +22,7 @@ import {
 
 export const metadata: Metadata = {
   title: "Connectors",
-  description: "Link reasoning and automation services to Shynvo.",
+  description: "Link reasoning and automation services to Zentro.",
 };
 
 export const dynamic = "force-dynamic";
@@ -192,10 +192,10 @@ export default async function ConnectorsPage({
   const noneConfigured = connectors.every((c) => !c.baseUrl);
   const configuredConnectorsCount = connectors.filter((c) => Boolean(c.baseUrl)).length;
   const siteUrl = getSiteUrl();
-  const exampleToken = "shynvo_ingest_xxx";
+  const exampleToken = "zentro_ingest_xxx";
   const exampleSecret = "replace-with-signing-secret";
   const signatureModeEnabled = Boolean(
-    process.env.SHYNVO_ALERT_WEBHOOK_SIGNING_SECRET?.trim(),
+    process.env.ZENTRO_ALERT_WEBHOOK_SIGNING_SECRET?.trim(),
   );
   const slackWebhookConfigured = isSlackWebhookConfigured();
   const slackNotificationConfig = getSlackNotificationConfig();
@@ -434,7 +434,7 @@ export default async function ConnectorsPage({
   const csvHref = `data:text/csv;charset=utf-8,${encodeURIComponent(csvContent)}`;
   const csvFilename = `shynvo-ingest-events-${windowFilter}-${vendorFilter || "all"}.csv`;
   const markdownReport = [
-    `## Shynvo Ingest Diagnostics`,
+    `## Zentro Ingest Diagnostics`,
     ``,
     `- Window: \`${windowFilter}\``,
     `- Vendor: \`${vendorFilter || "all"}\``,
@@ -984,7 +984,7 @@ export default async function ConnectorsPage({
             <span className="text-emerald-300">Configured · notifications enabled</span>
           ) : (
             <span className="text-amber-300">
-              Not configured · set <span className="font-mono text-foreground/90">SHYNVO_SLACK_WEBHOOK_URL</span>{" "}
+              Not configured · set <span className="font-mono text-foreground/90">ZENTRO_SLACK_WEBHOOK_URL</span>{" "}
               in Railway variables to enable
             </span>
           )}
@@ -1002,7 +1002,7 @@ export default async function ConnectorsPage({
             title={
               slackWebhookConfigured
                 ? "Send a test message to your configured Slack channel."
-                : "Set SHYNVO_SLACK_WEBHOOK_URL to enable Slack test messages."
+                : "Set ZENTRO_SLACK_WEBHOOK_URL to enable Slack test messages."
             }
           >
             Send Slack test message
@@ -1013,15 +1013,15 @@ export default async function ConnectorsPage({
         <div className="mb-6">
           <ConsoleEmptyState
             title="No connectors configured"
-            description="Point Shynvo at your reasoning and automation backends so Copilot, dry-runs, and guarded execution can reach your stack. Set the env vars on your deployment, redeploy, then refresh this page."
+            description="Point Zentro at your reasoning and automation backends so Copilot, dry-runs, and guarded execution can reach your stack. Set the env vars on your deployment, redeploy, then refresh this page."
             ctas={[
               { href: "/docs/api", label: "API reference", variant: "secondary" },
               { href: "/docs", label: "Platform docs", variant: "secondary" },
             ]}
             footnote={
               <p>
-                Set <span className="font-mono text-foreground/80">SHYNVO_REASONING_API_URL</span>{" "}
-                and <span className="font-mono text-foreground/80">SHYNVO_ROBOT_API_URL</span> to
+                Set <span className="font-mono text-foreground/80">ZENTRO_REASONING_API_URL</span>{" "}
+                and <span className="font-mono text-foreground/80">ZENTRO_ROBOT_API_URL</span> to
                 HTTPS base URLs (no trailing slash required).
               </p>
             }
@@ -1185,7 +1185,7 @@ export default async function ConnectorsPage({
         </div>
         <p className={`mt-4 ${appMeta}`}>
           If active tokens are zero, create one below. If signature mode is enabled, include valid{" "}
-          <span className="font-mono text-foreground/80">X-Shynvo-Signature</span> headers.
+          <span className="font-mono text-foreground/80">X-Zentro-Signature</span> headers.
         </p>
         <div id="ingest-token-setup" className="mt-4 rounded-xl border border-white/[0.08] bg-black/20 p-4">
           <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
@@ -1660,7 +1660,7 @@ export default async function ConnectorsPage({
             const cmd = `curl -X POST "${siteUrl}/api/integrations/alerts" \\
   -H "Authorization: Bearer ${exampleToken}" \\
   -H "Content-Type: application/json" \\
-  -H "X-Shynvo-Alert-Source: ${a.sourceHint}" \\
+  -H "X-Zentro-Alert-Source: ${a.sourceHint}" \\
   -d '${payload}'`;
             const signedCmd = `# 1) Save payload and generate signature
 cat > payload.json <<'JSON'
@@ -1673,9 +1673,9 @@ npm run gen:alert-signature -- --secret "${exampleSecret}" --body-file payload.j
 curl -X POST "${siteUrl}/api/integrations/alerts" \\
   -H "Authorization: Bearer ${exampleToken}" \\
   -H "Content-Type: application/json" \\
-  -H "X-Shynvo-Alert-Source: ${a.sourceHint}" \\
-  -H "X-Shynvo-Signature-Timestamp: 1715000000" \\
-  -H "X-Shynvo-Signature: sha256=<replace_with_generated_hmac>" \\
+  -H "X-Zentro-Alert-Source: ${a.sourceHint}" \\
+  -H "X-Zentro-Signature-Timestamp: 1715000000" \\
+  -H "X-Zentro-Signature: sha256=<replace_with_generated_hmac>" \\
   -d @payload.json`;
             return (
               <div key={a.vendor} className="rounded-xl border border-white/[0.08] bg-black/30 p-4">
@@ -1712,13 +1712,13 @@ curl -X POST "${siteUrl}/api/integrations/alerts" \\
         </div>
         <p className={`mt-4 ${appMeta}`}>
           Signature mode (optional): set{" "}
-          <span className="font-mono text-foreground/80">SHYNVO_ALERT_WEBHOOK_SIGNING_SECRET</span>,
+          <span className="font-mono text-foreground/80">ZENTRO_ALERT_WEBHOOK_SIGNING_SECRET</span>,
           then send{" "}
           <span className="font-mono text-foreground/80">
-            X-Shynvo-Signature: sha256=&lt;hmac_hex&gt;
+            X-Zentro-Signature: sha256=&lt;hmac_hex&gt;
           </span>{" "}
           where HMAC is SHA-256 over raw body (or <span className="font-mono">timestamp.rawBody</span>{" "}
-          with <span className="font-mono">X-Shynvo-Signature-Timestamp</span>).
+          with <span className="font-mono">X-Zentro-Signature-Timestamp</span>).
         </p>
         <pre className="mt-2 overflow-x-auto rounded-lg border border-white/[0.08] bg-black/40 p-3 font-mono text-[11px] leading-relaxed text-foreground/85">{`npm run gen:alert-signature -- --secret "${exampleSecret}" --body-file payload.json --timestamp 1715000000`}</pre>
       </section>
@@ -1932,7 +1932,7 @@ curl -X POST "${siteUrl}/api/integrations/alerts" \\
             </p>
             <ul className={`mt-2 list-inside list-disc space-y-1 text-foreground/80 ${appBody}`}>
               <li>
-                Set <span className="font-mono">X-Shynvo-Alert-Source</span> to{" "}
+                Set <span className="font-mono">X-Zentro-Alert-Source</span> to{" "}
                 <span className="font-mono">datadog</span>,{" "}
                 <span className="font-mono">prometheus</span>,{" "}
                 <span className="font-mono">pagerduty</span>, or{" "}

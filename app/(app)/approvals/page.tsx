@@ -46,7 +46,7 @@ export default async function ApprovalsPage({ searchParams }: Props) {
     }
     userId = user.id;
   } else {
-    devTenantId = (await cookies()).get("shynvo_dev_tid")?.value ?? null;
+    devTenantId = (await cookies()).get("zentro_dev_tid")?.value ?? null;
   }
 
   const { source, pending, recent } = await listApprovalsForUser({
@@ -115,7 +115,7 @@ export default async function ApprovalsPage({ searchParams }: Props) {
       {source === "session" ? (
         <p className={`shynvo-glass-subtle mb-4 rounded-xl px-4 py-3 ${appMeta}`}>
           Approvals are scoped to this browser session (server memory +{" "}
-          <span className="font-mono">shynvo_dev_tid</span>). Connect Supabase and run{" "}
+          <span className="font-mono">zentro_dev_tid</span>). Connect Supabase and run{" "}
           <code className="rounded bg-surface px-1 font-mono text-accent">
             supabase/migrations/20260418140000_console_extensions.sql
           </code>{" "}
