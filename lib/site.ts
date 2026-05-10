@@ -13,7 +13,12 @@ export function getSiteUrl(): string {
     const normalized = fromEnv.replace(/\/$/, "");
     try {
       const u = new URL(normalized);
-      if (u.hostname.toLowerCase() === `www.${SITE_DOMAIN}`) {
+      const h = u.hostname.toLowerCase();
+      // Never emit Railway preview URLs in sitemap / JSON-LD / Open Graph (fixes wrong Google favicon/branding).
+      if (h.endsWith(".up.railway.app")) {
+        return `https://${SITE_DOMAIN}`;
+      }
+      if (h === `www.${SITE_DOMAIN}`) {
         return `https://${SITE_DOMAIN}`;
       }
       return normalized;

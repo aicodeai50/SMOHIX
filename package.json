@@ -18,6 +18,8 @@
     "test:slo-triage-ui": "node scripts/test-slo-triage-ui.mjs",
     "verify:release": "npm run verify:api-catalog && npm run verify:links && npm run test:security && npm run test:decision-core && npm run test:decision-intelligence && npm run test:approval-policy && npm run test:policy-enforcement && npm run test:policy-review-flow && npm run test:slo-triage-ui",
     "gen:alert-signature": "node scripts/gen-alert-signature.mjs",
+    "gen:favicon": "node scripts/gen-favicon.mjs",
+    "prebuild": "node scripts/gen-favicon.mjs",
     "build": "npm run verify:release && next build",
     "start": "next start --hostname 0.0.0.0",
     "deploy:railway": "npm run verify:release && railway up --detach",
@@ -38,6 +40,8 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.4",
+    "png-to-ico": "^2.1.8",
+    "sharp": "^0.34.5",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

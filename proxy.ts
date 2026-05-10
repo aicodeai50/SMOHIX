@@ -5,6 +5,7 @@ import { safeNextPath } from "@/lib/auth/redirect";
 import { isProtectedPath } from "@/lib/auth/paths";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { copyCookies, updateSupabaseSession } from "@/lib/supabase/middleware";
+import { SITE_PRIMARY_DOMAIN } from "@/lib/site-brand";
 
 /** Avoid stale HTML after deploy (CDN / browser) for marketing, auth, and console. */
 function noStoreHtml(response: NextResponse, pathname: string) {
@@ -39,12 +40,28 @@ function noStoreHtml(response: NextResponse, pathname: string) {
 }
 
 /**
- * 1) www -> apex for the primary host.
- * 2) Supabase session refresh (when env is set).
- * 3) Protect console routes; send signed-in users away from sign-in/up.
+ * 1) Railway default host -> apex (so Google only indexes zentro.run and picks up your favicon).
+ * 2) www -> apex for the primary host.
+ * 3) Supabase session refresh (when env is set).
+ * 4) Protect console routes; send signed-in users away from sign-in/up.
  */
 export async function proxy(request: NextRequest) {
   const host = request.headers.get("host") ?? "";
+  const hostname = host.split(":")[0].toLowerCase();
+  const apex = SITE_PRIMARY_DOMAIN.toLowerCase();
+
+  if (
+    process.env.ZENTRO_SKIP_CANONICAL_HOST_REDIRECT !== "1" &&
+    hostname.endsWith(".up.railway.app") &&
+    hostname !== apex
+  ) {
+    const url = request.nextUrl.clone();
+    url.hostname = SITE_PRIMARY_DOMAIN;
+    url.port = "";
+    url.protocol = "https:";
+    return NextResponse.redirect(url, 308);
+  }
+
   if (host.startsWith("www.") && !host.includes("localhost") && !host.includes("127.0.0.1")) {
     const url = request.nextUrl.clone();
     url.hostname = host.replace(/^www\./, "");
@@ -98,6 +115,7 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!api/health|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    // Include favicon and icon assets so *.up.railway.app requests redirect to zentro.run (Google favicon crawl).
+    "/((?!api/health|_next/static|_next/image).*)",
   ],
 };
