@@ -21,7 +21,7 @@ export function SiteJsonLd() {
       {
         "@type": "WebSite",
         name: SITE_BRAND_NAME,
-        alternateName: ["Zentro", SITE_PRIMARY_DOMAIN],
+        alternateName: [SITE_PRIMARY_DOMAIN],
         url: siteUrl,
         description: SITE_MARKETING_DESCRIPTION,
         inLanguage: "en-US",
