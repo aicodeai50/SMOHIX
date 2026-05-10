@@ -6,6 +6,7 @@ import {
   SITE_MARKETING_TITLE,
   SITE_MARKETING_TWITTER_DESCRIPTION,
 } from "@/lib/site-brand";
+import { SiteJsonLd } from "@/components/site/SiteJsonLd";
 import { getSiteUrl } from "@/lib/site";
 import "./globals.css";
 
@@ -23,11 +24,22 @@ const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
+  applicationName: SITE_BRAND_NAME,
   title: {
     default: SITE_MARKETING_TITLE,
     template: `%s · ${SITE_BRAND_NAME}`,
   },
   description: SITE_MARKETING_DESCRIPTION,
+  manifest: "/site.webmanifest",
+  icons: {
+    icon: [{ url: "/icon.png", sizes: "512x512", type: "image/png" }],
+    apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
+  },
+  appleWebApp: {
+    capable: true,
+    title: SITE_BRAND_NAME,
+    statusBarStyle: "black-translucent",
+  },
   alternates: {
     canonical: siteUrl,
   },
@@ -64,6 +76,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full scroll-smooth antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
+        <SiteJsonLd />
         {children}
       </body>
     </html>

@@ -20,7 +20,7 @@ export function Hero({
         <h1 className={`shynvo-headline mt-2 max-w-3xl ${mH1}`}>Controlled incident response for IT teams</h1>
         <p className={mHeroLede}>
           <span className="text-foreground/90">
-            Zentro helps IT teams coordinate incident response with approvals, policy guardrails,
+            Zentro Run helps IT teams coordinate incident response with approvals, policy guardrails,
             and complete execution evidence.
           </span>{" "}
           A professional control plane for teams that need reliability, accountability, and change

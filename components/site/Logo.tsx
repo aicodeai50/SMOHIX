@@ -21,30 +21,32 @@ export function Logo({ className = "" }: { className?: string }) {
       >
         <defs>
           <linearGradient id={gradId} x1="4" y1="4" x2="28" y2="28" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#0c1219" />
-            <stop offset="0.45" stopColor="#121a2a" />
-            <stop offset="1" stopColor="#0a1620" />
+            <stop stopColor="#0b0f14" />
+            <stop offset="0.5" stopColor="#121922" />
+            <stop offset="1" stopColor="#0a1018" />
           </linearGradient>
         </defs>
-        <rect width="32" height="32" rx="9" fill={`url(#${gradId})`} />
+        <rect width="32" height="32" rx="6" fill={`url(#${gradId})`} />
         <rect
           width="32"
           height="32"
-          rx="9"
+          rx="6"
           fill="none"
-          stroke="rgba(94,225,255,0.22)"
+          stroke="rgba(255,255,255,0.09)"
           strokeWidth="1"
         />
         <path
-          d="M8 16h4l2-6 4 12 2-6h4"
+          d="M9.35 10.35h13.3M22.65 10.35L9.35 21.65M9.35 21.65h13.3"
           stroke="currentColor"
-          strokeWidth="1.85"
+          strokeWidth="1.78"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="text-accent drop-shadow-[0_0_8px_rgba(94,225,255,0.4)]"
+          className="text-accent"
         />
       </svg>
-      <span className="text-lg font-semibold tracking-tight">{SITE_BRAND_NAME}</span>
+      <span className="whitespace-nowrap text-lg font-semibold tracking-tight">
+        {SITE_BRAND_NAME}
+      </span>
     </div>
   );
 }
