@@ -1,0 +1,12 @@
+# Next.js on Netlify — @netlify/plugin-nextjs (OpenNext runtime)
+# https://docs.netlify.com/frameworks/next-js/overview/
+# Portfolio lives on a separate Netlify site; this project also deploys here as a mirror.
+
+[build]
+  command = "npm run build"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
