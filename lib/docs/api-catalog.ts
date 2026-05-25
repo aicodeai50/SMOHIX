@@ -529,6 +529,18 @@ export const API_GROUPS: ApiGroup[] = [
       },
       {
         method: "GET",
+        path: "/api/governance/compliance/bundles/{id}",
+        summary: "Fetch persisted evidence bundle metadata and manifest verification for the active org.",
+        auth: "Session cookie",
+      },
+      {
+        method: "GET",
+        path: "/api/governance/compliance/bundles/{id}/download",
+        summary: "Download evidence bundle ZIP archive by bundle id.",
+        auth: "Session cookie",
+      },
+      {
+        method: "GET",
         path: "/api/governance/compliance/crosswalk",
         summary:
           "SOC 2 / ISO 27001 crosswalk — mapping matrix with optional periodDays and format=csv|json; evidence overlay per control.",
@@ -614,7 +626,7 @@ export const API_GROUPS: ApiGroup[] = [
       },
       {
         method: "GET",
-        path: "/api/governance/compliance/assessor/{resource}",
+        path: "/api/governance/compliance/assessor/{id}",
         summary:
           "Assessor read-only export — evidence-export, workbook, crosswalk, obligation-ics, baseline-comparison, risk-heatmap, executive-summary, framework reports; Bearer zentro_ca_* token.",
         auth: "Bearer assessor token",
