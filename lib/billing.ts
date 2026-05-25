@@ -60,21 +60,39 @@ export function getCustomerPortalUrl(): string | undefined {
   return pub || srv || undefined;
 }
 
-/** General / contact (hello, partnerships, sales). */
+/** Single contact inbox for product, billing, security, and partnerships. */
 export const SITE_EMAIL_CONTACT = "hi@zentro.run";
 
-/** Product, billing, and technical support. */
-export const SITE_EMAIL_SUPPORT = "support@zentro.run";
+export type MailtoTopic =
+  | "general"
+  | "support"
+  | "security"
+  | "billing"
+  | "abuse"
+  | "enterprise";
+
+const MAILTO_SUBJECTS: Record<MailtoTopic, string> = {
+  general: "Zentro",
+  support: "Zentro support",
+  security: "Zentro security",
+  billing: "Zentro billing",
+  abuse: "Zentro abuse report",
+  enterprise: "Zentro enterprise",
+};
+
+export function getMailtoHref(topic: MailtoTopic = "general"): string {
+  return `mailto:${SITE_EMAIL_CONTACT}?subject=${encodeURIComponent(MAILTO_SUBJECTS[topic])}`;
+}
 
 export function getGeneralMailtoHref(): string {
-  return `mailto:${SITE_EMAIL_CONTACT}?subject=${encodeURIComponent("Zentro inquiry")}`;
+  return getMailtoHref("general");
 }
 
 export function getSupportMailtoHref(): string {
-  return `mailto:${SITE_EMAIL_SUPPORT}?subject=${encodeURIComponent("Zentro support")}`;
+  return getMailtoHref("support");
 }
 
-/** @deprecated Prefer getGeneralMailtoHref or getSupportMailtoHref */
+/** @deprecated Use getMailtoHref */
 export function getContactMailtoHref(): string {
   return getGeneralMailtoHref();
 }

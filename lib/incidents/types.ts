@@ -1,10 +1,12 @@
 export type IncidentSeverity = "low" | "medium" | "high" | "critical";
 
+export type IncidentStatus = "investigating" | "mitigated" | "resolved" | "monitoring";
+
 export type IncidentRow = {
   id: string;
   title: string;
   severity: IncidentSeverity;
-  status: string;
+  status: IncidentStatus | string;
   updated: string;
   /** Present when `services` join is applied (Supabase). */
   serviceName?: string | null;
@@ -20,6 +22,9 @@ export type IncidentRow = {
 export type IncidentDetail = IncidentRow & {
   postmortem: string | null;
   serviceId: string | null;
+  legalHold: boolean;
+  legalHoldReason: string | null;
+  legalHoldSetAt: string | null;
 };
 
 export type IncidentsListResult = {

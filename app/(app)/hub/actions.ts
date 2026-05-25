@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import { createApprovalRequest } from "@/lib/approvals/data";
 import { devCreateApproval } from "@/lib/approvals/dev-store";
 import { appendAuditEvent } from "@/lib/audit/append";
+import { getOrgContextForUser } from "@/lib/org/context";
 import { insertAutomationDryRun } from "@/lib/automations/dry-runs-db";
 import { recordDryRun } from "@/lib/automations/runs-dev";
 import { recordDevIncident } from "@/lib/incidents/dev-store";
@@ -29,6 +30,8 @@ export async function launchGuidedScenarioAction() {
       redirect("/auth/sign-in?next=/hub");
     }
 
+    const orgContext = await getOrgContextForUser(user.id);
+
     const incident = await createIncidentForUser(user.id, {
       title: scenarioTitle,
       severity: "critical",
@@ -36,6 +39,7 @@ export async function launchGuidedScenarioAction() {
       ownerHint: "platform-oncall",
       runbookSlug: "db-failover",
       externalRef: `guided:${Date.now()}`,
+      orgId: orgContext.orgId,
     });
     if (!incident.ok) {
       redirect(`/hub?scenario_error=${encodeURIComponent(incident.reason)}`);
@@ -47,6 +51,7 @@ export async function launchGuidedScenarioAction() {
       actionLabel: scenarioAction,
       requestedBy: "guided-scenario-seeder",
       policyHint: scenarioPolicy,
+      orgId: orgContext.orgId,
     });
     if (!approval.ok) {
       redirect(`/hub?scenario_error=${encodeURIComponent(approval.reason)}`);
@@ -57,11 +62,13 @@ export async function launchGuidedScenarioAction() {
       ok: true,
       detail: "Dry-run only: previewed command set and blast radius checks.",
       incidentId: incident.id,
+      orgId: orgContext.orgId,
     });
 
     await appendAuditEvent({
       event_type: "guided.scenario_seeded",
       user_id: user.id,
+      org_id: orgContext.orgId,
       details: {
         incident_id: incident.id,
         approval_action: scenarioAction,

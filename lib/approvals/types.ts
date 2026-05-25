@@ -9,6 +9,10 @@ export type ApprovalRow = {
   policy: string;
   status: ApprovalStatus;
   decisionBrief: DecisionBrief;
+  requesterId: string | null;
+  /** Whether the signed-in user may approve/deny this pending item. */
+  canDecide: boolean;
+  decideBlockedReason: string | null;
 };
 
 export type ApprovalsListResult = {

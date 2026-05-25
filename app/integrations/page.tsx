@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
-import { SITE_EMAIL_CONTACT, getGeneralMailtoHref } from "@/lib/billing";
+import { SITE_EMAIL_CONTACT, getMailtoHref } from "@/lib/billing";
 
 export const metadata: Metadata = {
   title: "Integrations",
@@ -17,6 +17,12 @@ const TODAY = [
     body: "Bearer-token ingest to open or dedupe incidents from your own webhooks and scripts (paid-gated with Supabase).",
     href: "/settings",
     cta: "Settings",
+  },
+  {
+    name: "SIEM & EDR shapes",
+    body: "Auto-normalize Splunk, Microsoft Sentinel, and CrowdStrike payloads — plus Datadog, Prometheus, PagerDuty, New Relic.",
+    href: "/docs/api",
+    cta: "API docs",
   },
   {
     name: "Reasoning & automation connectors",
@@ -37,6 +43,7 @@ const ROADMAP = [
   { category: "Chat & paging", items: ["Slack", "Microsoft Teams", "PagerDuty (events)"] },
   { category: "Cloud control planes", items: ["AWS", "Azure", "GCP"] },
   { category: "ITSM / tickets", items: ["Jira", "ServiceNow", "Linear (change tasks)"] },
+  { category: "Security & exposure", items: ["Splunk (webhook)", "Microsoft Sentinel", "CrowdStrike Falcon", "Qualys / Tenable findings"] },
 ] as const;
 
 export default function IntegrationsPage() {
@@ -138,7 +145,7 @@ export default function IntegrationsPage() {
           <p className="mt-14 max-w-2xl text-sm leading-relaxed text-muted">
             Want a vendor prioritized?{" "}
             <a
-              href={getGeneralMailtoHref()}
+              href={getMailtoHref()}
               className="font-medium text-accent underline-offset-2 hover:underline"
             >
               {SITE_EMAIL_CONTACT}

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { LegalLayout } from "@/components/legal/LegalLayout";
-import { SITE_EMAIL_SUPPORT, getSupportMailtoHref } from "@/lib/billing";
+import { LegalContactSection } from "@/components/legal/LegalContactSection";
 
 export const metadata: Metadata = {
   title: "Cookie Policy",
@@ -136,11 +136,7 @@ export default function CookiesPage() {
         Privacy Policy.
       </p>
 
-      <h2>8. Contact</h2>
-      <p>
-        Questions about cookies:{" "}
-        <a href={getSupportMailtoHref()}>{SITE_EMAIL_SUPPORT}</a>
-      </p>
+      <LegalContactSection />
     </LegalLayout>
   );
 }

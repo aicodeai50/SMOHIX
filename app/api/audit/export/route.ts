@@ -4,6 +4,8 @@ import { NextResponse } from "next/server";
 import { listAuditEntriesForCsvExport } from "@/lib/audit/data";
 import { escapeCsvField } from "@/lib/audit/csv-escape";
 import { auditSinceIsoFromWindow, auditWindowToSinceIso } from "@/lib/audit/export-window";
+import { canExportOrgAuditLog } from "@/lib/audit/role-filter";
+import { getOrgContextForUser } from "@/lib/org/context";
 import { OPERATIONAL_RESPONSE_HEADERS } from "@/lib/security/operational-headers";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -23,10 +25,19 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized." }, { status: 401, headers: OPERATIONAL_RESPONSE_HEADERS });
   }
 
+  const orgContext = await getOrgContextForUser(user.id);
+  if (!canExportOrgAuditLog(orgContext.role)) {
+    return NextResponse.json({ error: "Export not permitted for your role." }, { status: 403, headers: OPERATIONAL_RESPONSE_HEADERS });
+  }
+
   const windowNorm = auditWindowToSinceIso(req.nextUrl.searchParams.get("window"));
   const sinceIso = auditSinceIsoFromWindow(windowNorm);
 
-  const rows = await listAuditEntriesForCsvExport(user.id, { sinceIso });
+  const rows = await listAuditEntriesForCsvExport(user.id, {
+    sinceIso,
+    orgId: orgContext.orgId,
+    orgRole: orgContext.role,
+  });
   const header = ["time_utc", "event_type", "actor", "incident_id", "details_json"];
   const lines = [
     header.join(","),

@@ -19,6 +19,11 @@
   --danger: #fb7185;
   --danger-dim: rgba(251, 113, 133, 0.1);
   --violet-glow: rgba(129, 140, 248, 0.12);
+  --cyber: #a78bfa;
+  --cyber-dim: rgba(167, 139, 250, 0.14);
+  --cyber-glow: rgba(167, 139, 250, 0.28);
+  --scan: #34d399;
+  --scan-dim: rgba(52, 211, 153, 0.12);
 
   /* Design language — marketing + console typography rhythm (24px baseline unit = --dl-space-3) */
   --dl-space-1: 0.5rem;
@@ -102,10 +107,130 @@ body {
 
 /* Page titles — restrained iridescent headline */
 .shynvo-headline {
-  background: linear-gradient(120deg, #fafafa 0%, #e4e4e7 38%, #7dd3fc 72%, #a5b4fc 100%);
+  background: linear-gradient(
+    118deg,
+    #fafafa 0%,
+    #e4e4e7 28%,
+    #7dd3fc 52%,
+    #a5b4fc 78%,
+    #34d399 100%
+  );
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+/* Futuristic marketing hero — grid + slow aurora */
+.zentro-hero-future {
+  position: relative;
+  isolation: isolate;
+}
+.zentro-hero-future::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(94, 225, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(94, 225, 255, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 85% 70% at 50% 20%, black 20%, transparent 72%);
+  opacity: 0.55;
+}
+.zentro-hero-future::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 70% 45% at 15% 0%, rgba(167, 139, 250, 0.16), transparent 55%),
+    radial-gradient(ellipse 55% 40% at 90% 10%, rgba(94, 225, 255, 0.12), transparent 50%),
+    radial-gradient(ellipse 40% 35% at 50% 100%, rgba(52, 211, 153, 0.08), transparent 48%);
+  animation: zentro-hero-aurora 18s ease-in-out infinite alternate;
+}
+@keyframes zentro-hero-aurora {
+  0% {
+    opacity: 0.65;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.03);
+  }
+}
+.zentro-hero-future > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Holographic panel — marketing command previews */
+.zentro-holo-panel {
+  position: relative;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(
+    165deg,
+    rgba(18, 24, 36, 0.92) 0%,
+    rgba(8, 10, 16, 0.96) 100%
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 0 0 1px rgba(0, 0, 0, 0.35),
+    0 0 60px -20px var(--cyber-glow),
+    0 32px 80px -40px rgba(0, 0, 0, 0.85);
+}
+.zentro-holo-panel::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(94, 225, 255, 0.35),
+    rgba(167, 139, 250, 0.2),
+    rgba(52, 211, 153, 0.15),
+    transparent 60%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.65;
+}
+
+/* Live metric pulse (decorative) */
+.zentro-pulse-dot {
+  box-shadow: 0 0 0 0 var(--scan-dim);
+  animation: zentro-pulse-dot 2.4s ease-in-out infinite;
+}
+@keyframes zentro-pulse-dot {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 var(--scan-dim);
+  }
+  50% {
+    box-shadow: 0 0 0 6px transparent;
+  }
+}
+
+/* Cyber eyebrow variant */
+.zentro-eyebrow-cyber {
+  color: color-mix(in srgb, var(--cyber) 92%, white);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zentro-hero-future::after {
+    animation: none;
+  }
+  .zentro-pulse-dot {
+    animation: none;
+  }
 }
 
 /* Data tables — shared chrome */

@@ -146,6 +146,16 @@ async function main() {
     "proxy/middleware missing canonical redirect response",
   );
 
+  const billingLib = await read("lib/billing.ts");
+  assert(
+    billingLib.includes('SITE_EMAIL_CONTACT = "hi@zentro.run"'),
+    "billing should define single hi@ contact inbox",
+  );
+  assert(
+    !billingLib.includes("support@zentro.run"),
+    "legacy support@ inbox should be removed from billing",
+  );
+
   // Guard key public/operational files against accidental deployment fingerprint leakage.
   for (const file of guardedPublicFiles) {
     const content = await read(file);

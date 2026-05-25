@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { PageHeader } from "@/components/app/PageHeader";
 import { appBody, appLabel, appMeta } from "@/lib/app-typography";
 import { listRunbooks } from "@/lib/runbooks/catalog";
+import { getOrgContextForUser } from "@/lib/org/context";
 import { listServicesForUser } from "@/lib/services/data";
 import { createIncidentAction } from "../actions";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
@@ -36,7 +37,8 @@ export default async function NewIncidentPage({
     if (!user) {
       redirect("/auth/sign-in?next=/incidents/new");
     }
-    services = await listServicesForUser(user.id);
+    const orgContext = await getOrgContextForUser(user.id);
+    services = await listServicesForUser(user.id, orgContext.orgId);
   }
 
   const { error, service_id, severity, title, owner_hint } = await searchParams;

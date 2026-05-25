@@ -9,6 +9,7 @@ import { PlaceholderCard } from "@/components/app/PlaceholderCard";
 import { appBody, appLabel, appMeta, appOverline, appPanelTitle } from "@/lib/app-typography";
 import { billingPlanFromSummary, getSubscriptionSummary } from "@/lib/billing/plan";
 import { listServiceDependencyGraphForUser } from "@/lib/services/dependencies";
+import { getOrgContextForUser } from "@/lib/org/context";
 import { listServicesForUser } from "@/lib/services/data";
 import {
   getErrorBudgetOverviewSummary,
@@ -70,11 +71,13 @@ export default async function ServicesPage({
   const burnFilter =
     sp.burn === "critical" || sp.burn === "warning" || sp.burn === "healthy" ? sp.burn : "all";
 
-  const rows = await listServicesForUser(user.id);
-  const dependencyGraph = await listServiceDependencyGraphForUser(supabase, user.id);
-  const sloSummary = await getErrorBudgetOverviewSummary(supabase, user.id);
-  const sloConfigs = await listServiceSloConfigsForUser(supabase, user.id);
-  const latestBurnStates = await listLatestBurnStatesForUser(supabase, user.id);
+  const orgContext = await getOrgContextForUser(user.id);
+
+  const rows = await listServicesForUser(user.id, orgContext.orgId);
+  const dependencyGraph = await listServiceDependencyGraphForUser(supabase, user.id, orgContext.orgId);
+  const sloSummary = await getErrorBudgetOverviewSummary(supabase, user.id, orgContext.orgId);
+  const sloConfigs = await listServiceSloConfigsForUser(supabase, user.id, orgContext.orgId);
+  const latestBurnStates = await listLatestBurnStatesForUser(supabase, user.id, orgContext.orgId);
   const sloByServiceId = new Map(sloConfigs.map((cfg) => [cfg.serviceId, cfg]));
   const burnRank = new Map([
     ["critical", 0],
@@ -126,7 +129,7 @@ export default async function ServicesPage({
       <PageHeader
         eyebrow="Operations"
         title="Services"
-        description="Catalog systems you operate, attach them to incidents, and accept monitoring webhooks that create incidents automatically."
+        description="Catalog systems you operate, attach them to incidents, and accept monitoring webhooks. SLO burn and dependency edges are shared when an organization is active."
       />
       {err ? (
         <p className={`mb-4 rounded-xl border border-danger/25 bg-danger-dim/50 px-4 py-3 text-danger ${appBody}`}>
@@ -384,7 +387,10 @@ export default async function ServicesPage({
           <div className="mt-6 border-t border-white/[0.06] pt-5">
             <h3 className={appOverline}>Dependency graph</h3>
             <p className={`mt-2 ${appMeta}`}>
-              {dependencyGraph.edges.length} edges across {dependencyGraph.nodes.length} services.
+              {dependencyGraph.edges.length} edges across {dependencyGraph.nodes.length} services.{" "}
+              <Link href="/assets/attack-paths" className="text-accent hover:underline">
+                Simulate attack paths
+              </Link>
             </p>
             <form action={createServiceDependencyAction} className="mt-3 grid gap-2 sm:grid-cols-2">
               <select

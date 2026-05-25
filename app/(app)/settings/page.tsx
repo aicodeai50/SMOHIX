@@ -25,6 +25,16 @@ const cards = [
     description: "Plan, checkout, and subscription status for this workspace.",
   },
   {
+    href: "/settings/deployment",
+    title: "Deployment & residency",
+    description: "FedRAMP-oriented region pins and data boundaries.",
+  },
+  {
+    href: "/settings/members",
+    title: "Members & roles",
+    description: "Organization RBAC, delegated approvers, and security reviewers.",
+  },
+  {
     href: "/settings/api-keys",
     title: "API keys",
     description: "Keys for automation and integrations calling your deployment.",

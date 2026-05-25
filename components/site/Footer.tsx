@@ -1,11 +1,6 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
-import {
-  SITE_EMAIL_CONTACT,
-  SITE_EMAIL_SUPPORT,
-  getGeneralMailtoHref,
-  getSupportMailtoHref,
-} from "@/lib/billing";
+import { SITE_EMAIL_CONTACT, getMailtoHref } from "@/lib/billing";
 import { mBody, mContainer, mFooterLabel } from "@/lib/marketing-layout";
 import { SITE_BRAND_NAME, SITE_PRIMARY_DOMAIN } from "@/lib/site-brand";
 import { Logo } from "./Logo";
@@ -32,8 +27,8 @@ export function Footer() {
           <div className="max-w-sm space-y-3">
             <Logo />
             <p className={mBody}>
-              Safe automation for IT operations — incident response with approvals, dry-runs, and
-              proof in one console.
+              Operations command for modern security teams — incidents, guarded automation, and
+              compliance evidence on one plane.
             </p>
             <p className="text-xs text-muted">
               Product: {SITE_BRAND_NAME} <span aria-hidden>·</span> Domain: {SITE_PRIMARY_DOMAIN}
@@ -52,6 +47,12 @@ export function Footer() {
                 </Link>
                 <Link href="/pricing" className="w-fit hover:text-foreground md:ml-auto">
                   Pricing
+                </Link>
+                <Link href="/cybersecurity" className="w-fit hover:text-foreground md:ml-auto">
+                  Cybersecurity
+                </Link>
+                <Link href="/enterprise" className="w-fit hover:text-foreground md:ml-auto">
+                  Enterprise
                 </Link>
                 <Link href="/integrations" className="w-fit hover:text-foreground md:ml-auto">
                   Integrations
@@ -73,6 +74,9 @@ export function Footer() {
                 </Link>
                 <Link href="/status" className="w-fit hover:text-foreground md:ml-auto">
                   Status
+                </Link>
+                <Link href="/next" className="w-fit hover:text-foreground md:ml-auto">
+                  What&apos;s next
                 </Link>
                 <Link href="/changelog" className="w-fit hover:text-foreground md:ml-auto">
                   Changelog
@@ -105,32 +109,12 @@ export function Footer() {
                   Account
                 </Link>
                 <a
-                  href={getGeneralMailtoHref()}
-                  className="w-fit hover:text-foreground md:ml-auto"
+                  href={getMailtoHref()}
+                  className="w-fit font-mono text-[13px] text-foreground/90 underline-offset-2 hover:text-accent hover:underline md:ml-auto"
                 >
-                  Contact
+                  {SITE_EMAIL_CONTACT}
                 </a>
               </nav>
-              <ul className="mt-3 space-y-2 text-sm md:text-right">
-                <li>
-                  <span className="block text-xs text-muted">General</span>
-                  <a
-                    href={getGeneralMailtoHref()}
-                    className="font-mono text-[13px] text-foreground/90 underline-offset-2 hover:text-accent hover:underline"
-                  >
-                    {SITE_EMAIL_CONTACT}
-                  </a>
-                </li>
-                <li>
-                  <span className="block text-xs text-muted">Support</span>
-                  <a
-                    href={getSupportMailtoHref()}
-                    className="font-mono text-[13px] text-foreground/90 underline-offset-2 hover:text-accent hover:underline"
-                  >
-                    {SITE_EMAIL_SUPPORT}
-                  </a>
-                </li>
-              </ul>
             </div>
           </div>
         </div>

@@ -11,6 +11,10 @@ import { ProofStrip } from "@/components/landing/ProofStrip";
 import { TrustSection } from "@/components/landing/TrustSection";
 import { UseCasesSection } from "@/components/landing/UseCasesSection";
 import { ConnectCTA } from "@/components/landing/ConnectCTA";
+import { CyberDefenseSection } from "@/components/landing/CyberDefenseSection";
+import { SecurityMetricsStrip } from "@/components/landing/SecurityMetricsStrip";
+import { SecurityWorkflowSection } from "@/components/landing/SecurityWorkflowSection";
+import { EnterpriseScaleSection } from "@/components/landing/EnterpriseScaleSection";
 import { getSignedInCheckoutUrls } from "@/lib/marketing/checkout-context";
 
 export const dynamic = "force-dynamic";
@@ -27,12 +31,16 @@ export default async function Home() {
           signedInCheckoutUrl={signedInCheckoutUrl}
           signedInTeamCheckoutUrl={signedInTeamCheckoutUrl}
         />
+        <SecurityMetricsStrip />
         <ProductConsolePreview />
+        <CyberDefenseSection />
         <HowItWorksSection />
+        <SecurityWorkflowSection />
         <GuardedMechanicsSection />
         <UseCasesSection />
         <ControlVisibilitySection />
         <ModuleGrid />
+        <EnterpriseScaleSection />
         <LivePanel />
         <ProofStrip />
         <TrustSection />

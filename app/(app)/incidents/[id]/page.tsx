@@ -4,8 +4,10 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 
 import {
+  clearIncidentLegalHoldAction,
   generateIncidentRcaAction,
   runIncidentRemediationAction,
+  setIncidentLegalHoldAction,
   updateIncidentContextAction,
   updateIncidentPostmortemAction,
   updateIncidentStatusAction,
@@ -25,12 +27,14 @@ import { listRunbooks } from "@/lib/runbooks/catalog";
 import { appBody, appLabel, appMeta, appOverline } from "@/lib/app-typography";
 import { getIncidentTimeline } from "@/lib/incidents/timeline";
 import { getLatestIncidentRcaRun } from "@/lib/incidents/rca";
+import { getOrgContextForUser } from "@/lib/org/context";
+import { canManageMembers } from "@/lib/org/roles";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 type Props = {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ error?: string; scenario?: string; remediation?: string }>;
+  searchParams: Promise<{ error?: string; scenario?: string; remediation?: string; hold?: string; hold_cleared?: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -46,8 +50,11 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
   const err = typeof sp.error === "string" ? sp.error : undefined;
   const scenarioSeeded = sp.scenario === "1";
   const remediationRan = sp.remediation === "1";
+  const holdSet = sp.hold === "1";
+  const holdCleared = sp.hold_cleared === "1";
 
   let userId = "";
+  let canManageHold = false;
   let devTenantKey: string | null = null;
   if (hasSupabaseAuth()) {
     const supabase = await createServerSupabaseClient();
@@ -58,6 +65,8 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
       redirect(`/auth/sign-in?next=/incidents/${encodeURIComponent(id)}`);
     }
     userId = user.id;
+    const orgContext = await getOrgContextForUser(user.id);
+    canManageHold = !orgContext.orgId || (orgContext.role ? canManageMembers(orgContext.role) : true);
   } else {
     devTenantKey = (await cookies()).get("zentro_dev_tid")?.value ?? "anon";
   }
@@ -113,6 +122,27 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
           owner/runbook updates) when the service role can append audits.
         </p>
       )}
+      {holdSet ? (
+        <p className={`mb-4 rounded-xl border border-amber-400/35 bg-amber-400/10 px-4 py-3 text-amber-100 ${appBody}`}>
+          Legal hold applied. This incident and linked audit rows are excluded from retention purge.
+        </p>
+      ) : null}
+      {holdCleared ? (
+        <p className={`mb-4 rounded-xl border border-emerald-400/30 bg-emerald-400/10 px-4 py-3 text-emerald-200 ${appBody}`}>
+          Legal hold cleared.
+        </p>
+      ) : null}
+      {row.legalHold ? (
+        <p className={`mb-4 rounded-xl border border-amber-400/40 bg-amber-400/15 px-4 py-3 ${appBody}`}>
+          <span className="font-semibold text-amber-100">Legal hold active</span>
+          {row.legalHoldReason ? ` — ${row.legalHoldReason}` : null}
+          {row.legalHoldSetAt ? (
+            <span className={`block mt-1 ${appMeta} text-amber-200/80`}>
+              Since {new Date(row.legalHoldSetAt).toLocaleString()}
+            </span>
+          ) : null}
+        </p>
+      ) : null}
       <PageHeader
         title={row.title}
         description={`${row.id} · ${row.severity} · ${row.status} · updated ${row.updated}${
@@ -406,6 +436,48 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
             Save status
           </button>
         </form>
+      ) : null}
+      {source === "database" && hasSupabaseAuth() && canManageHold ? (
+        <PlaceholderCard title="Legal hold">
+          <p className={`mb-4 ${appMeta} text-muted`}>
+            Freezes this incident and linked audit rows from org retention purge.{" "}
+            <Link href="/governance/legal-holds" className="text-accent hover:underline">
+              View all holds
+            </Link>
+          </p>
+          {row.legalHold ? (
+            <form action={clearIncidentLegalHoldAction} className="space-y-3">
+              <input type="hidden" name="id" value={row.id} />
+              <button
+                type="submit"
+                className={`h-10 rounded-xl border border-amber-400/40 px-5 font-semibold text-amber-100 hover:bg-amber-400/10 ${appBody}`}
+              >
+                Clear legal hold
+              </button>
+            </form>
+          ) : (
+            <form action={setIncidentLegalHoldAction} className="space-y-3">
+              <input type="hidden" name="id" value={row.id} />
+              <label htmlFor="hold-reason" className={`block ${appLabel}`}>
+                Hold reason (required)
+              </label>
+              <input
+                id="hold-reason"
+                name="reason"
+                required
+                maxLength={500}
+                placeholder="e.g. Regulatory inquiry REF-2026-0142"
+                className={`h-10 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 text-foreground ${appBody}`}
+              />
+              <button
+                type="submit"
+                className={`h-10 rounded-xl border border-amber-400/40 bg-amber-400/10 px-5 font-semibold text-amber-100 hover:bg-amber-400/15 ${appBody}`}
+              >
+                Apply legal hold
+              </button>
+            </form>
+          )}
+        </PlaceholderCard>
       ) : null}
       {source === "database" && hasSupabaseAuth() ? (
         <PlaceholderCard title="Postmortem & notes">

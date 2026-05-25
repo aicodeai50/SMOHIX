@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { PageHeader } from "@/components/app/PageHeader";
@@ -82,8 +83,13 @@ export default async function GovernancePoliciesPage({
       <PageHeader
         eyebrow="Governance"
         title="Policy suggestion review"
-        description="Decision intelligence proposes candidate guardrails. Review, annotate, and accept or reject each recommendation."
+        description="Decision intelligence proposes candidate guardrails. Review, annotate, and accept or reject each recommendation. Accepted policies map to SOC 2 / ISO 27001 controls."
       />
+      <p className={`-mt-4 mb-4 ${appBody}`}>
+        <Link href="/governance/compliance" className="text-accent hover:underline">
+          Compliance control mapping
+        </Link>
+      </p>
       <div className="mb-4 flex flex-wrap gap-2">
         {(["proposed", "reviewed", "accepted", "rejected", "all"] as const).map((s) => (
           <a

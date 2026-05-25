@@ -1,5 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
+import { applyUserOrOrgScope } from "@/lib/org/apply-scope-query";
+
 type ServiceSloRow = {
   id: string;
   serviceId: string;
@@ -49,22 +51,27 @@ function burnStateFromUsed(used: number): "healthy" | "warning" | "critical" {
   return "healthy";
 }
 
+function sloUpsertConflict(orgId?: string | null): string {
+  return orgId ? "org_id,service_id,slo_name" : "user_id,service_id,slo_name";
+}
+
 export async function upsertDefaultSloForService(
   supabase: SupabaseClient,
   userId: string,
   serviceId: string,
+  orgId?: string | null,
 ): Promise<void> {
-  await supabase.from("service_slos").upsert(
-    {
-      user_id: userId,
-      service_id: serviceId,
-      slo_name: "Availability",
-      target_percent: 99.9,
-      window_days: 30,
-      enabled: true,
-    },
-    { onConflict: "user_id,service_id,slo_name" },
-  );
+  const row: Record<string, unknown> = {
+    user_id: userId,
+    service_id: serviceId,
+    slo_name: "Availability",
+    target_percent: 99.9,
+    window_days: 30,
+    enabled: true,
+  };
+  if (orgId) row.org_id = orgId;
+
+  await supabase.from("service_slos").upsert(row, { onConflict: sloUpsertConflict(orgId) });
 }
 
 export async function upsertServiceSloForUser(
@@ -75,6 +82,7 @@ export async function upsertServiceSloForUser(
     targetPercent: number;
     windowDays: 7 | 30 | 90;
     enabled: boolean;
+    orgId?: string | null;
   },
 ): Promise<{ ok: true } | { ok: false; reason: string }> {
   if (!input.serviceId) return { ok: false, reason: "Service id is required." };
@@ -84,17 +92,19 @@ export async function upsertServiceSloForUser(
   if (input.windowDays !== 7 && input.windowDays !== 30 && input.windowDays !== 90) {
     return { ok: false, reason: "SLO window must be one of 7d, 30d, or 90d." };
   }
-  const { error } = await supabase.from("service_slos").upsert(
-    {
-      user_id: input.userId,
-      service_id: input.serviceId,
-      slo_name: "Availability",
-      target_percent: clampPercent(input.targetPercent),
-      window_days: input.windowDays,
-      enabled: input.enabled,
-    },
-    { onConflict: "user_id,service_id,slo_name" },
-  );
+  const row: Record<string, unknown> = {
+    user_id: input.userId,
+    service_id: input.serviceId,
+    slo_name: "Availability",
+    target_percent: clampPercent(input.targetPercent),
+    window_days: input.windowDays,
+    enabled: input.enabled,
+  };
+  if (input.orgId) row.org_id = input.orgId;
+
+  const { error } = await supabase
+    .from("service_slos")
+    .upsert(row, { onConflict: sloUpsertConflict(input.orgId) });
   if (error) return { ok: false, reason: error.message };
   return { ok: true };
 }
@@ -102,12 +112,15 @@ export async function upsertServiceSloForUser(
 export async function listServiceSloConfigsForUser(
   supabase: SupabaseClient,
   userId: string,
+  orgId?: string | null,
 ): Promise<ServiceSloConfigRow[]> {
-  const { data, error } = await supabase
+  let query = supabase
     .from("service_slos")
     .select("id, service_id, slo_name, target_percent, window_days, enabled, updated_at")
-    .eq("user_id", userId)
     .order("updated_at", { ascending: false });
+  query = applyUserOrOrgScope(query, userId, orgId);
+
+  const { data, error } = await query;
   if (error || !data) return [];
   const firstByService = new Map<string, (typeof data)[number]>();
   for (const row of data) {
@@ -127,20 +140,28 @@ export async function listServiceSloConfigsForUser(
 export async function refreshErrorBudgetWindowsForUser(
   supabase: SupabaseClient,
   userId: string,
+  orgId?: string | null,
 ): Promise<void> {
+  let servicesQuery = supabase.from("services").select("id");
+  servicesQuery = applyUserOrOrgScope(servicesQuery, userId, orgId);
+
+  let slosQuery = supabase
+    .from("service_slos")
+    .select("id, service_id, target_percent, enabled")
+    .eq("enabled", true);
+  slosQuery = applyUserOrOrgScope(slosQuery, userId, orgId);
+
+  let incidentsQuery = supabase
+    .from("incidents")
+    .select("service_id, severity, created_at")
+    .not("service_id", "is", null)
+    .gte("created_at", new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString());
+  incidentsQuery = applyUserOrOrgScope(incidentsQuery, userId, orgId);
+
   const [servicesRes, slosRes, incidentsRes] = await Promise.all([
-    supabase.from("services").select("id").eq("user_id", userId),
-    supabase
-      .from("service_slos")
-      .select("id, service_id, target_percent, enabled")
-      .eq("user_id", userId)
-      .eq("enabled", true),
-    supabase
-      .from("incidents")
-      .select("service_id, severity, created_at")
-      .eq("user_id", userId)
-      .not("service_id", "is", null)
-      .gte("created_at", new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()),
+    servicesQuery,
+    slosQuery,
+    incidentsQuery,
   ]);
 
   const serviceIds = (servicesRes.data ?? []).map((r) => String(r.id));
@@ -188,7 +209,7 @@ export async function refreshErrorBudgetWindowsForUser(
           ? 100
           : clampPercent((weightedIncidents * (days === 7 ? 6 : 2.2)) / errorBudgetPercent);
       const burnRate = clampPercent(budgetUsedPercent / 100);
-      inserts.push({
+      const row: Record<string, unknown> = {
         user_id: userId,
         service_id: serviceId,
         slo_id: slo.id,
@@ -197,7 +218,9 @@ export async function refreshErrorBudgetWindowsForUser(
         budget_used_percent: budgetUsedPercent,
         burn_rate: burnRate,
         state: burnStateFromUsed(budgetUsedPercent),
-      });
+      };
+      if (orgId) row.org_id = orgId;
+      inserts.push(row);
     }
   }
 
@@ -210,28 +233,35 @@ export async function getServiceSloSummary(
   supabase: SupabaseClient,
   userId: string,
   serviceId: string,
+  orgId?: string | null,
 ): Promise<ServiceSloSummary | null> {
-  await upsertDefaultSloForService(supabase, userId, serviceId);
-  await refreshErrorBudgetWindowsForUser(supabase, userId);
+  await upsertDefaultSloForService(supabase, userId, serviceId, orgId);
+  await refreshErrorBudgetWindowsForUser(supabase, userId, orgId);
+
+  let serviceQuery = supabase.from("services").select("id, name").eq("id", serviceId);
+  serviceQuery = applyUserOrOrgScope(serviceQuery, userId, orgId);
+
+  let sloQuery = supabase
+    .from("service_slos")
+    .select("id, service_id, slo_name, target_percent, window_days, enabled")
+    .eq("service_id", serviceId)
+    .eq("enabled", true)
+    .order("updated_at", { ascending: false })
+    .limit(1);
+  sloQuery = applyUserOrOrgScope(sloQuery, userId, orgId);
+
+  let windowsQuery = supabase
+    .from("error_budget_windows")
+    .select("window_label, incidents_count, budget_used_percent, burn_rate, state, recorded_at")
+    .eq("service_id", serviceId)
+    .order("recorded_at", { ascending: false })
+    .limit(30);
+  windowsQuery = applyUserOrOrgScope(windowsQuery, userId, orgId);
 
   const [serviceRes, sloRes, windowsRes] = await Promise.all([
-    supabase.from("services").select("id, name").eq("user_id", userId).eq("id", serviceId).maybeSingle(),
-    supabase
-      .from("service_slos")
-      .select("id, service_id, slo_name, target_percent, window_days, enabled")
-      .eq("user_id", userId)
-      .eq("service_id", serviceId)
-      .eq("enabled", true)
-      .order("updated_at", { ascending: false })
-      .limit(1)
-      .maybeSingle(),
-    supabase
-      .from("error_budget_windows")
-      .select("window_label, incidents_count, budget_used_percent, burn_rate, state, recorded_at")
-      .eq("user_id", userId)
-      .eq("service_id", serviceId)
-      .order("recorded_at", { ascending: false })
-      .limit(30),
+    serviceQuery.maybeSingle(),
+    sloQuery.maybeSingle(),
+    windowsQuery,
   ]);
   if (!serviceRes.data) return null;
 
@@ -280,15 +310,19 @@ export async function getServiceSloSummary(
 export async function getErrorBudgetOverviewSummary(
   supabase: SupabaseClient,
   userId: string,
+  orgId?: string | null,
 ): Promise<ErrorBudgetOverviewSummary> {
-  await refreshErrorBudgetWindowsForUser(supabase, userId);
-  const { data } = await supabase
+  await refreshErrorBudgetWindowsForUser(supabase, userId, orgId);
+
+  let query = supabase
     .from("error_budget_windows")
     .select("service_id, window_label, budget_used_percent, state, recorded_at")
-    .eq("user_id", userId)
     .eq("window_label", "7d")
     .order("recorded_at", { ascending: false })
     .limit(200);
+  query = applyUserOrOrgScope(query, userId, orgId);
+
+  const { data } = await query;
 
   type BudgetOverviewDbRow = {
     service_id: unknown;
@@ -323,17 +357,20 @@ export async function getLatestBurnStateForService(
   supabase: SupabaseClient,
   userId: string,
   serviceId: string,
+  orgId?: string | null,
 ): Promise<ServiceBurnState> {
-  await refreshErrorBudgetWindowsForUser(supabase, userId);
-  const { data } = await supabase
+  await refreshErrorBudgetWindowsForUser(supabase, userId, orgId);
+
+  let query = supabase
     .from("error_budget_windows")
     .select("state")
-    .eq("user_id", userId)
     .eq("service_id", serviceId)
     .eq("window_label", "7d")
     .order("recorded_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+    .limit(1);
+  query = applyUserOrOrgScope(query, userId, orgId);
+
+  const { data } = await query.maybeSingle();
   const state = String(data?.state ?? "healthy");
   if (state === "critical" || state === "warning") return state;
   return "healthy";
@@ -342,15 +379,19 @@ export async function getLatestBurnStateForService(
 export async function listLatestBurnStatesForUser(
   supabase: SupabaseClient,
   userId: string,
+  orgId?: string | null,
 ): Promise<Map<string, ServiceBurnState>> {
-  await refreshErrorBudgetWindowsForUser(supabase, userId);
-  const { data } = await supabase
+  await refreshErrorBudgetWindowsForUser(supabase, userId, orgId);
+
+  let query = supabase
     .from("error_budget_windows")
     .select("service_id, state, recorded_at")
-    .eq("user_id", userId)
     .eq("window_label", "7d")
     .order("recorded_at", { ascending: false })
     .limit(500);
+  query = applyUserOrOrgScope(query, userId, orgId);
+
+  const { data } = await query;
   const byService = new Map<string, ServiceBurnState>();
   for (const row of data ?? []) {
     const serviceId = String(row.service_id);

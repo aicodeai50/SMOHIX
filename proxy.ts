@@ -30,7 +30,10 @@ function noStoreHtml(response: NextResponse, pathname: string) {
     pathname === "/status" ||
     pathname === "/changelog" ||
     pathname === "/why" ||
-    pathname === "/integrations";
+    pathname === "/integrations" ||
+    pathname === "/cybersecurity" ||
+    pathname === "/enterprise" ||
+    pathname === "/next";
 
   if (marketing || pathname.startsWith("/auth/") || consoleDoc) {
     response.headers.set("Cache-Control", "private, no-store, must-revalidate");

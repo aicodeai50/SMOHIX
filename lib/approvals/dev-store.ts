@@ -38,6 +38,9 @@ export function devCreateApproval(
       actionLabel: input.action,
       policyHint: input.policy,
     }),
+    requesterId: null,
+    canDecide: true,
+    decideBlockedReason: null,
   });
   b.pending = b.pending.slice(0, 50);
   return id;

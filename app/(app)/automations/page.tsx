@@ -8,6 +8,7 @@ import { GuardedAutomationIdentity } from "@/components/guardrails/GuardedAutoma
 import { ExecutionBadge } from "@/components/guardrails/ExecutionBadge";
 import { PageHeader } from "@/components/app/PageHeader";
 import { appBody, appPanelTitle } from "@/lib/app-typography";
+import { getOrgContextForUser } from "@/lib/org/context";
 import { listAutomationDryRuns } from "@/lib/automations/dry-runs-db";
 import { listAutomationExecutionsForUser } from "@/lib/automations/executions-db";
 import type { ExecutionReceipt } from "@/lib/automations/executions-dev";
@@ -86,9 +87,15 @@ export default async function AutomationsPage({
     }
     auditTrailOnDryRun = true;
     auditWhisper = await getLatestAuditWhisper(user.id);
-    const { runs: dbRuns, fromDb } = await listAutomationDryRuns(supabase);
+    const orgContext = await getOrgContextForUser(user.id);
+    const { runs: dbRuns, fromDb } = await listAutomationDryRuns(supabase, {
+      userId: user.id,
+      orgId: orgContext.orgId,
+    });
     runs = fromDb ? dbRuns : listDryRuns(`u:${user.id}`);
-    initialExecutions = (await listAutomationExecutionsForUser(supabase, user.id, 12)).map((x) => ({
+    initialExecutions = (
+      await listAutomationExecutionsForUser(supabase, user.id, 12, orgContext.orgId)
+    ).map((x) => ({
       id: x.id,
       playbookId: x.playbookId,
       ok: x.ok,

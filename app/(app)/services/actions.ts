@@ -7,6 +7,7 @@ import {
   createServiceDependencyForUser,
   deleteServiceDependencyForUser,
 } from "@/lib/services/dependencies";
+import { getOrgContextForUser } from "@/lib/org/context";
 import { createServiceForUser, deleteServiceForUser } from "@/lib/services/data";
 import { upsertServiceSloForUser } from "@/lib/services/slo";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
@@ -30,11 +31,14 @@ export async function createServiceAction(formData: FormData) {
   const environment = String(formData.get("environment") ?? "");
   const ownerHint = String(formData.get("owner_hint") ?? "");
 
+  const orgContext = await getOrgContextForUser(user.id);
+
   const result = await createServiceForUser(user.id, {
     name,
     description,
     environment,
     ownerHint,
+    orgId: orgContext.orgId,
   });
 
   if (!result.ok) {
@@ -93,12 +97,15 @@ export async function createServiceDependencyAction(formData: FormData) {
     | "medium"
     | "high";
 
+  const orgContext = await getOrgContextForUser(user.id);
+
   const result = await createServiceDependencyForUser(supabase, {
     userId: user.id,
     serviceId,
     dependsOnServiceId,
     relationship,
     criticality,
+    orgId: orgContext.orgId,
   });
   if (!result.ok) {
     redirect(`/services?error=${encodeURIComponent(result.reason)}`);
@@ -117,10 +124,13 @@ export async function deleteServiceDependencyAction(formData: FormData) {
   const serviceId = String(formData.get("service_id") ?? "").trim();
   const dependsOnServiceId = String(formData.get("depends_on_service_id") ?? "").trim();
 
+  const orgContext = await getOrgContextForUser(user.id);
+
   const result = await deleteServiceDependencyForUser(supabase, {
     userId: user.id,
     serviceId,
     dependsOnServiceId,
+    orgId: orgContext.orgId,
   });
   if (!result.ok) {
     redirect(`/services?error=${encodeURIComponent(result.reason)}`);
@@ -142,12 +152,15 @@ export async function updateServiceSloAction(formData: FormData) {
   const windowDays = Number(formData.get("window_days") ?? 30) as 7 | 30 | 90;
   const enabled = String(formData.get("enabled") ?? "on") === "on";
 
+  const orgContext = await getOrgContextForUser(user.id);
+
   const result = await upsertServiceSloForUser(supabase, {
     userId: user.id,
     serviceId,
     targetPercent,
     windowDays,
     enabled,
+    orgId: orgContext.orgId,
   });
   if (!result.ok) {
     redirect(`/services?error=${encodeURIComponent(result.reason)}`);

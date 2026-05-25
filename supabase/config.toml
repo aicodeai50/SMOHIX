@@ -1,0 +1,39 @@
+# Supabase CLI project config (local dev + linked remote migrations).
+# Docs: https://supabase.com/docs/guides/cli
+#
+# Quick start:
+#   npm i -g supabase
+#   supabase login
+#   supabase link --project-ref YOUR_PROJECT_REF
+#   supabase db push          # apply pending migrations to linked project
+#   supabase gen types typescript --linked > lib/supabase/database.types.ts
+
+project_id = "zentro"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+shadow_port = 54320
+major_version = 15
+
+[db.pooler]
+enabled = false
+port = 54329
+pool_mode = "transaction"
+default_pool_size = 20
+max_client_conn = 100
+
+[studio]
+enabled = true
+port = 54323
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["http://localhost:3000/auth/callback"]

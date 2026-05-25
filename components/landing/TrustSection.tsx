@@ -25,6 +25,13 @@ const links = [
     actionAria: "Open approvals",
   },
   {
+    href: "/cybersecurity",
+    title: "Cybersecurity operations",
+    line: "Threat surface, exposure scans, penetration workflows, and guarded remediation in one narrative.",
+    action: "Explore",
+    actionAria: "Cybersecurity overview",
+  },
+  {
     href: "/trust",
     title: "Security & governance",
     line: "Public trust posture, legal commitments, and governance principles for high-impact operations.",

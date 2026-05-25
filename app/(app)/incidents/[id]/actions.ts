@@ -5,6 +5,9 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { appendAuditEvent } from "@/lib/audit/append";
+import { clearIncidentLegalHold, setIncidentLegalHold } from "@/lib/legal-hold/incident";
+import { getOrgContextForUser } from "@/lib/org/context";
+import { canManageMembers } from "@/lib/org/roles";
 import { runGuardedRemediation } from "@/lib/automations/remediation";
 import {
   getIncidentForUser,
@@ -47,6 +50,7 @@ export async function updateIncidentStatusAction(formData: FormData) {
     redirect(`/auth/sign-in?next=/incidents/${encodeURIComponent(id)}`);
   }
 
+  const orgContext = await getOrgContextForUser(user.id);
   const result = await updateIncidentStatusForUser(user.id, id, status);
   if (!result.ok) {
     redirect(
@@ -57,6 +61,7 @@ export async function updateIncidentStatusAction(formData: FormData) {
   await appendAuditEvent({
     event_type: "incident.status_updated",
     user_id: user.id,
+    org_id: orgContext.orgId,
     details: { incident_id: id, status },
   });
 
@@ -101,6 +106,7 @@ export async function updateIncidentContextAction(formData: FormData) {
     redirect(`/auth/sign-in?next=/incidents/${encodeURIComponent(id)}`);
   }
 
+  const orgContext = await getOrgContextForUser(user.id);
   const result = await updateIncidentContextForUser(user.id, id, {
     ownerHint,
     runbookSlug,
@@ -114,6 +120,7 @@ export async function updateIncidentContextAction(formData: FormData) {
   await appendAuditEvent({
     event_type: "incident.context_updated",
     user_id: user.id,
+    org_id: orgContext.orgId,
     details: { incident_id: id },
   });
 
@@ -142,6 +149,7 @@ export async function updateIncidentPostmortemAction(formData: FormData) {
     redirect(`/auth/sign-in?next=/incidents/${encodeURIComponent(id)}`);
   }
 
+  const orgContext = await getOrgContextForUser(user.id);
   const result = await updateIncidentPostmortemForUser(user.id, id, postmortem);
   if (!result.ok) {
     redirect(
@@ -152,6 +160,7 @@ export async function updateIncidentPostmortemAction(formData: FormData) {
   await appendAuditEvent({
     event_type: "incident.postmortem_updated",
     user_id: user.id,
+    org_id: orgContext.orgId,
     details: { incident_id: id },
   });
 
@@ -179,6 +188,7 @@ export async function generateIncidentRcaAction(formData: FormData) {
     redirect(`/auth/sign-in?next=/incidents/${encodeURIComponent(id)}`);
   }
 
+  const orgContext = await getOrgContextForUser(user.id);
   const resolved = await getIncidentForUser(user.id, id, null);
   if (!resolved || resolved.source !== "database") {
     redirect(`/incidents/${encodeURIComponent(id)}?error=${encodeURIComponent("Incident not found.")}`);
@@ -196,6 +206,7 @@ export async function generateIncidentRcaAction(formData: FormData) {
   await appendAuditEvent({
     event_type: "incident.rca_generated",
     user_id: user.id,
+    org_id: orgContext.orgId,
     details: {
       incident_id: id,
       confidence_score: run.confidenceScore,
@@ -233,6 +244,8 @@ export async function runIncidentRemediationAction(formData: FormData) {
     redirect(`/auth/sign-in?next=/incidents/${encodeURIComponent(id)}`);
   }
 
+  const orgContext = await getOrgContextForUser(user.id);
+
   const result = await runGuardedRemediation({
     supabase,
     userId: user.id,
@@ -241,11 +254,13 @@ export async function runIncidentRemediationAction(formData: FormData) {
     rollbackPlan,
     incidentId: id,
     triggerSource: "incident",
+    orgId: orgContext.orgId,
   });
 
   await appendAuditEvent({
     event_type: result.ok ? "automation.remediation_executed" : "automation.remediation_blocked",
     user_id: user.id,
+    org_id: orgContext.orgId,
     details: {
       incident_id: id,
       playbook_id: playbookId,
@@ -265,4 +280,84 @@ export async function runIncidentRemediationAction(formData: FormData) {
       result.blockedReason ?? "Remediation blocked by guardrails.",
     )}`,
   );
+}
+
+export async function setIncidentLegalHoldAction(formData: FormData) {
+  const id = String(formData.get("id") ?? "").trim();
+  const reason = String(formData.get("reason") ?? "").trim();
+  if (!id) return;
+
+  if (!hasSupabaseAuth()) {
+    redirect(`/incidents/${encodeURIComponent(id)}?error=${encodeURIComponent("Legal hold requires Supabase.")}`);
+  }
+
+  const supabase = await createServerSupabaseClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    redirect(`/auth/sign-in?next=/incidents/${encodeURIComponent(id)}`);
+  }
+
+  const orgContext = await getOrgContextForUser(user.id);
+  if (orgContext.orgId && orgContext.role && !canManageMembers(orgContext.role)) {
+    redirect(`/incidents/${encodeURIComponent(id)}?error=rbac`);
+  }
+
+  const result = await setIncidentLegalHold(user.id, id, {
+    orgId: orgContext.orgId,
+    reason,
+  });
+  if (!result.ok) {
+    redirect(`/incidents/${encodeURIComponent(id)}?error=${encodeURIComponent(result.reason)}`);
+  }
+
+  await appendAuditEvent({
+    event_type: "governance.legal_hold_set",
+    user_id: user.id,
+    org_id: orgContext.orgId,
+    details: { incident_id: id, reason: reason.slice(0, 240) },
+  });
+
+  revalidatePath(`/incidents/${id}`);
+  revalidatePath("/governance/legal-holds");
+  redirect(`/incidents/${encodeURIComponent(id)}?hold=1`);
+}
+
+export async function clearIncidentLegalHoldAction(formData: FormData) {
+  const id = String(formData.get("id") ?? "").trim();
+  if (!id) return;
+
+  if (!hasSupabaseAuth()) {
+    return;
+  }
+
+  const supabase = await createServerSupabaseClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    redirect(`/auth/sign-in?next=/incidents/${encodeURIComponent(id)}`);
+  }
+
+  const orgContext = await getOrgContextForUser(user.id);
+  if (orgContext.orgId && orgContext.role && !canManageMembers(orgContext.role)) {
+    redirect(`/incidents/${encodeURIComponent(id)}?error=rbac`);
+  }
+
+  const result = await clearIncidentLegalHold(user.id, id, { orgId: orgContext.orgId });
+  if (!result.ok) {
+    redirect(`/incidents/${encodeURIComponent(id)}?error=${encodeURIComponent(result.reason)}`);
+  }
+
+  await appendAuditEvent({
+    event_type: "governance.legal_hold_cleared",
+    user_id: user.id,
+    org_id: orgContext.orgId,
+    details: { incident_id: id },
+  });
+
+  revalidatePath(`/incidents/${id}`);
+  revalidatePath("/governance/legal-holds");
+  redirect(`/incidents/${encodeURIComponent(id)}?hold_cleared=1`);
 }

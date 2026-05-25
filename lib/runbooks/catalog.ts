@@ -76,6 +76,81 @@ const DATA: RunbookDetail[] = [
       },
     ],
   },
+  {
+    slug: "grc-access-review",
+    title: "Access review & MFA remediation",
+    version: "2026.05.1",
+    summary: "Close access-control assessment gaps with MFA, privileged access, and session reviews.",
+    steps: 3,
+    body: "Use when continuous assessment flags identity, authentication, or privileged-access exceptions.",
+    checklist: [
+      {
+        id: "1",
+        title: "Scope accounts",
+        check: "Export org members, service accounts, and break-glass roles from audit evidence.",
+      },
+      {
+        id: "2",
+        title: "Remediate",
+        check: "Enforce MFA, rotate stale credentials, revoke excess privileged grants.",
+      },
+      {
+        id: "3",
+        title: "Re-attest",
+        check: "Sign off mapped controls in attestations after fresh audit events land.",
+      },
+    ],
+  },
+  {
+    slug: "grc-evidence-sprint",
+    title: "Evidence collection sprint",
+    version: "2026.05.1",
+    summary: "Generate audit and policy evidence for stale or partial compliance controls.",
+    steps: 3,
+    body: "Targets controls with no recent audit_log or accepted-policy linkage in the assessment window.",
+    checklist: [
+      {
+        id: "1",
+        title: "Prioritize gaps",
+        check: "Sort by framework readiness impact and assessor due dates.",
+      },
+      {
+        id: "2",
+        title: "Collect",
+        check: "Run guarded automations, export bundles, and attach attestation notes.",
+      },
+      {
+        id: "3",
+        title: "Verify",
+        check: "Refresh evidence freshness dashboard; confirm control status improves.",
+      },
+    ],
+  },
+  {
+    slug: "grc-change-hardening",
+    title: "Change & guardrail hardening",
+    version: "2026.05.1",
+    summary: "Tighten automation guardrails and change approvals for policy-related gaps.",
+    steps: 3,
+    body: "Use when gaps cite missing guardrails, dry-run freshness, or change-window violations.",
+    checklist: [
+      {
+        id: "1",
+        title: "Review policies",
+        check: "Open accepted automation policies tied to the failing control.",
+      },
+      {
+        id: "2",
+        title: "Harden",
+        check: "Require dry-run, shrink blast radius, add approval notes on high-risk playbooks.",
+      },
+      {
+        id: "3",
+        title: "Prove",
+        check: "Execute dry-run then guarded remediation; confirm audit events map to the control.",
+      },
+    ],
+  },
 ];
 
 export function listRunbooks(): RunbookSummary[] {

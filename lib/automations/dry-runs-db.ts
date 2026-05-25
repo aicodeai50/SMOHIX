@@ -1,6 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 import type { DryRunRecord } from "@/lib/automations/runs-dev";
+import { orgScopeOrFilter } from "@/lib/org/scope";
 
 type Row = {
   id: string;
@@ -30,6 +31,7 @@ export async function insertAutomationDryRun(
     ok: boolean;
     detail: string;
     incidentId?: string | null;
+    orgId?: string | null;
   },
 ): Promise<DryRunRecord | null> {
   const payload: Record<string, unknown> = {
@@ -40,6 +42,9 @@ export async function insertAutomationDryRun(
   };
   if (input.incidentId) {
     payload.incident_id = input.incidentId;
+  }
+  if (input.orgId) {
+    payload.org_id = input.orgId;
   }
 
   const { data, error } = await supabase
@@ -60,12 +65,26 @@ export async function insertAutomationDryRun(
 
 export async function listAutomationDryRuns(
   supabase: SupabaseClient,
+  params?: { userId?: string; orgId?: string | null },
 ): Promise<{ runs: DryRunRecord[]; fromDb: boolean }> {
-  const { data, error } = await supabase
+  const scopeFilter =
+    params?.userId && params.orgId
+      ? orgScopeOrFilter(params.userId, params.orgId)
+      : null;
+
+  let query = supabase
     .from("automation_dry_runs")
     .select("id, playbook_id, ok, detail, created_at, incident_id")
     .order("created_at", { ascending: false })
     .limit(40);
+
+  if (scopeFilter) {
+    query = query.or(scopeFilter);
+  } else if (params?.userId) {
+    query = query.eq("user_id", params.userId);
+  }
+
+  const { data, error } = await query;
 
   if (error || !data) {
     if (process.env.NODE_ENV === "development" && error) {
@@ -77,20 +96,28 @@ export async function listAutomationDryRuns(
   return { runs: (data as Row[]).map(mapRow), fromDb: true };
 }
 
-/** Latest dry-run row for a given incident (same user), for incident header intelligence. */
+/** Latest dry-run row for a given incident, for incident header intelligence. */
 export async function getLatestDryRunForIncident(
   supabase: SupabaseClient,
   userId: string,
   incidentId: string,
+  orgId: string | null = null,
 ): Promise<DryRunRecord | null> {
-  const { data, error } = await supabase
+  const scopeFilter = orgScopeOrFilter(userId, orgId);
+  let query = supabase
     .from("automation_dry_runs")
     .select("id, playbook_id, ok, detail, created_at, incident_id")
-    .eq("user_id", userId)
     .eq("incident_id", incidentId)
     .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+    .limit(1);
+
+  if (scopeFilter) {
+    query = query.or(scopeFilter);
+  } else {
+    query = query.eq("user_id", userId);
+  }
+
+  const { data, error } = await query.maybeSingle();
 
   if (error || !data) {
     return null;

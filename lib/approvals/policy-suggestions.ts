@@ -134,7 +134,7 @@ export async function listAcceptedPolicyGuardrailsForPlaybook(
   return map[playbookId] ?? null;
 }
 
-function aggregateAcceptedPolicyGuardrails(
+export function aggregateAcceptedPolicyGuardrails(
   rows: AcceptedGuardrailSourceRow[],
 ): Record<string, AcceptedPolicyGuardrails> {
   const grouped: Record<string, AcceptedPolicyGuardrails> = {};

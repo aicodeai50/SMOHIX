@@ -1,11 +1,7 @@
 import type { Metadata } from "next";
 import { LegalLayout } from "@/components/legal/LegalLayout";
-import {
-  SITE_EMAIL_CONTACT,
-  SITE_EMAIL_SUPPORT,
-  getGeneralMailtoHref,
-  getSupportMailtoHref,
-} from "@/lib/billing";
+import { LegalContactSection } from "@/components/legal/LegalContactSection";
+import { ContactEmail } from "@/components/legal/ContactEmail";
 
 export const metadata: Metadata = {
   title: "Acceptable Use Policy",
@@ -120,8 +116,7 @@ export default function AcceptableUsePage() {
 
       <h2>9. Reporting abuse</h2>
       <p>
-        Report suspected violations to{" "}
-        <a href={getSupportMailtoHref()}>{SITE_EMAIL_SUPPORT}</a> with timestamps,
+        Report suspected violations to <ContactEmail topic="abuse" /> with timestamps,
         URLs, and relevant headers or correlation IDs where available.
       </p>
 
@@ -131,12 +126,7 @@ export default function AcceptableUsePage() {
         use after updates constitutes acceptance unless prohibited by law.
       </p>
 
-      <h2>11. Contact</h2>
-      <p>
-        General: <a href={getGeneralMailtoHref()}>{SITE_EMAIL_CONTACT}</a>
-        <br />
-        Security &amp; abuse: <a href={getSupportMailtoHref()}>{SITE_EMAIL_SUPPORT}</a>
-      </p>
+      <LegalContactSection />
     </LegalLayout>
   );
 }

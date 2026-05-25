@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { getOrgContextForUser } from "@/lib/org/context";
 import { listServiceDependencyGraphForUser } from "@/lib/services/dependencies";
 import { OPERATIONAL_RESPONSE_HEADERS } from "@/lib/security/operational-headers";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
@@ -25,6 +26,7 @@ export async function GET() {
       { status: 401, headers: OPERATIONAL_RESPONSE_HEADERS },
     );
   }
-  const graph = await listServiceDependencyGraphForUser(supabase, user.id);
+  const orgContext = await getOrgContextForUser(user.id);
+  const graph = await listServiceDependencyGraphForUser(supabase, user.id, orgContext.orgId);
   return NextResponse.json({ graph }, { status: 200, headers: OPERATIONAL_RESPONSE_HEADERS });
 }

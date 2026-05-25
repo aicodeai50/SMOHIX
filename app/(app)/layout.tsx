@@ -1,5 +1,9 @@
 import { AppShell } from "@/components/app/AppShell";
+import { AuditorWorkspaceGuard } from "@/components/app/AuditorWorkspaceGuard";
 import { getUserDisplayName } from "@/lib/auth/display-name";
+import { filterConsoleModulesForRole, isAuditorWorkspaceRole } from "@/lib/org/auditor-workspace";
+import { getOrgContextForUser } from "@/lib/org/context";
+import { CONSOLE_MODULES } from "@/lib/console-nav";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
@@ -14,6 +18,7 @@ export default async function ConsoleLayout({
   let userEmail: string | null = null;
   let userDisplayName: string | null = null;
   const authEnabled = hasSupabaseAuth();
+  let orgRole = null as import("@/lib/org/roles").OrgRole | null;
 
   if (authEnabled) {
     try {
@@ -23,19 +28,27 @@ export default async function ConsoleLayout({
       } = await supabase.auth.getUser();
       userEmail = user?.email ?? null;
       userDisplayName = getUserDisplayName(user);
+      if (user) {
+        orgRole = (await getOrgContextForUser(user.id)).role;
+      }
     } catch {
       userEmail = null;
       userDisplayName = null;
     }
   }
 
+  const navModules = filterConsoleModulesForRole(CONSOLE_MODULES, orgRole);
+  const auditorWorkspace = isAuditorWorkspaceRole(orgRole);
+
   return (
     <AppShell
       userEmail={userEmail}
       userDisplayName={userDisplayName}
       authEnabled={authEnabled}
+      navModules={navModules}
+      auditorWorkspace={auditorWorkspace}
     >
-      {children}
+      <AuditorWorkspaceGuard orgRole={orgRole}>{children}</AuditorWorkspaceGuard>
     </AppShell>
   );
 }

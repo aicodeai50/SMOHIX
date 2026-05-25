@@ -1,19 +1,31 @@
-import { hashApiKeyPlaintext } from "@/lib/api-keys/token";
+import {
+  ASSESSOR_API_KEY_PREFIX,
+  API_KEY_PREFIX,
+  hashApiKeyPlaintext,
+} from "@/lib/api-keys/token";
 import { createServiceSupabaseClient } from "@/lib/supabase/admin";
 
-export function extractZentroApiKey(req: { headers: Headers }): string | null {
+function extractPrefixedKey(req: { headers: Headers }, prefix: string): string | null {
   const auth = req.headers.get("authorization");
   if (auth?.startsWith("Bearer ")) {
     const t = auth.slice("Bearer ".length).trim();
-    if (t.startsWith("zentro_sk_")) {
+    if (t.startsWith(prefix)) {
       return t;
     }
   }
   const h = req.headers.get("x-zentro-api-key")?.trim();
-  if (h?.startsWith("zentro_sk_")) {
+  if (h?.startsWith(prefix)) {
     return h;
   }
   return null;
+}
+
+export function extractZentroApiKey(req: { headers: Headers }): string | null {
+  return extractPrefixedKey(req, API_KEY_PREFIX);
+}
+
+export function extractAssessorApiKey(req: { headers: Headers }): string | null {
+  return extractPrefixedKey(req, ASSESSOR_API_KEY_PREFIX);
 }
 
 

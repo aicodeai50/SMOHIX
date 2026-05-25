@@ -1,3 +1,4 @@
+import type { ComplianceControlRef } from "@/lib/compliance/types";
 import type { AuditIntentTag } from "@/lib/guardrails/audit-intent-tags";
 
 export type AuditDisplayRow = {
@@ -8,6 +9,7 @@ export type AuditDisplayRow = {
   target: string;
   outcome: string;
   tags: AuditIntentTag[];
+  complianceControls: ComplianceControlRef[];
   /** When details.incident_id is set (e.g. dry-run in incident context). */
   incidentId: string | null;
 };

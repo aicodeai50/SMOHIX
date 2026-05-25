@@ -1,5 +1,6 @@
 import { hashApiKeyPlaintext } from "@/lib/api-keys/token";
 import { isRunbookSlugValid } from "@/lib/runbooks/catalog";
+import { resolvePrimaryOrgIdForUser } from "@/lib/org/resolve-ingest-org";
 import { createServiceSupabaseClient } from "@/lib/supabase/admin";
 import type { IncidentSeverity } from "@/lib/incidents/types";
 
@@ -307,6 +308,180 @@ function normalizeNewRelicPayload(obj: Record<string, unknown>): AlertIngestPayl
   };
 }
 
+function normalizeSplunkPayload(obj: Record<string, unknown>): AlertIngestPayload {
+  const result = asObject(obj.result) ?? {};
+  const searchName =
+    (typeof obj.search_name === "string" && obj.search_name.trim()) ||
+    (typeof obj.rule_name === "string" && obj.rule_name.trim()) ||
+    (typeof obj.alert_name === "string" && obj.alert_name.trim()) ||
+    "Splunk alert";
+
+  const severityRaw =
+    (typeof result.severity === "string" ? result.severity : null) ||
+    (typeof obj.severity === "string" ? obj.severity : null) ||
+    (typeof result.urgency === "string" ? result.urgency : null);
+
+  const host =
+    (typeof result.host === "string" ? result.host.trim() : "") ||
+    (typeof result.orig_host === "string" ? result.orig_host.trim() : "") ||
+    null;
+
+  const summary =
+    (typeof result._raw === "string" ? result._raw.trim() : "") ||
+    (typeof obj.description === "string" ? obj.description.trim() : "") ||
+    (typeof result.description === "string" ? result.description.trim() : "") ||
+    searchName;
+
+  const sid =
+    (typeof obj.sid === "string" && obj.sid.trim()) ||
+    (typeof obj.event_id === "string" && obj.event_id.trim()) ||
+    (typeof result.event_id === "string" ? result.event_id.trim() : "") ||
+    null;
+
+  const ownerHint =
+    (typeof result.owner === "string" ? result.owner.trim() : "") ||
+    (typeof result.team === "string" ? result.team.trim() : "") ||
+    null;
+
+  const serviceName =
+    (typeof result.service === "string" ? result.service.trim() : "") ||
+    (typeof result.app === "string" ? result.app.trim() : "") ||
+    host;
+
+  return {
+    title: searchName.slice(0, 500),
+    severity: vendorSeverityToZentro(severityRaw ?? "medium"),
+    status: "investigating",
+    summary: summary.slice(0, 12000),
+    service_name: serviceName ? serviceName.slice(0, 200) : undefined,
+    owner_hint: ownerHint ? ownerHint.slice(0, 200) : undefined,
+    dedupe_key: sid ? `splunk:${sid.slice(0, 480)}` : undefined,
+  };
+}
+
+function sentinelSeverity(value: string | null): IncidentSeverity {
+  const v = (value ?? "").trim().toLowerCase();
+  if (v === "high") return "high";
+  if (v === "medium") return "medium";
+  if (v === "low") return "low";
+  if (v === "informational") return "low";
+  if (v === "sev1" || v === "sev 1" || v === "1") return "critical";
+  if (v === "sev2" || v === "sev 2" || v === "2") return "high";
+  if (v === "sev3" || v === "sev 3" || v === "3") return "medium";
+  if (v === "sev4" || v === "sev 4" || v === "4") return "low";
+  return vendorSeverityToZentro(v);
+}
+
+function normalizeSentinelPayload(obj: Record<string, unknown>): AlertIngestPayload {
+  const properties = asObject(obj.properties) ?? {};
+  const data = asObject(obj.data) ?? {};
+  const essentials = asObject(data.essentials) ?? {};
+
+  const title =
+    (typeof properties.displayName === "string" && properties.displayName.trim()) ||
+    (typeof essentials.alertRule === "string" && essentials.alertRule.trim()) ||
+    (typeof obj.displayName === "string" && obj.displayName.trim()) ||
+    "Sentinel alert";
+
+  const severityRaw =
+    (typeof properties.severity === "string" ? properties.severity : null) ||
+    (typeof essentials.severity === "string" ? essentials.severity : null) ||
+    (typeof obj.severity === "string" ? obj.severity : null);
+
+  const description =
+    (typeof properties.description === "string" && properties.description.trim()) ||
+    (typeof obj.description === "string" && obj.description.trim()) ||
+    "";
+
+  const alertId =
+    (typeof properties.systemAlertId === "string" && properties.systemAlertId.trim()) ||
+    (typeof properties.alertId === "string" && properties.alertId.trim()) ||
+    (typeof obj.alertId === "string" && obj.alertId.trim()) ||
+    null;
+
+  const monitorCondition =
+    typeof essentials.monitorCondition === "string"
+      ? essentials.monitorCondition.trim().toLowerCase()
+      : "";
+  const status =
+    monitorCondition === "resolved" || monitorCondition === "closed"
+      ? "resolved"
+      : "investigating";
+
+  const serviceName =
+    (typeof properties.compromisedEntity === "string" ? properties.compromisedEntity.trim() : "") ||
+    (typeof properties.resourceName === "string" ? properties.resourceName.trim() : "") ||
+    null;
+
+  return {
+    title: title.slice(0, 500),
+    severity: sentinelSeverity(severityRaw),
+    status,
+    summary: description.slice(0, 12000) || title,
+    service_name: serviceName ? serviceName.slice(0, 200) : undefined,
+    dedupe_key: alertId ? `sentinel:${alertId.slice(0, 480)}` : undefined,
+  };
+}
+
+function crowdstrikeSeverity(value: unknown): IncidentSeverity {
+  if (typeof value === "number") {
+    if (value >= 4) return "critical";
+    if (value === 3) return "high";
+    if (value === 2) return "medium";
+    return "low";
+  }
+  if (typeof value === "string") return vendorSeverityToZentro(value);
+  return "high";
+}
+
+function normalizeCrowdStrikePayload(obj: Record<string, unknown>): AlertIngestPayload {
+  const event = asObject(obj.event) ?? obj;
+  const metadata = asObject(obj.metadata) ?? {};
+
+  const title =
+    (typeof event.DetectName === "string" && event.DetectName.trim()) ||
+    (typeof event.detect_name === "string" && event.detect_name.trim()) ||
+    (typeof obj.detection_name === "string" && obj.detection_name.trim()) ||
+    (typeof event.FileName === "string" && `Detection: ${event.FileName}`.trim()) ||
+    "CrowdStrike detection";
+
+  const severityRaw =
+    event.Severity ?? event.severity ?? obj.severity ?? null;
+
+  const hostname =
+    (typeof event.ComputerName === "string" && event.ComputerName.trim()) ||
+    (typeof event.hostname === "string" && event.hostname.trim()) ||
+    (typeof obj.hostname === "string" && obj.hostname.trim()) ||
+    null;
+
+  const description =
+    (typeof event.DetectDescription === "string" && event.DetectDescription.trim()) ||
+    (typeof event.description === "string" && event.description.trim()) ||
+    (typeof obj.description === "string" && obj.description.trim()) ||
+    "";
+
+  const detectId =
+    (typeof event.DetectId === "string" && event.DetectId.trim()) ||
+    (typeof event.detection_id === "string" && event.detection_id.trim()) ||
+    (typeof obj.detection_id === "string" && obj.detection_id.trim()) ||
+    null;
+
+  const technique =
+    typeof event.Technique === "string" ? event.Technique.trim() : null;
+  const summary = [description, technique ? `technique: ${technique}` : null, hostname ? `host: ${hostname}` : null]
+    .filter(Boolean)
+    .join("\n");
+
+  return {
+    title: title.slice(0, 500),
+    severity: crowdstrikeSeverity(severityRaw),
+    status: "investigating",
+    summary: (summary || title).slice(0, 12000),
+    service_name: hostname ? hostname.slice(0, 200) : undefined,
+    dedupe_key: detectId ? `crowdstrike:${detectId.slice(0, 480)}` : undefined,
+  };
+}
+
 export function normalizeAlertIngestPayload(
   raw: unknown,
   sourceHint?: string | null,
@@ -345,6 +520,36 @@ export function normalizeAlertIngestPayload(
       typeof obj.incident_id === "string" ||
       typeof obj.incident_id === "number");
 
+  const splunkHeader = source.includes("splunk");
+  const splunkVendor = explicitVendor === "splunk";
+  const splunkShape =
+    typeof obj.search_name === "string" ||
+    typeof obj.sid === "string" ||
+    Boolean(asObject(obj.result));
+
+  const sentinelHeader =
+    source.includes("sentinel") || source.includes("azure") || source.includes("microsoft");
+  const sentinelVendor =
+    explicitVendor === "sentinel" ||
+    explicitVendor === "azure_sentinel" ||
+    explicitVendor === "microsoft_sentinel";
+  const sentinelProps = asObject(obj.properties);
+  const sentinelEssentials = asObject(asObject(obj.data)?.essentials);
+  const sentinelShape =
+    (sentinelProps !== null && typeof sentinelProps.displayName === "string") ||
+    (sentinelEssentials !== null && typeof sentinelEssentials.alertRule === "string");
+
+  const crowdstrikeHeader = source.includes("crowdstrike") || source.includes("falcon");
+  const crowdstrikeVendor =
+    explicitVendor === "crowdstrike" || explicitVendor === "falcon";
+  const crowdstrikeEvent = asObject(obj.event);
+  const crowdstrikeMeta = asObject(obj.metadata);
+  const crowdstrikeShape =
+    typeof obj.detection_id === "string" ||
+    typeof crowdstrikeEvent?.DetectId === "string" ||
+    typeof crowdstrikeEvent?.DetectName === "string" ||
+    crowdstrikeMeta?.eventType === "DetectionSummaryEvent";
+
   if (prometheusHeader || prometheusVendor || prometheusShape) {
     return normalizePrometheusPayload(obj);
   }
@@ -355,6 +560,18 @@ export function normalizeAlertIngestPayload(
 
   if (newRelicHeader || newRelicVendor || newRelicShape) {
     return normalizeNewRelicPayload(obj);
+  }
+
+  if (splunkHeader || splunkVendor || splunkShape) {
+    return normalizeSplunkPayload(obj);
+  }
+
+  if (sentinelHeader || sentinelVendor || sentinelShape) {
+    return normalizeSentinelPayload(obj);
+  }
+
+  if (crowdstrikeHeader || crowdstrikeVendor || crowdstrikeShape) {
+    return normalizeCrowdStrikePayload(obj);
   }
 
   if (!(datadogHeader || datadogVendor || datadogShape)) {
@@ -437,6 +654,8 @@ export async function ingestAlertCreateIncident(
     return { ok: false, status: 503, message: "Alert ingest is not configured." };
   }
 
+  const orgId = await resolvePrimaryOrgIdForUser(userId);
+
   const title =
     typeof raw.title === "string" ? raw.title.trim() : String(raw.title ?? "").trim();
   if (!title) {
@@ -473,25 +692,30 @@ export async function ingestAlertCreateIncident(
 
   if (!serviceId && typeof raw.service_name === "string" && raw.service_name.trim()) {
     const sn = raw.service_name.trim().slice(0, 200);
-    const { data: svc } = await admin
+    let svcQuery = admin
       .from("services")
       .select("id")
-      .eq("user_id", userId)
       .ilike("name", sn)
-      .limit(1)
-      .maybeSingle();
+      .limit(1);
+    if (orgId) {
+      svcQuery = svcQuery.or(`org_id.eq.${orgId},and(org_id.is.null,user_id.eq.${userId})`);
+    } else {
+      svcQuery = svcQuery.eq("user_id", userId);
+    }
+    const { data: svc } = await svcQuery.maybeSingle();
     if (svc?.id) {
       serviceId = svc.id as string;
     }
   }
 
   if (dedupe) {
-    const { data: existing } = await admin
-      .from("incidents")
-      .select("id")
-      .eq("user_id", userId)
-      .eq("external_ref", dedupe)
-      .maybeSingle();
+    let existingQuery = admin.from("incidents").select("id").eq("external_ref", dedupe);
+    if (orgId) {
+      existingQuery = existingQuery.eq("org_id", orgId);
+    } else {
+      existingQuery = existingQuery.eq("user_id", userId);
+    }
+    const { data: existing } = await existingQuery.maybeSingle();
     if (existing?.id) {
       await admin
         .from("alert_ingest_tokens")
@@ -512,6 +736,7 @@ export async function ingestAlertCreateIncident(
   if (dedupe) insertRow.external_ref = dedupe;
   if (ownerHint) insertRow.owner_hint = ownerHint;
   if (runbookSlug) insertRow.runbook_slug = runbookSlug;
+  if (orgId) insertRow.org_id = orgId;
 
   const { data: inserted, error: insertError } = await admin
     .from("incidents")
@@ -521,12 +746,13 @@ export async function ingestAlertCreateIncident(
 
   if (insertError) {
     if (insertError.code === "23505" && dedupe) {
-      const { data: ex2 } = await admin
-        .from("incidents")
-        .select("id")
-        .eq("user_id", userId)
-        .eq("external_ref", dedupe)
-        .maybeSingle();
+      let ex2Query = admin.from("incidents").select("id").eq("external_ref", dedupe);
+      if (orgId) {
+        ex2Query = ex2Query.eq("org_id", orgId);
+      } else {
+        ex2Query = ex2Query.eq("user_id", userId);
+      }
+      const { data: ex2 } = await ex2Query.maybeSingle();
       if (ex2?.id) {
         await admin
           .from("alert_ingest_tokens")

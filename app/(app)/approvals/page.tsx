@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -10,6 +11,8 @@ import { ExecutionModeCallout } from "@/components/guardrails/ExecutionModeCallo
 import { GuardedAutomationIdentity } from "@/components/guardrails/GuardedAutomationIdentity";
 import { listApprovalsForUser } from "@/lib/approvals/data";
 import { listAcceptedPolicyGuardrailsByPlaybook } from "@/lib/approvals/policy-suggestions";
+import { getOrgContextForUser } from "@/lib/org/context";
+import { roleLabel } from "@/lib/org/roles";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { appBody, appLabel, appMeta, appOverline, appPanelTitle } from "@/lib/app-typography";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -49,9 +52,13 @@ export default async function ApprovalsPage({ searchParams }: Props) {
     devTenantId = (await cookies()).get("zentro_dev_tid")?.value ?? null;
   }
 
+  const orgContext = hasSupabaseAuth() && userId ? await getOrgContextForUser(userId) : null;
+
   const { source, pending, recent } = await listApprovalsForUser({
     userId: userId || "local",
     devTenantId,
+    orgId: orgContext?.orgId ?? null,
+    orgRole: orgContext?.role ?? null,
   });
   const pendingMissingChecks = pending.filter((p) =>
     p.decisionBrief.policyChecks.some((check) => !check.passed),
@@ -69,6 +76,24 @@ export default async function ApprovalsPage({ searchParams }: Props) {
         title="Approvals"
         description="Human approval controls for high-impact changes. Submit requests, decide pending items, and track completed outcomes."
       />
+      {orgContext?.orgId ? (
+        <p className={`-mt-4 mb-4 ${appMeta}`}>
+          Organization: <span className="text-foreground/90">{orgContext.orgName}</span>
+          {orgContext.role ? ` · ${roleLabel(orgContext.role)}` : ""}
+          {" · "}
+          <Link href="/settings/members" className="text-accent hover:underline">
+            Members
+          </Link>
+        </p>
+      ) : hasSupabaseAuth() ? (
+        <p className={`-mt-4 mb-4 ${appMeta}`}>
+          Personal workspace.{" "}
+          <Link href="/settings/members" className="text-accent hover:underline">
+            Create an organization
+          </Link>{" "}
+          for delegated approvers.
+        </p>
+      ) : null}
       <p className={`mb-4 rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3 ${appMeta}`}>
         Policy baseline: high-risk requests must explicitly declare both{" "}
         <span className="font-mono text-foreground/85">two-person approval</span> and a{" "}
@@ -109,6 +134,8 @@ export default async function ApprovalsPage({ searchParams }: Props) {
           {errQ === "no_session" && "Reload the page so a browser session cookie is set."}
           {errQ === "not_found" && "That approval is no longer pending."}
           {errQ === "update_failed" && "Could not update (check you own this row and it is still pending)."}
+          {errQ === "rbac" && (msgQ ?? "Your org role cannot perform that action.")}
+          {errQ === "self_approval" && "Delegated approvers cannot approve their own request."}
           {errQ === "create" && (msgQ ?? "Could not create the request.")}
         </p>
       ) : null}
@@ -240,26 +267,34 @@ export default async function ApprovalsPage({ searchParams }: Props) {
                     </ul>
                   </div>
                   <div className="mt-4 flex gap-2">
-                    <form action={approvalDecisionAction} className="flex-1">
-                      <input type="hidden" name="id" value={p.id} />
-                      <input type="hidden" name="decision" value="approved" />
-                      <button
-                        type="submit"
-                        className={`w-full rounded-md bg-emerald-600/90 py-2 font-medium text-white transition-opacity hover:opacity-90 ${appMeta}`}
-                      >
-                        Approve
-                      </button>
-                    </form>
-                    <form action={approvalDecisionAction} className="flex-1">
-                      <input type="hidden" name="id" value={p.id} />
-                      <input type="hidden" name="decision" value="denied" />
-                      <button
-                        type="submit"
-                        className={`w-full rounded-lg border border-white/[0.1] bg-white/[0.02] py-2 font-medium text-foreground transition-[border-color,color] hover:border-red-400/35 hover:text-red-200 ${appMeta}`}
-                      >
-                        Deny
-                      </button>
-                    </form>
+                    {p.canDecide ? (
+                      <>
+                        <form action={approvalDecisionAction} className="flex-1">
+                          <input type="hidden" name="id" value={p.id} />
+                          <input type="hidden" name="decision" value="approved" />
+                          <button
+                            type="submit"
+                            className={`w-full rounded-md bg-emerald-600/90 py-2 font-medium text-white transition-opacity hover:opacity-90 ${appMeta}`}
+                          >
+                            Approve
+                          </button>
+                        </form>
+                        <form action={approvalDecisionAction} className="flex-1">
+                          <input type="hidden" name="id" value={p.id} />
+                          <input type="hidden" name="decision" value="denied" />
+                          <button
+                            type="submit"
+                            className={`w-full rounded-lg border border-white/[0.1] bg-white/[0.02] py-2 font-medium text-foreground transition-[border-color,color] hover:border-red-400/35 hover:text-red-200 ${appMeta}`}
+                          >
+                            Deny
+                          </button>
+                        </form>
+                      </>
+                    ) : (
+                      <p className={`w-full rounded-lg border border-white/[0.08] bg-white/[0.02] px-3 py-2 text-muted ${appMeta}`}>
+                        {p.decideBlockedReason ?? "You cannot decide this request."}
+                      </p>
+                    )}
                   </div>
                 </li>
               ))}

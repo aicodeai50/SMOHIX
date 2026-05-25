@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { LegalLayout } from "@/components/legal/LegalLayout";
-import { SITE_EMAIL_SUPPORT, getSupportMailtoHref } from "@/lib/billing";
+import { ContactEmail } from "@/components/legal/ContactEmail";
 import { SITE_BRAND_NAME } from "@/lib/site-brand";
 
 export const metadata: Metadata = {
@@ -49,7 +49,7 @@ export default function SecurityPage() {
       <h2>5. Incident response and disclosure</h2>
       <p>
         If you believe you identified a vulnerability, report it privately to{" "}
-        <a href={getSupportMailtoHref()}>{SITE_EMAIL_SUPPORT}</a>. Include reproduction steps,
+        <ContactEmail topic="security" />. Include reproduction steps,
         affected endpoints, and potential impact. We triage reports promptly and coordinate
         remediation and customer communication as needed.
       </p>

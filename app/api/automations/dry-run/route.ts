@@ -2,6 +2,7 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 
+import { getOrgContextForUser } from "@/lib/org/context";
 import { insertAutomationDryRun } from "@/lib/automations/dry-runs-db";
 import { recordDryRun } from "@/lib/automations/runs-dev";
 import { appendAuditEvent } from "@/lib/audit/append";
@@ -139,11 +140,13 @@ export async function POST(req: NextRequest) {
 
   if (ctx.mode === "auth") {
     const supabase = await createServerSupabaseClient();
+    const orgContext = await getOrgContextForUser(ctx.userId);
     const row = await insertAutomationDryRun(supabase, ctx.userId, {
       playbookId,
       ok,
       detail,
       incidentId,
+      orgId: orgContext.orgId,
     });
     if (row) {
       id = row.id;
@@ -161,6 +164,7 @@ export async function POST(req: NextRequest) {
     void appendAuditEvent({
       event_type: "automation.dry_run",
       user_id: ctx.userId,
+      org_id: orgContext.orgId,
       details: {
         playbook_id: playbookId,
         ok,

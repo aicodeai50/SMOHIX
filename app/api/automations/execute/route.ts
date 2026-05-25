@@ -35,6 +35,7 @@ import {
   evaluateChangeRiskApprovalTightening,
 } from "@/lib/approvals/change-risk";
 import { insertChangeRiskScore } from "@/lib/approvals/change-risk-db";
+import { getOrgContextForUser } from "@/lib/org/context";
 import { getSiteUrl } from "@/lib/site";
 import { getLatestBurnStateForService } from "@/lib/services/slo";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
@@ -204,6 +205,7 @@ export async function POST(req: NextRequest) {
 
   if (ctx.mode === "auth") {
     const supabase = await createServerSupabaseClient();
+    const orgContext = await getOrgContextForUser(ctx.userId);
     if (incidentId) {
       const { data: incidentRow } = await supabase
         .from("incidents")
@@ -213,7 +215,12 @@ export async function POST(req: NextRequest) {
         .maybeSingle();
       const serviceId = incidentRow?.service_id ? String(incidentRow.service_id) : null;
       if (serviceId) {
-        const burnState = await getLatestBurnStateForService(supabase, ctx.userId, serviceId);
+        const burnState = await getLatestBurnStateForService(
+          supabase,
+          ctx.userId,
+          serviceId,
+          orgContext.orgId,
+        );
         const signals = parseApprovalNoteSignals(approvalNote);
         const hasSenior = signals.hasSeniorAcknowledgement;
         const hasWindow = signals.hasChangeWindow;
@@ -222,6 +229,7 @@ export async function POST(req: NextRequest) {
           await appendAuditEvent({
             event_type: "automation.execution_blocked_slo",
             user_id: ctx.userId,
+            org_id: orgContext.orgId,
             details: {
               playbook_id: playbookId,
               incident_id: incidentId,
@@ -253,6 +261,7 @@ export async function POST(req: NextRequest) {
       await appendAuditEvent({
         event_type: "automation.execution_blocked_risk",
         user_id: ctx.userId,
+        org_id: orgContext.orgId,
         details: {
           playbook_id: playbookId,
           risk_score: changeRisk.score,
@@ -288,6 +297,7 @@ export async function POST(req: NextRequest) {
       await appendAuditEvent({
         event_type: "automation.execution_blocked_policy",
         user_id: ctx.userId,
+        org_id: orgContext.orgId,
         details: {
           playbook_id: playbookId,
           blocked_reason_code: blockedReasonCode,
@@ -354,6 +364,7 @@ export async function POST(req: NextRequest) {
 
   if (ctx.mode === "auth") {
     const supabase = await createServerSupabaseClient();
+    const orgContext = await getOrgContextForUser(ctx.userId);
     const execInsert = await insertAutomationExecution(supabase, {
       userId: ctx.userId,
       playbookId,
@@ -367,6 +378,7 @@ export async function POST(req: NextRequest) {
       actualOutcome,
       decisionAccuracyScore: accuracyScore,
       policySuggestions,
+      orgId: orgContext.orgId,
     });
     if (execInsert.ok) {
       executionId = execInsert.id;
@@ -396,10 +408,12 @@ export async function POST(req: NextRequest) {
       ok: true,
       detail: `EXECUTED (${mode}) with rollback: ${rollbackPlan.slice(0, 240)}`,
       incidentId,
+      orgId: orgContext.orgId,
     });
     await appendAuditEvent({
       event_type: "automation.executed",
       user_id: ctx.userId,
+      org_id: orgContext.orgId,
       details: {
         playbook_id: playbookId,
         mode,

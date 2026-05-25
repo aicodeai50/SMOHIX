@@ -50,6 +50,7 @@ export async function runGuardedRemediation(input: {
   rollbackPlan: string;
   incidentId?: string | null;
   triggerSource: "incident" | "automation" | "manual";
+  orgId?: string | null;
 }): Promise<GuardedRemediationResult> {
   const recentDryRun = await input.supabase
     .from("automation_dry_runs")
@@ -97,7 +98,12 @@ export async function runGuardedRemediation(input: {
       .maybeSingle();
     const serviceId = incidentRes.data?.service_id ? String(incidentRes.data.service_id) : null;
     if (serviceId) {
-      const burnState = await getLatestBurnStateForService(input.supabase, input.userId, serviceId);
+      const burnState = await getLatestBurnStateForService(
+        input.supabase,
+        input.userId,
+        serviceId,
+        input.orgId,
+      );
       const signals = parseApprovalNoteSignals(input.approvalNote);
       const hasSenior = signals.hasSeniorAcknowledgement;
       const hasWindow = signals.hasChangeWindow;

@@ -216,6 +216,7 @@ function buildAttentionGroups(input: {
 export async function loadOverviewCommandCenterData(input: {
   userId: string | null;
   devTenantKey: string | null;
+  orgId?: string | null;
   incidents: IncidentRow[];
   connectors: ConnectorRow[];
 }): Promise<OverviewCommandCenterData> {
@@ -228,6 +229,7 @@ export async function loadOverviewCommandCenterData(input: {
   const { pending, source: approvalSource } = await listApprovalsForUser({
     userId: input.userId ?? "local",
     devTenantId: input.devTenantKey,
+    orgId: input.orgId ?? null,
   });
 
   let recentDryRuns: DryRunRecord[] = [];
@@ -245,7 +247,10 @@ export async function loadOverviewCommandCenterData(input: {
     } else {
       automationsConsole = "paid";
     }
-    const { runs: dbRuns, fromDb } = await listAutomationDryRuns(supabase);
+    const { runs: dbRuns, fromDb } = await listAutomationDryRuns(supabase, {
+      userId: input.userId,
+      orgId: input.orgId ?? null,
+    });
     recentDryRuns = fromDb ? dbRuns : listDryRuns(`u:${input.userId}`);
   } else {
     const tid = input.devTenantKey ?? "anon";

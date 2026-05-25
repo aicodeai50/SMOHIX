@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { recordDevIncident } from "@/lib/incidents/dev-store";
+import { getOrgContextForUser } from "@/lib/org/context";
 import { createIncidentForUser } from "@/lib/incidents/data";
 import type { IncidentSeverity } from "@/lib/incidents/types";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
@@ -49,6 +50,8 @@ export async function createIncidentAction(formData: FormData) {
     redirect("/auth/sign-in?next=/incidents/new");
   }
 
+  const orgContext = await getOrgContextForUser(user.id);
+
   const result = await createIncidentForUser(user.id, {
     title,
     severity,
@@ -56,6 +59,7 @@ export async function createIncidentAction(formData: FormData) {
     serviceId: serviceIdRaw.length > 0 ? serviceIdRaw : null,
     ownerHint: ownerHintRaw.length > 0 ? ownerHintRaw : null,
     runbookSlug: runbookSlugRaw.length > 0 ? runbookSlugRaw : null,
+    orgId: orgContext.orgId,
   });
   if (!result.ok) {
     redirect(`/incidents/new?error=${encodeURIComponent(result.reason)}`);

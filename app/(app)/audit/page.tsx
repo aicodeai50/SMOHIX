@@ -4,9 +4,14 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
+import { ComplianceControlTags } from "@/components/compliance/ComplianceControlTags";
 import { AuditIntentTags } from "@/components/guardrails/AuditIntentTags";
 import { listAuditEntriesForUser } from "@/lib/audit/data";
+import { auditRoleFilterLabel, canExportOrgAuditLog } from "@/lib/audit/role-filter";
 import { auditSinceIsoFromWindow, auditWindowToSinceIso } from "@/lib/audit/export-window";
+import { getOrgContextForUser } from "@/lib/org/context";
+import type { OrgRole } from "@/lib/org/roles";
+import { roleLabel } from "@/lib/org/roles";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { appBody, appMeta } from "@/lib/app-typography";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -31,6 +36,9 @@ export default async function AuditPage({
   const windowValue = auditWindowToSinceIso(windowRaw);
   const sinceIso = auditSinceIsoFromWindow(windowValue);
   let userId: string | null = null;
+  let orgId: string | null = null;
+  let orgName: string | null = null;
+  let orgRole: OrgRole | null = null;
   if (hasSupabaseAuth()) {
     const supabase = await createServerSupabaseClient();
     const {
@@ -44,12 +52,20 @@ export default async function AuditPage({
       redirect(`/auth/sign-in?next=${encodeURIComponent(nextAudit)}`);
     }
     userId = user.id;
+    const orgContext = await getOrgContextForUser(user.id);
+    orgId = orgContext.orgId;
+    orgName = orgContext.orgName;
+    orgRole = orgContext.role;
   }
 
   const { source, rows } = await listAuditEntriesForUser(userId, {
     eventPrefix: slackOnly ? "slack." : null,
     sinceIso,
+    orgId,
+    orgRole,
   });
+  const roleFilterNote = auditRoleFilterLabel(orgRole);
+  const canExport = canExportOrgAuditLog(orgRole);
   const slackSentCount = rows.filter((r) => r.action === "slack.sent").length;
   const slackSkippedCount = rows.filter((r) => r.action === "slack.skipped").length;
   const slackFailedCount = rows.filter((r) => r.action === "slack.failed").length;
@@ -73,8 +89,25 @@ export default async function AuditPage({
     <>
       <PageHeader
         title="Audit log"
-        description="Append-only log for billing sync, API keys, approvals, and automation events. Export hooks can build on this table."
+        description="Append-only log for billing sync, API keys, approvals, and automation events — mapped to SOC 2 / ISO 27001 controls."
       />
+      <p className={`-mt-4 mb-4 ${appMeta}`}>
+        <Link href="/governance/compliance" className="text-accent hover:underline">
+          Compliance control mapping
+        </Link>
+        {orgId && orgName ? (
+          <>
+            {" · "}
+            <span className="text-muted">
+              Org scope: {orgName}
+              {orgRole ? ` (${roleLabel(orgRole)})` : ""}
+            </span>
+          </>
+        ) : null}
+      </p>
+      {roleFilterNote ? (
+        <p className={`mb-4 ${appMeta} text-muted`}>{roleFilterNote}</p>
+      ) : null}
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <Link
           href={allHref}
@@ -115,7 +148,7 @@ export default async function AuditPage({
               {w}
             </Link>
           ))}
-          {source === "database" ? (
+          {source === "database" && canExport ? (
             <a
               href={allExportHref}
               className="rounded-full border border-white/[0.14] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-foreground/75 transition-colors hover:border-accent/35 hover:text-foreground"
@@ -142,7 +175,7 @@ export default async function AuditPage({
                 {w}
               </Link>
             ))}
-            {source === "database" ? (
+            {source === "database" && canExport ? (
               <a
                 href={slackExportHref}
                 className={`rounded-full border border-white/[0.14] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-foreground/75 transition-colors hover:border-accent/35 hover:text-foreground`}
@@ -219,7 +252,9 @@ export default async function AuditPage({
               <th className="px-4 py-3.5">Actor</th>
               <th className="px-4 py-3.5">Action</th>
               <th className="px-4 py-3.5">Details</th>
+              <th className="px-4 py-3.5">Incident</th>
               <th className="px-4 py-3.5">Intent</th>
+              <th className="px-4 py-3.5">Controls</th>
               <th className="px-4 py-3.5">Outcome</th>
             </tr>
           </thead>
@@ -246,6 +281,9 @@ export default async function AuditPage({
                   </td>
                   <td className="px-4 py-3 align-top font-sans text-[11px]">
                     <AuditIntentTags tags={e.tags} />
+                  </td>
+                  <td className="px-4 py-3 align-top font-sans text-[11px]">
+                    <ComplianceControlTags controls={e.complianceControls} />
                   </td>
                   <td className="px-4 py-3 capitalize text-muted">{e.outcome}</td>
                 </tr>

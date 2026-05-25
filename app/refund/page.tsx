@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { LegalLayout } from "@/components/legal/LegalLayout";
-import { SITE_EMAIL_SUPPORT, getSupportMailtoHref } from "@/lib/billing";
+import { LegalContactSection } from "@/components/legal/LegalContactSection";
 
 export const metadata: Metadata = {
   title: "Refunds & billing",
@@ -98,11 +98,7 @@ export default function RefundPage() {
         refund mechanics, which prevail over this page in case of conflict.
       </p>
 
-      <h2>10. Contact</h2>
-      <p>
-        Billing and refund questions:{" "}
-        <a href={getSupportMailtoHref()}>{SITE_EMAIL_SUPPORT}</a>
-      </p>
+      <LegalContactSection />
     </LegalLayout>
   );
 }

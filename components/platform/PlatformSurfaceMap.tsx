@@ -59,10 +59,22 @@ const MODULES = [
     cta: "Open audit",
   },
   {
-    title: "Governance",
-    body: "Keys, limits, and execution posture.",
-    href: "/auth/sign-in?next=/settings",
+    title: "Network & exposure",
+    body: "Devices, config drift, certificates, and secrets inventory.",
+    href: "/auth/sign-in?next=/assets/network",
+    cta: "Open assets",
+  },
+  {
+    title: "Access governance",
+    body: "MFA posture, policy rules, and high-risk execution blocks.",
+    href: "/auth/sign-in?next=/governance/access",
     cta: "Open governance",
+  },
+  {
+    title: "Settings & keys",
+    body: "API keys, billing, connectors, and execution posture.",
+    href: "/auth/sign-in?next=/settings",
+    cta: "Open settings",
   },
 ] as const;
 
@@ -113,6 +125,7 @@ const VENDOR_ROADMAP = [
   { category: "Chat & paging", vendors: "Slack, Microsoft Teams, PagerDuty (events)" },
   { category: "Cloud control planes", vendors: "AWS, Azure, GCP" },
   { category: "ITSM / tickets", vendors: "Jira, ServiceNow, Linear (change tasks)" },
+  { category: "Security & exposure", vendors: "Splunk, Sentinel, CrowdStrike, Qualys, Tenable" },
 ] as const;
 
 const EQUIPMENT_PHASE_1 = [
@@ -294,6 +307,14 @@ export function PlatformSurfaceMap() {
         {" · "}
         <Link href="/why" className="font-medium text-accent hover:underline">
           Why {SITE_BRAND_NAME}
+        </Link>
+        {" · "}
+        <Link href="/next" className="font-medium text-accent hover:underline">
+          What&apos;s next
+        </Link>
+        {" · "}
+        <Link href="/cybersecurity" className="font-medium text-accent hover:underline">
+          Cybersecurity
         </Link>
         {" · "}
         <Link href="/trust" className="font-medium text-accent hover:underline">

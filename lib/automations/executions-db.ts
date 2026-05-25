@@ -6,6 +6,7 @@ import type {
   ExpectedOutcome,
   PolicySuggestion,
 } from "@/lib/decision-intelligence";
+import { orgScopeOrFilter } from "@/lib/org/scope";
 
 export type ExecutionDbRow = {
   id: string;
@@ -38,11 +39,10 @@ export async function insertAutomationExecution(
     actualOutcome: ActualOutcome;
     decisionAccuracyScore: number;
     policySuggestions: PolicySuggestion[];
+    orgId?: string | null;
   },
 ): Promise<{ ok: true; id: string; createdAt: string } | { ok: false; reason: string }> {
-  const { data, error } = await supabase
-    .from("automation_executions")
-    .insert({
+  const row: Record<string, unknown> = {
       user_id: input.userId,
       playbook_id: input.playbookId,
       ok: input.ok,
@@ -55,7 +55,12 @@ export async function insertAutomationExecution(
       actual_outcome_json: input.actualOutcome,
       decision_accuracy_score: input.decisionAccuracyScore,
       policy_suggestions_json: input.policySuggestions,
-    })
+    };
+  if (input.orgId) row.org_id = input.orgId;
+
+  const { data, error } = await supabase
+    .from("automation_executions")
+    .insert(row)
     .select("id, created_at")
     .single();
 
@@ -73,15 +78,24 @@ export async function listAutomationExecutionsForUser(
   supabase: SupabaseClient,
   userId: string,
   limit = 20,
+  orgId: string | null = null,
 ): Promise<ExecutionDbRow[]> {
-  const { data, error } = await supabase
+  const scopeFilter = orgScopeOrFilter(userId, orgId);
+  let query = supabase
     .from("automation_executions")
     .select(
       "id, playbook_id, ok, mode, rollback_plan, approval_note, incident_id, created_at, decision_brief_json, expected_outcome_json, actual_outcome_json, decision_accuracy_score, policy_suggestions_json",
     )
-    .eq("user_id", userId)
     .order("created_at", { ascending: false })
     .limit(limit);
+
+  if (scopeFilter) {
+    query = query.or(scopeFilter);
+  } else {
+    query = query.eq("user_id", userId);
+  }
+
+  const { data, error } = await query;
   if (error || !data) return [];
 
   return data.map((row) => ({

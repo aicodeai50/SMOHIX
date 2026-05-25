@@ -7,6 +7,7 @@ import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
 import { appBody, appMeta } from "@/lib/app-typography";
 import { listIncidentsForUser } from "@/lib/incidents/data";
+import { getOrgContextForUser } from "@/lib/org/context";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
@@ -20,6 +21,7 @@ export const dynamic = "force-dynamic";
 export default async function IncidentsPage() {
   let userId: string | null = null;
   let devTenantKey: string | null = null;
+  let activeOrgId: string | null = null;
   if (hasSupabaseAuth()) {
     const supabase = await createServerSupabaseClient();
     const {
@@ -29,11 +31,13 @@ export default async function IncidentsPage() {
       redirect("/auth/sign-in?next=/incidents");
     }
     userId = user.id;
+    const orgContext = await getOrgContextForUser(user.id);
+    activeOrgId = orgContext.orgId;
   } else {
     devTenantKey = (await cookies()).get("zentro_dev_tid")?.value ?? "anon";
   }
 
-  const { source, rows } = await listIncidentsForUser(userId ?? "", devTenantKey);
+  const { source, rows } = await listIncidentsForUser(userId ?? "", devTenantKey, activeOrgId);
 
   return (
     <>

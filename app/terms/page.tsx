@@ -1,11 +1,6 @@
 import type { Metadata } from "next";
 import { LegalLayout } from "@/components/legal/LegalLayout";
-import {
-  SITE_EMAIL_CONTACT,
-  SITE_EMAIL_SUPPORT,
-  getGeneralMailtoHref,
-  getSupportMailtoHref,
-} from "@/lib/billing";
+import { LegalContactSection } from "@/components/legal/LegalContactSection";
 
 export const metadata: Metadata = {
   title: "Terms of Service",
@@ -236,14 +231,7 @@ export default function TermsPage() {
         in connection with a merger, acquisition, or sale of assets.
       </p>
 
-      <h2>19. Contact</h2>
-      <p>
-        General inquiries:{" "}
-        <a href={getGeneralMailtoHref()}>{SITE_EMAIL_CONTACT}</a>
-        <br />
-        Product, billing, and technical support:{" "}
-        <a href={getSupportMailtoHref()}>{SITE_EMAIL_SUPPORT}</a>
-      </p>
+      <LegalContactSection />
     </LegalLayout>
   );
 }

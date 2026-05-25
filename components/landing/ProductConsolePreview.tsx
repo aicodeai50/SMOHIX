@@ -1,16 +1,13 @@
+import type { ReactNode } from "react";
+
 import { MarketingReveal } from "@/components/marketing/MarketingReveal";
 import {
   mContainer,
   mH2,
   mLede,
-  mPanelShell,
   mSectionPreview,
 } from "@/lib/marketing-layout";
 
-/**
- * Illustrative console chrome only — no live data. Gives first-time visitors a concrete
- * sense of surfaces before sign-in.
- */
 export function ProductConsolePreview() {
   return (
     <MarketingReveal
@@ -20,66 +17,126 @@ export function ProductConsolePreview() {
     >
       <div className={mContainer}>
         <h2 id="preview-heading" className={mH2}>
-          What you actually click
+          Unified command preview
         </h2>
         <p className={mLede}>
-          Three routes you will live in during an incident — incidents for state, automations for
-          guarded change, audit for proof.
+          Six surfaces security and platform teams run together — incidents, exposure, network
+          posture, guarded automation, identity hygiene, and audit evidence.
         </p>
 
         <div
-          className={`mt-8 overflow-hidden bg-[#070a0d] shadow-[0_0_0_1px_rgba(255,255,255,0.04)] ${mPanelShell} border-white/[0.1]`}
+          className="zentro-holo-panel mt-8 overflow-hidden"
           aria-label="Illustrative console layout, not live data"
         >
           <div className="flex items-center gap-2 border-b border-white/[0.06] bg-white/[0.03] px-3 py-2.5">
             <span className="flex gap-1.5" aria-hidden>
-              <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
-              <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
-              <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
+              <span className="h-2.5 w-2.5 rounded-full bg-danger/40 zentro-pulse-dot" />
+              <span className="h-2.5 w-2.5 rounded-full bg-warning/40" />
+              <span className="h-2.5 w-2.5 rounded-full bg-success/40" />
             </span>
-            <span className="font-mono text-[11px] text-muted">zentro.run / console</span>
+            <span className="font-mono text-[11px] text-muted">zentro.run / command</span>
+            <span className="ml-auto font-mono text-[10px] text-[#6ee7b7]">SOC · live</span>
           </div>
-          <div className="grid gap-px bg-white/[0.06] md:grid-cols-3">
-            <div className="bg-background p-4 sm:p-5">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-accent/90">
-                Incidents
-              </p>
-              <p className="mt-3 font-mono text-[10px] text-muted">checkout-api · high · mitigating</p>
+          <div className="grid gap-px bg-white/[0.06] sm:grid-cols-2 lg:grid-cols-3">
+            <Panel
+              label="Incidents"
+              accent="text-accent/90"
+              mono="auth-api · critical · investigating"
+              footer="Timeline · owner · linked runbook"
+            >
               <div className="mt-3 space-y-2">
                 <div className="h-2 w-full rounded bg-white/[0.08]" />
                 <div className="h-2 w-[80%] rounded bg-white/[0.06]" />
                 <div className="h-2 w-full rounded bg-white/[0.05]" />
               </div>
-              <p className="mt-4 text-[10px] text-muted">Timeline · owner · linked runbook</p>
-            </div>
-            <div className="bg-background p-4 sm:p-5">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-accent/90">
-                Automations
-              </p>
-              <p className="mt-3 text-[10px] font-medium text-foreground/90">Playbook: scale-out edge</p>
-              <div className="mt-3 inline-flex rounded-lg border border-amber-500/25 bg-amber-500/10 px-2 py-1 text-[10px] font-medium text-amber-200/95">
-                Dry-run result
+            </Panel>
+            <Panel
+              label="Threat surface"
+              accent="text-[#c4b5fd]"
+              mono="14 services · 3 critical deps"
+              footer="Exposure map · dependency graph"
+            >
+              <div className="mt-3 grid grid-cols-3 gap-1.5">
+                {[1, 2, 3, 4, 5, 6].map((n) => (
+                  <span
+                    key={n}
+                    className={`h-6 rounded border border-white/[0.08] ${n === 2 ? "bg-[var(--danger-dim)]" : "bg-white/[0.04]"}`}
+                  />
+                ))}
               </div>
-              <p className="mt-3 text-[10px] leading-relaxed text-muted">
-                Simulated steps · no production calls until approved
+            </Panel>
+            <Panel
+              label="Network scan"
+              accent="text-[#6ee7b7]"
+              mono="drift · 2 findings · edge-fw"
+              footer="Config snapshots · device inventory"
+            >
+              <p className="mt-3 font-mono text-[9px] leading-relaxed text-foreground/70">
+                <span className="text-danger">!</span> ACL mismatch vs baseline
+                <br />
+                <span className="text-warning">~</span> cert expires 12d · api-gateway
               </p>
-              <div className="mt-4 flex gap-2">
+            </Panel>
+            <Panel
+              label="Automations"
+              accent="text-accent/90"
+              mono="Playbook: isolate-segment"
+              footer="Dry-run · approval · execute"
+            >
+              <span className="mt-3 inline-flex rounded-lg border border-amber-500/25 bg-amber-500/10 px-2 py-1 text-[10px] font-medium text-amber-200/95">
+                Dry-run passed
+              </span>
+              <div className="mt-3 flex gap-2">
                 <span className="h-7 flex-1 rounded-md bg-white/[0.08]" />
                 <span className="h-7 w-16 rounded-md bg-accent/25" />
               </div>
-            </div>
-            <div className="bg-background p-4 sm:p-5">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-accent/90">
-                Audit
-              </p>
+            </Panel>
+            <Panel
+              label="Access posture"
+              accent="text-[#c4b5fd]"
+              mono="MFA 94% · 1 policy gap"
+              footer="Identity hygiene · governance rules"
+            >
+              <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-white/[0.06]">
+                <span className="block h-full w-[94%] rounded-full bg-gradient-to-r from-[var(--scan)] to-accent/80" />
+              </div>
+            </Panel>
+            <Panel
+              label="Audit"
+              accent="text-accent/90"
+              mono="append-only trail"
+              footer="Export · compliance handoff"
+            >
               <pre className="mt-3 overflow-x-auto rounded-lg border border-white/[0.08] bg-black/50 p-2 font-mono text-[9px] leading-relaxed text-foreground/75">
-                {`incident.status_updated\nautomation.dry_run\napproval.recorded`}
+                {`intrusion.correlated\npentest.scope_approved\nremediation.executed`}
               </pre>
-              <p className="mt-3 text-[10px] text-muted">Append-oriented · export where enabled</p>
-            </div>
+            </Panel>
           </div>
         </div>
       </div>
     </MarketingReveal>
+  );
+}
+
+function Panel({
+  label,
+  accent,
+  mono,
+  footer,
+  children,
+}: {
+  label: string;
+  accent: string;
+  mono: string;
+  footer: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className="bg-background p-4 sm:p-5">
+      <p className={`text-[10px] font-semibold uppercase tracking-[0.12em] ${accent}`}>{label}</p>
+      <p className="mt-3 font-mono text-[10px] text-muted">{mono}</p>
+      {children}
+      <p className="mt-4 text-[10px] text-muted">{footer}</p>
+    </div>
   );
 }

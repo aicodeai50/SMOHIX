@@ -4,7 +4,14 @@ type SlackPayload = {
   text: string;
 };
 
-export type SlackNotificationKind = "approval_decision" | "execution_receipt" | "manual_test";
+export type SlackNotificationKind =
+  | "approval_decision"
+  | "execution_receipt"
+  | "compliance_sla"
+  | "obligation_density"
+  | "peak_week_staffing"
+  | "staffing_overdue"
+  | "manual_test";
 
 function slackWebhookUrl(): string | null {
   const value = process.env.ZENTRO_SLACK_WEBHOOK_URL?.trim();
@@ -26,10 +33,18 @@ export function isSlackWebhookConfigured(): boolean {
 export function getSlackNotificationConfig(): {
   approvals: boolean;
   executions: boolean;
+  complianceSla: boolean;
+  obligationDensity: boolean;
+  peakWeekStaffing: boolean;
+  staffingOverdue: boolean;
 } {
   return {
     approvals: envEnabled(process.env.ZENTRO_SLACK_NOTIFY_APPROVALS, true),
     executions: envEnabled(process.env.ZENTRO_SLACK_NOTIFY_EXECUTIONS, true),
+    complianceSla: envEnabled(process.env.ZENTRO_SLACK_NOTIFY_COMPLIANCE_SLA, true),
+    obligationDensity: envEnabled(process.env.ZENTRO_SLACK_NOTIFY_OBLIGATION_DENSITY, true),
+    peakWeekStaffing: envEnabled(process.env.ZENTRO_SLACK_NOTIFY_PEAK_WEEK_STAFFING, true),
+    staffingOverdue: envEnabled(process.env.ZENTRO_SLACK_NOTIFY_STAFFING_OVERDUE, true),
   };
 }
 
@@ -37,6 +52,10 @@ export function shouldSendSlackNotification(kind: SlackNotificationKind): boolea
   const cfg = getSlackNotificationConfig();
   if (kind === "manual_test") return true;
   if (kind === "approval_decision") return cfg.approvals;
+  if (kind === "compliance_sla") return cfg.complianceSla;
+  if (kind === "obligation_density") return cfg.obligationDensity;
+  if (kind === "peak_week_staffing") return cfg.peakWeekStaffing;
+  if (kind === "staffing_overdue") return cfg.staffingOverdue;
   return cfg.executions;
 }
 

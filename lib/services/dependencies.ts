@@ -1,5 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
+import { applyUserOrOrgScope } from "@/lib/org/apply-scope-query";
+
 export type ServiceDependencyEdge = {
   fromServiceId: string;
   fromServiceName: string;
@@ -24,14 +26,17 @@ function isUuid(v: string): boolean {
 export async function listServiceDependencyGraphForUser(
   supabase: SupabaseClient,
   userId: string,
+  orgId?: string | null,
 ): Promise<ServiceDependencyGraph> {
-  const [servicesRes, edgesRes] = await Promise.all([
-    supabase.from("services").select("id, name").eq("user_id", userId).order("name", { ascending: true }),
-    supabase
-      .from("service_dependencies")
-      .select("service_id, depends_on_service_id, relationship, criticality")
-      .eq("user_id", userId),
-  ]);
+  let servicesQuery = supabase.from("services").select("id, name").order("name", { ascending: true });
+  servicesQuery = applyUserOrOrgScope(servicesQuery, userId, orgId);
+
+  let edgesQuery = supabase
+    .from("service_dependencies")
+    .select("service_id, depends_on_service_id, relationship, criticality");
+  edgesQuery = applyUserOrOrgScope(edgesQuery, userId, orgId);
+
+  const [servicesRes, edgesRes] = await Promise.all([servicesQuery, edgesQuery]);
 
   const nodes = (servicesRes.data ?? []).map((row) => ({
     id: String(row.id),
@@ -58,6 +63,7 @@ export async function createServiceDependencyForUser(
     dependsOnServiceId: string;
     relationship?: ServiceDependencyEdge["relationship"];
     criticality?: ServiceDependencyEdge["criticality"];
+    orgId?: string | null;
   },
 ): Promise<{ ok: true } | { ok: false; reason: string }> {
   const serviceId = input.serviceId.trim();
@@ -71,13 +77,16 @@ export async function createServiceDependencyForUser(
 
   const relationship = input.relationship ?? "runtime";
   const criticality = input.criticality ?? "medium";
-  const { error } = await supabase.from("service_dependencies").insert({
+  const row: Record<string, unknown> = {
     user_id: input.userId,
     service_id: serviceId,
     depends_on_service_id: dependsOnServiceId,
     relationship,
     criticality,
-  });
+  };
+  if (input.orgId) row.org_id = input.orgId;
+
+  const { error } = await supabase.from("service_dependencies").insert(row);
   if (error) return { ok: false, reason: error.message };
   return { ok: true };
 }
@@ -88,17 +97,20 @@ export async function deleteServiceDependencyForUser(
     userId: string;
     serviceId: string;
     dependsOnServiceId: string;
+    orgId?: string | null;
   },
 ): Promise<{ ok: true } | { ok: false; reason: string }> {
   if (!isUuid(input.serviceId) || !isUuid(input.dependsOnServiceId)) {
     return { ok: false, reason: "Invalid dependency edge." };
   }
-  const { error } = await supabase
+  let query = supabase
     .from("service_dependencies")
     .delete()
-    .eq("user_id", input.userId)
     .eq("service_id", input.serviceId)
     .eq("depends_on_service_id", input.dependsOnServiceId);
+  query = applyUserOrOrgScope(query, input.userId, input.orgId);
+
+  const { error } = await query;
   if (error) return { ok: false, reason: error.message };
   return { ok: true };
 }

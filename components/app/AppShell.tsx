@@ -117,11 +117,15 @@ export function AppShell({
   userEmail,
   userDisplayName,
   authEnabled,
+  navModules = CONSOLE_MODULES,
+  auditorWorkspace = false,
 }: {
   children: React.ReactNode;
   userEmail: string | null;
   userDisplayName?: string | null;
   authEnabled: boolean;
+  navModules?: readonly ModuleItem[];
+  auditorWorkspace?: boolean;
 }) {
   const showName = userDisplayName?.trim() || null;
   const pathname = usePathname();
@@ -213,7 +217,7 @@ export function AppShell({
             className="grid grid-cols-2 gap-2 p-3 sm:grid-cols-3"
             aria-label="Console modules"
           >
-            {CONSOLE_MODULES.map((item) => (
+            {navModules.map((item) => (
               <NavTile key={item.href} {...item} />
             ))}
           </nav>
@@ -254,7 +258,7 @@ export function AppShell({
           className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto overscroll-contain p-2"
           aria-label="Console modules"
         >
-          {CONSOLE_MODULES.map((item) => (
+          {navModules.map((item) => (
             <NavRailLink key={item.href} {...item} />
           ))}
         </nav>
@@ -285,6 +289,12 @@ export function AppShell({
       <main className="flex min-h-0 min-w-0 flex-1 flex-col lg:overflow-hidden">
         <div className="shynvo-console-main mx-auto flex min-h-0 w-full max-w-7xl flex-1 flex-col overflow-y-auto overscroll-contain p-4 md:p-8 md:pb-10">
           <ConsoleNavPanel />
+          {auditorWorkspace ? (
+            <p className={`mb-4 rounded-xl border border-indigo-400/35 bg-indigo-400/10 px-4 py-3 text-indigo-100 ${appMeta}`}>
+              Auditor read-only workspace — SOC 2 Type II monitoring, compliance mapping, and audit log
+              only. Change management and automation controls are not available in this role.
+            </p>
+          ) : null}
           {children}
         </div>
       </main>

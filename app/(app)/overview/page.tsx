@@ -18,6 +18,7 @@ import { listAutomationDryRuns } from "@/lib/automations/dry-runs-db";
 import { listDryRuns } from "@/lib/automations/runs-dev";
 import { getConnectorHealthRows } from "@/lib/connectors-health";
 import { listIncidentsForUser } from "@/lib/incidents/data";
+import { getOrgContextForUser } from "@/lib/org/context";
 import { loadOverviewCommandCenterData } from "@/lib/overview/command-center-data";
 import { listServicesForUser } from "@/lib/services/data";
 import { getErrorBudgetOverviewSummary, listLatestBurnStatesForUser } from "@/lib/services/slo";
@@ -51,6 +52,8 @@ export default async function OverviewPage() {
   let devTenantKey: string | null = null;
   let supabaseClient: Awaited<ReturnType<typeof createServerSupabaseClient>> | null = null;
 
+  let activeOrgId: string | null = null;
+
   if (hasSupabaseAuth()) {
     const supabase = await createServerSupabaseClient();
     supabaseClient = supabase;
@@ -61,27 +64,33 @@ export default async function OverviewPage() {
       redirect("/auth/sign-in?next=/overview");
     }
     userId = user.id;
+    activeOrgId = (await getOrgContextForUser(user.id)).orgId;
   } else {
     devTenantKey = (await cookies()).get("zentro_dev_tid")?.value ?? "anon";
   }
 
   const [{ rows: incidents }, connectors] = await Promise.all([
-    listIncidentsForUser(userId ?? "", devTenantKey),
+    listIncidentsForUser(userId ?? "", devTenantKey, activeOrgId),
     getConnectorHealthRows(),
   ]);
   const approvals = await listApprovalsForUser({
     userId: userId ?? "local",
     devTenantId: devTenantKey,
+    orgId: activeOrgId,
   });
   let dryRuns = devTenantKey ? listDryRuns(devTenantKey) : [];
   if (supabaseClient && userId) {
-    const dryRunRes = await listAutomationDryRuns(supabaseClient);
+    const dryRunRes = await listAutomationDryRuns(supabaseClient, {
+      userId,
+      orgId: activeOrgId,
+    });
     dryRuns = dryRunRes.runs;
   }
 
   const command = await loadOverviewCommandCenterData({
     userId,
     devTenantKey,
+    orgId: activeOrgId,
     incidents,
     connectors,
   });
@@ -222,14 +231,14 @@ export default async function OverviewPage() {
             ? `Up ${delta} vs prior 7d`
             : `Down ${Math.abs(delta)} vs prior 7d`;
 
-    const errorBudget = await getErrorBudgetOverviewSummary(supabaseClient, userId);
+    const errorBudget = await getErrorBudgetOverviewSummary(supabaseClient, userId, activeOrgId);
     errorBudgetServices = errorBudget.servicesWithSlo;
     criticalBurnServices = errorBudget.criticalBurnServices;
     warningBurnServices = errorBudget.warningBurnServices;
     avgBudgetUsedPercent = errorBudget.averageBudgetUsedPercent;
     const [serviceRows, burnStates] = await Promise.all([
-      listServicesForUser(userId),
-      listLatestBurnStatesForUser(supabaseClient, userId),
+      listServicesForUser(userId, activeOrgId),
+      listLatestBurnStatesForUser(supabaseClient, userId, activeOrgId),
     ]);
     topCriticalServices = serviceRows
       .filter((svc) => (burnStates.get(svc.id) ?? "healthy") === "critical")

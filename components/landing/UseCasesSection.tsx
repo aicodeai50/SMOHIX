@@ -27,6 +27,22 @@ const CASES = [
     title: "Track every production change",
     body: "Keep status, approvals, and automation events in one audit trail — export incident notes when compliance asks.",
   },
+  {
+    title: "Triage intrusion signals in one queue",
+    body: "Correlate SIEM and webhook alerts into deduped incidents with owner, severity, and linked services.",
+  },
+  {
+    title: "Prioritize exposure before breach",
+    body: "Certificate expiry, secrets rotation, and network drift surface as owned findings — not spreadsheet chaos.",
+  },
+  {
+    title: "Run penetration tests with guardrails",
+    body: "Scope exercises, record findings, and promote remediations through dry-runs — no unlogged production access.",
+  },
+  {
+    title: "Prove containment to auditors",
+    body: "Export timeline, approver identity, and automation evidence for IR reports and regulatory requests.",
+  },
 ] as const;
 
 export function UseCasesSection() {
@@ -41,10 +57,10 @@ export function UseCasesSection() {
           Concrete outcomes
         </h2>
         <p className={mLede}>
-          Operational outcomes you can assign an owner to — phrased the way on-call engineers and
-          change managers actually talk.
+          Operational and security outcomes you can assign an owner to — phrased the way SOC leads,
+          on-call engineers, and change managers actually talk.
         </p>
-        <ul className={`mt-10 grid gap-5 sm:grid-cols-2 ${mStaggerGrid}`}>
+        <ul className={`mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4 ${mStaggerGrid}`}>
           {CASES.map((c) => (
             <li key={c.title} className={mCard}>
               <h3 className={mCardTitle}>{c.title}</h3>

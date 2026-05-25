@@ -20,31 +20,51 @@ export function ConnectCTA({
       aria-labelledby="connect-heading"
     >
       <div className={mContainer}>
-        <div className="shynvo-glass relative overflow-hidden rounded-2xl px-6 py-10 sm:px-10 sm:py-12">
+        <div className="zentro-holo-panel relative overflow-hidden rounded-2xl px-6 py-10 sm:px-10 sm:py-12">
           <div className="relative max-w-2xl">
             <h2 id="connect-heading" className={mH2}>
-              Integrations and console
+              Operations, security, and integrations — one workspace
             </h2>
             <p className={`mt-2 ${mBody}`}>
-              Reasoning and automation live in the same workspace after you sign in. Connector
-              configuration is under Settings — see the{" "}
+              Reasoning, automation, alert ingest, and security posture live in the same console
+              after sign-in. See{" "}
               <Link href="/integrations" className="font-medium text-accent hover:underline">
-                integrations overview
-              </Link>{" "}
-              for what ships today and what is planned.
+                integrations
+              </Link>
+              ,{" "}
+              <Link href="/cybersecurity" className="font-medium text-accent hover:underline">
+                cybersecurity
+              </Link>
+              , and{" "}
+              <Link href="/next" className="font-medium text-accent hover:underline">
+                what&apos;s next
+              </Link>
+              .
             </p>
             <ul className={`mt-5 space-y-2 ${mBody}`}>
               <li>
                 <Link href="/copilot" className="text-foreground/85 hover:text-accent hover:underline">
                   Copilot
                 </Link>
-                <span className="text-muted"> — incident triage and chat</span>
+                <span className="text-muted"> — triage, runbooks, evidence handoff</span>
               </li>
               <li>
                 <Link href="/automations" className="text-foreground/85 hover:text-accent hover:underline">
                   Automations
                 </Link>
-                <span className="text-muted"> — playbooks and dry-runs</span>
+                <span className="text-muted"> — playbooks, dry-runs, remediation</span>
+              </li>
+              <li>
+                <Link href="/auth/sign-in?next=/assets/network" className="text-foreground/85 hover:text-accent hover:underline">
+                  Network &amp; exposure
+                </Link>
+                <span className="text-muted"> — drift, certs, secrets inventory</span>
+              </li>
+              <li>
+                <Link href="/auth/sign-in?next=/governance/access" className="text-foreground/85 hover:text-accent hover:underline">
+                  Governance
+                </Link>
+                <span className="text-muted"> — access posture, policy blocks, approvals</span>
               </li>
             </ul>
             <div id="trial" className="mt-8 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap">
@@ -53,6 +73,12 @@ export function ConnectCTA({
                 className="inline-flex h-11 items-center justify-center rounded-lg bg-accent px-5 text-sm font-semibold text-background transition-opacity hover:opacity-90"
               >
                 {marketingCta.connectExplore}
+              </Link>
+              <Link
+                href="/enterprise"
+                className="inline-flex h-11 items-center justify-center rounded-lg border border-white/[0.12] bg-white/[0.03] px-5 text-sm font-medium text-foreground/90 hover:border-accent/35"
+              >
+                Enterprise
               </Link>
               <a
                 href={trialHref}

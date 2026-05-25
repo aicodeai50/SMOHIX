@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
@@ -71,6 +72,11 @@ export default async function ChangesPage({
         title="Changes"
         description="Schedule maintenance windows, classify risk, and track executed change actions with audit visibility."
       />
+      <p className={`-mt-4 mb-6 ${appBody}`}>
+        <Link href="/changes/pentest" className="text-accent hover:underline">
+          Pen-test engagements
+        </Link>
+      </p>
       {err ? (
         <p className={`mb-4 rounded-xl border border-danger/25 bg-danger-dim/50 px-4 py-3 text-danger ${appBody}`}>
           {err}

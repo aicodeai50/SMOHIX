@@ -7,7 +7,9 @@ import { appBody, appMeta, appPanelTitle } from "@/lib/app-typography";
 import {
   getCheckoutUrlForUser,
   getCustomerPortalUrl,
+  getMailtoHref,
   getTeamCheckoutUrlForUser,
+  SITE_EMAIL_CONTACT,
 } from "@/lib/billing";
 import {
   billingPlanFromSummary,
@@ -283,11 +285,8 @@ export default async function BillingPage({
 
         <p className={appMeta}>
           Billing changes at your provider (cancel, payment method) sync via webhook. Questions?{" "}
-          <Link
-            href={encodeURI("mailto:support@zentro.run?subject=Billing")}
-            className="text-accent hover:underline"
-          >
-            support@zentro.run
+          <Link href={getMailtoHref("billing")} className="text-accent hover:underline">
+            {SITE_EMAIL_CONTACT}
           </Link>
         </p>
       </div>

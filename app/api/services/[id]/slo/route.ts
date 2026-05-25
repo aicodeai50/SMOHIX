@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { getOrgContextForUser } from "@/lib/org/context";
 import { getServiceSloSummary } from "@/lib/services/slo";
 import { OPERATIONAL_RESPONSE_HEADERS } from "@/lib/security/operational-headers";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
@@ -29,7 +30,8 @@ export async function GET(_req: Request, ctx: Ctx) {
     );
   }
 
-  const summary = await getServiceSloSummary(supabase, user.id, id);
+  const orgContext = await getOrgContextForUser(user.id);
+  const summary = await getServiceSloSummary(supabase, user.id, id, orgContext.orgId);
   if (!summary) {
     return NextResponse.json(
       { error: "Not found." },

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { LegalLayout } from "@/components/legal/LegalLayout";
-import { SITE_EMAIL_SUPPORT, getSupportMailtoHref } from "@/lib/billing";
+import { LegalContactSection } from "@/components/legal/LegalContactSection";
+import { ContactEmail } from "@/components/legal/ContactEmail";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
@@ -23,8 +24,7 @@ export default function PrivacyPage() {
         operates the websites and services described at{" "}
         <a href="https://zentro.run">zentro.run</a>. Depending on your region, the
         data controller may be the Zentro entity identified in your contract or
-        checkout flow. For privacy questions, contact{" "}
-        <a href={getSupportMailtoHref()}>{SITE_EMAIL_SUPPORT}</a>.
+        checkout flow. For privacy questions, contact <ContactEmail topic="support" />.
       </p>
 
       <h2>2. Scope</h2>
@@ -158,8 +158,7 @@ export default function PrivacyPage() {
         Depending on your location, you may have rights to access, rectify, erase,
         restrict or object to certain processing, portability, and withdrawal of
         consent. You may also lodge a complaint with a supervisory authority. To
-        exercise rights, contact{" "}
-        <a href={getSupportMailtoHref()}>{SITE_EMAIL_SUPPORT}</a>. We will verify
+        exercise rights, contact <ContactEmail topic="support" />. We will verify
         requests consistent with law and may need your organization to approve
         enterprise requests.
       </p>
@@ -194,11 +193,7 @@ export default function PrivacyPage() {
         required, we will obtain consent as appropriate.
       </p>
 
-      <h2>14. Contact</h2>
-      <p>
-        Privacy and data protection inquiries:{" "}
-        <a href={getSupportMailtoHref()}>{SITE_EMAIL_SUPPORT}</a>
-      </p>
+      <LegalContactSection />
     </LegalLayout>
   );
 }

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { appendAuditEvent } from "@/lib/audit/append";
+import { getOrgContextForUser } from "@/lib/org/context";
 import { runGuardedRemediation } from "@/lib/automations/remediation";
 import { isSloBurnPolicyBlockedReason } from "@/lib/approvals/policy";
 import { OPERATIONAL_RESPONSE_HEADERS } from "@/lib/security/operational-headers";
@@ -53,6 +54,8 @@ export async function POST(req: Request) {
     );
   }
 
+  const orgContext = await getOrgContextForUser(user.id);
+
   const result = await runGuardedRemediation({
     supabase,
     userId: user.id,
@@ -61,10 +64,12 @@ export async function POST(req: Request) {
     rollbackPlan,
     incidentId,
     triggerSource: incidentId ? "incident" : "manual",
+    orgId: orgContext.orgId,
   });
 
   await appendAuditEvent({
     user_id: user.id,
+    org_id: orgContext.orgId,
     event_type: result.ok ? "automation.remediation_executed" : "automation.remediation_blocked",
     details: {
       playbook_id: playbookId,
@@ -77,6 +82,7 @@ export async function POST(req: Request) {
   if (!result.ok && isSloBurnPolicyBlockedReason(result.blockedReason)) {
     await appendAuditEvent({
       user_id: user.id,
+      org_id: orgContext.orgId,
       event_type: "automation.execution_blocked_slo",
       details: {
         playbook_id: playbookId,

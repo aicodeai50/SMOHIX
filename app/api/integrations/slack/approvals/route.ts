@@ -116,6 +116,32 @@ export async function POST(req: Request) {
   }
 
   const updatedAt = new Date().toISOString();
+
+  const { data: pendingRow } = await admin
+    .from("approval_requests")
+    .select("id, user_id, org_id")
+    .eq("id", parsed.approvalId)
+    .eq("status", "pending")
+    .maybeSingle();
+
+  if (!pendingRow) {
+    return NextResponse.json(
+      { ok: false, error: "approval_not_pending_or_not_found" },
+      { status: 404, headers: OPERATIONAL_RESPONSE_HEADERS },
+    );
+  }
+
+  if (pendingRow.org_id) {
+    return NextResponse.json(
+      {
+        ok: false,
+        error: "org_scoped_approval_requires_console",
+        message: "Org-scoped approvals must be decided in the console by a delegated approver.",
+      },
+      { status: 403, headers: OPERATIONAL_RESPONSE_HEADERS },
+    );
+  }
+
   const { data, error } = await admin
     .from("approval_requests")
     .update({ status: parsed.decision, updated_at: updatedAt })

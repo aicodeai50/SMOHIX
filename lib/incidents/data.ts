@@ -1,4 +1,5 @@
 import { isRunbookSlugValid, runbookTitleForSlug } from "@/lib/runbooks/catalog";
+import { orgScopeOrFilter } from "@/lib/org/scope";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 
@@ -96,6 +97,7 @@ function sessionRows(devTenantKey: string | null): IncidentRow[] {
 export async function listIncidentsForUser(
   userId: string,
   devTenantKey: string | null = null,
+  orgId: string | null = null,
 ): Promise<IncidentsListResult> {
   if (!hasSupabaseAuth()) {
     return { source: "session", rows: sessionRows(devTenantKey) };
@@ -103,13 +105,21 @@ export async function listIncidentsForUser(
 
   try {
     const supabase = await createServerSupabaseClient();
-    const { data, error } = await supabase
+    const scopeFilter = orgScopeOrFilter(userId, orgId);
+    let query = supabase
       .from("incidents")
       .select(
         "id, title, severity, status, updated_at, owner_hint, runbook_slug, services(name)",
       )
-      .eq("user_id", userId)
       .order("updated_at", { ascending: false });
+
+    if (scopeFilter) {
+      query = query.or(scopeFilter);
+    } else {
+      query = query.eq("user_id", userId);
+    }
+
+    const { data, error } = await query;
 
     if (error) {
       return { source: "database", rows: [] };
@@ -132,6 +142,7 @@ export async function getIncidentForUser(
   userId: string,
   id: string,
   devTenantKey: string | null = null,
+  _orgId: string | null = null,
 ): Promise<IncidentDetailResult> {
   if (devTenantKey && id.startsWith("dev-")) {
     const row = getDevIncident(devTenantKey, id);
@@ -142,6 +153,9 @@ export async function getIncidentForUser(
           ...row,
           postmortem: null,
           serviceId: null,
+          legalHold: false,
+          legalHoldReason: null,
+          legalHoldSetAt: null,
         },
       };
     }
@@ -153,10 +167,9 @@ export async function getIncidentForUser(
       const { data, error } = await supabase
         .from("incidents")
         .select(
-          "id, title, severity, status, updated_at, postmortem, service_id, owner_hint, runbook_slug, services(name)",
+          "id, title, severity, status, updated_at, postmortem, service_id, owner_hint, runbook_slug, legal_hold, legal_hold_reason, legal_hold_set_at, services(name)",
         )
         .eq("id", id)
-        .eq("user_id", userId)
         .maybeSingle();
 
       if (!error && data) {
@@ -169,6 +182,9 @@ export async function getIncidentForUser(
             ...base,
             postmortem: typeof rec.postmortem === "string" ? rec.postmortem : null,
             serviceId: typeof sid === "string" ? sid : null,
+            legalHold: Boolean(rec.legal_hold),
+            legalHoldReason: strOrNull(rec.legal_hold_reason),
+            legalHoldSetAt: strOrNull(rec.legal_hold_set_at),
           },
         };
       }
@@ -217,8 +233,7 @@ export async function updateIncidentStatusForUser(
     const { error } = await supabase
       .from("incidents")
       .update({ status: s, updated_at: new Date().toISOString() })
-      .eq("id", id)
-      .eq("user_id", userId);
+      .eq("id", id);
 
     if (error) {
       return { ok: false, reason: error.message };
@@ -243,6 +258,7 @@ export async function createIncidentForUser(
     postmortem?: string | null;
     ownerHint?: string | null;
     runbookSlug?: string | null;
+    orgId?: string | null;
   },
 ): Promise<{ ok: true; id: string } | { ok: false; reason: string }> {
   if (!hasSupabaseAuth()) {
@@ -275,9 +291,7 @@ export async function createIncidentForUser(
 
   try {
     const supabase = await createServerSupabaseClient();
-    const { data, error } = await supabase
-      .from("incidents")
-      .insert({
+    const row: Record<string, unknown> = {
         user_id: userId,
         title,
         severity,
@@ -287,7 +301,11 @@ export async function createIncidentForUser(
         ...(postmortem ? { postmortem } : {}),
         ...(ownerHint ? { owner_hint: ownerHint } : {}),
         ...(runbookSlug ? { runbook_slug: runbookSlug } : {}),
-      })
+        ...(input.orgId ? { org_id: input.orgId } : {}),
+      };
+    const { data, error } = await supabase
+      .from("incidents")
+      .insert(row)
       .select("id")
       .single();
 
@@ -345,8 +363,7 @@ export async function updateIncidentContextForUser(
         runbook_slug: runbookSlug,
         updated_at: new Date().toISOString(),
       })
-      .eq("id", id)
-      .eq("user_id", userId);
+      .eq("id", id);
 
     if (error) {
       return { ok: false, reason: error.message };
@@ -377,8 +394,7 @@ export async function updateIncidentPostmortemForUser(
         postmortem: postmortem.trim() || null,
         updated_at: new Date().toISOString(),
       })
-      .eq("id", id)
-      .eq("user_id", userId);
+      .eq("id", id);
 
     if (error) {
       return { ok: false, reason: error.message };

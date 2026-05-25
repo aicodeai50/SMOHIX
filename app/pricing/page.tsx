@@ -3,10 +3,12 @@ import Link from "next/link";
 
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
+import { PricingFeatureMatrix } from "@/components/pricing/PricingFeatureMatrix";
 import {
   SITE_EMAIL_CONTACT,
   getCheckoutUrl,
   getCustomerPortalUrl,
+  getMailtoHref,
   getTeamCheckoutUrl,
   getTrialHref,
 } from "@/lib/billing";
@@ -31,8 +33,8 @@ export default function PricingPage() {
             Pricing
           </h1>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted">
-            Clear plans for teams adopting operational automation. Feature availability and limits are
-            shown at checkout and inside your workspace billing view.
+            Clear plans for teams adopting operational and security automation. Feature availability
+            and limits are shown at checkout and inside your workspace billing view.
           </p>
 
           <div className="mt-10 grid gap-6 lg:grid-cols-3">
@@ -82,13 +84,15 @@ export default function PricingPage() {
                 operational controls.
               </p>
               <a
-                href={`mailto:${SITE_EMAIL_CONTACT}?subject=${encodeURIComponent("Zentro enterprise")}`}
+                href={getMailtoHref("enterprise")}
                 className="mt-6 inline-flex h-10 items-center justify-center rounded-lg border border-white/[0.12] px-4 text-sm font-medium text-foreground/90 hover:border-accent/35"
               >
                 Contact sales
               </a>
             </div>
           </div>
+
+          <PricingFeatureMatrix />
 
           {portal ? (
             <p className="mt-10 text-sm text-muted">
@@ -101,8 +105,16 @@ export default function PricingPage() {
           ) : null}
 
           <p className="mt-8 text-sm text-muted">
+            <Link href="/enterprise" className="font-medium text-accent hover:underline">
+              Enterprise overview →
+            </Link>
+            {" · "}
+            <Link href="/next" className="font-medium text-accent hover:underline">
+              Roadmap →
+            </Link>
+            {" · "}
             <Link href="/platform" className="font-medium text-accent hover:underline">
-              What you are buying — platform overview →
+              Platform →
             </Link>
             {" · "}
             <Link href="/" className="hover:text-accent hover:underline">

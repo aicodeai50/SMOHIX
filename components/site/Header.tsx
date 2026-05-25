@@ -6,13 +6,15 @@ import { MarketingHistoryNav } from "./MarketingHistoryNav";
 const nav = [
   { href: "/", label: "Home" },
   { href: "/platform", label: "Platform" },
+  { href: "/cybersecurity", label: "Cybersecurity" },
+  { href: "/enterprise", label: "Enterprise" },
   { href: "/docs", label: "Docs" },
   { href: "/pricing", label: "Pricing" },
   { href: "/integrations", label: "Integrations" },
   { href: "/trust", label: "Trust" },
   { href: "/security", label: "Security" },
   { href: "/status", label: "Status" },
-  { href: "/changelog", label: "Changelog" },
+  { href: "/next", label: "Next" },
   { href: "/why", label: "Why" },
 ] as const;
 
