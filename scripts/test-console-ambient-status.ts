@@ -5,6 +5,7 @@ import {
   classifyConsoleAmbientHealthForContext,
   consoleAmbientHeadline,
   CONSOLE_AMBIENT_STATUS_VERSION,
+  dryRunAmbientMetrics,
 } from "../lib/console/ambient-status";
 
 function assert(condition: boolean, message: string) {
@@ -184,6 +185,51 @@ assert(servicesSnapshot.phases[0]?.label === "SLO BURN", "services phase first")
 assert(
   consoleAmbientHeadline("attention", "services", { warningBurnServices: 2 }).includes("warning burn"),
   "services attention headline",
+);
+
+assert(
+  classifyConsoleAmbientHealthForContext(
+    {
+      hotIncidents: 0,
+      openIncidents: 0,
+      pendingApprovals: 0,
+      criticalBurnServices: 0,
+      connectorsConfigured: 2,
+      connectorsUp: 0,
+      dryRunCount: 5,
+      dryRunSuccessRate: 40,
+    },
+    "automations",
+  ) === "critical",
+  "automations low dry-run success → critical",
+);
+
+const dryRunMetrics = dryRunAmbientMetrics([{ ok: true }, { ok: false }, { ok: true }]);
+assert(dryRunMetrics.dryRunCount === 3, "dry-run metrics count");
+assert(dryRunMetrics.dryRunSuccessRate === 67, "dry-run metrics success rate");
+assert(dryRunMetrics.dryRunFailures === 1, "dry-run metrics failures");
+
+const automationsSnapshot = buildConsoleAmbientSnapshot({
+  openIncidents: 0,
+  hotIncidents: 0,
+  totalIncidents: 0,
+  pendingApprovals: 1,
+  connectorsUp: 1,
+  connectorsConfigured: 1,
+  dryRunSuccessRate: 72,
+  dryRunCount: 4,
+  criticalBurnServices: 0,
+  signedIn: true,
+  context: "automations",
+});
+assert(automationsSnapshot.phases[0]?.label === "DRY-RUNS", "automations phase first");
+assert(
+  consoleAmbientHeadline("attention", "automations", {
+    pendingApprovals: 1,
+    dryRunCount: 4,
+    dryRunFailures: 1,
+  }).includes("approval"),
+  "automations approval headline",
 );
 
 assert(snapshot.version === CONSOLE_AMBIENT_STATUS_VERSION, "version");

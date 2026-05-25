@@ -4,10 +4,12 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { AutomationsConsole } from "@/components/automations/AutomationsConsole";
+import { ConsoleAmbientBanner } from "@/components/console/ConsoleAmbientBanner";
 import { GuardedAutomationIdentity } from "@/components/guardrails/GuardedAutomationIdentity";
 import { ExecutionBadge } from "@/components/guardrails/ExecutionBadge";
 import { PageHeader } from "@/components/app/PageHeader";
 import { appBody, appPanelTitle } from "@/lib/app-typography";
+import { loadConsoleAmbientSnapshot } from "@/lib/console/load-ambient-status";
 import { getOrgContextForUser } from "@/lib/org/context";
 import { listAutomationDryRuns } from "@/lib/automations/dry-runs-db";
 import { listAutomationExecutionsForUser } from "@/lib/automations/executions-db";
@@ -134,6 +136,7 @@ export default async function AutomationsPage({
   }
 
   const robotConnectorConfigured = Boolean(process.env.ZENTRO_ROBOT_API_URL?.trim());
+  const ambient = await loadConsoleAmbientSnapshot({ context: "automations" });
 
   return (
     <>
@@ -141,6 +144,7 @@ export default async function AutomationsPage({
         title="Automations"
         description="Playbooks with dry-runs against your robot service when ZENTRO_ROBOT_API_URL is set; otherwise simulated runs are recorded. Signed-in accounts persist dry-runs and emit audit events when the automation_dry_runs migration is applied."
       />
+      <ConsoleAmbientBanner snapshot={ambient} />
       <AutomationsConsole
         initialRuns={runs}
         auditTrailOnDryRun={auditTrailOnDryRun}

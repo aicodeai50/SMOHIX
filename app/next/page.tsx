@@ -29,6 +29,10 @@ const ROADMAP: {
     subtitle: "Live in console — 49 migrations and refreshed marketing site.",
     items: [
       {
+        name: "Automations ambient status layer",
+        detail: "Automation-context health pulse on /automations — dry-run success rate, failed runs, and connector health with guardrail-focused headlines.",
+      },
+      {
         name: "Services ambient status layer",
         detail: "Service-context health pulse on /services — SLO burn, catalog size, and connector health with error-budget headlines.",
       },
@@ -70,7 +74,12 @@ const ROADMAP: {
     horizon: "building",
     title: "Building next",
     subtitle: "In active development — sequencing follows customer demand.",
-    items: [],
+    items: [
+      {
+        name: "Audit ambient status layer",
+        detail: "Audit-context health pulse on /audit — export readiness, whisper recency, and append-only trail posture.",
+      },
+    ],
   },
   {
     horizon: "exploring",
@@ -95,7 +104,7 @@ const HORIZON_STYLE: Record<Horizon, { badge: string; glow: string }> = {
   },
 };
 
-const SHIPPING_TOTAL = 60;
+const SHIPPING_TOTAL = 61;
 
 export default function NextPage() {
   return (

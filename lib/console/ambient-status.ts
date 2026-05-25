@@ -1,6 +1,6 @@
 export const CONSOLE_AMBIENT_STATUS_VERSION = "zentro-console-ambient-status/1";
 
-export type ConsoleAmbientContext = "default" | "incidents" | "approvals" | "services";
+export type ConsoleAmbientContext = "default" | "incidents" | "approvals" | "services" | "automations";
 
 export type ConsoleAmbientHealth = "nominal" | "attention" | "critical";
 
@@ -48,6 +48,9 @@ export type ConsoleAmbientCounts = {
   servicesWithSlo?: number;
   criticalBurnServices?: number;
   warningBurnServices?: number;
+  dryRunCount?: number;
+  dryRunSuccessRate?: number;
+  dryRunFailures?: number;
 };
 
 export function classifyConsoleAmbientHealthForContext(
@@ -61,9 +64,29 @@ export function classifyConsoleAmbientHealthForContext(
     pendingHighRisk?: number;
     pendingPolicyGaps?: number;
     warningBurnServices?: number;
+    dryRunCount?: number;
+    dryRunSuccessRate?: number;
   },
   context: ConsoleAmbientContext = "default",
 ): ConsoleAmbientHealth {
+  if (context === "automations") {
+    const dryRunCount = input.dryRunCount ?? 0;
+    const dryRunSuccessRate = input.dryRunSuccessRate ?? 100;
+    if (
+      (dryRunCount >= 3 && dryRunSuccessRate < 50) ||
+      (input.connectorsConfigured > 0 && input.connectorsUp === 0)
+    ) {
+      return "critical";
+    }
+    if (
+      (dryRunCount > 0 && dryRunSuccessRate < 90) ||
+      input.pendingApprovals > 0 ||
+      dryRunCount === 0
+    ) {
+      return "attention";
+    }
+    return "nominal";
+  }
   if (context === "services") {
     if (
       input.criticalBurnServices > 0 ||
@@ -93,6 +116,32 @@ export function consoleAmbientHeadline(
   context: ConsoleAmbientContext = "default",
   counts?: ConsoleAmbientCounts,
 ): string {
+  if (context === "automations") {
+    const dryRunCount = counts?.dryRunCount ?? 0;
+    const dryRunSuccessRate = counts?.dryRunSuccessRate ?? 100;
+    const dryRunFailures = counts?.dryRunFailures ?? 0;
+    const pending = counts?.pendingApprovals ?? 0;
+    if (health === "critical") {
+      if (dryRunCount >= 3 && dryRunSuccessRate < 50) {
+        return `Dry-run success at ${dryRunSuccessRate}% — review playbook guardrails`;
+      }
+      return "Automation connector unhealthy — robot service unreachable";
+    }
+    if (health === "attention") {
+      if (pending > 0) {
+        return `${pending} approval${pending === 1 ? "" : "s"} blocking guarded execution`;
+      }
+      if (dryRunCount > 0 && dryRunFailures > 0) {
+        return `${dryRunFailures} recent dry-run failure${dryRunFailures === 1 ? "" : "s"} — inspect before execute`;
+      }
+      if (dryRunCount === 0) {
+        return "Ready for dry-run — validate playbooks before production execution";
+      }
+    }
+    return dryRunCount > 0
+      ? "Dry-run posture strong — guardrails holding"
+      : "Automation console ready — dry-run first, execute with approval";
+  }
   if (context === "services") {
     const critical = counts?.criticalBurnServices ?? 0;
     const warning = counts?.warningBurnServices ?? 0;
@@ -152,6 +201,22 @@ export function consoleAmbientHeadline(
   return "Operational posture nominal";
 }
 
+export function dryRunAmbientMetrics(runs: readonly { ok: boolean }[]): {
+  dryRunCount: number;
+  dryRunSuccessRate: number;
+  dryRunFailures: number;
+} {
+  const dryRunCount = runs.length;
+  const successful = runs.filter((run) => run.ok).length;
+  const dryRunSuccessRate =
+    dryRunCount > 0 ? Math.round((successful / dryRunCount) * 100) : 0;
+  return {
+    dryRunCount,
+    dryRunSuccessRate,
+    dryRunFailures: dryRunCount - successful,
+  };
+}
+
 export function approvalAmbientMetrics(
   pending: readonly {
     decisionBrief: {
@@ -204,9 +269,19 @@ export function buildConsoleAmbientSnapshot(input: {
       pendingHighRisk: input.pendingHighRisk,
       pendingPolicyGaps: input.pendingPolicyGaps,
       warningBurnServices: input.warningBurnServices,
+      dryRunCount: input.dryRunCount,
+      dryRunSuccessRate: input.dryRunSuccessRate,
     },
     context,
   );
+
+  const dryRunFailures = Math.max(0, input.dryRunCount - Math.round((input.dryRunCount * input.dryRunSuccessRate) / 100));
+  const dryRunPhaseValue =
+    input.dryRunCount > 0
+      ? dryRunFailures > 0
+        ? `${input.dryRunSuccessRate}% success · ${dryRunFailures} failed`
+        : `${input.dryRunSuccessRate}% success · ${input.dryRunCount} runs`
+      : "no runs yet";
 
   const sloPhaseValue =
     input.criticalBurnServices > 0
@@ -257,7 +332,16 @@ export function buildConsoleAmbientSnapshot(input: {
   ];
 
   const phases: ConsoleAmbientPhase[] = input.signedIn
-    ? context === "services"
+    ? context === "automations"
+      ? [
+          { label: "DRY-RUNS", value: dryRunPhaseValue },
+          { label: "GUARDRAILS", value: signedInPhases[4]!.value },
+          signedInPhases[1]!,
+          signedInPhases[2]!,
+          signedInPhases[0]!,
+          signedInPhases[5]!,
+        ]
+      : context === "services"
       ? [
           { label: "SLO BURN", value: sloPhaseValue },
           signedInPhases[2]!,
@@ -279,7 +363,14 @@ export function buildConsoleAmbientSnapshot(input: {
           signedInPhases[5]!,
         ]
       : signedInPhases
-    : [
+    : context === "automations"
+      ? [
+          { label: "DRY-RUNS", value: dryRunPhaseValue },
+          { label: "MODE", value: "LOCAL SESSION" },
+          { label: "GUARDRAILS", value: "dry-run first" },
+          { label: "AUDIT", value: "session trail" },
+        ]
+      : [
         { label: "MODE", value: "LOCAL SESSION" },
         { label: "ACCOUNTS", value: "optional sign-in" },
         { label: "GUARDRAILS", value: "dry-run first" },
@@ -300,6 +391,9 @@ export function buildConsoleAmbientSnapshot(input: {
       servicesWithSlo: input.servicesWithSlo,
       criticalBurnServices: input.criticalBurnServices,
       warningBurnServices: input.warningBurnServices,
+      dryRunCount: input.dryRunCount,
+      dryRunSuccessRate: input.dryRunSuccessRate,
+      dryRunFailures,
     }),
     phases,
   };
