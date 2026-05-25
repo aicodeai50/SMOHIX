@@ -29,6 +29,10 @@ const ROADMAP: {
     subtitle: "Live in console — 49 migrations and refreshed marketing site.",
     items: [
       {
+        name: "Incidents ambient status layer",
+        detail: "Incident-context health pulse on /incidents — hot/open queue counts and triage-focused headlines.",
+      },
+      {
         name: "Hub module personalization",
         detail: "Pin console modules and reorder /hub quick links per user — pinned modules float to the top of the nav rail.",
       },
@@ -83,7 +87,7 @@ const HORIZON_STYLE: Record<Horizon, { badge: string; glow: string }> = {
   },
 };
 
-const SHIPPING_TOTAL = 57;
+const SHIPPING_TOTAL = 58;
 
 export default function NextPage() {
   return (

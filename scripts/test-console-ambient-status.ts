@@ -61,6 +61,34 @@ const snapshot = buildConsoleAmbientSnapshot({
 assert(snapshot.health === "attention", "snapshot attention");
 assert(snapshot.phases.length >= 5, "phases populated");
 assert(snapshot.headline === consoleAmbientHeadline("attention"), "headline");
+assert(
+  consoleAmbientHeadline("critical", "incidents", { openIncidents: 2, hotIncidents: 1 }).includes(
+    "1 critical/high",
+  ),
+  "incidents critical headline",
+);
+assert(
+  consoleAmbientHeadline("nominal", "incidents", { openIncidents: 0, hotIncidents: 0 }).includes(
+    "queue clear",
+  ),
+  "incidents nominal headline",
+);
+
+const incidentsSnapshot = buildConsoleAmbientSnapshot({
+  openIncidents: 2,
+  hotIncidents: 1,
+  totalIncidents: 5,
+  pendingApprovals: 0,
+  connectorsUp: 1,
+  connectorsConfigured: 1,
+  dryRunSuccessRate: 100,
+  dryRunCount: 1,
+  criticalBurnServices: 0,
+  signedIn: true,
+  context: "incidents",
+});
+assert(incidentsSnapshot.phases[0]?.value.includes("hot"), "incidents phase shows hot count");
+
 assert(snapshot.version === CONSOLE_AMBIENT_STATUS_VERSION, "version");
 
 console.log("test-console-ambient-status: ok");

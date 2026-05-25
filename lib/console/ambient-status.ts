@@ -1,5 +1,7 @@
 export const CONSOLE_AMBIENT_STATUS_VERSION = "zentro-console-ambient-status/1";
 
+export type ConsoleAmbientContext = "default" | "incidents";
+
 export type ConsoleAmbientHealth = "nominal" | "attention" | "critical";
 
 export type ConsoleAmbientPhase = {
@@ -36,7 +38,26 @@ export function classifyConsoleAmbientHealth(input: {
   return "nominal";
 }
 
-export function consoleAmbientHeadline(health: ConsoleAmbientHealth): string {
+export function consoleAmbientHeadline(
+  health: ConsoleAmbientHealth,
+  context: ConsoleAmbientContext = "default",
+  counts?: { openIncidents: number; hotIncidents: number },
+): string {
+  if (context === "incidents") {
+    if (health === "critical") {
+      const hot = counts?.hotIncidents ?? 0;
+      return hot > 0
+        ? `${hot} critical/high incident${hot === 1 ? "" : "s"} need immediate triage`
+        : "Critical incident signals require response";
+    }
+    if (health === "attention") {
+      const open = counts?.openIncidents ?? 0;
+      return open > 0
+        ? `${open} open incident${open === 1 ? "" : "s"} in the response queue`
+        : "Active incident workload — review timelines and ownership";
+    }
+    return "Incident queue clear — no active response workload";
+  }
   if (health === "critical") return "Critical signals require response";
   if (health === "attention") return "Active workload — review queue and incidents";
   return "Operational posture nominal";
@@ -53,6 +74,7 @@ export function buildConsoleAmbientSnapshot(input: {
   dryRunCount: number;
   criticalBurnServices: number;
   signedIn: boolean;
+  context?: ConsoleAmbientContext;
   generatedAt?: string;
 }): ConsoleAmbientSnapshot {
   const health = classifyConsoleAmbientHealth({
@@ -64,11 +86,15 @@ export function buildConsoleAmbientSnapshot(input: {
     connectorsUp: input.connectorsUp,
   });
 
+  const context = input.context ?? "default";
   const phases: ConsoleAmbientPhase[] = input.signedIn
     ? [
         {
           label: "INCIDENTS",
-          value: `${input.openIncidents} open · ${input.totalIncidents} total`,
+          value:
+            input.hotIncidents > 0
+              ? `${input.hotIncidents} hot · ${input.openIncidents} open`
+              : `${input.openIncidents} open · ${input.totalIncidents} total`,
         },
         {
           label: "APPROVALS",
@@ -103,7 +129,10 @@ export function buildConsoleAmbientSnapshot(input: {
     version: CONSOLE_AMBIENT_STATUS_VERSION,
     generatedAt: input.generatedAt ?? new Date().toISOString(),
     health,
-    headline: consoleAmbientHeadline(health),
+    headline: consoleAmbientHeadline(health, context, {
+      openIncidents: input.openIncidents,
+      hotIncidents: input.hotIncidents,
+    }),
     phases,
   };
 }

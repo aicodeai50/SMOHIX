@@ -5,7 +5,9 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
+import { ConsoleAmbientBanner } from "@/components/console/ConsoleAmbientBanner";
 import { appBody, appMeta } from "@/lib/app-typography";
+import { loadConsoleAmbientSnapshot } from "@/lib/console/load-ambient-status";
 import { listIncidentsForUser } from "@/lib/incidents/data";
 import { getOrgContextForUser } from "@/lib/org/context";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
@@ -38,10 +40,11 @@ export default async function IncidentsPage() {
   }
 
   const { source, rows } = await listIncidentsForUser(userId ?? "", devTenantKey, activeOrgId);
+  const ambient = await loadConsoleAmbientSnapshot({ context: "incidents" });
 
   return (
     <>
-      <div className="mb-8 flex flex-wrap items-start justify-between gap-4">
+      <div className="mb-4 flex flex-wrap items-start justify-between gap-4">
         <PageHeader
           className="min-w-0 flex-1"
           title="Incidents"
@@ -54,6 +57,7 @@ export default async function IncidentsPage() {
           New incident
         </Link>
       </div>
+      <ConsoleAmbientBanner snapshot={ambient} />
       {source === "session" ? (
         <p className={`shynvo-glass-subtle mb-4 rounded-xl px-4 py-3 ${appMeta}`}>
           Incidents are currently scoped to this browser session. Sign in to a configured workspace

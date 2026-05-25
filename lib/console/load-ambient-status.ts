@@ -5,6 +5,7 @@ import { listAutomationDryRuns } from "@/lib/automations/dry-runs-db";
 import { listDryRuns } from "@/lib/automations/runs-dev";
 import {
   buildConsoleAmbientSnapshot,
+  type ConsoleAmbientContext,
   type ConsoleAmbientSnapshot,
 } from "@/lib/console/ambient-status";
 import { getConnectorHealthRows } from "@/lib/connectors-health";
@@ -14,7 +15,10 @@ import { getErrorBudgetOverviewSummary } from "@/lib/services/slo";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-export async function loadConsoleAmbientSnapshot(): Promise<ConsoleAmbientSnapshot> {
+export async function loadConsoleAmbientSnapshot(options?: {
+  context?: ConsoleAmbientContext;
+}): Promise<ConsoleAmbientSnapshot> {
+  const context = options?.context ?? "default";
   if (!hasSupabaseAuth()) {
     const devTenantKey = (await cookies()).get("zentro_dev_tid")?.value ?? "anon";
     const { rows: incidents } = await listIncidentsForUser("", devTenantKey, null);
@@ -36,6 +40,7 @@ export async function loadConsoleAmbientSnapshot(): Promise<ConsoleAmbientSnapsh
       dryRunCount: dryRuns.length,
       criticalBurnServices: 0,
       signedIn: false,
+      context,
     });
   }
 
@@ -56,6 +61,7 @@ export async function loadConsoleAmbientSnapshot(): Promise<ConsoleAmbientSnapsh
       dryRunCount: 0,
       criticalBurnServices: 0,
       signedIn: false,
+      context,
     });
   }
 
@@ -93,5 +99,6 @@ export async function loadConsoleAmbientSnapshot(): Promise<ConsoleAmbientSnapsh
     dryRunCount: dryRuns.runs.length,
     criticalBurnServices,
     signedIn: true,
+    context,
   });
 }

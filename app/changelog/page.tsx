@@ -14,6 +14,15 @@ export const metadata: Metadata = {
 const ENTRIES: { date: string; title: string; bullets: string[] }[] = [
   {
     date: "May 2026",
+    title: "Incidents ambient status layer",
+    bullets: [
+      "Live health pulse banner on /incidents with incident-context headlines and hot/open queue counts",
+      "Extends console ambient telemetry — same lattice UI as /hub and /overview",
+      "Regression: npm run test:console-ambient-status",
+    ],
+  },
+  {
+    date: "May 2026",
     title: "Console jump search pinned shortcuts",
     bullets: [
       "Ctrl/Cmd+K idle dropdown lists pinned modules before recently opened routes",
