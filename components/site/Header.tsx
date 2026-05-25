@@ -20,7 +20,7 @@ const nav = [
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-background/75 backdrop-blur-xl">
+    <header className="zentro-header-living sticky top-0 z-50 border-b border-white/[0.06] bg-background/75 backdrop-blur-xl">
       <div className="mx-auto flex min-h-16 max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-3 px-4 py-3 sm:px-6 md:h-16 md:flex-nowrap md:py-0">
         <Link href="/" className="min-w-0 shrink-0 text-foreground no-underline">
           <Logo />

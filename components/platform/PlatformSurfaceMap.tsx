@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { LivingPulse } from "@/components/landing/LivingPulse";
 import { MarketingReveal } from "@/components/marketing/MarketingReveal";
 import {
   mArticle,
@@ -159,10 +160,11 @@ const EQUIPMENT_NEXT_FIVE = [
 
 export function PlatformSurfaceMap() {
   return (
-    <MarketingReveal as="article" className={mArticle}>
-      <p className={mEyebrow}>Platform</p>
-      <h1 className="mt-2 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-        Operational surfaces, one click to open
+    <MarketingReveal as="article" className={`${mArticle} zentro-quantum-section`}>
+      <LivingPulse />
+      <p className={`${mEyebrow} zentro-eyebrow-cyber`}>⟡ Platform manifold</p>
+      <h1 className="zentro-living-headline mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
+        Operational surfaces — one living spine
       </h1>
       <p className="mt-2 text-sm leading-6 text-foreground/80 sm:text-base sm:leading-7">
         {SITE_BRAND_NAME} is a controlled operations console: incidents, automations, approvals, audit,

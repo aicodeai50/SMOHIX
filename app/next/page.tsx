@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { DimensionGate } from "@/components/landing/DimensionGate";
+import { LivingPulse } from "@/components/landing/LivingPulse";
+import { MarketingQuantumShell } from "@/components/landing/MarketingQuantumShell";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
 import { SITE_EMAIL_CONTACT, getMailtoHref } from "@/lib/billing";
@@ -23,8 +26,9 @@ const ROADMAP: {
   {
     horizon: "shipping",
     title: "Shipping now",
-    subtitle: "Live in console — 46+ compliance migrations and growing.",
+    subtitle: "Live in console — 47 migrations and a living quantum marketing dimension.",
     items: [
+      { name: "Living quantum marketing dimension", detail: "Particle lattice, singularity field, and living pulse across homepage and key marketing pages." },
       { name: "Cross-staffing committee escalation", detail: "Post-rollup SLA breach escalation at /governance/compliance/cross-staffing-committee-escalation." },
       { name: "Staffing action SLA breach digest", detail: "Post-peak completion SLA alerts at /governance/compliance/staffing-sla-breach-digest." },
       { name: "Staffing completion rollup export", detail: "Printable HTML/PDF archive at /governance/compliance/staffing-completion-rollup." },
@@ -32,21 +36,29 @@ const ROADMAP: {
       { name: "Obligation staffing action tracker", detail: "Track relief actions at /governance/compliance/staffing-actions." },
       { name: "Committee peak-week staffing digest", detail: "Capacity + load alert at /governance/compliance/peak-week-staffing-digest." },
       { name: "Compliance program dashboard", detail: "Executive rollup at /governance/compliance/program." },
-      { name: "Unified assessor workbook", detail: "ZIP evidence bundle at /governance/compliance/workbook." },
-      { name: "Eight-framework GRC packs", detail: "SOC 2, ISO, PCI, HIPAA, NIST CSF, CIS v8, CMMC L2, GDPR — full history in changelog." },
     ],
   },
   {
     horizon: "building",
     title: "Building next",
     subtitle: "In active development — sequencing follows customer demand.",
-    items: [],
+    items: [
+      {
+        name: "Staffing digest auto-chain cron",
+        detail: "Single scheduled run: completion rollup → SLA breach digest → committee escalation per org per UTC week.",
+      },
+    ],
   },
   {
     horizon: "exploring",
     title: "Exploring",
     subtitle: "Research and design — not committed timelines.",
-    items: [],
+    items: [
+      {
+        name: "Console ambient dimension",
+        detail: "Living particle lattice and coherence pulse in the signed-in hub and overview.",
+      },
+    ],
   },
 ];
 
@@ -65,96 +77,103 @@ const HORIZON_STYLE: Record<Horizon, { badge: string; glow: string }> = {
   },
 };
 
-const SHIPPING_TOTAL = 52;
+const SHIPPING_TOTAL = 53;
 
 export default function NextPage() {
   return (
     <>
       <Header />
-      <main className="flex-1 border-b border-white/[0.06]">
-        <div className="zentro-hero-future border-b border-white/[0.06]">
-          <article className={`${mArticle} max-w-4xl`}>
-            <p className={`${mEyebrow} zentro-eyebrow-cyber`}>Roadmap</p>
-            <h1 className={`mt-2 shynvo-headline zentro-living-headline ${mH1}`}>What&apos;s next for {SITE_BRAND_NAME}</h1>
-            <p className={`mt-4 ${mBody} text-base sm:text-lg`}>
-              Transparent sequencing for security, enterprise, and operations depth. Directional —
-              not a contractual commitment.
-            </p>
-          </article>
-        </div>
-
-        <div className={`${mContainer} py-12 sm:py-16`}>
-          <div className="grid gap-6 lg:grid-cols-3">
-            {ROADMAP.map((block) => {
-              const style = HORIZON_STYLE[block.horizon];
-              return (
-                <section
-                  key={block.title}
-                  className="zentro-bento-cell relative overflow-hidden rounded-2xl p-6"
-                >
-                  <div
-                    className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${style.glow} opacity-90`}
-                    aria-hidden
-                  />
-                  <div className="relative">
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <h2 className={mH2}>{block.title}</h2>
-                      <span
-                        className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${style.badge}`}
-                      >
-                        {block.horizon}
-                      </span>
-                    </div>
-                    <p className={`mt-2 ${mBody}`}>{block.subtitle}</p>
-
-                    {block.items.length > 0 ? (
-                      <ul className="mt-6 space-y-4">
-                        {block.items.map((item) => (
-                          <li
-                            key={item.name}
-                            className="rounded-xl border border-white/[0.06] bg-black/20 p-4"
-                          >
-                            <h3 className={`text-sm ${mCardTitle}`}>{item.name}</h3>
-                            <p className={`mt-1.5 text-xs leading-relaxed ${mBody}`}>{item.detail}</p>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p className={`mt-6 rounded-xl border border-dashed border-white/[0.08] p-4 text-sm ${mBody}`}>
-                        Queue clear — focus is on shipping backlog. Watch{" "}
-                        <Link href="/changelog" className="text-accent hover:underline">
-                          changelog
-                        </Link>
-                        .
-                      </p>
-                    )}
-
-                    {block.horizon === "shipping" ? (
-                      <p className={`mt-6 text-xs ${mBody}`}>
-                        Showing latest 8 of {SHIPPING_TOTAL}+ shipped capabilities.{" "}
-                        <Link href="/changelog" className="font-medium text-accent hover:underline">
-                          Full changelog →
-                        </Link>
-                      </p>
-                    ) : null}
-                  </div>
-                </section>
-              );
-            })}
+      <MarketingQuantumShell>
+        <main className="flex-1 border-b border-white/[0.06]">
+          <div className="zentro-hero-future zentro-quantum-section border-b border-white/[0.06]">
+            <article className={`${mArticle} max-w-4xl`}>
+              <LivingPulse />
+              <p className={`${mEyebrow} zentro-eyebrow-cyber`}>⟡ Roadmap dimension</p>
+              <h1 className={`mt-2 shynvo-headline zentro-living-headline ${mH1}`}>
+                What&apos;s next for {SITE_BRAND_NAME}
+              </h1>
+              <p className={`mt-4 ${mBody} text-base sm:text-lg`}>
+                Transparent sequencing for security, enterprise, and operations depth. Directional —
+                not a contractual commitment.
+              </p>
+            </article>
           </div>
 
-          <p className={`${mBody} mt-12 text-center`}>
-            Want something prioritized?{" "}
-            <a href={getMailtoHref()} className="text-accent hover:underline">
-              {SITE_EMAIL_CONTACT}
-            </a>
-            {" · "}
-            <Link href="/integrations" className="text-accent hover:underline">
-              Integrations
-            </Link>
-          </p>
-        </div>
-      </main>
+          <DimensionGate />
+
+          <div className={`${mContainer} zentro-quantum-section py-12 sm:py-16`}>
+            <div className="grid gap-6 lg:grid-cols-3">
+              {ROADMAP.map((block) => {
+                const style = HORIZON_STYLE[block.horizon];
+                return (
+                  <section
+                    key={block.title}
+                    className="zentro-bento-cell relative overflow-hidden rounded-2xl p-6"
+                  >
+                    <div
+                      className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${style.glow} opacity-90`}
+                      aria-hidden
+                    />
+                    <div className="relative">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <h2 className={`zentro-living-headline ${mH2}`}>{block.title}</h2>
+                        <span
+                          className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${style.badge}`}
+                        >
+                          {block.horizon}
+                        </span>
+                      </div>
+                      <p className={`mt-2 ${mBody}`}>{block.subtitle}</p>
+
+                      {block.items.length > 0 ? (
+                        <ul className="mt-6 space-y-4">
+                          {block.items.map((item) => (
+                            <li
+                              key={item.name}
+                              className="rounded-xl border border-white/[0.06] bg-black/20 p-4"
+                            >
+                              <h3 className={`text-sm ${mCardTitle}`}>{item.name}</h3>
+                              <p className={`mt-1.5 text-xs leading-relaxed ${mBody}`}>{item.detail}</p>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className={`mt-6 rounded-xl border border-dashed border-white/[0.08] p-4 text-sm ${mBody}`}>
+                          Queue clear — watch{" "}
+                          <Link href="/changelog" className="text-accent hover:underline">
+                            changelog
+                          </Link>
+                          .
+                        </p>
+                      )}
+
+                      {block.horizon === "shipping" ? (
+                        <p className={`mt-6 text-xs ${mBody}`}>
+                          Showing latest 8 of {SHIPPING_TOTAL}+ shipped capabilities.{" "}
+                          <Link href="/changelog" className="font-medium text-accent hover:underline">
+                            Full changelog →
+                          </Link>
+                        </p>
+                      ) : null}
+                    </div>
+                  </section>
+                );
+              })}
+            </div>
+
+            <p className={`${mBody} mt-12 text-center`}>
+              Want something prioritized?{" "}
+              <a href={getMailtoHref()} className="text-accent hover:underline">
+                {SITE_EMAIL_CONTACT}
+              </a>
+              {" · "}
+              <Link href="/integrations" className="text-accent hover:underline">
+                Integrations
+              </Link>
+            </p>
+          </div>
+        </main>
+      </MarketingQuantumShell>
       <Footer />
     </>
   );
