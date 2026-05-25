@@ -44,12 +44,12 @@ const STEPS = [
 export function HowItWorksSection() {
   return (
     <MarketingReveal
-      id="how-it-works"
+      id="incident-flow"
       className={`${mSection} zentro-quantum-section`}
       aria-labelledby="how-heading"
     >
       <div className={mContainer}>
-        <p className={`${mEyebrow} zentro-eyebrow-cyber`}>Operator flow</p>
+        <p className={`${mEyebrow} zentro-eyebrow-cyber`}>Full incident flow</p>
         <h2 id="how-heading" className={`zentro-living-headline mt-2 ${mH2}`}>
           How {SITE_BRAND_NAME} runs an incident
         </h2>

@@ -93,6 +93,14 @@ export function Footer() {
                 <Link href="/docs/api" className="w-fit hover:text-foreground md:ml-auto">
                   API reference
                 </Link>
+                <a
+                  href="https://github.com/aicodeai50/ZENTRO"
+                  className="w-fit hover:text-foreground md:ml-auto"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  GitHub
+                </a>
                 <Link href="/why" className="w-fit hover:text-foreground md:ml-auto">
                   Why {SITE_BRAND_NAME}
                 </Link>

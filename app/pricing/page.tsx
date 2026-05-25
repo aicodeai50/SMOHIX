@@ -15,7 +15,7 @@ import {
 
 export const metadata: Metadata = {
   title: "Pricing",
-  description: "Zentro plans — Pro, Team, and how to talk to us for larger rollouts.",
+  description: "Zentro plans — Free, Pro, Team, Enterprise, and how to talk to us for larger rollouts.",
 };
 
 export default function PricingPage() {
@@ -37,7 +37,21 @@ export default function PricingPage() {
             and limits are shown at checkout and inside your workspace billing view.
           </p>
 
-          <div className="mt-10 grid gap-6 lg:grid-cols-3">
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="rounded-2xl border border-white/[0.1] bg-white/[0.02] p-6">
+              <h2 className="text-lg font-semibold text-foreground">Free</h2>
+              <p className="mt-1 text-sm font-medium text-muted">$0</p>
+              <p className="mt-2 text-sm leading-relaxed text-muted">
+                Explore the console layout, platform map, and documentation before you subscribe.
+              </p>
+              <Link
+                href="/auth/sign-in?next=/hub"
+                className="mt-6 inline-flex h-10 items-center justify-center rounded-lg border border-white/[0.12] px-4 text-sm font-medium text-foreground/90 hover:border-accent/35"
+              >
+                Create account
+              </Link>
+            </div>
+
             <div className="rounded-2xl border border-white/[0.1] bg-white/[0.02] p-6">
               <h2 className="text-lg font-semibold text-foreground">Pro</h2>
               <p className="mt-2 text-sm leading-relaxed text-muted">

@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { MarketingReveal } from "@/components/marketing/MarketingReveal";
 import {
   mContainer,
+  mEyebrow,
   mH2,
   mLede,
   mSectionPreview,
@@ -11,13 +12,14 @@ import {
 export function ProductConsolePreview() {
   return (
     <MarketingReveal
-      id="preview"
+      id="product-preview"
       className={mSectionPreview}
       aria-labelledby="preview-heading"
     >
       <div className={mContainer}>
-        <h2 id="preview-heading" className={mH2}>
-          Unified command preview
+        <p className={`${mEyebrow} zentro-eyebrow-cyber`}>Product preview</p>
+        <h2 id="preview-heading" className={`zentro-living-headline ${mH2}`}>
+          Unified command console
         </h2>
         <p className={mLede}>
           Six surfaces security and platform teams run together — incidents, exposure, network

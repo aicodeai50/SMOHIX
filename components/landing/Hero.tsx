@@ -67,6 +67,24 @@ export function Hero({
             </div>
 
             <p className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted">
+              <a href="#how-it-works" className="hover:text-accent hover:underline">
+                How it works
+              </a>
+              <span className="text-muted/35" aria-hidden>
+                ·
+              </span>
+              <a href="#product-preview" className="hover:text-accent hover:underline">
+                Product preview
+              </a>
+              <span className="text-muted/35" aria-hidden>
+                ·
+              </span>
+              <a href="#pricing" className="hover:text-accent hover:underline">
+                Pricing
+              </a>
+              <span className="text-muted/35" aria-hidden>
+                ·
+              </span>
               <Link href="/platform" className="hover:text-accent hover:underline">
                 Platform map
               </Link>
