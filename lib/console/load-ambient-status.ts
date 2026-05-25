@@ -12,6 +12,7 @@ import {
 import { getConnectorHealthRows } from "@/lib/connectors-health";
 import { listIncidentsForUser } from "@/lib/incidents/data";
 import { getOrgContextForUser } from "@/lib/org/context";
+import { listServicesForUser } from "@/lib/services/data";
 import { getErrorBudgetOverviewSummary } from "@/lib/services/slo";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -95,9 +96,17 @@ export async function loadConsoleAmbientSnapshot(options?: {
     dryRuns.runs.length > 0 ? Math.round((successful / dryRuns.runs.length) * 100) : 0;
 
   let criticalBurnServices = 0;
+  let warningBurnServices = 0;
+  let servicesWithSlo = 0;
+  let totalServices = 0;
   if (orgId) {
     const errorBudget = await getErrorBudgetOverviewSummary(supabase, user.id, orgId);
     criticalBurnServices = errorBudget.criticalBurnServices;
+    warningBurnServices = errorBudget.warningBurnServices;
+    servicesWithSlo = errorBudget.servicesWithSlo;
+  }
+  if (context === "services") {
+    totalServices = (await listServicesForUser(user.id, orgId)).length;
   }
 
   const open = incidents.filter((r) => r.status !== "resolved").length;
@@ -118,6 +127,9 @@ export async function loadConsoleAmbientSnapshot(options?: {
     dryRunSuccessRate,
     dryRunCount: dryRuns.runs.length,
     criticalBurnServices,
+    warningBurnServices,
+    totalServices,
+    servicesWithSlo,
     signedIn: true,
     context,
   });

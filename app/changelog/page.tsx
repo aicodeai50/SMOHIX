@@ -14,6 +14,15 @@ export const metadata: Metadata = {
 const ENTRIES: { date: string; title: string; bullets: string[] }[] = [
   {
     date: "May 2026",
+    title: "Services ambient status layer",
+    bullets: [
+      "Live health pulse banner on /services with SLO burn, catalog, and connector-context headlines",
+      "Services-first phase order — critical/warning error budget counts surfaced in the ambient lattice",
+      "Regression: npm run test:console-ambient-status",
+    ],
+  },
+  {
+    date: "May 2026",
     title: "Approvals ambient status layer",
     bullets: [
       "Live health pulse banner on /approvals with approval-context headlines and high-risk / policy-gap counts",

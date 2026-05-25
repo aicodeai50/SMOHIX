@@ -148,6 +148,44 @@ assert(
   "approvals critical headline",
 );
 
+assert(
+  classifyConsoleAmbientHealthForContext(
+    {
+      hotIncidents: 0,
+      openIncidents: 0,
+      pendingApprovals: 0,
+      criticalBurnServices: 1,
+      connectorsConfigured: 2,
+      connectorsUp: 2,
+      warningBurnServices: 0,
+    },
+    "services",
+  ) === "critical",
+  "services critical burn → critical",
+);
+
+const servicesSnapshot = buildConsoleAmbientSnapshot({
+  openIncidents: 1,
+  hotIncidents: 0,
+  totalIncidents: 3,
+  pendingApprovals: 0,
+  connectorsUp: 2,
+  connectorsConfigured: 2,
+  dryRunSuccessRate: 100,
+  dryRunCount: 2,
+  criticalBurnServices: 0,
+  warningBurnServices: 2,
+  totalServices: 5,
+  servicesWithSlo: 4,
+  signedIn: true,
+  context: "services",
+});
+assert(servicesSnapshot.phases[0]?.label === "SLO BURN", "services phase first");
+assert(
+  consoleAmbientHeadline("attention", "services", { warningBurnServices: 2 }).includes("warning burn"),
+  "services attention headline",
+);
+
 assert(snapshot.version === CONSOLE_AMBIENT_STATUS_VERSION, "version");
 
 console.log("test-console-ambient-status: ok");

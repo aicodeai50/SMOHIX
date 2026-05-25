@@ -1,6 +1,6 @@
 export const CONSOLE_AMBIENT_STATUS_VERSION = "zentro-console-ambient-status/1";
 
-export type ConsoleAmbientContext = "default" | "incidents" | "approvals";
+export type ConsoleAmbientContext = "default" | "incidents" | "approvals" | "services";
 
 export type ConsoleAmbientHealth = "nominal" | "attention" | "critical";
 
@@ -44,6 +44,10 @@ export type ConsoleAmbientCounts = {
   pendingApprovals?: number;
   pendingHighRisk?: number;
   pendingPolicyGaps?: number;
+  totalServices?: number;
+  servicesWithSlo?: number;
+  criticalBurnServices?: number;
+  warningBurnServices?: number;
 };
 
 export function classifyConsoleAmbientHealthForContext(
@@ -56,9 +60,22 @@ export function classifyConsoleAmbientHealthForContext(
     connectorsUp: number;
     pendingHighRisk?: number;
     pendingPolicyGaps?: number;
+    warningBurnServices?: number;
   },
   context: ConsoleAmbientContext = "default",
 ): ConsoleAmbientHealth {
+  if (context === "services") {
+    if (
+      input.criticalBurnServices > 0 ||
+      (input.connectorsConfigured > 0 && input.connectorsUp === 0)
+    ) {
+      return "critical";
+    }
+    if ((input.warningBurnServices ?? 0) > 0) {
+      return "attention";
+    }
+    return "nominal";
+  }
   if (context === "approvals") {
     if ((input.pendingHighRisk ?? 0) > 0 || (input.pendingPolicyGaps ?? 0) > 0) {
       return "critical";
@@ -76,6 +93,25 @@ export function consoleAmbientHeadline(
   context: ConsoleAmbientContext = "default",
   counts?: ConsoleAmbientCounts,
 ): string {
+  if (context === "services") {
+    const critical = counts?.criticalBurnServices ?? 0;
+    const warning = counts?.warningBurnServices ?? 0;
+    const catalog = counts?.totalServices ?? 0;
+    if (health === "critical") {
+      if (critical > 0) {
+        return `${critical} service${critical === 1 ? "" : "s"} in critical error budget burn`;
+      }
+      return "Connector health critical — alert ingest may be impaired";
+    }
+    if (health === "attention") {
+      return warning > 0
+        ? `${warning} service${warning === 1 ? "" : "s"} at warning burn — review SLO posture`
+        : "Review service catalog, SLO targets, and dependency edges";
+    }
+    return catalog > 0
+      ? "Service catalog healthy — SLOs within budget"
+      : "Add services to the catalog and wire alert ingest";
+  }
   if (context === "approvals") {
     const pending = counts?.pendingApprovals ?? 0;
     const highRisk = counts?.pendingHighRisk ?? 0;
@@ -151,6 +187,9 @@ export function buildConsoleAmbientSnapshot(input: {
   context?: ConsoleAmbientContext;
   pendingHighRisk?: number;
   pendingPolicyGaps?: number;
+  warningBurnServices?: number;
+  totalServices?: number;
+  servicesWithSlo?: number;
   generatedAt?: string;
 }): ConsoleAmbientSnapshot {
   const context = input.context ?? "default";
@@ -164,9 +203,19 @@ export function buildConsoleAmbientSnapshot(input: {
       connectorsUp: input.connectorsUp,
       pendingHighRisk: input.pendingHighRisk,
       pendingPolicyGaps: input.pendingPolicyGaps,
+      warningBurnServices: input.warningBurnServices,
     },
     context,
   );
+
+  const sloPhaseValue =
+    input.criticalBurnServices > 0
+      ? `${input.criticalBurnServices} critical${(input.warningBurnServices ?? 0) > 0 ? ` · ${input.warningBurnServices} warning` : ""}`
+      : (input.warningBurnServices ?? 0) > 0
+        ? `${input.warningBurnServices} warning`
+        : (input.servicesWithSlo ?? 0) > 0
+          ? `${input.servicesWithSlo} SLO-covered · within budget`
+          : "no SLOs configured";
 
   const approvalPhaseValue =
     input.pendingApprovals > 0
@@ -208,7 +257,19 @@ export function buildConsoleAmbientSnapshot(input: {
   ];
 
   const phases: ConsoleAmbientPhase[] = input.signedIn
-    ? context === "approvals"
+    ? context === "services"
+      ? [
+          { label: "SLO BURN", value: sloPhaseValue },
+          signedInPhases[2]!,
+          {
+            label: "CATALOG",
+            value: `${input.totalServices ?? 0} service${input.totalServices === 1 ? "" : "s"}`,
+          },
+          signedInPhases[0]!,
+          signedInPhases[1]!,
+          signedInPhases[5]!,
+        ]
+      : context === "approvals"
       ? [
           signedInPhases[1]!,
           { label: "GUARDRAILS", value: signedInPhases[4]!.value },
@@ -235,6 +296,10 @@ export function buildConsoleAmbientSnapshot(input: {
       pendingApprovals: input.pendingApprovals,
       pendingHighRisk: input.pendingHighRisk,
       pendingPolicyGaps: input.pendingPolicyGaps,
+      totalServices: input.totalServices,
+      servicesWithSlo: input.servicesWithSlo,
+      criticalBurnServices: input.criticalBurnServices,
+      warningBurnServices: input.warningBurnServices,
     }),
     phases,
   };

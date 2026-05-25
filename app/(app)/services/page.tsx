@@ -5,9 +5,11 @@ import { redirect } from "next/navigation";
 import { AlertIngestPanel } from "@/components/settings/AlertIngestPanel";
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
+import { ConsoleAmbientBanner } from "@/components/console/ConsoleAmbientBanner";
 import { PlaceholderCard } from "@/components/app/PlaceholderCard";
 import { appBody, appLabel, appMeta, appOverline, appPanelTitle } from "@/lib/app-typography";
 import { billingPlanFromSummary, getSubscriptionSummary } from "@/lib/billing/plan";
+import { loadConsoleAmbientSnapshot } from "@/lib/console/load-ambient-status";
 import { listServiceDependencyGraphForUser } from "@/lib/services/dependencies";
 import { getOrgContextForUser } from "@/lib/org/context";
 import { listServicesForUser } from "@/lib/services/data";
@@ -73,11 +75,14 @@ export default async function ServicesPage({
 
   const orgContext = await getOrgContextForUser(user.id);
 
-  const rows = await listServicesForUser(user.id, orgContext.orgId);
-  const dependencyGraph = await listServiceDependencyGraphForUser(supabase, user.id, orgContext.orgId);
-  const sloSummary = await getErrorBudgetOverviewSummary(supabase, user.id, orgContext.orgId);
-  const sloConfigs = await listServiceSloConfigsForUser(supabase, user.id, orgContext.orgId);
-  const latestBurnStates = await listLatestBurnStatesForUser(supabase, user.id, orgContext.orgId);
+  const [rows, dependencyGraph, sloSummary, sloConfigs, latestBurnStates, ambient] = await Promise.all([
+    listServicesForUser(user.id, orgContext.orgId),
+    listServiceDependencyGraphForUser(supabase, user.id, orgContext.orgId),
+    getErrorBudgetOverviewSummary(supabase, user.id, orgContext.orgId),
+    listServiceSloConfigsForUser(supabase, user.id, orgContext.orgId),
+    listLatestBurnStatesForUser(supabase, user.id, orgContext.orgId),
+    loadConsoleAmbientSnapshot({ context: "services" }),
+  ]);
   const sloByServiceId = new Map(sloConfigs.map((cfg) => [cfg.serviceId, cfg]));
   const burnRank = new Map([
     ["critical", 0],
@@ -131,6 +136,7 @@ export default async function ServicesPage({
         title="Services"
         description="Catalog systems you operate, attach them to incidents, and accept monitoring webhooks. SLO burn and dependency edges are shared when an organization is active."
       />
+      <ConsoleAmbientBanner snapshot={ambient} />
       {err ? (
         <p className={`mb-4 rounded-xl border border-danger/25 bg-danger-dim/50 px-4 py-3 text-danger ${appBody}`}>
           {err}
