@@ -45,3 +45,6 @@ next-env.d.ts
 # Cursor / local agent hints (not required for deploy)
 AGENTS.md
 CLAUDE.md
+
+# Local Netlify folder
+.netlify
