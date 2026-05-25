@@ -24,9 +24,9 @@ export function ConnectCTA({
           <div className="zentro-dimension-rift pointer-events-none absolute inset-0 opacity-25" aria-hidden />
           <div className="zentro-scan-sweep pointer-events-none absolute inset-0 opacity-30" aria-hidden />
           <div className="relative max-w-2xl">
-            <p className={`${mEyebrow} zentro-eyebrow-cyber`}>⟡ Phase transition</p>
+            <p className={`${mEyebrow} zentro-eyebrow-cyber`}>⟡ Get started</p>
             <h2 id="connect-heading" className={`zentro-living-headline mt-2 ${mH2}`}>
-              Step into the living workspace
+              Open the operational console
             </h2>
             <p className={`mt-2 ${mBody}`}>
               Sign in to the command console — or explore{" "}

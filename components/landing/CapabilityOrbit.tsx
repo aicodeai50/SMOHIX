@@ -61,9 +61,9 @@ export function CapabilityOrbit() {
   return (
     <MarketingReveal id="modules" className={`${mSection} zentro-quantum-section`} aria-labelledby="modules-heading">
       <div className={mContainer}>
-        <p className={`${mEyebrow} zentro-eyebrow-cyber`}>⟡ Capability orbit</p>
+        <p className={`${mEyebrow} zentro-eyebrow-cyber`}>⟡ Platform modules</p>
         <h2 id="modules-heading" className={`zentro-living-headline mt-2 ${mH2}`}>
-          Modules orbiting one living spine
+          Modules on one incident spine
         </h2>
         <p className={mLede}>
           Triage, scan, govern, automate, and prove — linked by incidents, services, and audit

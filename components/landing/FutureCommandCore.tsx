@@ -3,12 +3,12 @@
 import { useEffect, useState } from "react";
 
 const FEED = [
-  { tone: "text-accent", text: "◈ lattice · webhook collapsed into incident #8841" },
-  { tone: "text-[#c4b5fd]", text: "◈ surface · 3 critical vectors on auth-api manifold" },
-  { tone: "text-[#6ee7b7]", text: "◈ guard · approval gate · rollback sequence armed" },
-  { tone: "text-warning", text: "◈ exposure · cert api-gateway decays in 12 cycles" },
+  { tone: "text-accent", text: "◈ ingest · webhook collapsed into incident #8841" },
+  { tone: "text-[#c4b5fd]", text: "◈ surface · 3 critical paths on auth-api" },
+  { tone: "text-[#6ee7b7]", text: "◈ guard · approval gate · rollback armed" },
+  { tone: "text-warning", text: "◈ exposure · cert api-gateway expires in 12d" },
   { tone: "text-accent", text: "◈ audit · append-only · governance.staffing_sla_*" },
-  { tone: "text-[#6ee7b7]", text: "◈ execute · dry-run coherent · awaiting operator" },
+  { tone: "text-[#6ee7b7]", text: "◈ execute · dry-run passed · awaiting operator" },
 ] as const;
 
 const METRICS = [
@@ -18,13 +18,13 @@ const METRICS = [
   { label: "Audit 24h", value: "1.2k", spark: "live" },
 ] as const;
 
-const DIMS = ["Ω-7", "Σ-12", "Λ-0", "Ξ-3"] as const;
+const REGIONS = ["us-east", "eu-west", "ap-south", "global"] as const;
 
 export function FutureCommandCore() {
   const [lineIndex, setLineIndex] = useState(0);
   const [cursorOn, setCursorOn] = useState(true);
-  const [dimIndex, setDimIndex] = useState(0);
-  const [coherence, setCoherence] = useState(99.97);
+  const [regionIndex, setRegionIndex] = useState(0);
+  const [health, setHealth] = useState(99.97);
 
   useEffect(() => {
     const tick = window.setInterval(() => {
@@ -40,8 +40,8 @@ export function FutureCommandCore() {
 
   useEffect(() => {
     const dim = window.setInterval(() => {
-      setDimIndex((i) => (i + 1) % DIMS.length);
-      setCoherence(99.9 + Math.random() * 0.09);
+      setRegionIndex((i) => (i + 1) % REGIONS.length);
+      setHealth(99.9 + Math.random() * 0.09);
     }, 4000);
     return () => window.clearInterval(dim);
   }, []);
@@ -66,11 +66,11 @@ export function FutureCommandCore() {
             <div className="flex items-center gap-2">
               <span className="zentro-pulse-dot inline-block h-2 w-2 rounded-full bg-[#6ee7b7]" />
               <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
-                Quantum command
+                Live command
               </span>
             </div>
             <span className="font-mono text-[10px] text-accent/90">
-              dim {DIMS[dimIndex]} · {coherence.toFixed(2)}%
+              {REGIONS[regionIndex]} · {health.toFixed(2)}% health
             </span>
           </div>
 
@@ -88,7 +88,7 @@ export function FutureCommandCore() {
 
           <div className="mt-4 rounded-lg border border-white/[0.06] bg-black/50 p-3 font-mono text-[11px] leading-relaxed">
             <p className="text-muted/90">
-              <span className="text-accent">⟨</span> zentro.watch --dimension=live
+              <span className="text-accent">⟨</span> zentro watch --live
             </p>
             {FEED.slice(0, 4).map((line, i) => (
               <p
@@ -121,7 +121,7 @@ export function FutureCommandCore() {
         </div>
       </div>
       <p className="mt-3 text-center font-mono text-[10px] text-muted/70">
-        Living command surface — coherence after sign-in
+        Command console preview — sign in for your org
       </p>
     </div>
   );

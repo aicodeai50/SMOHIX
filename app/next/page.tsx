@@ -26,9 +26,9 @@ const ROADMAP: {
   {
     horizon: "shipping",
     title: "Shipping now",
-    subtitle: "Live in console — 47 migrations and a living quantum marketing dimension.",
+    subtitle: "Live in console — 47 migrations and refreshed marketing site.",
     items: [
-      { name: "Living quantum marketing dimension", detail: "Particle lattice, singularity field, and living pulse across homepage and key marketing pages." },
+      { name: "Marketing site refresh", detail: "Futuristic visual identity with clearer operational copy across homepage and key pages." },
       { name: "Cross-staffing committee escalation", detail: "Post-rollup SLA breach escalation at /governance/compliance/cross-staffing-committee-escalation." },
       { name: "Staffing action SLA breach digest", detail: "Post-peak completion SLA alerts at /governance/compliance/staffing-sla-breach-digest." },
       { name: "Staffing completion rollup export", detail: "Printable HTML/PDF archive at /governance/compliance/staffing-completion-rollup." },
@@ -55,8 +55,8 @@ const ROADMAP: {
     subtitle: "Research and design — not committed timelines.",
     items: [
       {
-        name: "Console ambient dimension",
-        detail: "Living particle lattice and coherence pulse in the signed-in hub and overview.",
+        name: "Console ambient status layer",
+        detail: "Live system health and activity pulse in the signed-in hub and overview.",
       },
     ],
   },
@@ -88,7 +88,7 @@ export default function NextPage() {
           <div className="zentro-hero-future zentro-quantum-section border-b border-white/[0.06]">
             <article className={`${mArticle} max-w-4xl`}>
               <LivingPulse />
-              <p className={`${mEyebrow} zentro-eyebrow-cyber`}>⟡ Roadmap dimension</p>
+              <p className={`${mEyebrow} zentro-eyebrow-cyber`}>⟡ Product roadmap</p>
               <h1 className={`mt-2 shynvo-headline zentro-living-headline ${mH1}`}>
                 What&apos;s next for {SITE_BRAND_NAME}
               </h1>

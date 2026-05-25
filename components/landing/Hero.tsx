@@ -28,21 +28,21 @@ export function Hero({
         <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-10">
           <div>
             <p className={`${mEyebrow} zentro-eyebrow-cyber`}>
-              ⟡ Living command dimension · Non-terran coherence
+              ⟡ Guarded operations · Audit-grade evidence
             </p>
             <h1 className={`zentro-living-headline shynvo-headline mt-3 max-w-3xl ${mH1}`}>
-              Not assembled. Emerged — a command dimension larger than any stack alone
+              More than an automation layer — one operational command system
             </h1>
             <p className={mHeroLede}>
               <span className="text-foreground/90">
-                Zentro breathes with your infrastructure — correlating signals across dimensions,
-                surfacing threat manifolds, and executing guarded change with audit-grade proof.
-                Something no single human team could hold in one mind.
+                Zentro correlates signals across your infrastructure, guides remediation behind
+                approvals and dry-runs, and records every operational decision with audit-grade
+                evidence.
               </span>
             </p>
             <p className={`mt-3 max-w-xl ${mBody}`}>
-              From alert collapse to verified remediation in one living operator spine. Built for
-              teams who refuse silent automation and missing evidence.
+              From alert to verified fix in a single console — built for teams who refuse silent
+              automation and missing proof.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
@@ -50,7 +50,7 @@ export function Hero({
                 href="/auth/sign-in?next=/hub"
                 className="zentro-launch-beacon inline-flex h-11 items-center justify-center rounded-lg bg-accent px-5 text-sm font-semibold text-background shadow-[0_0_40px_-6px_var(--accent-glow)] transition-all hover:shadow-[0_0_48px_-4px_var(--accent-glow)] hover:opacity-95"
               >
-                Enter the living workspace
+                Open the console
               </Link>
               <Link
                 href="/cybersecurity"

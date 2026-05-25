@@ -19,13 +19,13 @@ const capabilities = [
   {
     id: "surface",
     title: "Attack surface intelligence",
-    body: "Map service manifolds and critical paths before threat actors enumerate your perimeter.",
+    body: "Map services and critical paths before threat actors enumerate your perimeter.",
     href: "/auth/sign-in?next=/services",
   },
   {
     id: "exposure",
     title: "Exposure & certificate hygiene",
-    body: "Track TLS decay, secret rotation, and config drift across the network lattice.",
+    body: "Track TLS expiry, secret rotation, and config drift across your network.",
     href: "/auth/sign-in?next=/assets/certificates",
   },
   {
@@ -63,27 +63,26 @@ export default function CybersecurityPage() {
           <div className="zentro-hero-future zentro-quantum-section border-b border-white/[0.06]">
             <article className={`${mArticle} max-w-4xl`}>
               <LivingPulse />
-              <p className={`${mEyebrow} zentro-eyebrow-cyber`}>⟡ Security dimension</p>
+              <p className={`${mEyebrow} zentro-eyebrow-cyber`}>⟡ Cybersecurity</p>
               <h1 className={`mt-2 shynvo-headline zentro-living-headline ${mH1}`}>
-                Cyber defense that breathes with your perimeter
+                Threat detection, exposure control, and guarded remediation
               </h1>
               <p className={`mt-4 ${mBody} text-base sm:text-lg`}>
-                {SITE_BRAND_NAME} is not another ticket queue — it is a living security manifold where
-                detection, scanning, penetration workflows, and remediation converge with human
-                authorization and durable audit coherence.
+                {SITE_BRAND_NAME} unifies detection, scanning, penetration workflows, and remediation
+                in one console — with human authorization, dry-runs, and append-only audit evidence.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
                   href="/auth/sign-in?next=/hub"
                   className="zentro-launch-beacon inline-flex h-10 items-center rounded-lg bg-accent px-4 text-sm font-semibold text-background"
                 >
-                  Enter security workspace
+                  Open security console
                 </Link>
                 <Link
                   href="/enterprise"
                   className="inline-flex h-10 items-center rounded-lg border border-white/[0.12] px-4 text-sm font-medium hover:border-accent/35"
                 >
-                  Enterprise dimension
+                  Enterprise programs
                 </Link>
               </div>
             </article>
@@ -95,7 +94,7 @@ export default function CybersecurityPage() {
             <h2 className={`zentro-living-headline ${mH2}`}>Security capabilities</h2>
             <p className={`mt-2 ${mBody}`}>
               Each capability maps to live console routes. Scanning depth grows with your connectors
-              and policy lattice.
+              and policy configuration.
             </p>
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
               {capabilities.map((cap) => (
@@ -117,7 +116,7 @@ export default function CybersecurityPage() {
               aria-labelledby="soc-heading"
             >
               <h2 id="soc-heading" className={`zentro-living-headline ${mH2}`}>
-                How SOC teams use the living command layer
+                How SOC teams use {SITE_BRAND_NAME}
               </h2>
               <ol className={`mt-4 list-decimal space-y-3 pl-5 ${mBody}`}>
                 <li>Ingest alerts via HTTP tokens or Datadog-shaped webhooks — deduped by external ref.</li>

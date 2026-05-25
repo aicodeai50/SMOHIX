@@ -59,7 +59,7 @@ export default function IntegrationsPage() {
             <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
               <LivingPulse />
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent/90 zentro-eyebrow-cyber">
-                ⟡ Connectivity lattice
+                ⟡ Integrations
               </p>
               <h1 className="mt-2 max-w-3xl text-3xl font-semibold tracking-tight zentro-living-headline sm:text-4xl">
                 Integrations — today and next

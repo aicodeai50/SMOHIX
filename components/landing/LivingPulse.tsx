@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 
 const PHASES = [
-  { label: "DIMENSION", value: "Ω-7" },
-  { label: "COHERENCE", value: "99.97%" },
-  { label: "LATTICE", value: "ACTIVE" },
-  { label: "ORIGIN", value: "NON-TERRAN" },
-  { label: "SIGNAL", value: "BIDIRECTIONAL" },
+  { label: "INGEST", value: "READY" },
+  { label: "GUARDRAILS", value: "ENFORCED" },
+  { label: "AUDIT", value: "APPEND-ONLY" },
+  { label: "APPROVALS", value: "CHECKPOINT" },
+  { label: "ROLLBACK", value: "ARMED" },
 ] as const;
 
 export function LivingPulse() {
@@ -37,7 +37,7 @@ export function LivingPulse() {
         <span
           className={`zentro-pulse-dot inline-block h-2 w-2 rounded-full bg-[#6ee7b7] ${pulse ? "opacity-100" : "opacity-40"}`}
         />
-        Living
+        Live
       </span>
       <span className="text-muted/50" aria-hidden>
         ·

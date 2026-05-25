@@ -1,14 +1,14 @@
 "use client";
 
 const TICKER_ITEMS = [
-  "Quantum lattice · Phase coherent",
-  "Non-terran origin · Signal bidirectional",
-  "Dimension Ω-7 · Command manifold",
   "Guarded execution · Human checkpoint",
-  "Append-only audit · Evidence dimension",
-  "Incident copilot · Living runbooks",
+  "Dry-run validated · Rollback armed",
+  "Append-only audit · Evidence on demand",
+  "Incident triage · Runbook intelligence",
+  "Approvals · Policy blocks · Guardrails",
+  "Unified ingest · Single incident spine",
   "SOC 2 · ISO · FedRAMP · Eight frameworks",
-  "Something bigger than any stack alone",
+  "Controlled automation · No silent fixes",
 ] as const;
 
 export function FutureTicker() {

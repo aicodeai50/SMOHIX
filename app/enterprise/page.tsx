@@ -46,13 +46,13 @@ export default function EnterprisePage() {
           <div className="zentro-hero-future zentro-quantum-section border-b border-white/[0.06]">
             <article className={`${mArticle} max-w-4xl`}>
               <LivingPulse />
-              <p className={`${mEyebrow} zentro-eyebrow-cyber`}>⟡ Enterprise dimension</p>
+              <p className={`${mEyebrow} zentro-eyebrow-cyber`}>⟡ Enterprise</p>
               <h1 className={`mt-2 shynvo-headline zentro-living-headline ${mH1}`}>
                 Operations and security at the scale your board expects
               </h1>
               <p className={`mt-4 ${mBody} text-base sm:text-lg`}>
                 {SITE_BRAND_NAME} gives Fortune-scale platform, security, and reliability teams a
-                living command layer — incidents, threat visibility, guarded change, and evidence
+                unified operations layer — incidents, threat visibility, guarded change, and evidence
                 that survives audits without replacing the tools you already trust.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
@@ -66,7 +66,7 @@ export default function EnterprisePage() {
                   href="/cybersecurity"
                   className="inline-flex h-10 items-center rounded-lg border border-white/[0.12] px-4 text-sm font-medium hover:border-accent/35"
                 >
-                  Cybersecurity dimension
+                  Cybersecurity
                 </Link>
               </div>
             </article>
