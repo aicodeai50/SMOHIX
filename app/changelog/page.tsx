@@ -14,6 +14,16 @@ export const metadata: Metadata = {
 const ENTRIES: { date: string; title: string; bullets: string[] }[] = [
   {
     date: "May 2026",
+    title: "Staffing digest auto-chain",
+    bullets: [
+      "Single UTC-week cron: completion rollup → SLA breach digest → committee escalation",
+      "Console at /governance/compliance/staffing-digest-auto-chain",
+      "POST /api/governance/compliance/staffing-digest-auto-chain/scheduled",
+      "Migration #48; audit governance.staffing_digest_auto_chain_run",
+    ],
+  },
+  {
+    date: "May 2026",
     title: "Living quantum dimension — marketing",
     bullets: [
       "Canvas particle lattice with singularity field across the homepage",

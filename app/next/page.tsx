@@ -26,8 +26,12 @@ const ROADMAP: {
   {
     horizon: "shipping",
     title: "Shipping now",
-    subtitle: "Live in console — 47 migrations and refreshed marketing site.",
+    subtitle: "Live in console — 48 migrations and refreshed marketing site.",
     items: [
+      {
+        name: "Staffing digest auto-chain cron",
+        detail: "Single UTC-week run at /governance/compliance/staffing-digest-auto-chain — rollup → SLA digest → escalation.",
+      },
       { name: "Marketing site refresh", detail: "Futuristic visual identity with clearer operational copy across homepage and key pages." },
       { name: "Cross-staffing committee escalation", detail: "Post-rollup SLA breach escalation at /governance/compliance/cross-staffing-committee-escalation." },
       { name: "Staffing action SLA breach digest", detail: "Post-peak completion SLA alerts at /governance/compliance/staffing-sla-breach-digest." },
@@ -42,12 +46,7 @@ const ROADMAP: {
     horizon: "building",
     title: "Building next",
     subtitle: "In active development — sequencing follows customer demand.",
-    items: [
-      {
-        name: "Staffing digest auto-chain cron",
-        detail: "Single scheduled run: completion rollup → SLA breach digest → committee escalation per org per UTC week.",
-      },
-    ],
+    items: [],
   },
   {
     horizon: "exploring",
@@ -77,7 +76,7 @@ const HORIZON_STYLE: Record<Horizon, { badge: string; glow: string }> = {
   },
 };
 
-const SHIPPING_TOTAL = 53;
+const SHIPPING_TOTAL = 54;
 
 export default function NextPage() {
   return (

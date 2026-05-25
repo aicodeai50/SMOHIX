@@ -471,6 +471,13 @@ export const CONSOLE_MODULES: readonly {
     live: true,
   },
   {
+    href: "/governance/compliance/staffing-digest-auto-chain",
+    label: "Digest auto-chain",
+    description: "Rollup → SLA → escalation cron",
+    icon: "scrollText",
+    live: true,
+  },
+  {
     href: "/governance/compliance/committee-digest",
     label: "Committee digest",
     description: "Quarterly obligation email",

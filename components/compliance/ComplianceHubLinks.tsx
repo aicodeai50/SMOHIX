@@ -151,6 +151,13 @@ export function ComplianceHubLinks({ className }: { className?: string }) {
         Committee escalation
       </Link>
       {" · "}
+      <Link
+        href="/governance/compliance/staffing-digest-auto-chain"
+        className="text-accent hover:underline"
+      >
+        Digest auto-chain
+      </Link>
+      {" · "}
       <Link href="/governance/compliance/committee-digest" className="text-accent hover:underline">
         Committee digest
       </Link>

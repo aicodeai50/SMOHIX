@@ -484,6 +484,13 @@ export const API_GROUPS: ApiGroup[] = [
         auth: "Bearer cron secret",
       },
       {
+        method: "POST",
+        path: "/api/governance/compliance/staffing-digest-auto-chain/scheduled",
+        summary:
+          "Cron staffing digest auto-chain — rollup, SLA digest, escalation in one run (Bearer ZENTRO_STAFFING_DIGEST_AUTO_CHAIN_CRON_SECRET).",
+        auth: "Bearer cron secret",
+      },
+      {
         method: "GET",
         path: "/api/governance/compliance/committee-digest",
         summary:
