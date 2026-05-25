@@ -29,6 +29,10 @@ const ROADMAP: {
     subtitle: "Live in console — 48 migrations and refreshed marketing site.",
     items: [
       {
+        name: "Console ambient status layer",
+        detail: "Live health pulse and particle lattice on /hub and /overview from workspace telemetry.",
+      },
+      {
         name: "Staffing digest auto-chain cron",
         detail: "Single UTC-week run at /governance/compliance/staffing-digest-auto-chain — rollup → SLA digest → escalation.",
       },
@@ -46,18 +50,18 @@ const ROADMAP: {
     horizon: "building",
     title: "Building next",
     subtitle: "In active development — sequencing follows customer demand.",
-    items: [],
+    items: [
+      {
+        name: "Hub module personalization",
+        detail: "Pin frequently used console modules and reorder quick links per user.",
+      },
+    ],
   },
   {
     horizon: "exploring",
     title: "Exploring",
     subtitle: "Research and design — not committed timelines.",
-    items: [
-      {
-        name: "Console ambient status layer",
-        detail: "Live system health and activity pulse in the signed-in hub and overview.",
-      },
-    ],
+    items: [],
   },
 ];
 
@@ -76,7 +80,7 @@ const HORIZON_STYLE: Record<Horizon, { badge: string; glow: string }> = {
   },
 };
 
-const SHIPPING_TOTAL = 54;
+const SHIPPING_TOTAL = 55;
 
 export default function NextPage() {
   return (

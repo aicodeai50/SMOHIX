@@ -106,6 +106,7 @@ body {
 }
 
 /* Page titles — restrained iridescent headline */
+.zentro-headline,
 .shynvo-headline {
   background: linear-gradient(
     118deg,
@@ -156,6 +157,15 @@ body {
   100% {
     opacity: 1;
     transform: scale(1.03);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .zentro-hero-future::after,
+  .zentro-orbit-ring,
+  .zentro-scan-sweep,
+  .zentro-cell-breathe,
+  .zentro-living-pulse {
+    animation: none !important;
   }
 }
 .zentro-hero-future > * {
@@ -610,6 +620,20 @@ body {
   .shynvo-console-main::before {
     animation: none;
     opacity: 0.38;
+  }
+}
+
+.zentro-console-ambient-banner {
+  min-height: 5.5rem;
+}
+
+.zentro-console-ambient-canvas {
+  opacity: 0.85;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zentro-console-ambient-canvas {
+    display: none;
   }
 }
 

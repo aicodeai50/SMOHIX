@@ -30,7 +30,7 @@ export function Hero({
             <p className={`${mEyebrow} zentro-eyebrow-cyber`}>
               ⟡ Guarded operations · Audit-grade evidence
             </p>
-            <h1 className={`zentro-living-headline shynvo-headline mt-3 max-w-3xl ${mH1}`}>
+            <h1 className={`zentro-living-headline zentro-headline mt-3 max-w-3xl ${mH1}`}>
               More than an automation layer — one operational command system
             </h1>
             <p className={mHeroLede}>

@@ -4,9 +4,13 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { PageHeader } from "@/components/app/PageHeader";
+import { ConsoleAmbientBanner } from "@/components/console/ConsoleAmbientBanner";
 import { AppIcon } from "@/components/icons/AppIcon";
 import { OverviewDecisionSurface } from "@/components/overview/OverviewDecisionSurface";
 import { appBody, appMeta, appPanelTitle } from "@/lib/app-typography";
+import {
+  buildConsoleAmbientSnapshot,
+} from "@/lib/console/ambient-status";
 import { getPolicyBlockSummaryForUser } from "@/lib/approvals/policy-block-analytics";
 import { listApprovalsForUser } from "@/lib/approvals/data";
 import {
@@ -247,6 +251,19 @@ export default async function OverviewPage() {
       .slice(0, 5);
   }
 
+  const ambient = buildConsoleAmbientSnapshot({
+    openIncidents: open,
+    hotIncidents: hot,
+    totalIncidents: incidents.length,
+    pendingApprovals: approvalsPending,
+    connectorsUp,
+    connectorsConfigured,
+    dryRunSuccessRate,
+    dryRunCount: dryRuns.length,
+    criticalBurnServices,
+    signedIn: Boolean(userId),
+  });
+
   return (
     <>
       <PageHeader
@@ -254,6 +271,8 @@ export default async function OverviewPage() {
         title="Command center"
         description="Prioritize decisions: what requires human approval, what executed safely, and where readiness constraints are blocking delivery."
       />
+
+      <ConsoleAmbientBanner snapshot={ambient} />
 
       <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div className="zentro-glass rounded-2xl p-5">

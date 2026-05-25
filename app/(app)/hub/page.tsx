@@ -3,7 +3,9 @@ import Link from "next/link";
 import { launchGuidedScenarioAction } from "./actions";
 
 import { PageHeader } from "@/components/app/PageHeader";
+import { ConsoleAmbientBanner } from "@/components/console/ConsoleAmbientBanner";
 import { getUserDisplayName, getUserFirstName } from "@/lib/auth/display-name";
+import { loadConsoleAmbientSnapshot } from "@/lib/console/load-ambient-status";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { appBody, appMeta, appPanelTitle } from "@/lib/app-typography";
@@ -70,9 +72,12 @@ export default async function HubPage() {
     "Audit timeline captures proof",
   ];
 
+  const ambient = await loadConsoleAmbientSnapshot();
+
   return (
     <>
       <PageHeader eyebrow={SITE_BRAND_NAME} title={title} description={description} />
+      <ConsoleAmbientBanner snapshot={ambient} />
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {QUICK.map((item) => (
           <Link
