@@ -12,6 +12,7 @@ export type SlackNotificationKind =
   | "peak_week_staffing"
   | "staffing_overdue"
   | "staffing_sla_breach"
+  | "cross_staffing_escalation"
   | "manual_test";
 
 function slackWebhookUrl(): string | null {
@@ -39,6 +40,7 @@ export function getSlackNotificationConfig(): {
   peakWeekStaffing: boolean;
   staffingOverdue: boolean;
   staffingSlaBreach: boolean;
+  crossStaffingEscalation: boolean;
 } {
   return {
     approvals: envEnabled(process.env.ZENTRO_SLACK_NOTIFY_APPROVALS, true),
@@ -48,6 +50,10 @@ export function getSlackNotificationConfig(): {
     peakWeekStaffing: envEnabled(process.env.ZENTRO_SLACK_NOTIFY_PEAK_WEEK_STAFFING, true),
     staffingOverdue: envEnabled(process.env.ZENTRO_SLACK_NOTIFY_STAFFING_OVERDUE, true),
     staffingSlaBreach: envEnabled(process.env.ZENTRO_SLACK_NOTIFY_STAFFING_SLA_BREACH, true),
+    crossStaffingEscalation: envEnabled(
+      process.env.ZENTRO_SLACK_NOTIFY_CROSS_STAFFING_ESCALATION,
+      true,
+    ),
   };
 }
 
@@ -60,6 +66,7 @@ export function shouldSendSlackNotification(kind: SlackNotificationKind): boolea
   if (kind === "peak_week_staffing") return cfg.peakWeekStaffing;
   if (kind === "staffing_overdue") return cfg.staffingOverdue;
   if (kind === "staffing_sla_breach") return cfg.staffingSlaBreach;
+  if (kind === "cross_staffing_escalation") return cfg.crossStaffingEscalation;
   return cfg.executions;
 }
 

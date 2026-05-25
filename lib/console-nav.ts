@@ -464,6 +464,13 @@ export const CONSOLE_MODULES: readonly {
     live: true,
   },
   {
+    href: "/governance/compliance/cross-staffing-committee-escalation",
+    label: "Committee escalation",
+    description: "Escalate after rollup email",
+    icon: "scrollText",
+    live: true,
+  },
+  {
     href: "/governance/compliance/committee-digest",
     label: "Committee digest",
     description: "Quarterly obligation email",

@@ -144,6 +144,13 @@ export function ComplianceHubLinks({ className }: { className?: string }) {
         SLA breach digest
       </Link>
       {" · "}
+      <Link
+        href="/governance/compliance/cross-staffing-committee-escalation"
+        className="text-accent hover:underline"
+      >
+        Committee escalation
+      </Link>
+      {" · "}
       <Link href="/governance/compliance/committee-digest" className="text-accent hover:underline">
         Committee digest
       </Link>

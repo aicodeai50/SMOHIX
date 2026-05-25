@@ -25,6 +25,7 @@ const ROADMAP: {
     title: "Shipping now",
     subtitle: "Live in console — 46+ compliance migrations and growing.",
     items: [
+      { name: "Cross-staffing committee escalation", detail: "Post-rollup SLA breach escalation at /governance/compliance/cross-staffing-committee-escalation." },
       { name: "Staffing action SLA breach digest", detail: "Post-peak completion SLA alerts at /governance/compliance/staffing-sla-breach-digest." },
       { name: "Staffing completion rollup export", detail: "Printable HTML/PDF archive at /governance/compliance/staffing-completion-rollup." },
       { name: "Staffing action overdue reminders", detail: "Past-peak-week nudges at /governance/compliance/staffing-action-reminders." },
@@ -45,12 +46,7 @@ const ROADMAP: {
     horizon: "exploring",
     title: "Exploring",
     subtitle: "Research and design — not committed timelines.",
-    items: [
-      {
-        name: "Cross-staffing committee escalation",
-        detail: "Escalate actions that breach SLA and remain open after completion rollup email.",
-      },
-    ],
+    items: [],
   },
 ];
 

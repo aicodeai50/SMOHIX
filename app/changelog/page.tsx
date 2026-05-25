@@ -14,6 +14,26 @@ export const metadata: Metadata = {
 const ENTRIES: { date: string; title: string; bullets: string[] }[] = [
   {
     date: "May 2026",
+    title: "Cross-staffing committee escalation",
+    bullets: [
+      "Escalate SLA-breaching staffing actions after weekly completion rollup email",
+      "Email and Slack to committee admins with rollup open-count context",
+      "Console at /governance/compliance/cross-staffing-committee-escalation",
+      "GET/POST /api/governance/compliance/cross-staffing-committee-escalation",
+      "Migration #47; audit governance.cross_staffing_committee_escalation_*",
+    ],
+  },
+  {
+    date: "May 2026",
+    title: "Futuristic marketing homepage",
+    bullets: [
+      "Consolidated homepage into neural command hero, bento command surface, and capability orbit",
+      "Animated command preview, scrolling ticker, timeline operator flow, and proof rail",
+      "Redesigned /next roadmap as horizon bento columns",
+    ],
+  },
+  {
+    date: "May 2026",
     title: "Staffing action SLA breach digest",
     bullets: [
       "Weekly digest when open actions exceed configurable days-past-peak completion SLA",

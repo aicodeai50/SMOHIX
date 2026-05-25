@@ -465,6 +465,26 @@ export const API_GROUPS: ApiGroup[] = [
       },
       {
         method: "GET",
+        path: "/api/governance/compliance/cross-staffing-committee-escalation",
+        summary:
+          "Cross-staffing committee escalation — SLA breaches still open after completion rollup email (JSON or CSV).",
+        auth: "Session cookie",
+      },
+      {
+        method: "POST",
+        path: "/api/governance/compliance/cross-staffing-committee-escalation",
+        summary: "Deliver cross-staffing committee escalation (email and Slack).",
+        auth: "Session cookie (owner/admin)",
+      },
+      {
+        method: "POST",
+        path: "/api/governance/compliance/cross-staffing-committee-escalation/scheduled",
+        summary:
+          "Cron cross-staffing committee escalation (Bearer ZENTRO_CROSS_STAFFING_COMMITTEE_ESCALATION_CRON_SECRET).",
+        auth: "Bearer cron secret",
+      },
+      {
+        method: "GET",
         path: "/api/governance/compliance/committee-digest",
         summary:
           "Quarterly obligation committee digest — forecast, crossover, and SLA rollup preview (JSON or CSV).",

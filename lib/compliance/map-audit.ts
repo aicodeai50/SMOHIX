@@ -430,6 +430,14 @@ const RULES: Rule[] = [
     controls: ["soc2:CC4.1", "iso:A.5.36", "nist_csf:GV.OC-01", "pcidss:12.3.1"],
   },
   {
+    exact: "governance.cross_staffing_committee_escalation_exported",
+    controls: ["soc2:CC4.1", "iso:A.5.36", "nist_csf:GV.OC-01", "pcidss:12.3.1"],
+  },
+  {
+    exact: "governance.cross_staffing_committee_escalation_delivered",
+    controls: ["soc2:CC4.1", "iso:A.5.36", "nist_csf:GV.OC-01", "pcidss:12.3.1"],
+  },
+  {
     exact: "governance.obligation_consolidation_playbook_exported",
     controls: ["soc2:CC4.1", "iso:A.5.36", "nist_csf:GV.OC-01", "pcidss:12.3.1"],
   },
