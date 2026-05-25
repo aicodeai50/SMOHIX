@@ -2,11 +2,12 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 import { appendAuditEvent } from "@/lib/audit/append";
+import { buildObligationStaffingActionTrackerPack } from "@/lib/compliance/obligation-staffing-action-tracker";
+import { obligationStaffingActionTrackerToCsv } from "@/lib/compliance/obligation-staffing-action-tracker";
 import {
-  buildObligationStaffingActionTrackerPack,
-  buildStaffingCompletionReportHtml,
-  obligationStaffingActionTrackerToCsv,
-} from "@/lib/compliance/obligation-staffing-action-tracker";
+  buildStaffingCompletionRollupFromTracker,
+  buildStaffingCompletionRollupHtml,
+} from "@/lib/compliance/staffing-completion-rollup";
 import { getOrgContextForUser } from "@/lib/org/context";
 import { OPERATIONAL_RESPONSE_HEADERS } from "@/lib/security/operational-headers";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
@@ -79,7 +80,8 @@ export async function GET(req: NextRequest) {
 
   if (format === "html") {
     const orgName = orgContext.orgName ?? "Organization";
-    const html = buildStaffingCompletionReportHtml(pack, orgName);
+    const rollup = buildStaffingCompletionRollupFromTracker(pack, orgName);
+    const html = buildStaffingCompletionRollupHtml(rollup);
     return new NextResponse(html, {
       status: 200,
       headers: {

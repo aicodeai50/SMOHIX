@@ -14,6 +14,28 @@ export const metadata: Metadata = {
 const ENTRIES: { date: string; title: string; bullets: string[] }[] = [
   {
     date: "May 2026",
+    title: "Staffing action SLA breach digest",
+    bullets: [
+      "Weekly digest when open actions exceed configurable days-past-peak completion SLA",
+      "Email and Slack to owners and admins with breach queue",
+      "Console at /governance/compliance/staffing-sla-breach-digest",
+      "GET/POST /api/governance/compliance/staffing-sla-breach-digest",
+      "Migration #46; audit governance.staffing_sla_breach_digest_*",
+    ],
+  },
+  {
+    date: "May 2026",
+    title: "Staffing completion rollup export",
+    bullets: [
+      "Printable HTML archive with open vs completed staffing actions and completion rate",
+      "Weekly email to owners and admins with Save-as-PDF link",
+      "Console at /governance/compliance/staffing-completion-rollup",
+      "GET/POST /api/governance/compliance/staffing-completion-rollup",
+      "Migration #45; audit governance.staffing_completion_rollup_*",
+    ],
+  },
+  {
+    date: "May 2026",
     title: "Staffing action overdue reminders",
     bullets: [
       "Email assignees and admins when accepted actions stay open past peak week",

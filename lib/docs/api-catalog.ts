@@ -425,6 +425,46 @@ export const API_GROUPS: ApiGroup[] = [
       },
       {
         method: "GET",
+        path: "/api/governance/compliance/staffing-completion-rollup",
+        summary:
+          "Staffing completion rollup — tracked vs open vs completed archive (JSON, CSV, or printable HTML).",
+        auth: "Session cookie",
+      },
+      {
+        method: "POST",
+        path: "/api/governance/compliance/staffing-completion-rollup",
+        summary: "Email weekly staffing completion rollup to owners and admins.",
+        auth: "Session cookie (owner/admin)",
+      },
+      {
+        method: "POST",
+        path: "/api/governance/compliance/staffing-completion-rollup/scheduled",
+        summary:
+          "Cron staffing completion rollup (Bearer ZENTRO_STAFFING_COMPLETION_ROLLUP_CRON_SECRET).",
+        auth: "Bearer cron secret",
+      },
+      {
+        method: "GET",
+        path: "/api/governance/compliance/staffing-sla-breach-digest",
+        summary:
+          "Staffing SLA breach digest — open actions past committee completion SLA after peak week (JSON or CSV).",
+        auth: "Session cookie",
+      },
+      {
+        method: "POST",
+        path: "/api/governance/compliance/staffing-sla-breach-digest",
+        summary: "Deliver staffing SLA breach digest (email and Slack).",
+        auth: "Session cookie (owner/admin)",
+      },
+      {
+        method: "POST",
+        path: "/api/governance/compliance/staffing-sla-breach-digest/scheduled",
+        summary:
+          "Cron staffing SLA breach digest (Bearer ZENTRO_STAFFING_SLA_BREACH_DIGEST_CRON_SECRET).",
+        auth: "Bearer cron secret",
+      },
+      {
+        method: "GET",
         path: "/api/governance/compliance/committee-digest",
         summary:
           "Quarterly obligation committee digest — forecast, crossover, and SLA rollup preview (JSON or CSV).",

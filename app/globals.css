@@ -224,11 +224,123 @@ body {
   color: color-mix(in srgb, var(--cyber) 92%, white);
 }
 
+/* Neural mesh + orbit — command previews */
+.zentro-neural-field {
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(94, 225, 255, 0.06), transparent 42%),
+    radial-gradient(circle at 80% 70%, rgba(167, 139, 250, 0.05), transparent 38%);
+}
+.zentro-orbit-ring {
+  border-radius: 50%;
+  border: 1px dashed rgba(94, 225, 255, 0.22);
+  animation: zentro-orbit-spin 24s linear infinite;
+}
+@keyframes zentro-orbit-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.zentro-scan-sweep {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(94, 225, 255, 0.06) 48%,
+    transparent 100%
+  );
+  background-size: 100% 200%;
+  animation: zentro-scan-sweep 5s ease-in-out infinite;
+}
+@keyframes zentro-scan-sweep {
+  0%,
+  100% {
+    background-position: 0 -100%;
+  }
+  50% {
+    background-position: 0 100%;
+  }
+}
+.zentro-bento-cell {
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.zentro-bento-cell:hover {
+  border-color: rgba(94, 225, 255, 0.25);
+  box-shadow: 0 0 24px -12px var(--accent-glow);
+}
+.zentro-future-ticker {
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+}
+.zentro-future-ticker-track {
+  display: flex;
+  width: max-content;
+  gap: 2rem;
+  animation: zentro-ticker-scroll 32s linear infinite;
+}
+@keyframes zentro-ticker-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.zentro-timeline-rail {
+  position: relative;
+}
+.zentro-timeline-rail::before {
+  content: "";
+  position: absolute;
+  left: 1rem;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  width: 2px;
+  background: linear-gradient(
+    180deg,
+    var(--accent-glow),
+    rgba(167, 139, 250, 0.4),
+    rgba(52, 211, 153, 0.35)
+  );
+  opacity: 0.5;
+}
+.zentro-capability-orbit {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (min-width: 768px) {
+  .zentro-capability-orbit {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: auto auto;
+  }
+  .zentro-capability-orbit > :nth-child(1) {
+    grid-column: span 2;
+  }
+  .zentro-capability-orbit > :nth-child(4) {
+    grid-column: span 2;
+  }
+}
+.zentro-proof-rail {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 0.5rem;
+  scrollbar-width: thin;
+}
+.zentro-proof-rail > * {
+  scroll-snap-align: start;
+  flex: 0 0 min(85%, 18rem);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .zentro-hero-future::after {
     animation: none;
   }
   .zentro-pulse-dot {
+    animation: none;
+  }
+  .zentro-orbit-ring,
+  .zentro-scan-sweep,
+  .zentro-future-ticker-track {
     animation: none;
   }
 }

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { MarketingReveal } from "@/components/marketing/MarketingReveal";
 import { getTrialHref } from "@/lib/billing";
 import { marketingCta } from "@/lib/marketing-copy";
-import { mBody, mContainer, mH2 } from "@/lib/marketing-layout";
+import { mBody, mContainer, mEyebrow, mH2 } from "@/lib/marketing-layout";
 
 export function ConnectCTA({
   signedInCheckoutUrl,
@@ -20,57 +20,32 @@ export function ConnectCTA({
       aria-labelledby="connect-heading"
     >
       <div className={mContainer}>
-        <div className="zentro-holo-panel relative overflow-hidden rounded-2xl px-6 py-10 sm:px-10 sm:py-12">
+        <div className="zentro-neural-field zentro-holo-panel relative overflow-hidden rounded-2xl px-6 py-10 sm:px-10 sm:py-12">
+          <div className="zentro-scan-sweep pointer-events-none absolute inset-0 opacity-30" aria-hidden />
           <div className="relative max-w-2xl">
-            <h2 id="connect-heading" className={mH2}>
-              Operations, security, and integrations — one workspace
+            <p className={`${mEyebrow} zentro-eyebrow-cyber`}>Ready when you are</p>
+            <h2 id="connect-heading" className={`mt-2 ${mH2}`}>
+              One workspace for ops, security, and proof
             </h2>
             <p className={`mt-2 ${mBody}`}>
-              Reasoning, automation, alert ingest, and security posture live in the same console
-              after sign-in. See{" "}
+              Sign in to the command console — or explore{" "}
               <Link href="/integrations" className="font-medium text-accent hover:underline">
                 integrations
               </Link>
               ,{" "}
-              <Link href="/cybersecurity" className="font-medium text-accent hover:underline">
-                cybersecurity
+              <Link href="/next" className="font-medium text-accent hover:underline">
+                the roadmap
               </Link>
               , and{" "}
-              <Link href="/next" className="font-medium text-accent hover:underline">
-                what&apos;s next
+              <Link href="/changelog" className="font-medium text-accent hover:underline">
+                changelog
               </Link>
               .
             </p>
-            <ul className={`mt-5 space-y-2 ${mBody}`}>
-              <li>
-                <Link href="/copilot" className="text-foreground/85 hover:text-accent hover:underline">
-                  Copilot
-                </Link>
-                <span className="text-muted"> — triage, runbooks, evidence handoff</span>
-              </li>
-              <li>
-                <Link href="/automations" className="text-foreground/85 hover:text-accent hover:underline">
-                  Automations
-                </Link>
-                <span className="text-muted"> — playbooks, dry-runs, remediation</span>
-              </li>
-              <li>
-                <Link href="/auth/sign-in?next=/assets/network" className="text-foreground/85 hover:text-accent hover:underline">
-                  Network &amp; exposure
-                </Link>
-                <span className="text-muted"> — drift, certs, secrets inventory</span>
-              </li>
-              <li>
-                <Link href="/auth/sign-in?next=/governance/access" className="text-foreground/85 hover:text-accent hover:underline">
-                  Governance
-                </Link>
-                <span className="text-muted"> — access posture, policy blocks, approvals</span>
-              </li>
-            </ul>
             <div id="trial" className="mt-8 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap">
               <Link
                 href="/hub"
-                className="inline-flex h-11 items-center justify-center rounded-lg bg-accent px-5 text-sm font-semibold text-background transition-opacity hover:opacity-90"
+                className="inline-flex h-11 items-center justify-center rounded-lg bg-accent px-5 text-sm font-semibold text-background shadow-[0_0_24px_-8px_var(--accent-glow)] transition-opacity hover:opacity-90"
               >
                 {marketingCta.connectExplore}
               </Link>

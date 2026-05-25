@@ -414,6 +414,22 @@ const RULES: Rule[] = [
     controls: ["soc2:CC4.1", "iso:A.5.36", "nist_csf:GV.OC-01", "pcidss:12.3.1"],
   },
   {
+    exact: "governance.staffing_completion_rollup_exported",
+    controls: ["soc2:CC4.1", "iso:A.5.36", "nist_csf:GV.OC-01", "pcidss:12.3.1"],
+  },
+  {
+    exact: "governance.staffing_completion_rollup_delivered",
+    controls: ["soc2:CC4.1", "iso:A.5.36", "nist_csf:GV.OC-01", "pcidss:12.3.1"],
+  },
+  {
+    exact: "governance.staffing_sla_breach_digest_exported",
+    controls: ["soc2:CC4.1", "iso:A.5.36", "nist_csf:GV.OC-01", "pcidss:12.3.1"],
+  },
+  {
+    exact: "governance.staffing_sla_breach_digest_delivered",
+    controls: ["soc2:CC4.1", "iso:A.5.36", "nist_csf:GV.OC-01", "pcidss:12.3.1"],
+  },
+  {
     exact: "governance.obligation_consolidation_playbook_exported",
     controls: ["soc2:CC4.1", "iso:A.5.36", "nist_csf:GV.OC-01", "pcidss:12.3.1"],
   },

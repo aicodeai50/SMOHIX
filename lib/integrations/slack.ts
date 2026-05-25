@@ -11,6 +11,7 @@ export type SlackNotificationKind =
   | "obligation_density"
   | "peak_week_staffing"
   | "staffing_overdue"
+  | "staffing_sla_breach"
   | "manual_test";
 
 function slackWebhookUrl(): string | null {
@@ -37,6 +38,7 @@ export function getSlackNotificationConfig(): {
   obligationDensity: boolean;
   peakWeekStaffing: boolean;
   staffingOverdue: boolean;
+  staffingSlaBreach: boolean;
 } {
   return {
     approvals: envEnabled(process.env.ZENTRO_SLACK_NOTIFY_APPROVALS, true),
@@ -45,6 +47,7 @@ export function getSlackNotificationConfig(): {
     obligationDensity: envEnabled(process.env.ZENTRO_SLACK_NOTIFY_OBLIGATION_DENSITY, true),
     peakWeekStaffing: envEnabled(process.env.ZENTRO_SLACK_NOTIFY_PEAK_WEEK_STAFFING, true),
     staffingOverdue: envEnabled(process.env.ZENTRO_SLACK_NOTIFY_STAFFING_OVERDUE, true),
+    staffingSlaBreach: envEnabled(process.env.ZENTRO_SLACK_NOTIFY_STAFFING_SLA_BREACH, true),
   };
 }
 
@@ -56,6 +59,7 @@ export function shouldSendSlackNotification(kind: SlackNotificationKind): boolea
   if (kind === "obligation_density") return cfg.obligationDensity;
   if (kind === "peak_week_staffing") return cfg.peakWeekStaffing;
   if (kind === "staffing_overdue") return cfg.staffingOverdue;
+  if (kind === "staffing_sla_breach") return cfg.staffingSlaBreach;
   return cfg.executions;
 }
 

@@ -115,12 +115,12 @@ export default async function StaffingActionsPage({
             >
               Export JSON
             </a>
-            <a
-              href={`/api/governance/compliance/staffing-actions?horizonDays=${HORIZON_DAYS}&format=html`}
+            <Link
+              href="/governance/compliance/staffing-completion-rollup"
               className="rounded-full border border-white/[0.14] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-foreground/75 hover:border-accent/35"
             >
-              Completion report
-            </a>
+              Completion rollup
+            </Link>
           </div>
 
           <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">

@@ -450,6 +450,20 @@ export const CONSOLE_MODULES: readonly {
     live: true,
   },
   {
+    href: "/governance/compliance/staffing-completion-rollup",
+    label: "Completion rollup",
+    description: "Printable staffing archive",
+    icon: "scrollText",
+    live: true,
+  },
+  {
+    href: "/governance/compliance/staffing-sla-breach-digest",
+    label: "SLA breach digest",
+    description: "Post-peak completion SLA alerts",
+    icon: "scrollText",
+    live: true,
+  },
+  {
     href: "/governance/compliance/committee-digest",
     label: "Committee digest",
     description: "Quarterly obligation email",

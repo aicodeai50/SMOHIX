@@ -130,6 +130,20 @@ export function ComplianceHubLinks({ className }: { className?: string }) {
         Overdue reminders
       </Link>
       {" · "}
+      <Link
+        href="/governance/compliance/staffing-completion-rollup"
+        className="text-accent hover:underline"
+      >
+        Completion rollup
+      </Link>
+      {" · "}
+      <Link
+        href="/governance/compliance/staffing-sla-breach-digest"
+        className="text-accent hover:underline"
+      >
+        SLA breach digest
+      </Link>
+      {" · "}
       <Link href="/governance/compliance/committee-digest" className="text-accent hover:underline">
         Committee digest
       </Link>

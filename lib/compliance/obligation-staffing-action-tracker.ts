@@ -418,32 +418,6 @@ export async function updateStaffingActionStatus(
   return true;
 }
 
-export function buildStaffingCompletionReportHtml(
-  pack: ObligationStaffingActionTrackerPack,
-  orgName: string,
-): string {
-  const rows = pack.items
-    .map(
-      (item) =>
-        `<tr><td>${item.status}</td><td>${item.proposal.actionType}</td><td>${escapeHtml(item.proposal.title)}</td><td>${item.proposal.peakWeekKey ?? "—"}</td></tr>`,
-    )
-    .join("");
-  return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Staffing completion — ${escapeHtml(orgName)}</title>
-<style>body{font-family:system-ui,sans-serif;padding:2rem;max-width:900px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #ccc;padding:8px;text-align:left}th{background:#f4f4f4}</style></head>
-<body><h1>Staffing action completion report</h1><p>${escapeHtml(orgName)} · ${pack.generatedAt.slice(0, 10)}</p>
-<p>${escapeHtml(pack.committeeSummary)}</p>
-<ul><li>Proposed: ${pack.stats.proposed}</li><li>Accepted: ${pack.stats.accepted}</li><li>In progress: ${pack.stats.inProgress}</li><li>Completed: ${pack.stats.completed}</li><li>Dismissed: ${pack.stats.dismissed}</li></ul>
-<table><thead><tr><th>Status</th><th>Type</th><th>Title</th><th>Peak week</th></tr></thead><tbody>${rows}</tbody></table></body></html>`;
-}
-
-function escapeHtml(s: string): string {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
-
 export function obligationStaffingActionTrackerToCsv(
   pack: ObligationStaffingActionTrackerPack,
 ): string {
