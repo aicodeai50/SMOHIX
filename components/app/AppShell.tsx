@@ -305,7 +305,7 @@ export function AppShell({
 
       <main className="flex min-h-0 min-w-0 flex-1 flex-col lg:overflow-hidden">
         <div className="shynvo-console-main mx-auto flex min-h-0 w-full max-w-7xl flex-1 flex-col overflow-y-auto overscroll-contain p-4 md:p-8 md:pb-10">
-          <ConsoleNavPanel />
+          <ConsoleNavPanel pinnedNavHrefs={pinnedNavHrefs} />
           {auditorWorkspace ? (
             <p className={`mb-4 rounded-xl border border-indigo-400/35 bg-indigo-400/10 px-4 py-3 text-indigo-100 ${appMeta}`}>
               Auditor read-only workspace — SOC 2 Type II monitoring, compliance mapping, and audit log

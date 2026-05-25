@@ -149,6 +149,24 @@ export function moveHref(hrefs: string[], href: string, direction: "up" | "down"
   return next;
 }
 
+export function mergeIdleJumpModules(
+  modules: readonly { href: string; label: string; description: string }[],
+  pinnedHrefs: readonly string[],
+  recentHrefs: readonly string[],
+  max = 8,
+) {
+  const pinnedSet = new Set(pinnedHrefs);
+  const byHref = new Map(modules.map((m) => [m.href, m]));
+  const pinned = pinnedHrefs
+    .map((href) => byHref.get(href))
+    .filter((m): m is (typeof modules)[number] => m !== undefined);
+  const recents = recentHrefs
+    .filter((href) => !pinnedSet.has(href))
+    .map((href) => byHref.get(href))
+    .filter((m): m is (typeof modules)[number] => m !== undefined);
+  return [...pinned, ...recents].slice(0, max);
+}
+
 export function togglePinnedHref(pinnedHrefs: string[], href: string): string[] {
   if (pinnedHrefs.includes(href)) {
     return pinnedHrefs.filter((item) => item !== href);

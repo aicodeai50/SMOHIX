@@ -6,8 +6,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { AppIcon } from "@/components/icons/AppIcon";
 import { getConsoleBreadcrumbs } from "@/lib/console-breadcrumbs";
+import { mergeIdleJumpModules } from "@/lib/console/hub-personalization";
 import { appMeta } from "@/lib/app-typography";
 import { CONSOLE_MODULES } from "@/lib/console-nav";
+
+const HUB_PREFS_STORAGE_KEY = "shynvo.hub.personalization";
 
 const SEARCH_ALIASES: ReadonlyArray<{ alias: string; targets: readonly string[] }> = [
   { alias: "gov", targets: ["/governance/policies", "/governance/access"] },
@@ -74,7 +77,7 @@ function renderHighlightedText(text: string, query: string): React.ReactNode {
   );
 }
 
-export function ConsoleNavPanel() {
+export function ConsoleNavPanel({ pinnedNavHrefs = [] }: { pinnedNavHrefs?: readonly string[] }) {
   const pathname = usePathname();
   const router = useRouter();
   const crumbs = getConsoleBreadcrumbs(pathname);
@@ -82,6 +85,7 @@ export function ConsoleNavPanel() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeSearchIndex, setActiveSearchIndex] = useState(-1);
   const [recentModuleHrefs, setRecentModuleHrefs] = useState<string[]>([]);
+  const [localPinnedHrefs, setLocalPinnedHrefs] = useState<string[]>([]);
   const [searchOpen, setSearchOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const searchPanelRef = useRef<HTMLDivElement | null>(null);
@@ -111,11 +115,23 @@ export function ConsoleNavPanel() {
       .slice(0, 8)
       .map((entry) => entry.module);
   }, [searchCatalog, searchQuery]);
-  const visibleSearchResults = searchQuery.trim()
-    ? searchResults
-    : CONSOLE_MODULES.filter((m) => recentModuleHrefs.includes(m.href)).sort(
-        (a, b) => recentModuleHrefs.indexOf(a.href) - recentModuleHrefs.indexOf(b.href),
-      );
+  const effectivePinnedHrefs = pinnedNavHrefs.length > 0 ? pinnedNavHrefs : localPinnedHrefs;
+  const idleJumpModules = useMemo(
+    () =>
+      mergeIdleJumpModules(
+        CONSOLE_MODULES.map((m) => ({ href: m.href, label: m.label, description: m.description })),
+        effectivePinnedHrefs,
+        recentModuleHrefs,
+      ),
+    [effectivePinnedHrefs, recentModuleHrefs],
+  );
+  const visibleSearchResults = searchQuery.trim() ? searchResults : idleJumpModules;
+  const idleListLabel =
+    effectivePinnedHrefs.length > 0 && recentModuleHrefs.length > 0
+      ? "Pinned & recent"
+      : effectivePinnedHrefs.length > 0
+        ? "Pinned modules"
+        : "Recently opened";
 
   useEffect(() => {
     if (searchResults.length === 0) {
@@ -126,6 +142,22 @@ export function ConsoleNavPanel() {
       queueMicrotask(() => setActiveSearchIndex(0));
     }
   }, [activeSearchIndex, searchResults]);
+
+  useEffect(() => {
+    if (pinnedNavHrefs.length > 0) return;
+    const raw = window.localStorage.getItem(HUB_PREFS_STORAGE_KEY);
+    if (!raw) return;
+    try {
+      const parsed = JSON.parse(raw) as { pinnedHrefs?: unknown };
+      if (!Array.isArray(parsed.pinnedHrefs)) return;
+      const valid = parsed.pinnedHrefs
+        .filter((value): value is string => typeof value === "string")
+        .filter((href) => CONSOLE_MODULES.some((module) => module.href === href));
+      queueMicrotask(() => setLocalPinnedHrefs(valid));
+    } catch {
+      // Ignore malformed local payloads.
+    }
+  }, [pinnedNavHrefs]);
 
   useEffect(() => {
     const raw = window.localStorage.getItem(RECENT_MODULES_STORAGE_KEY);
@@ -309,7 +341,7 @@ export function ConsoleNavPanel() {
               <div className="absolute right-0 top-[calc(100%+0.4rem)] z-40 w-[min(22rem,80vw)] rounded-xl border border-white/[0.1] bg-[rgba(10,12,18,0.98)] p-1.5 shadow-[0_18px_48px_-22px_rgba(0,0,0,0.9)] backdrop-blur-xl">
                 <div className="flex items-center justify-between gap-2 px-2 py-1">
                   <p className={`${appMeta} text-muted`}>
-                    {searchQuery.trim() ? "Search results" : "Recently opened"}
+                    {searchQuery.trim() ? "Search results" : idleListLabel}
                   </p>
                   {!searchQuery.trim() && recentModuleHrefs.length > 0 ? (
                     <button
@@ -356,6 +388,9 @@ export function ConsoleNavPanel() {
                           <span className="ml-1 text-muted">
                             ({renderHighlightedText(m.description, searchQuery)})
                           </span>
+                          {!searchQuery.trim() && effectivePinnedHrefs.includes(m.href) ? (
+                            <AppIcon name="pin" size={10} className="ml-1 inline text-accent/75" aria-hidden />
+                          ) : null}
                         </span>
                         <span className="shrink-0 font-mono text-[10px] text-muted">
                           {renderHighlightedText(m.href, searchQuery)}

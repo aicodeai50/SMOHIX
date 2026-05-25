@@ -5,6 +5,7 @@ import {
   moveHref,
   reorderNavModulesForPins,
   sanitizeHubPersonalizationPrefs,
+  mergeIdleJumpModules,
   togglePinnedHref,
 } from "../lib/console/hub-personalization";
 
@@ -56,5 +57,17 @@ assert(moveHref(["a", "b", "c"], "b", "up")[0] === "b", "move up");
 assert(moveHref(["a", "b", "c"], "b", "down")[2] === "b", "move down");
 assert(togglePinnedHref([], "/overview")[0] === "/overview", "toggle pin on");
 assert(togglePinnedHref(["/overview"], "/overview").length === 0, "toggle pin off");
+
+const idle = mergeIdleJumpModules(
+  [
+    { href: "/overview", label: "Overview", description: "Command center" },
+    { href: "/copilot", label: "Copilot", description: "AI triage" },
+    { href: "/incidents", label: "Incidents", description: "Track" },
+  ],
+  ["/copilot"],
+  ["/incidents", "/overview"],
+);
+assert(idle[0]?.href === "/copilot", "idle pinned first");
+assert(idle[1]?.href === "/incidents", "idle recent after pinned");
 
 console.log("test-hub-personalization: ok");

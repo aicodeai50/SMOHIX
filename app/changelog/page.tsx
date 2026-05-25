@@ -14,6 +14,15 @@ export const metadata: Metadata = {
 const ENTRIES: { date: string; title: string; bullets: string[] }[] = [
   {
     date: "May 2026",
+    title: "Console jump search pinned shortcuts",
+    bullets: [
+      "Ctrl/Cmd+K idle dropdown lists pinned modules before recently opened routes",
+      "Synced from hub personalization (Supabase or local storage in dev mode)",
+      "Pin icon on pinned rows in the jump list",
+    ],
+  },
+  {
+    date: "May 2026",
     title: "Hub module personalization",
     bullets: [
       "Per-user quick link order and pins on /hub — Customize to reorder, add modules, and pin to nav rail",

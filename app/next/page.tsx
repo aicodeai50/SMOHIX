@@ -33,6 +33,10 @@ const ROADMAP: {
         detail: "Pin console modules and reorder /hub quick links per user — pinned modules float to the top of the nav rail.",
       },
       {
+        name: "Console jump search pinned shortcuts",
+        detail: "Ctrl/Cmd+K shows pinned modules before recents, synced from hub personalization prefs.",
+      },
+      {
         name: "Console ambient status layer",
         detail: "Live health pulse and particle lattice on /hub and /overview from workspace telemetry.",
       },
@@ -79,7 +83,7 @@ const HORIZON_STYLE: Record<Horizon, { badge: string; glow: string }> = {
   },
 };
 
-const SHIPPING_TOTAL = 56;
+const SHIPPING_TOTAL = 57;
 
 export default function NextPage() {
   return (
