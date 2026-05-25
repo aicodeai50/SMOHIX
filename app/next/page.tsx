@@ -26,8 +26,12 @@ const ROADMAP: {
   {
     horizon: "shipping",
     title: "Shipping now",
-    subtitle: "Live in console — 48 migrations and refreshed marketing site.",
+    subtitle: "Live in console — 49 migrations and refreshed marketing site.",
     items: [
+      {
+        name: "Hub module personalization",
+        detail: "Pin console modules and reorder /hub quick links per user — pinned modules float to the top of the nav rail.",
+      },
       {
         name: "Console ambient status layer",
         detail: "Live health pulse and particle lattice on /hub and /overview from workspace telemetry.",
@@ -50,12 +54,7 @@ const ROADMAP: {
     horizon: "building",
     title: "Building next",
     subtitle: "In active development — sequencing follows customer demand.",
-    items: [
-      {
-        name: "Hub module personalization",
-        detail: "Pin frequently used console modules and reorder quick links per user.",
-      },
-    ],
+    items: [],
   },
   {
     horizon: "exploring",
@@ -80,7 +79,7 @@ const HORIZON_STYLE: Record<Horizon, { badge: string; glow: string }> = {
   },
 };
 
-const SHIPPING_TOTAL = 55;
+const SHIPPING_TOTAL = 56;
 
 export default function NextPage() {
   return (

@@ -14,6 +14,15 @@ export const metadata: Metadata = {
 const ENTRIES: { date: string; title: string; bullets: string[] }[] = [
   {
     date: "May 2026",
+    title: "Hub module personalization",
+    bullets: [
+      "Per-user quick link order and pins on /hub — Customize to reorder, add modules, and pin to nav rail",
+      "Pinned modules float to the top of the left console rail when signed in (migration #49: user_console_hub_prefs)",
+      "Local mode persists preferences in browser storage; regression: npm run test:hub-personalization",
+    ],
+  },
+  {
+    date: "May 2026",
     title: "Console ambient status layer",
     bullets: [
       "Live health pulse on /hub and /overview from incidents, approvals, connectors, and dry-runs",

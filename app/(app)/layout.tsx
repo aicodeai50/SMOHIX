@@ -2,6 +2,8 @@ import { AppShell } from "@/components/app/AppShell";
 import { AuditorWorkspaceGuard } from "@/components/app/AuditorWorkspaceGuard";
 import { getUserDisplayName } from "@/lib/auth/display-name";
 import { filterConsoleModulesForRole, isAuditorWorkspaceRole } from "@/lib/org/auditor-workspace";
+import { reorderNavModulesForPins } from "@/lib/console/hub-personalization";
+import { loadHubPersonalizationPrefs } from "@/lib/console/hub-personalization-db";
 import { getOrgContextForUser } from "@/lib/org/context";
 import { CONSOLE_MODULES } from "@/lib/console-nav";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
@@ -19,6 +21,7 @@ export default async function ConsoleLayout({
   let userDisplayName: string | null = null;
   const authEnabled = hasSupabaseAuth();
   let orgRole = null as import("@/lib/org/roles").OrgRole | null;
+  let pinnedHrefs: string[] = [];
 
   if (authEnabled) {
     try {
@@ -30,6 +33,8 @@ export default async function ConsoleLayout({
       userDisplayName = getUserDisplayName(user);
       if (user) {
         orgRole = (await getOrgContextForUser(user.id)).role;
+        const prefs = await loadHubPersonalizationPrefs(supabase, user.id, orgRole);
+        pinnedHrefs = prefs.pinnedHrefs;
       }
     } catch {
       userEmail = null;
@@ -37,7 +42,10 @@ export default async function ConsoleLayout({
     }
   }
 
-  const navModules = filterConsoleModulesForRole(CONSOLE_MODULES, orgRole);
+  const navModules = reorderNavModulesForPins(
+    filterConsoleModulesForRole(CONSOLE_MODULES, orgRole),
+    pinnedHrefs,
+  );
   const auditorWorkspace = isAuditorWorkspaceRole(orgRole);
 
   return (
@@ -46,6 +54,7 @@ export default async function ConsoleLayout({
       userDisplayName={userDisplayName}
       authEnabled={authEnabled}
       navModules={navModules}
+      pinnedNavHrefs={pinnedHrefs}
       auditorWorkspace={auditorWorkspace}
     >
       <AuditorWorkspaceGuard orgRole={orgRole}>{children}</AuditorWorkspaceGuard>

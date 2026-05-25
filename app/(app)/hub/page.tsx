@@ -4,8 +4,14 @@ import { launchGuidedScenarioAction } from "./actions";
 
 import { PageHeader } from "@/components/app/PageHeader";
 import { ConsoleAmbientBanner } from "@/components/console/ConsoleAmbientBanner";
+import { HubQuickLinksPanel } from "@/components/console/HubQuickLinksPanel";
 import { getUserDisplayName, getUserFirstName } from "@/lib/auth/display-name";
+import { buildHubPersonalizationState } from "@/lib/console/hub-personalization";
+import { loadHubPersonalizationPrefs } from "@/lib/console/hub-personalization-db";
 import { loadConsoleAmbientSnapshot } from "@/lib/console/load-ambient-status";
+import { CONSOLE_MODULES } from "@/lib/console-nav";
+import { filterConsoleModulesForRole } from "@/lib/org/auditor-workspace";
+import { getOrgContextForUser } from "@/lib/org/context";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { appBody, appMeta, appPanelTitle } from "@/lib/app-typography";
@@ -18,32 +24,11 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-const QUICK = [
-  {
-    href: "/overview",
-    title: "Command center",
-    blurb: "Incidents snapshot, connectors, and readiness.",
-  },
-  {
-    href: "/incidents",
-    title: "Incidents",
-    blurb: "Open, resolve, and drill into timelines.",
-  },
-  {
-    href: "/services",
-    title: "Services",
-    blurb: "Catalog systems and wire alert → incident ingest (paid).",
-  },
-  {
-    href: "/copilot",
-    title: "Copilot",
-    blurb: "Triage with structured next steps.",
-  },
-] as const;
-
 export default async function HubPage() {
   let firstName: string | null = null;
   let displayName: string | null = null;
+  let userId: string | null = null;
+  let orgRole = null as import("@/lib/org/roles").OrgRole | null;
 
   if (hasSupabaseAuth()) {
     try {
@@ -53,9 +38,14 @@ export default async function HubPage() {
       } = await supabase.auth.getUser();
       firstName = getUserFirstName(user);
       displayName = getUserDisplayName(user);
+      userId = user?.id ?? null;
+      if (user) {
+        orgRole = (await getOrgContextForUser(user.id)).role;
+      }
     } catch {
       firstName = null;
       displayName = null;
+      userId = null;
     }
   }
 
@@ -74,23 +64,32 @@ export default async function HubPage() {
 
   const ambient = await loadConsoleAmbientSnapshot();
 
+  let hubPrefsRaw = null as Awaited<ReturnType<typeof loadHubPersonalizationPrefs>> | null;
+  if (userId && hasSupabaseAuth()) {
+    try {
+      const supabase = await createServerSupabaseClient();
+      hubPrefsRaw = await loadHubPersonalizationPrefs(supabase, userId, orgRole);
+    } catch {
+      hubPrefsRaw = null;
+    }
+  }
+
+  const hubPersonalization = buildHubPersonalizationState(hubPrefsRaw, orgRole);
+  const availableModules = filterConsoleModulesForRole(CONSOLE_MODULES, orgRole)
+    .filter((m) => m.href !== "/hub")
+    .map((m) => ({ href: m.href, label: m.label, description: m.description }));
+
   return (
     <>
       <PageHeader eyebrow={SITE_BRAND_NAME} title={title} description={description} />
       <ConsoleAmbientBanner snapshot={ambient} />
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {QUICK.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className="shynvo-glass group flex flex-col rounded-2xl p-5 transition-[border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-[0_0_40px_-14px_rgba(94,225,255,0.2)]"
-          >
-            <h2 className={`${appPanelTitle} text-foreground group-hover:text-accent`}>{item.title}</h2>
-            <p className={`mt-2 flex-1 ${appBody} text-muted`}>{item.blurb}</p>
-            <span className={`mt-4 font-semibold text-accent/85 ${appMeta}`}>Open →</span>
-          </Link>
-        ))}
-      </div>
+      <HubQuickLinksPanel
+        quickLinks={hubPersonalization.quickLinks}
+        pinnedHrefs={hubPersonalization.pinnedHrefs}
+        availableModules={availableModules}
+        canPersistServer={Boolean(userId && hasSupabaseAuth())}
+        customized={hubPersonalization.customized}
+      />
       <section className="shynvo-glass mt-6 rounded-2xl p-5 md:p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>

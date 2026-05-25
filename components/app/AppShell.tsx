@@ -12,7 +12,7 @@ import { CONSOLE_MODULES } from "@/lib/console-nav";
 
 type ModuleItem = (typeof CONSOLE_MODULES)[number];
 
-function NavTile({ href, label, description, icon, live }: ModuleItem) {
+function NavTile({ href, label, description, icon, live, pinned }: ModuleItem & { pinned?: boolean }) {
   const pathname = usePathname();
   const active = pathname === href || pathname.startsWith(`${href}/`);
   return (
@@ -26,11 +26,14 @@ function NavTile({ href, label, description, icon, live }: ModuleItem) {
     >
       <div className="flex items-center justify-between gap-1">
         <AppIcon name={icon} size={20} strokeWidth={1.7} className="text-accent/90" aria-hidden />
-        {live ? (
-          <span className="rounded-md bg-emerald-500/18 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-emerald-300/95 shadow-[0_0_12px_-4px_rgba(52,211,153,0.35)]">
-            Live
-          </span>
-        ) : null}
+        <span className="flex items-center gap-1">
+          {pinned ? <AppIcon name="pin" size={12} className="text-accent/75" aria-hidden /> : null}
+          {live ? (
+            <span className="rounded-md bg-emerald-500/18 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-emerald-300/95 shadow-[0_0_12px_-4px_rgba(52,211,153,0.35)]">
+              Live
+            </span>
+          ) : null}
+        </span>
       </div>
       <span className="mt-1.5 text-[13px] font-semibold text-foreground/95">{label}</span>
       <span className={`mt-0.5 ${appMeta} leading-snug`}>{description}</span>
@@ -38,17 +41,26 @@ function NavTile({ href, label, description, icon, live }: ModuleItem) {
   );
 }
 
-function NavRailLink({ href, label, description, icon, live }: ModuleItem) {
+function NavRailLink({
+  href,
+  label,
+  description,
+  icon,
+  live,
+  pinned,
+}: ModuleItem & { pinned?: boolean }) {
   const pathname = usePathname();
   const active = pathname === href || pathname.startsWith(`${href}/`);
   return (
     <Link
       href={href}
-      title={`${label} — ${description}`}
+      title={`${label} — ${description}${pinned ? " (pinned)" : ""}`}
       className={`flex min-h-0 items-center gap-2.5 rounded-lg border px-2.5 py-2 transition-colors ${
         active
           ? "border-accent/40 bg-accent-dim/70 text-foreground shadow-[0_0_0_1px_rgba(94,225,255,0.12)]"
-          : "border-transparent text-muted hover:border-white/[0.08] hover:bg-white/[0.04] hover:text-foreground"
+          : pinned
+            ? "border-accent/20 bg-accent/[0.04] text-muted hover:border-accent/30 hover:bg-accent/[0.07] hover:text-foreground"
+            : "border-transparent text-muted hover:border-white/[0.08] hover:bg-white/[0.04] hover:text-foreground"
       }`}
     >
       <AppIcon
@@ -61,7 +73,9 @@ function NavRailLink({ href, label, description, icon, live }: ModuleItem) {
       <span className="min-w-0 flex-1 truncate text-left text-[13px] font-semibold tracking-tight">
         {label}
       </span>
-      {live ? (
+      {pinned ? (
+        <AppIcon name="pin" size={12} className="shrink-0 text-accent/70" aria-hidden />
+      ) : live ? (
         <span
           className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400/90 shadow-[0_0_8px_rgba(52,211,153,0.45)]"
           title="Live"
@@ -118,6 +132,7 @@ export function AppShell({
   userDisplayName,
   authEnabled,
   navModules = CONSOLE_MODULES,
+  pinnedNavHrefs = [],
   auditorWorkspace = false,
 }: {
   children: React.ReactNode;
@@ -125,11 +140,13 @@ export function AppShell({
   userDisplayName?: string | null;
   authEnabled: boolean;
   navModules?: readonly ModuleItem[];
+  pinnedNavHrefs?: readonly string[];
   auditorWorkspace?: boolean;
 }) {
   const showName = userDisplayName?.trim() || null;
   const pathname = usePathname();
   const [mobileModulesOpen, setMobileModulesOpen] = useState(false);
+  const pinnedSet = new Set(pinnedNavHrefs);
 
   useEffect(() => {
     queueMicrotask(() => {
@@ -218,7 +235,7 @@ export function AppShell({
             aria-label="Console modules"
           >
             {navModules.map((item) => (
-              <NavTile key={item.href} {...item} />
+              <NavTile key={item.href} {...item} pinned={pinnedSet.has(item.href)} />
             ))}
           </nav>
           <div className={`space-y-2 border-t border-white/[0.06] p-3 ${appMeta}`}>
@@ -259,7 +276,7 @@ export function AppShell({
           aria-label="Console modules"
         >
           {navModules.map((item) => (
-            <NavRailLink key={item.href} {...item} />
+            <NavRailLink key={item.href} {...item} pinned={pinnedSet.has(item.href)} />
           ))}
         </nav>
         <div className={`shrink-0 space-y-2.5 border-t border-white/[0.06] p-3 ${appMeta}`}>
