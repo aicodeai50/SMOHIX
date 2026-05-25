@@ -331,6 +331,174 @@ body {
   flex: 0 0 min(85%, 18rem);
 }
 
+/* ── Quantum dimension — living marketing realm ── */
+.zentro-quantum-realm {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+}
+.zentro-quantum-canvas {
+  opacity: 0.85;
+  mix-blend-mode: screen;
+}
+.zentro-singularity-field {
+  background:
+    radial-gradient(ellipse 55% 40% at 50% 15%, rgba(94, 225, 255, 0.09), transparent 58%),
+    radial-gradient(ellipse 40% 35% at 85% 55%, rgba(167, 139, 250, 0.06), transparent 52%),
+    radial-gradient(ellipse 35% 30% at 10% 70%, rgba(52, 211, 153, 0.05), transparent 48%);
+  animation: zentro-singularity-breathe 14s ease-in-out infinite alternate;
+}
+@keyframes zentro-singularity-breathe {
+  0% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+.zentro-living-headline {
+  background: linear-gradient(
+    118deg,
+    #fafafa 0%,
+    #e4e4e7 18%,
+    #7dd3fc 38%,
+    #c4b5fd 58%,
+    #34d399 78%,
+    #5ee1ff 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: zentro-living-headline-shift 10s ease-in-out infinite alternate;
+}
+@keyframes zentro-living-headline-shift {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 100% center;
+  }
+}
+.zentro-living-pulse {
+  box-shadow:
+    0 0 24px -12px rgba(94, 225, 255, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  animation: zentro-living-pulse-glow 3s ease-in-out infinite;
+}
+@keyframes zentro-living-pulse-glow {
+  0%,
+  100% {
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+  50% {
+    border-color: rgba(94, 225, 255, 0.28);
+  }
+}
+.zentro-dimension-rift {
+  background: repeating-linear-gradient(
+    -12deg,
+    transparent,
+    transparent 40px,
+    rgba(167, 139, 250, 0.04) 40px,
+    rgba(94, 225, 255, 0.06) 41px,
+    transparent 42px
+  );
+  animation: zentro-rift-drift 22s linear infinite;
+}
+@keyframes zentro-rift-drift {
+  to {
+    background-position: 200px 0;
+  }
+}
+.zentro-quantum-core {
+  animation: zentro-quantum-core-float 8s ease-in-out infinite alternate;
+}
+@keyframes zentro-quantum-core-float {
+  0% {
+    transform: translateY(0);
+    filter: drop-shadow(0 0 40px rgba(94, 225, 255, 0.12));
+  }
+  100% {
+    transform: translateY(-6px);
+    filter: drop-shadow(0 0 56px rgba(167, 139, 250, 0.18));
+  }
+}
+.zentro-cell-breathe {
+  animation: zentro-cell-breathe 4.5s ease-in-out infinite;
+}
+@keyframes zentro-cell-breathe {
+  0%,
+  100% {
+    opacity: 0.88;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.zentro-dimension-gate {
+  position: relative;
+  height: 1px;
+  margin: 0 auto;
+  max-width: 72rem;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(94, 225, 255, 0.15) 20%,
+    rgba(167, 139, 250, 0.45) 50%,
+    rgba(94, 225, 255, 0.15) 80%,
+    transparent
+  );
+  box-shadow: 0 0 32px rgba(94, 225, 255, 0.25);
+  animation: zentro-gate-pulse 5s ease-in-out infinite;
+}
+.zentro-dimension-gate::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.9), rgba(94, 225, 255, 0.4));
+  box-shadow: 0 0 20px rgba(94, 225, 255, 0.6);
+}
+@keyframes zentro-gate-pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.zentro-quantum-section {
+  position: relative;
+}
+.zentro-quantum-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(94, 225, 255, 0.04), transparent 65%);
+  opacity: 0.8;
+}
+.zentro-launch-beacon {
+  animation: zentro-launch-beacon 4s ease-in-out infinite;
+}
+@keyframes zentro-launch-beacon {
+  0%,
+  100% {
+    box-shadow: 0 0 40px -6px var(--accent-glow);
+  }
+  50% {
+    box-shadow: 0 0 56px -2px var(--accent-glow), 0 0 80px -20px rgba(167, 139, 250, 0.35);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .zentro-hero-future::after {
     animation: none;
@@ -340,8 +508,21 @@ body {
   }
   .zentro-orbit-ring,
   .zentro-scan-sweep,
-  .zentro-future-ticker-track {
+  .zentro-future-ticker-track,
+  .zentro-singularity-field,
+  .zentro-living-headline,
+  .zentro-living-pulse,
+  .zentro-dimension-rift,
+  .zentro-quantum-core,
+  .zentro-cell-breathe,
+  .zentro-dimension-gate {
     animation: none;
+  }
+  .zentro-launch-beacon {
+    animation: none;
+  }
+  .zentro-quantum-canvas {
+    display: none;
   }
 }
 

@@ -1,12 +1,14 @@
 "use client";
 
 const TICKER_ITEMS = [
-  "Datadog · PagerDuty · Slack",
-  "SOC 2 · ISO 27001 · FedRAMP POA&M",
-  "Guarded dry-runs · Approval gates",
-  "Certificate radar · Secrets vault",
-  "Append-only audit · Evidence export",
-  "Incident copilot · Runbook intelligence",
+  "Quantum lattice · Phase coherent",
+  "Non-terran origin · Signal bidirectional",
+  "Dimension Ω-7 · Command manifold",
+  "Guarded execution · Human checkpoint",
+  "Append-only audit · Evidence dimension",
+  "Incident copilot · Living runbooks",
+  "SOC 2 · ISO · FedRAMP · Eight frameworks",
+  "Something bigger than any stack alone",
 ] as const;
 
 export function FutureTicker() {

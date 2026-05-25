@@ -49,10 +49,10 @@ const SAMPLE = `{
 
 export function ProofRail() {
   return (
-    <MarketingReveal id="proof" className={mSectionTight} aria-labelledby="proof-heading">
+    <MarketingReveal id="proof" className={`${mSectionTight} zentro-quantum-section`} aria-labelledby="proof-heading">
       <div className={mContainer}>
-        <h2 id="proof-heading" className={mH2}>
-          Built to survive audits — not slide decks
+        <h2 id="proof-heading" className={`zentro-living-headline ${mH2}`}>
+          Built to survive dimensions — not slide decks
         </h2>
         <p className={mLede}>
           Evidence, exports, and guarded execution are first-class — not bolted on after the demo.

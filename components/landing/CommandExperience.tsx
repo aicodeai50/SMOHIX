@@ -77,16 +77,16 @@ const PILLARS = [
 
 export function CommandExperience() {
   return (
-    <MarketingReveal id="command" className={mSection} aria-labelledby="command-heading">
+    <MarketingReveal id="command" className={`${mSection} zentro-quantum-section`} aria-labelledby="command-heading">
       <div className={mContainer}>
-        <p className={`${mEyebrow} zentro-eyebrow-cyber`}>Command surface</p>
-        <h2 id="command-heading" className={`mt-2 ${mH2}`}>
-          One neural control plane — not six disconnected dashboards
+        <p className={`${mEyebrow} zentro-eyebrow-cyber`}>⟡ Command manifold</p>
+        <h2 id="command-heading" className={`zentro-living-headline mt-2 ${mH2}`}>
+          One living dimension — not six disconnected dashboards
         </h2>
         <p className={mLede}>
           {SITE_BRAND_NAME} folds incident response, security posture, guarded automation, and
-          compliance evidence into a single operator experience. No mock silos — every tile maps to
-          a live console route after sign-in.
+          compliance evidence into a single breathing operator experience. Every tile maps to a live
+          console route — coherence after sign-in.
         </p>
 
         <div className="mt-10 grid gap-3 md:grid-cols-4 md:auto-rows-[minmax(7rem,auto)]">

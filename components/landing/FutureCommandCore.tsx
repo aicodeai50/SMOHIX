@@ -3,12 +3,12 @@
 import { useEffect, useState } from "react";
 
 const FEED = [
-  { tone: "text-accent", text: "ingest · datadog webhook → incident #8841 opened" },
-  { tone: "text-[#c4b5fd]", text: "surface · 3 critical deps on auth-api cluster" },
-  { tone: "text-[#6ee7b7]", text: "guard · approval pending · rollback playbook" },
-  { tone: "text-warning", text: "exposure · cert api-gateway expires 12d" },
-  { tone: "text-accent", text: "audit · append-only governance.staffing_sla_*" },
-  { tone: "text-[#6ee7b7]", text: "execute · dry-run passed · awaiting owner" },
+  { tone: "text-accent", text: "◈ lattice · webhook collapsed into incident #8841" },
+  { tone: "text-[#c4b5fd]", text: "◈ surface · 3 critical vectors on auth-api manifold" },
+  { tone: "text-[#6ee7b7]", text: "◈ guard · approval gate · rollback sequence armed" },
+  { tone: "text-warning", text: "◈ exposure · cert api-gateway decays in 12 cycles" },
+  { tone: "text-accent", text: "◈ audit · append-only · governance.staffing_sla_*" },
+  { tone: "text-[#6ee7b7]", text: "◈ execute · dry-run coherent · awaiting operator" },
 ] as const;
 
 const METRICS = [
@@ -18,9 +18,13 @@ const METRICS = [
   { label: "Audit 24h", value: "1.2k", spark: "live" },
 ] as const;
 
+const DIMS = ["Ω-7", "Σ-12", "Λ-0", "Ξ-3"] as const;
+
 export function FutureCommandCore() {
   const [lineIndex, setLineIndex] = useState(0);
   const [cursorOn, setCursorOn] = useState(true);
+  const [dimIndex, setDimIndex] = useState(0);
+  const [coherence, setCoherence] = useState(99.97);
 
   useEffect(() => {
     const tick = window.setInterval(() => {
@@ -34,29 +38,45 @@ export function FutureCommandCore() {
     return () => window.clearInterval(blink);
   }, []);
 
+  useEffect(() => {
+    const dim = window.setInterval(() => {
+      setDimIndex((i) => (i + 1) % DIMS.length);
+      setCoherence(99.9 + Math.random() * 0.09);
+    }, 4000);
+    return () => window.clearInterval(dim);
+  }, []);
+
   return (
     <div className="relative mx-auto w-full max-w-xl lg:max-w-none">
       <div
-        className="zentro-orbit-ring pointer-events-none absolute -right-8 -top-8 h-40 w-40 opacity-60"
+        className="zentro-orbit-ring pointer-events-none absolute -right-10 -top-10 h-44 w-44 opacity-70"
         aria-hidden
       />
-      <div className="zentro-neural-field zentro-holo-panel relative overflow-hidden rounded-2xl p-1">
-        <div className="zentro-scan-sweep pointer-events-none absolute inset-0 opacity-40" aria-hidden />
+      <div
+        className="zentro-orbit-ring pointer-events-none absolute -left-6 bottom-8 h-28 w-28 opacity-40"
+        style={{ animationDirection: "reverse", animationDuration: "32s" }}
+        aria-hidden
+      />
+      <div className="zentro-quantum-core zentro-neural-field zentro-holo-panel relative overflow-hidden rounded-2xl p-1">
+        <div className="zentro-scan-sweep pointer-events-none absolute inset-0 opacity-50" aria-hidden />
+        <div className="zentro-dimension-rift pointer-events-none absolute inset-0 opacity-30" aria-hidden />
 
-        <div className="relative rounded-[calc(1rem-4px)] bg-[#06070b]/95 p-4 sm:p-5">
+        <div className="relative rounded-[calc(1rem-4px)] bg-[#040508]/95 p-4 sm:p-5">
           <div className="flex items-center justify-between gap-3 border-b border-white/[0.06] pb-3">
             <div className="flex items-center gap-2">
               <span className="zentro-pulse-dot inline-block h-2 w-2 rounded-full bg-[#6ee7b7]" />
               <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
-                Neural command
+                Quantum command
               </span>
             </div>
-            <span className="font-mono text-[10px] text-accent/90">zentro.run · SOC</span>
+            <span className="font-mono text-[10px] text-accent/90">
+              dim {DIMS[dimIndex]} · {coherence.toFixed(2)}%
+            </span>
           </div>
 
           <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
             {METRICS.map((m) => (
-              <div key={m.label} className="zentro-bento-cell rounded-lg px-3 py-2.5">
+              <div key={m.label} className="zentro-bento-cell zentro-cell-breathe rounded-lg px-3 py-2.5">
                 <p className="text-[9px] font-semibold uppercase tracking-wider text-muted">
                   {m.label}
                 </p>
@@ -66,14 +86,14 @@ export function FutureCommandCore() {
             ))}
           </div>
 
-          <div className="mt-4 rounded-lg border border-white/[0.06] bg-black/40 p-3 font-mono text-[11px] leading-relaxed">
+          <div className="mt-4 rounded-lg border border-white/[0.06] bg-black/50 p-3 font-mono text-[11px] leading-relaxed">
             <p className="text-muted/90">
-              <span className="text-accent">$</span> zentro watch --stream
+              <span className="text-accent">⟨</span> zentro.watch --dimension=live
             </p>
             {FEED.slice(0, 4).map((line, i) => (
               <p
                 key={line.text}
-                className={`mt-1.5 transition-opacity duration-500 ${i === lineIndex % 4 ? "opacity-100" : "opacity-35"} ${line.tone}`}
+                className={`mt-1.5 transition-opacity duration-500 ${i === lineIndex % 4 ? "opacity-100" : "opacity-30"} ${line.tone}`}
               >
                 {line.text}
               </p>
@@ -87,20 +107,21 @@ export function FutureCommandCore() {
             {[...Array(9)].map((_, i) => (
               <span
                 key={i}
-                className={`h-8 rounded border border-white/[0.06] ${
+                className={`zentro-cell-breathe h-8 rounded border border-white/[0.06] ${
                   i === 1 || i === 5
                     ? "bg-[var(--danger-dim)] shadow-[inset_0_0_20px_-8px_var(--danger)]"
                     : i === 4
-                      ? "bg-[var(--accent-dim)] shadow-[inset_0_0_20px_-8px_var(--accent-glow)]"
+                      ? "bg-[var(--accent-dim)] shadow-[inset_0_0_24px_-6px_var(--accent-glow)]"
                       : "bg-white/[0.03]"
                 }`}
+                style={{ animationDelay: `${i * 0.15}s` }}
               />
             ))}
           </div>
         </div>
       </div>
       <p className="mt-3 text-center font-mono text-[10px] text-muted/70">
-        Illustrative command surface — live data after sign-in
+        Living command surface — coherence after sign-in
       </p>
     </div>
   );

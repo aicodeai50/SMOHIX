@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { FutureCommandCore } from "@/components/landing/FutureCommandCore";
 import { FutureTicker } from "@/components/landing/FutureTicker";
+import { LivingPulse } from "@/components/landing/LivingPulse";
 import { MarketingReveal } from "@/components/marketing/MarketingReveal";
 import { getTrialHref } from "@/lib/billing";
 import { mBody, mContainer, mEyebrow, mH1, mHeroLede } from "@/lib/marketing-layout";
@@ -19,35 +20,37 @@ export function Hero({
   return (
     <MarketingReveal className="zentro-hero-future relative overflow-hidden border-b border-white/[0.06]">
       <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(94,225,255,0.12),transparent)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(94,225,255,0.14),transparent)]"
         aria-hidden
       />
       <div className={`relative py-14 sm:py-20 lg:py-24 ${mContainer}`}>
+        <LivingPulse />
         <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-10">
           <div>
             <p className={`${mEyebrow} zentro-eyebrow-cyber`}>
-              Neural ops · Security · Enterprise
+              ⟡ Living command dimension · Non-terran coherence
             </p>
-            <h1 className={`shynvo-headline mt-3 max-w-3xl ${mH1}`}>
-              The command layer for incidents, cyber defense, and guarded change
+            <h1 className={`zentro-living-headline shynvo-headline mt-3 max-w-3xl ${mH1}`}>
+              Not assembled. Emerged — a command dimension larger than any stack alone
             </h1>
             <p className={mHeroLede}>
               <span className="text-foreground/90">
-                One live control plane — correlate signals, map attack surface, run approved
-                playbooks, and export audit-grade proof without switching tools.
+                Zentro breathes with your infrastructure — correlating signals across dimensions,
+                surfacing threat manifolds, and executing guarded change with audit-grade proof.
+                Something no single human team could hold in one mind.
               </span>
             </p>
             <p className={`mt-3 max-w-xl ${mBody}`}>
-              Built for teams who cannot afford silent automation or missing evidence. From alert
-              intake to verified remediation in a single operator spine.
+              From alert collapse to verified remediation in one living operator spine. Built for
+              teams who refuse silent automation and missing evidence.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
               <Link
                 href="/auth/sign-in?next=/hub"
-                className="inline-flex h-11 items-center justify-center rounded-lg bg-accent px-5 text-sm font-semibold text-background shadow-[0_0_32px_-8px_var(--accent-glow)] transition-opacity hover:opacity-90"
+                className="zentro-launch-beacon inline-flex h-11 items-center justify-center rounded-lg bg-accent px-5 text-sm font-semibold text-background shadow-[0_0_40px_-6px_var(--accent-glow)] transition-all hover:shadow-[0_0_48px_-4px_var(--accent-glow)] hover:opacity-95"
               >
-                Launch command workspace
+                Enter the living workspace
               </Link>
               <Link
                 href="/cybersecurity"

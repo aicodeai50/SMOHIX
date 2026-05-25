@@ -3,8 +3,10 @@ import { Footer } from "@/components/site/Footer";
 import { CapabilityOrbit } from "@/components/landing/CapabilityOrbit";
 import { CommandExperience } from "@/components/landing/CommandExperience";
 import { ConnectCTA } from "@/components/landing/ConnectCTA";
+import { DimensionGate } from "@/components/landing/DimensionGate";
 import { Hero } from "@/components/landing/Hero";
 import { HowItWorksSection } from "@/components/landing/HowItWorksSection";
+import { MarketingQuantumShell } from "@/components/landing/MarketingQuantumShell";
 import { ProofRail } from "@/components/landing/ProofRail";
 import { getSignedInCheckoutUrls } from "@/lib/marketing/checkout-context";
 
@@ -18,18 +20,23 @@ export default async function Home() {
     <>
       <Header />
       <main className="flex-1">
-        <Hero
-          signedInCheckoutUrl={signedInCheckoutUrl}
-          signedInTeamCheckoutUrl={signedInTeamCheckoutUrl}
-        />
-        <CommandExperience />
-        <CapabilityOrbit />
-        <HowItWorksSection />
-        <ProofRail />
-        <ConnectCTA
-          signedInCheckoutUrl={signedInCheckoutUrl}
-          signedInTeamCheckoutUrl={signedInTeamCheckoutUrl}
-        />
+        <MarketingQuantumShell>
+          <Hero
+            signedInCheckoutUrl={signedInCheckoutUrl}
+            signedInTeamCheckoutUrl={signedInTeamCheckoutUrl}
+          />
+          <DimensionGate />
+          <CommandExperience />
+          <DimensionGate />
+          <CapabilityOrbit />
+          <DimensionGate />
+          <HowItWorksSection />
+          <ProofRail />
+          <ConnectCTA
+            signedInCheckoutUrl={signedInCheckoutUrl}
+            signedInTeamCheckoutUrl={signedInTeamCheckoutUrl}
+          />
+        </MarketingQuantumShell>
       </main>
       <Footer />
     </>

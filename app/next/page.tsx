@@ -75,7 +75,7 @@ export default function NextPage() {
         <div className="zentro-hero-future border-b border-white/[0.06]">
           <article className={`${mArticle} max-w-4xl`}>
             <p className={`${mEyebrow} zentro-eyebrow-cyber`}>Roadmap</p>
-            <h1 className={`mt-2 shynvo-headline ${mH1}`}>What&apos;s next for {SITE_BRAND_NAME}</h1>
+            <h1 className={`mt-2 shynvo-headline zentro-living-headline ${mH1}`}>What&apos;s next for {SITE_BRAND_NAME}</h1>
             <p className={`mt-4 ${mBody} text-base sm:text-lg`}>
               Transparent sequencing for security, enterprise, and operations depth. Directional —
               not a contractual commitment.

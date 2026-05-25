@@ -59,11 +59,11 @@ const CAPABILITIES = [
 
 export function CapabilityOrbit() {
   return (
-    <MarketingReveal id="modules" className={mSection} aria-labelledby="modules-heading">
+    <MarketingReveal id="modules" className={`${mSection} zentro-quantum-section`} aria-labelledby="modules-heading">
       <div className={mContainer}>
-        <p className={`${mEyebrow} zentro-eyebrow-cyber`}>Capability orbit</p>
-        <h2 id="modules-heading" className={`mt-2 ${mH2}`}>
-          Modules that share one spine
+        <p className={`${mEyebrow} zentro-eyebrow-cyber`}>⟡ Capability orbit</p>
+        <h2 id="modules-heading" className={`zentro-living-headline mt-2 ${mH2}`}>
+          Modules orbiting one living spine
         </h2>
         <p className={mLede}>
           Triage, scan, govern, automate, and prove — linked by incidents, services, and audit

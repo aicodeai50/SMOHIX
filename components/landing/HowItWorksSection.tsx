@@ -45,12 +45,12 @@ export function HowItWorksSection() {
   return (
     <MarketingReveal
       id="how-it-works"
-      className={mSection}
+      className={`${mSection} zentro-quantum-section`}
       aria-labelledby="how-heading"
     >
       <div className={mContainer}>
         <p className={`${mEyebrow} zentro-eyebrow-cyber`}>Operator flow</p>
-        <h2 id="how-heading" className={`mt-2 ${mH2}`}>
+        <h2 id="how-heading" className={`zentro-living-headline mt-2 ${mH2}`}>
           How {SITE_BRAND_NAME} runs an incident
         </h2>
         <p className={mLede}>

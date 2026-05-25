@@ -14,6 +14,15 @@ export const metadata: Metadata = {
 const ENTRIES: { date: string; title: string; bullets: string[] }[] = [
   {
     date: "May 2026",
+    title: "Living quantum dimension — marketing",
+    bullets: [
+      "Canvas particle lattice with singularity field across the homepage",
+      "Living pulse status, dimension gates, and breathing command core",
+      "Animated living headlines and non-terran operator copy",
+    ],
+  },
+  {
+    date: "May 2026",
     title: "Cross-staffing committee escalation",
     bullets: [
       "Escalate SLA-breaching staffing actions after weekly completion rollup email",
