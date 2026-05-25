@@ -7,6 +7,7 @@ import {
   buildConsoleAmbientSnapshot,
   type ConsoleAmbientContext,
   type ConsoleAmbientSnapshot,
+  approvalAmbientMetrics,
 } from "@/lib/console/ambient-status";
 import { getConnectorHealthRows } from "@/lib/connectors-health";
 import { listIncidentsForUser } from "@/lib/incidents/data";
@@ -21,19 +22,29 @@ export async function loadConsoleAmbientSnapshot(options?: {
   const context = options?.context ?? "default";
   if (!hasSupabaseAuth()) {
     const devTenantKey = (await cookies()).get("zentro_dev_tid")?.value ?? "anon";
-    const { rows: incidents } = await listIncidentsForUser("", devTenantKey, null);
+    const [{ rows: incidents }, approvals] = await Promise.all([
+      listIncidentsForUser("", devTenantKey, null),
+      listApprovalsForUser({
+        userId: "local",
+        devTenantId: devTenantKey,
+        orgId: null,
+      }),
+    ]);
     const open = incidents.filter((r) => r.status !== "resolved").length;
     const hot = incidents.filter((r) => r.severity === "critical" || r.severity === "high").length;
     const dryRuns = listDryRuns(devTenantKey);
     const successful = dryRuns.filter((r) => r.ok).length;
     const dryRunSuccessRate =
       dryRuns.length > 0 ? Math.round((successful / dryRuns.length) * 100) : 0;
+    const approvalMetrics = approvalAmbientMetrics(approvals.pending);
 
     return buildConsoleAmbientSnapshot({
       openIncidents: open,
       hotIncidents: hot,
       totalIncidents: incidents.length,
-      pendingApprovals: 0,
+      pendingApprovals: approvalMetrics.pendingApprovals,
+      pendingHighRisk: approvalMetrics.pendingHighRisk,
+      pendingPolicyGaps: approvalMetrics.pendingPolicyGaps,
       connectorsUp: 0,
       connectorsConfigured: 0,
       dryRunSuccessRate,
@@ -65,11 +76,17 @@ export async function loadConsoleAmbientSnapshot(options?: {
     });
   }
 
-  const orgId = (await getOrgContextForUser(user.id)).orgId;
+  const orgContext = await getOrgContextForUser(user.id);
+  const orgId = orgContext.orgId;
   const [{ rows: incidents }, connectors, approvals] = await Promise.all([
     listIncidentsForUser(user.id, null, orgId),
     getConnectorHealthRows(),
-    listApprovalsForUser({ userId: user.id, devTenantId: null, orgId }),
+    listApprovalsForUser({
+      userId: user.id,
+      devTenantId: null,
+      orgId,
+      orgRole: orgContext.role,
+    }),
   ]);
 
   let dryRuns = await listAutomationDryRuns(supabase, { userId: user.id, orgId });
@@ -87,12 +104,15 @@ export async function loadConsoleAmbientSnapshot(options?: {
   const hot = incidents.filter((r) => r.severity === "critical" || r.severity === "high").length;
   const connectorsConfigured = connectors.filter((c) => c.baseUrl).length;
   const connectorsUp = connectors.filter((c) => c.ok === true).length;
+  const approvalMetrics = approvalAmbientMetrics(approvals.pending);
 
   return buildConsoleAmbientSnapshot({
     openIncidents: open,
     hotIncidents: hot,
     totalIncidents: incidents.length,
-    pendingApprovals: approvals.pending.length,
+    pendingApprovals: approvalMetrics.pendingApprovals,
+    pendingHighRisk: approvalMetrics.pendingHighRisk,
+    pendingPolicyGaps: approvalMetrics.pendingPolicyGaps,
     connectorsUp,
     connectorsConfigured,
     dryRunSuccessRate,

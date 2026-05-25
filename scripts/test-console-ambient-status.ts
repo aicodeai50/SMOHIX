@@ -1,6 +1,8 @@
 import {
+  approvalAmbientMetrics,
   buildConsoleAmbientSnapshot,
   classifyConsoleAmbientHealth,
+  classifyConsoleAmbientHealthForContext,
   consoleAmbientHeadline,
   CONSOLE_AMBIENT_STATUS_VERSION,
 } from "../lib/console/ambient-status";
@@ -88,6 +90,63 @@ const incidentsSnapshot = buildConsoleAmbientSnapshot({
   context: "incidents",
 });
 assert(incidentsSnapshot.phases[0]?.value.includes("hot"), "incidents phase shows hot count");
+
+assert(
+  classifyConsoleAmbientHealthForContext(
+    {
+      hotIncidents: 0,
+      openIncidents: 0,
+      pendingApprovals: 2,
+      criticalBurnServices: 0,
+      connectorsConfigured: 0,
+      connectorsUp: 0,
+      pendingHighRisk: 1,
+    },
+    "approvals",
+  ) === "critical",
+  "approvals high-risk → critical",
+);
+
+const approvalMetrics = approvalAmbientMetrics([
+  {
+    decisionBrief: {
+      riskScore: 80,
+      policyChecks: [{ passed: true }],
+    },
+  },
+  {
+    decisionBrief: {
+      riskScore: 40,
+      policyChecks: [{ passed: false }],
+    },
+  },
+]);
+assert(approvalMetrics.pendingHighRisk === 1, "approval metrics high-risk");
+assert(approvalMetrics.pendingPolicyGaps === 1, "approval metrics policy gaps");
+
+const approvalsSnapshot = buildConsoleAmbientSnapshot({
+  openIncidents: 0,
+  hotIncidents: 0,
+  totalIncidents: 0,
+  pendingApprovals: 2,
+  pendingHighRisk: 1,
+  pendingPolicyGaps: 0,
+  connectorsUp: 1,
+  connectorsConfigured: 1,
+  dryRunSuccessRate: 100,
+  dryRunCount: 1,
+  criticalBurnServices: 0,
+  signedIn: true,
+  context: "approvals",
+});
+assert(approvalsSnapshot.phases[0]?.label === "APPROVALS", "approvals phase first");
+assert(
+  consoleAmbientHeadline("critical", "approvals", {
+    pendingApprovals: 2,
+    pendingHighRisk: 1,
+  }).includes("high-risk"),
+  "approvals critical headline",
+);
 
 assert(snapshot.version === CONSOLE_AMBIENT_STATUS_VERSION, "version");
 

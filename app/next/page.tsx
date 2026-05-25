@@ -29,6 +29,10 @@ const ROADMAP: {
     subtitle: "Live in console — 49 migrations and refreshed marketing site.",
     items: [
       {
+        name: "Approvals ambient status layer",
+        detail: "Approval-context health pulse on /approvals — pending, high-risk, and policy-gap counts with guardrail-focused headlines.",
+      },
+      {
         name: "Incidents ambient status layer",
         detail: "Incident-context health pulse on /incidents — hot/open queue counts and triage-focused headlines.",
       },
@@ -87,7 +91,7 @@ const HORIZON_STYLE: Record<Horizon, { badge: string; glow: string }> = {
   },
 };
 
-const SHIPPING_TOTAL = 58;
+const SHIPPING_TOTAL = 59;
 
 export default function NextPage() {
   return (

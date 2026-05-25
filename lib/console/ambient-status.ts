@@ -1,6 +1,6 @@
 export const CONSOLE_AMBIENT_STATUS_VERSION = "zentro-console-ambient-status/1";
 
-export type ConsoleAmbientContext = "default" | "incidents";
+export type ConsoleAmbientContext = "default" | "incidents" | "approvals";
 
 export type ConsoleAmbientHealth = "nominal" | "attention" | "critical";
 
@@ -38,11 +38,64 @@ export function classifyConsoleAmbientHealth(input: {
   return "nominal";
 }
 
+export type ConsoleAmbientCounts = {
+  openIncidents?: number;
+  hotIncidents?: number;
+  pendingApprovals?: number;
+  pendingHighRisk?: number;
+  pendingPolicyGaps?: number;
+};
+
+export function classifyConsoleAmbientHealthForContext(
+  input: {
+    hotIncidents: number;
+    openIncidents: number;
+    pendingApprovals: number;
+    criticalBurnServices: number;
+    connectorsConfigured: number;
+    connectorsUp: number;
+    pendingHighRisk?: number;
+    pendingPolicyGaps?: number;
+  },
+  context: ConsoleAmbientContext = "default",
+): ConsoleAmbientHealth {
+  if (context === "approvals") {
+    if ((input.pendingHighRisk ?? 0) > 0 || (input.pendingPolicyGaps ?? 0) > 0) {
+      return "critical";
+    }
+    if (input.pendingApprovals > 0) {
+      return "attention";
+    }
+    return "nominal";
+  }
+  return classifyConsoleAmbientHealth(input);
+}
+
 export function consoleAmbientHeadline(
   health: ConsoleAmbientHealth,
   context: ConsoleAmbientContext = "default",
-  counts?: { openIncidents: number; hotIncidents: number },
+  counts?: ConsoleAmbientCounts,
 ): string {
+  if (context === "approvals") {
+    const pending = counts?.pendingApprovals ?? 0;
+    const highRisk = counts?.pendingHighRisk ?? 0;
+    const policyGaps = counts?.pendingPolicyGaps ?? 0;
+    if (health === "critical") {
+      if (highRisk > 0) {
+        return `${highRisk} high-risk approval${highRisk === 1 ? "" : "s"} need immediate review`;
+      }
+      if (policyGaps > 0) {
+        return `${policyGaps} pending request${policyGaps === 1 ? "" : "s"} missing policy checks`;
+      }
+      return "Critical approval signals require response";
+    }
+    if (health === "attention") {
+      return pending > 0
+        ? `${pending} approval${pending === 1 ? "" : "s"} awaiting human decision`
+        : "Review pending change requests and guardrails";
+    }
+    return "Approval queue clear — guardrails enforced";
+  }
   if (context === "incidents") {
     if (health === "critical") {
       const hot = counts?.hotIncidents ?? 0;
@@ -63,6 +116,27 @@ export function consoleAmbientHeadline(
   return "Operational posture nominal";
 }
 
+export function approvalAmbientMetrics(
+  pending: readonly {
+    decisionBrief: {
+      riskScore: number;
+      policyChecks: readonly { passed: boolean }[];
+    };
+  }[],
+): {
+  pendingApprovals: number;
+  pendingHighRisk: number;
+  pendingPolicyGaps: number;
+} {
+  return {
+    pendingApprovals: pending.length,
+    pendingHighRisk: pending.filter((p) => p.decisionBrief.riskScore >= 70).length,
+    pendingPolicyGaps: pending.filter((p) =>
+      p.decisionBrief.policyChecks.some((check) => !check.passed),
+    ).length,
+  };
+}
+
 export function buildConsoleAmbientSnapshot(input: {
   openIncidents: number;
   hotIncidents: number;
@@ -75,49 +149,75 @@ export function buildConsoleAmbientSnapshot(input: {
   criticalBurnServices: number;
   signedIn: boolean;
   context?: ConsoleAmbientContext;
+  pendingHighRisk?: number;
+  pendingPolicyGaps?: number;
   generatedAt?: string;
 }): ConsoleAmbientSnapshot {
-  const health = classifyConsoleAmbientHealth({
-    hotIncidents: input.hotIncidents,
-    openIncidents: input.openIncidents,
-    pendingApprovals: input.pendingApprovals,
-    criticalBurnServices: input.criticalBurnServices,
-    connectorsConfigured: input.connectorsConfigured,
-    connectorsUp: input.connectorsUp,
-  });
-
   const context = input.context ?? "default";
+  const health = classifyConsoleAmbientHealthForContext(
+    {
+      hotIncidents: input.hotIncidents,
+      openIncidents: input.openIncidents,
+      pendingApprovals: input.pendingApprovals,
+      criticalBurnServices: input.criticalBurnServices,
+      connectorsConfigured: input.connectorsConfigured,
+      connectorsUp: input.connectorsUp,
+      pendingHighRisk: input.pendingHighRisk,
+      pendingPolicyGaps: input.pendingPolicyGaps,
+    },
+    context,
+  );
+
+  const approvalPhaseValue =
+    input.pendingApprovals > 0
+      ? input.pendingHighRisk && input.pendingHighRisk > 0
+        ? `${input.pendingApprovals} pending · ${input.pendingHighRisk} high-risk`
+        : input.pendingPolicyGaps && input.pendingPolicyGaps > 0
+          ? `${input.pendingApprovals} pending · ${input.pendingPolicyGaps} policy gap${input.pendingPolicyGaps === 1 ? "" : "s"}`
+          : `${input.pendingApprovals} pending`
+      : "queue clear";
+
+  const signedInPhases: ConsoleAmbientPhase[] = [
+    {
+      label: "INCIDENTS",
+      value:
+        input.hotIncidents > 0
+          ? `${input.hotIncidents} hot · ${input.openIncidents} open`
+          : `${input.openIncidents} open · ${input.totalIncidents} total`,
+    },
+    {
+      label: "APPROVALS",
+      value: approvalPhaseValue,
+    },
+    {
+      label: "CONNECTORS",
+      value:
+        input.connectorsConfigured === 0
+          ? "none configured"
+          : `${input.connectorsUp}/${input.connectorsConfigured} healthy`,
+    },
+    {
+      label: "DRY-RUNS",
+      value: input.dryRunCount > 0 ? `${input.dryRunSuccessRate}% success` : "no runs yet",
+    },
+    {
+      label: "GUARDRAILS",
+      value: input.signedIn ? "policy enforced" : "local session",
+    },
+    { label: "AUDIT", value: "append-only" },
+  ];
+
   const phases: ConsoleAmbientPhase[] = input.signedIn
-    ? [
-        {
-          label: "INCIDENTS",
-          value:
-            input.hotIncidents > 0
-              ? `${input.hotIncidents} hot · ${input.openIncidents} open`
-              : `${input.openIncidents} open · ${input.totalIncidents} total`,
-        },
-        {
-          label: "APPROVALS",
-          value: input.pendingApprovals > 0 ? `${input.pendingApprovals} pending` : "queue clear",
-        },
-        {
-          label: "CONNECTORS",
-          value:
-            input.connectorsConfigured === 0
-              ? "none configured"
-              : `${input.connectorsUp}/${input.connectorsConfigured} healthy`,
-        },
-        {
-          label: "DRY-RUNS",
-          value:
-            input.dryRunCount > 0 ? `${input.dryRunSuccessRate}% success` : "no runs yet",
-        },
-        {
-          label: "GUARDRAILS",
-          value: input.signedIn ? "policy enforced" : "local session",
-        },
-        { label: "AUDIT", value: "append-only" },
-      ]
+    ? context === "approvals"
+      ? [
+          signedInPhases[1]!,
+          { label: "GUARDRAILS", value: signedInPhases[4]!.value },
+          signedInPhases[0]!,
+          signedInPhases[2]!,
+          signedInPhases[3]!,
+          signedInPhases[5]!,
+        ]
+      : signedInPhases
     : [
         { label: "MODE", value: "LOCAL SESSION" },
         { label: "ACCOUNTS", value: "optional sign-in" },
@@ -132,6 +232,9 @@ export function buildConsoleAmbientSnapshot(input: {
     headline: consoleAmbientHeadline(health, context, {
       openIncidents: input.openIncidents,
       hotIncidents: input.hotIncidents,
+      pendingApprovals: input.pendingApprovals,
+      pendingHighRisk: input.pendingHighRisk,
+      pendingPolicyGaps: input.pendingPolicyGaps,
     }),
     phases,
   };

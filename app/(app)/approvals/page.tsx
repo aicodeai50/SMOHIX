@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { approvalDecisionAction, createApprovalRequestAction } from "./actions";
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
+import { ConsoleAmbientBanner } from "@/components/console/ConsoleAmbientBanner";
 import { ExecutionBadge } from "@/components/guardrails/ExecutionBadge";
 import { ExecutionModeCallout } from "@/components/guardrails/ExecutionModeCallout";
 import { GuardedAutomationIdentity } from "@/components/guardrails/GuardedAutomationIdentity";
@@ -15,6 +16,7 @@ import { getOrgContextForUser } from "@/lib/org/context";
 import { roleLabel } from "@/lib/org/roles";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { appBody, appLabel, appMeta, appOverline, appPanelTitle } from "@/lib/app-typography";
+import { loadConsoleAmbientSnapshot } from "@/lib/console/load-ambient-status";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
@@ -70,12 +72,15 @@ export default async function ApprovalsPage({ searchParams }: Props) {
     enforcedPlaybookCount = Object.keys(acceptedGuardrails).length;
   }
 
+  const ambient = await loadConsoleAmbientSnapshot({ context: "approvals" });
+
   return (
     <>
       <PageHeader
         title="Approvals"
         description="Human approval controls for high-impact changes. Submit requests, decide pending items, and track completed outcomes."
       />
+      <ConsoleAmbientBanner snapshot={ambient} />
       {orgContext?.orgId ? (
         <p className={`-mt-4 mb-4 ${appMeta}`}>
           Organization: <span className="text-foreground/90">{orgContext.orgName}</span>
