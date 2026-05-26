@@ -14,6 +14,15 @@ export const metadata: Metadata = {
 const ENTRIES: { date: string; title: string; bullets: string[] }[] = [
   {
     date: "May 2026",
+    title: "Copilot reliability pass",
+    bullets: [
+      "Built-in /api/copilot/chat now chains OpenAI → reasoning URL → guided offline (no proxy path required)",
+      "Cloud model requires sign-in when Supabase auth is on; thread list surfaces migration and DB errors",
+      "Regression: npm run test:copilot-reasoning",
+    ],
+  },
+  {
+    date: "May 2026",
     title: "Copilot ambient status layer",
     bullets: [
       "Live health pulse banner on /copilot with assistant mode, connector readiness, and saved-thread counts",
