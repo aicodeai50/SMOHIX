@@ -833,8 +833,8 @@ export const API_GROUPS: ApiGroup[] = [
       {
         method: "POST",
         path: "/api/copilot/chat",
-        summary: "Streaming or JSON chat completion.",
-        auth: "Session cookie",
+        summary: "Streaming or JSON chat completion (OpenAI → reasoning URL → guided offline).",
+        auth: "Session cookie when OPENAI_API_KEY and Supabase auth are set; otherwise IP rate limit",
       },
       { method: "GET", path: "/api/copilot/threads", summary: "List conversation threads.", auth: "Session cookie" },
       {

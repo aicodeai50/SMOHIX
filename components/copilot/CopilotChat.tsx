@@ -62,6 +62,7 @@ export function CopilotChat({
   const [threads, setThreads] = useState<ThreadRow[]>([]);
   const [activeThreadId, setActiveThreadId] = useState<string | null>(null);
   const activeThreadRef = useRef<string | null>(null);
+  const creatingThreadRef = useRef(false);
   const [persistErr, setPersistErr] = useState<string | null>(null);
   const bottom = useRef<HTMLDivElement>(null);
 
@@ -73,10 +74,27 @@ export function CopilotChat({
     if (!persistSession) return;
     try {
       const r = await fetch("/api/copilot/threads", { credentials: "include" });
-      const j = (await r.json()) as { threads?: ThreadRow[] };
+      const j = (await r.json()) as {
+        threads?: ThreadRow[];
+        message?: string;
+        error?: string;
+      };
+      if (!r.ok) {
+        setPersistErr(
+          j.message ??
+            (j.error === "persistence_unavailable"
+              ? "Conversation history is not available yet — apply the copilot_threads migration in Supabase."
+              : j.error ?? "Could not load saved threads."),
+        );
+        setThreads([]);
+        return;
+      }
       setThreads(j.threads ?? []);
+      if (j.message && !(j.threads?.length ?? 0)) {
+        setPersistErr(j.message);
+      }
     } catch {
-      /* ignore */
+      setPersistErr("Could not load saved threads.");
     }
   }, [persistSession]);
 
@@ -127,11 +145,13 @@ export function CopilotChat({
   }
 
   async function persistExchange(userText: string, assistantText: string) {
-    if (!persistSession) return;
+    if (!persistSession || !assistantText.trim()) return;
     setPersistErr(null);
     try {
       let tid = activeThreadRef.current;
       if (!tid) {
+        if (creatingThreadRef.current) return;
+        creatingThreadRef.current = true;
         const r = await fetch("/api/copilot/threads", {
           method: "POST",
           credentials: "include",
@@ -146,6 +166,7 @@ export function CopilotChat({
         tid = j.id;
         activeThreadRef.current = tid;
         setActiveThreadId(tid);
+        creatingThreadRef.current = false;
       }
 
       const r2 = await fetch(`/api/copilot/threads/${tid}/messages`, {
@@ -162,6 +183,8 @@ export function CopilotChat({
       await refreshThreads();
     } catch {
       setPersistErr("Save failed.");
+    } finally {
+      creatingThreadRef.current = false;
     }
   }
 
@@ -198,7 +221,6 @@ export function CopilotChat({
 
       if (useBuiltInCopilotRoute && r.ok && ct.includes("text/event-stream") && r.body) {
         let accumulated = "";
-        setMsgs((m) => [...m, { role: "assistant", content: "" }]);
 
         const result = await consumeCopilotSse(r.body, (delta) => {
           accumulated += delta;
@@ -208,6 +230,8 @@ export function CopilotChat({
             const last = next[next.length - 1];
             if (last?.role === "assistant") {
               next[next.length - 1] = { role: "assistant", content: acc };
+            } else {
+              next.push({ role: "assistant", content: acc });
             }
             return next;
           });
@@ -217,17 +241,23 @@ export function CopilotChat({
           setErr(result.message);
           setMsgs((m) => {
             const last = m[m.length - 1];
-            if (last?.role === "assistant" && !last.content) return m.slice(0, -1);
+            if (last?.role === "assistant" && !last.content.trim()) {
+              return m.slice(0, -1);
+            }
             return m;
           });
-        } else if (persistSession) {
+        } else if (persistSession && accumulated.trim()) {
           void persistExchange(text, accumulated);
         }
       } else {
         const raw = await r.text();
+        if (!r.ok) {
+          setErr(extractAssistantText(raw, r.status));
+          return;
+        }
         const assistant = extractAssistantText(raw, r.status);
         setMsgs((m) => [...m, { role: "assistant", content: assistant }]);
-        if (persistSession && r.ok) {
+        if (persistSession && assistant.trim()) {
           void persistExchange(text, assistant);
         }
       }
@@ -289,9 +319,8 @@ export function CopilotChat({
               {persistErr}
             </p>
           ) : (
-            <p className={`mt-3 ${appMeta}`}>
-              If history never appears, your workspace may still be finishing data setup — check
-              Settings or try again later.
+            <p className={`mt-3 text-muted ${appMeta}`}>
+              Saved threads appear here after you send a message while signed in.
             </p>
           )}
         </aside>

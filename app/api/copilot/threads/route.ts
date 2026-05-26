@@ -27,9 +27,18 @@ export async function GET() {
       .limit(40);
 
     if (error) {
+      const missingTable =
+        error.code === "42P01" ||
+        /does not exist|copilot_threads/i.test(error.message ?? "");
       return NextResponse.json(
-        { threads: [], message: error.message },
-        { status: 200 },
+        {
+          error: missingTable ? "persistence_unavailable" : "threads_load_failed",
+          message: missingTable
+            ? "Conversation history is not available yet — apply the copilot_threads migration in Supabase."
+            : error.message,
+          threads: [],
+        },
+        { status: missingTable ? 503 : 500 },
       );
     }
 

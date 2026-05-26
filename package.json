@@ -91,6 +91,7 @@
     "test:cross-staffing-committee-escalation": "npx --yes tsx scripts/test-cross-staffing-committee-escalation.ts",
     "test:staffing-digest-auto-chain": "npx --yes tsx scripts/test-staffing-digest-auto-chain.ts",
     "test:console-ambient-status": "npx --yes tsx scripts/test-console-ambient-status.ts",
+    "test:copilot-reasoning": "npx --yes tsx scripts/test-copilot-reasoning.ts",
     "test:hub-personalization": "npx --yes tsx scripts/test-hub-personalization.ts",
     "test:pentest-rollup": "npx --yes tsx scripts/test-pentest-rollup.ts",
     "test:vulnerability-priority": "npx --yes tsx scripts/test-vulnerability-priority.ts",
