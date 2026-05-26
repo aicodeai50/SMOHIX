@@ -1,5 +1,6 @@
 import {
   approvalAmbientMetrics,
+  auditAmbientMetrics,
   buildConsoleAmbientSnapshot,
   classifyConsoleAmbientHealth,
   classifyConsoleAmbientHealthForContext,
@@ -230,6 +231,61 @@ assert(
     dryRunFailures: 1,
   }).includes("approval"),
   "automations approval headline",
+);
+
+assert(
+  classifyConsoleAmbientHealthForContext(
+    {
+      hotIncidents: 0,
+      openIncidents: 0,
+      pendingApprovals: 0,
+      criticalBurnServices: 0,
+      connectorsConfigured: 0,
+      connectorsUp: 0,
+      slackFailedCount: 2,
+      signedIn: true,
+    },
+    "audit",
+  ) === "critical",
+  "audit slack failures → critical",
+);
+
+const auditMetrics = auditAmbientMetrics({
+  rows: [
+    { action: "automation.dry_run", ts: new Date().toISOString() },
+    { action: "slack.failed", ts: new Date().toISOString() },
+  ],
+  canExport: true,
+});
+assert(auditMetrics.auditEntryCount === 2, "audit metrics count");
+assert(auditMetrics.slackFailedCount === 1, "audit metrics slack failed");
+
+const auditSnapshot = buildConsoleAmbientSnapshot({
+  openIncidents: 1,
+  hotIncidents: 0,
+  totalIncidents: 2,
+  pendingApprovals: 0,
+  connectorsUp: 1,
+  connectorsConfigured: 1,
+  dryRunSuccessRate: 100,
+  dryRunCount: 1,
+  criticalBurnServices: 0,
+  signedIn: true,
+  context: "audit",
+  auditEntryCount: 12,
+  slackFailedCount: 0,
+  hoursSinceLastEvent: 2,
+  canExportAudit: true,
+  latestAuditEventType: "approval.approved",
+});
+assert(auditSnapshot.phases[0]?.label === "TRAIL", "audit phase first");
+assert(
+  consoleAmbientHeadline("nominal", "audit", {
+    auditEntryCount: 5,
+    hoursSinceLastEvent: 1,
+    canExportAudit: true,
+  }).includes("export ready"),
+  "audit nominal headline",
 );
 
 assert(snapshot.version === CONSOLE_AMBIENT_STATUS_VERSION, "version");

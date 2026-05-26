@@ -4,11 +4,13 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
+import { ConsoleAmbientBanner } from "@/components/console/ConsoleAmbientBanner";
 import { ComplianceControlTags } from "@/components/compliance/ComplianceControlTags";
 import { AuditIntentTags } from "@/components/guardrails/AuditIntentTags";
 import { listAuditEntriesForUser } from "@/lib/audit/data";
 import { auditRoleFilterLabel, canExportOrgAuditLog } from "@/lib/audit/role-filter";
 import { auditSinceIsoFromWindow, auditWindowToSinceIso } from "@/lib/audit/export-window";
+import { loadConsoleAmbientSnapshot } from "@/lib/console/load-ambient-status";
 import { getOrgContextForUser } from "@/lib/org/context";
 import type { OrgRole } from "@/lib/org/roles";
 import { roleLabel } from "@/lib/org/roles";
@@ -85,12 +87,15 @@ export default async function AuditPage({
       ? "/api/audit/export"
       : `/api/audit/export?window=${encodeURIComponent(windowValue)}`;
 
+  const ambient = await loadConsoleAmbientSnapshot({ context: "audit" });
+
   return (
     <>
       <PageHeader
         title="Audit log"
         description="Append-only log for billing sync, API keys, approvals, and automation events — mapped to SOC 2 / ISO 27001 controls."
       />
+      <ConsoleAmbientBanner snapshot={ambient} />
       <p className={`-mt-4 mb-4 ${appMeta}`}>
         <Link href="/governance/compliance" className="text-accent hover:underline">
           Compliance control mapping

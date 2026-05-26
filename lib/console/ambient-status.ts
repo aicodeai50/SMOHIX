@@ -1,6 +1,6 @@
 export const CONSOLE_AMBIENT_STATUS_VERSION = "zentro-console-ambient-status/1";
 
-export type ConsoleAmbientContext = "default" | "incidents" | "approvals" | "services" | "automations";
+export type ConsoleAmbientContext = "default" | "incidents" | "approvals" | "services" | "automations" | "audit";
 
 export type ConsoleAmbientHealth = "nominal" | "attention" | "critical";
 
@@ -51,6 +51,10 @@ export type ConsoleAmbientCounts = {
   dryRunCount?: number;
   dryRunSuccessRate?: number;
   dryRunFailures?: number;
+  auditEntryCount?: number;
+  slackFailedCount?: number;
+  hoursSinceLastEvent?: number | null;
+  canExportAudit?: boolean;
 };
 
 export function classifyConsoleAmbientHealthForContext(
@@ -66,9 +70,31 @@ export function classifyConsoleAmbientHealthForContext(
     warningBurnServices?: number;
     dryRunCount?: number;
     dryRunSuccessRate?: number;
+    auditEntryCount?: number;
+    slackFailedCount?: number;
+    hoursSinceLastEvent?: number | null;
+    signedIn?: boolean;
   },
   context: ConsoleAmbientContext = "default",
 ): ConsoleAmbientHealth {
+  if (context === "audit") {
+    const slackFailed = input.slackFailedCount ?? 0;
+    if (slackFailed > 0) {
+      return "critical";
+    }
+    if (!input.signedIn) {
+      return "attention";
+    }
+    const count = input.auditEntryCount ?? 0;
+    const hours = input.hoursSinceLastEvent;
+    if (count === 0) {
+      return "attention";
+    }
+    if (hours != null && hours > 168) {
+      return "attention";
+    }
+    return "nominal";
+  }
   if (context === "automations") {
     const dryRunCount = input.dryRunCount ?? 0;
     const dryRunSuccessRate = input.dryRunSuccessRate ?? 100;
@@ -116,6 +142,31 @@ export function consoleAmbientHeadline(
   context: ConsoleAmbientContext = "default",
   counts?: ConsoleAmbientCounts,
 ): string {
+  if (context === "audit") {
+    const count = counts?.auditEntryCount ?? 0;
+    const slackFailed = counts?.slackFailedCount ?? 0;
+    const hours = counts?.hoursSinceLastEvent;
+    const canExport = counts?.canExportAudit ?? false;
+    if (health === "critical") {
+      return `${slackFailed} Slack delivery failure${slackFailed === 1 ? "" : "s"} in the audit trail`;
+    }
+    if (health === "attention") {
+      if (count === 0) {
+        return canExport
+          ? "Audit trail empty — run guarded actions to populate append-only events"
+          : "No audit events in scope — actions will appear as your role allows";
+      }
+      if (hours != null && hours > 168) {
+        return "No audit events in 7 days — verify automations and approvals are emitting";
+      }
+      return "Session audit trail — sign in to persist org-scoped append-only events";
+    }
+    const recency =
+      hours == null ? "recent activity" : hours < 1 ? "just now" : hours < 24 ? `${Math.round(hours)}h ago` : `${Math.round(hours / 24)}d ago`;
+    return canExport
+      ? `Append-only trail active · latest event ${recency} · export ready`
+      : `Append-only trail active · latest event ${recency}`;
+  }
   if (context === "automations") {
     const dryRunCount = counts?.dryRunCount ?? 0;
     const dryRunSuccessRate = counts?.dryRunSuccessRate ?? 100;
@@ -217,6 +268,41 @@ export function dryRunAmbientMetrics(runs: readonly { ok: boolean }[]): {
   };
 }
 
+function hoursSinceIso(iso: string): number {
+  const ms = Date.now() - new Date(iso).getTime();
+  return Math.max(0, ms / (1000 * 60 * 60));
+}
+
+export function formatAuditRecency(hours: number | null): string {
+  if (hours === null) return "no events";
+  if (hours < 1) return "just now";
+  if (hours < 24) return `${Math.round(hours)}h ago`;
+  return `${Math.round(hours / 24)}d ago`;
+}
+
+export function auditAmbientMetrics(input: {
+  rows: readonly { action: string; ts: string }[];
+  canExport: boolean;
+}): {
+  auditEntryCount: number;
+  slackFailedCount: number;
+  hoursSinceLastEvent: number | null;
+  canExportAudit: boolean;
+  latestEventType: string | null;
+} {
+  const auditEntryCount = input.rows.length;
+  const slackFailedCount = input.rows.filter((row) => row.action === "slack.failed").length;
+  const hoursSinceLastEvent =
+    auditEntryCount > 0 ? hoursSinceIso(input.rows[0]!.ts) : null;
+  return {
+    auditEntryCount,
+    slackFailedCount,
+    hoursSinceLastEvent,
+    canExportAudit: input.canExport,
+    latestEventType: auditEntryCount > 0 ? input.rows[0]!.action : null,
+  };
+}
+
 export function approvalAmbientMetrics(
   pending: readonly {
     decisionBrief: {
@@ -256,6 +342,11 @@ export function buildConsoleAmbientSnapshot(input: {
   totalServices?: number;
   servicesWithSlo?: number;
   generatedAt?: string;
+  auditEntryCount?: number;
+  slackFailedCount?: number;
+  hoursSinceLastEvent?: number | null;
+  canExportAudit?: boolean;
+  latestAuditEventType?: string | null;
 }): ConsoleAmbientSnapshot {
   const context = input.context ?? "default";
   const health = classifyConsoleAmbientHealthForContext(
@@ -271,9 +362,28 @@ export function buildConsoleAmbientSnapshot(input: {
       warningBurnServices: input.warningBurnServices,
       dryRunCount: input.dryRunCount,
       dryRunSuccessRate: input.dryRunSuccessRate,
+      auditEntryCount: input.auditEntryCount,
+      slackFailedCount: input.slackFailedCount,
+      hoursSinceLastEvent: input.hoursSinceLastEvent,
+      signedIn: input.signedIn,
     },
     context,
   );
+
+  const auditTrailPhaseValue =
+    (input.auditEntryCount ?? 0) > 0
+      ? `${input.auditEntryCount} events · ${formatAuditRecency(input.hoursSinceLastEvent ?? null)}`
+      : "no events in window";
+  const auditExportPhaseValue = input.canExportAudit ? "CSV export allowed" : "export restricted";
+  const auditSlackPhaseValue =
+    (input.slackFailedCount ?? 0) > 0
+      ? `${input.slackFailedCount} failed`
+      : (input.auditEntryCount ?? 0) > 0
+        ? "delivery healthy"
+        : "no slack events";
+  const auditWhisperPhaseValue = input.latestAuditEventType
+    ? input.latestAuditEventType.replace(/\./g, " · ")
+    : "awaiting first event";
 
   const dryRunFailures = Math.max(0, input.dryRunCount - Math.round((input.dryRunCount * input.dryRunSuccessRate) / 100));
   const dryRunPhaseValue =
@@ -332,7 +442,16 @@ export function buildConsoleAmbientSnapshot(input: {
   ];
 
   const phases: ConsoleAmbientPhase[] = input.signedIn
-    ? context === "automations"
+    ? context === "audit"
+      ? [
+          { label: "TRAIL", value: auditTrailPhaseValue },
+          { label: "EXPORT", value: auditExportPhaseValue },
+          { label: "SLACK", value: auditSlackPhaseValue },
+          { label: "GUARDRAILS", value: "append-only" },
+          { label: "WHISPER", value: auditWhisperPhaseValue },
+          signedInPhases[0]!,
+        ]
+      : context === "automations"
       ? [
           { label: "DRY-RUNS", value: dryRunPhaseValue },
           { label: "GUARDRAILS", value: signedInPhases[4]!.value },
@@ -363,7 +482,14 @@ export function buildConsoleAmbientSnapshot(input: {
           signedInPhases[5]!,
         ]
       : signedInPhases
-    : context === "automations"
+    : context === "audit"
+      ? [
+          { label: "TRAIL", value: "session mode" },
+          { label: "MODE", value: "LOCAL SESSION" },
+          { label: "EXPORT", value: "sign in required" },
+          { label: "GUARDRAILS", value: "append-only" },
+        ]
+      : context === "automations"
       ? [
           { label: "DRY-RUNS", value: dryRunPhaseValue },
           { label: "MODE", value: "LOCAL SESSION" },
@@ -394,6 +520,10 @@ export function buildConsoleAmbientSnapshot(input: {
       dryRunCount: input.dryRunCount,
       dryRunSuccessRate: input.dryRunSuccessRate,
       dryRunFailures,
+      auditEntryCount: input.auditEntryCount,
+      slackFailedCount: input.slackFailedCount,
+      hoursSinceLastEvent: input.hoursSinceLastEvent,
+      canExportAudit: input.canExportAudit,
     }),
     phases,
   };

@@ -1,9 +1,13 @@
 import { cookies } from "next/headers";
 
 import { listApprovalsForUser } from "@/lib/approvals/data";
+import { listAuditEntriesForUser } from "@/lib/audit/data";
+import { auditSinceIsoFromWindow } from "@/lib/audit/export-window";
+import { canExportOrgAuditLog } from "@/lib/audit/role-filter";
 import { listAutomationDryRuns } from "@/lib/automations/dry-runs-db";
 import { listDryRuns } from "@/lib/automations/runs-dev";
 import {
+  auditAmbientMetrics,
   buildConsoleAmbientSnapshot,
   type ConsoleAmbientContext,
   type ConsoleAmbientSnapshot,
@@ -53,6 +57,11 @@ export async function loadConsoleAmbientSnapshot(options?: {
       criticalBurnServices: 0,
       signedIn: false,
       context,
+      auditEntryCount: 0,
+      slackFailedCount: 0,
+      hoursSinceLastEvent: null,
+      canExportAudit: false,
+      latestAuditEventType: null,
     });
   }
 
@@ -109,6 +118,29 @@ export async function loadConsoleAmbientSnapshot(options?: {
     totalServices = (await listServicesForUser(user.id, orgId)).length;
   }
 
+  let auditEntryCount = 0;
+  let slackFailedCount = 0;
+  let hoursSinceLastEvent: number | null = null;
+  let canExportAudit = canExportOrgAuditLog(orgContext.role);
+  let latestAuditEventType: string | null = null;
+  if (context === "audit") {
+    const sinceIso = auditSinceIsoFromWindow("30d");
+    const audit = await listAuditEntriesForUser(user.id, {
+      orgId,
+      orgRole: orgContext.role,
+      sinceIso,
+    });
+    const auditMetrics = auditAmbientMetrics({
+      rows: audit.rows.map((row) => ({ action: row.action, ts: row.ts })),
+      canExport: canExportAudit,
+    });
+    auditEntryCount = auditMetrics.auditEntryCount;
+    slackFailedCount = auditMetrics.slackFailedCount;
+    hoursSinceLastEvent = auditMetrics.hoursSinceLastEvent;
+    canExportAudit = auditMetrics.canExportAudit;
+    latestAuditEventType = auditMetrics.latestEventType;
+  }
+
   const open = incidents.filter((r) => r.status !== "resolved").length;
   const hot = incidents.filter((r) => r.severity === "critical" || r.severity === "high").length;
   const connectorsConfigured = connectors.filter((c) => c.baseUrl).length;
@@ -132,5 +164,10 @@ export async function loadConsoleAmbientSnapshot(options?: {
     servicesWithSlo,
     signedIn: true,
     context,
+    auditEntryCount,
+    slackFailedCount,
+    hoursSinceLastEvent,
+    canExportAudit,
+    latestAuditEventType,
   });
 }
