@@ -14,6 +14,15 @@ export const metadata: Metadata = {
 const ENTRIES: { date: string; title: string; bullets: string[] }[] = [
   {
     date: "May 2026",
+    title: "Runbooks ambient status layer",
+    bullets: [
+      "Live health pulse banner on /runbooks with catalog size, incident linkage coverage, and GRC procedure counts",
+      "Runbooks-first phase order — critical/high incidents missing runbooks surface as critical health",
+      "Regression: npm run test:console-ambient-status",
+    ],
+  },
+  {
+    date: "May 2026",
     title: "Audit ambient status layer",
     bullets: [
       "Live health pulse banner on /audit with trail recency, export readiness, and Slack delivery headlines",

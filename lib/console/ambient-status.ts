@@ -1,6 +1,6 @@
 export const CONSOLE_AMBIENT_STATUS_VERSION = "zentro-console-ambient-status/1";
 
-export type ConsoleAmbientContext = "default" | "incidents" | "approvals" | "services" | "automations" | "audit";
+export type ConsoleAmbientContext = "default" | "incidents" | "approvals" | "services" | "automations" | "audit" | "runbooks";
 
 export type ConsoleAmbientHealth = "nominal" | "attention" | "critical";
 
@@ -55,6 +55,11 @@ export type ConsoleAmbientCounts = {
   slackFailedCount?: number;
   hoursSinceLastEvent?: number | null;
   canExportAudit?: boolean;
+  runbookCatalogCount?: number;
+  openWithoutRunbook?: number;
+  hotWithoutRunbook?: number;
+  runbookLinkageCoveragePct?: number;
+  grcRunbookCount?: number;
 };
 
 export function classifyConsoleAmbientHealthForContext(
@@ -74,9 +79,23 @@ export function classifyConsoleAmbientHealthForContext(
     slackFailedCount?: number;
     hoursSinceLastEvent?: number | null;
     signedIn?: boolean;
+    runbookCatalogCount?: number;
+    openWithoutRunbook?: number;
+    hotWithoutRunbook?: number;
   },
   context: ConsoleAmbientContext = "default",
 ): ConsoleAmbientHealth {
+  if (context === "runbooks") {
+    const hotWithoutRunbook = input.hotWithoutRunbook ?? 0;
+    const openWithoutRunbook = input.openWithoutRunbook ?? 0;
+    if (hotWithoutRunbook > 0) {
+      return "critical";
+    }
+    if (openWithoutRunbook > 0) {
+      return "attention";
+    }
+    return "nominal";
+  }
   if (context === "audit") {
     const slackFailed = input.slackFailedCount ?? 0;
     if (slackFailed > 0) {
@@ -142,6 +161,21 @@ export function consoleAmbientHeadline(
   context: ConsoleAmbientContext = "default",
   counts?: ConsoleAmbientCounts,
 ): string {
+  if (context === "runbooks") {
+    const catalog = counts?.runbookCatalogCount ?? 0;
+    const openWithout = counts?.openWithoutRunbook ?? 0;
+    const hotWithout = counts?.hotWithoutRunbook ?? 0;
+    const coverage = counts?.runbookLinkageCoveragePct ?? 100;
+    if (health === "critical") {
+      return `${hotWithout} critical/high incident${hotWithout === 1 ? "" : "s"} missing a linked runbook`;
+    }
+    if (health === "attention") {
+      return `${openWithout} open incident${openWithout === 1 ? "" : "s"} need runbook linkage — ${coverage}% of queue linked`;
+    }
+    return catalog > 0
+      ? `${catalog} versioned procedures ready — open incidents linked to runbooks`
+      : "Runbook catalog empty — add procedures to guide incident response";
+  }
   if (context === "audit") {
     const count = counts?.auditEntryCount ?? 0;
     const slackFailed = counts?.slackFailedCount ?? 0;
@@ -280,6 +314,40 @@ export function formatAuditRecency(hours: number | null): string {
   return `${Math.round(hours / 24)}d ago`;
 }
 
+export function runbookAmbientMetrics(input: {
+  catalogCount: number;
+  grcCatalogCount: number;
+  openIncidents: readonly {
+    severity: string;
+    runbookSlug?: string | null;
+  }[];
+}): {
+  catalogCount: number;
+  grcCatalogCount: number;
+  openWithoutRunbook: number;
+  hotWithoutRunbook: number;
+  linkageCoveragePct: number;
+} {
+  const openWithoutRunbook = input.openIncidents.filter((row) => !row.runbookSlug?.trim()).length;
+  const hotWithoutRunbook = input.openIncidents.filter(
+    (row) =>
+      !row.runbookSlug?.trim() &&
+      (row.severity === "critical" || row.severity === "high"),
+  ).length;
+  const linked = input.openIncidents.length - openWithoutRunbook;
+  const linkageCoveragePct =
+    input.openIncidents.length > 0
+      ? Math.round((linked / input.openIncidents.length) * 100)
+      : 100;
+  return {
+    catalogCount: input.catalogCount,
+    grcCatalogCount: input.grcCatalogCount,
+    openWithoutRunbook,
+    hotWithoutRunbook,
+    linkageCoveragePct,
+  };
+}
+
 export function auditAmbientMetrics(input: {
   rows: readonly { action: string; ts: string }[];
   canExport: boolean;
@@ -347,6 +415,11 @@ export function buildConsoleAmbientSnapshot(input: {
   hoursSinceLastEvent?: number | null;
   canExportAudit?: boolean;
   latestAuditEventType?: string | null;
+  runbookCatalogCount?: number;
+  grcRunbookCount?: number;
+  openWithoutRunbook?: number;
+  hotWithoutRunbook?: number;
+  runbookLinkageCoveragePct?: number;
 }): ConsoleAmbientSnapshot {
   const context = input.context ?? "default";
   const health = classifyConsoleAmbientHealthForContext(
@@ -366,9 +439,19 @@ export function buildConsoleAmbientSnapshot(input: {
       slackFailedCount: input.slackFailedCount,
       hoursSinceLastEvent: input.hoursSinceLastEvent,
       signedIn: input.signedIn,
+      openWithoutRunbook: input.openWithoutRunbook,
+      hotWithoutRunbook: input.hotWithoutRunbook,
     },
     context,
   );
+
+  const runbookCatalogPhaseValue = `${input.runbookCatalogCount ?? 0} procedure${input.runbookCatalogCount === 1 ? "" : "s"} · ${input.grcRunbookCount ?? 0} GRC`;
+  const runbookLinkagePhaseValue =
+    (input.openIncidents ?? 0) === 0
+      ? "no open incidents"
+      : (input.openWithoutRunbook ?? 0) > 0
+        ? `${input.runbookLinkageCoveragePct ?? 100}% linked · ${input.openWithoutRunbook} unlinked`
+        : "all open incidents linked";
 
   const auditTrailPhaseValue =
     (input.auditEntryCount ?? 0) > 0
@@ -442,7 +525,16 @@ export function buildConsoleAmbientSnapshot(input: {
   ];
 
   const phases: ConsoleAmbientPhase[] = input.signedIn
-    ? context === "audit"
+    ? context === "runbooks"
+      ? [
+          { label: "CATALOG", value: runbookCatalogPhaseValue },
+          { label: "LINKAGE", value: runbookLinkagePhaseValue },
+          signedInPhases[0]!,
+          { label: "VERSIONS", value: "in-repo catalog" },
+          { label: "GRC", value: "gap runbooks available" },
+          signedInPhases[5]!,
+        ]
+      : context === "audit"
       ? [
           { label: "TRAIL", value: auditTrailPhaseValue },
           { label: "EXPORT", value: auditExportPhaseValue },
@@ -482,7 +574,14 @@ export function buildConsoleAmbientSnapshot(input: {
           signedInPhases[5]!,
         ]
       : signedInPhases
-    : context === "audit"
+    : context === "runbooks"
+      ? [
+          { label: "CATALOG", value: runbookCatalogPhaseValue },
+          { label: "LINKAGE", value: runbookLinkagePhaseValue },
+          { label: "MODE", value: "LOCAL SESSION" },
+          { label: "STORAGE", value: "in-repo catalog" },
+        ]
+      : context === "audit"
       ? [
           { label: "TRAIL", value: "session mode" },
           { label: "MODE", value: "LOCAL SESSION" },
@@ -524,6 +623,10 @@ export function buildConsoleAmbientSnapshot(input: {
       slackFailedCount: input.slackFailedCount,
       hoursSinceLastEvent: input.hoursSinceLastEvent,
       canExportAudit: input.canExportAudit,
+      runbookCatalogCount: input.runbookCatalogCount,
+      openWithoutRunbook: input.openWithoutRunbook,
+      hotWithoutRunbook: input.hotWithoutRunbook,
+      runbookLinkageCoveragePct: input.runbookLinkageCoveragePct,
     }),
     phases,
   };

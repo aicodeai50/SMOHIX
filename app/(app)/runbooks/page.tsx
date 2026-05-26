@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { PageHeader } from "@/components/app/PageHeader";
+import { ConsoleAmbientBanner } from "@/components/console/ConsoleAmbientBanner";
 import { appBody, appMeta, appPanelTitle } from "@/lib/app-typography";
+import { loadConsoleAmbientSnapshot } from "@/lib/console/load-ambient-status";
 import { listRunbooks } from "@/lib/runbooks/catalog";
 
 export const metadata: Metadata = {
@@ -10,8 +12,13 @@ export const metadata: Metadata = {
   description: "Versioned operational procedures.",
 };
 
-export default function RunbooksIndexPage() {
-  const books = listRunbooks();
+export const dynamic = "force-dynamic";
+
+export default async function RunbooksIndexPage() {
+  const [books, ambient] = await Promise.all([
+    Promise.resolve(listRunbooks()),
+    loadConsoleAmbientSnapshot({ context: "runbooks" }),
+  ]);
 
   return (
     <>
@@ -19,6 +26,7 @@ export default function RunbooksIndexPage() {
         title="Runbook intelligence"
         description="Living procedures with version labels and step-level checks. Stored in-repo for now — wire to your doc store or Git when you connect backends."
       />
+      <ConsoleAmbientBanner snapshot={ambient} />
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {books.map((b) => (
           <Link

@@ -12,10 +12,12 @@ import {
   type ConsoleAmbientContext,
   type ConsoleAmbientSnapshot,
   approvalAmbientMetrics,
+  runbookAmbientMetrics,
 } from "@/lib/console/ambient-status";
 import { getConnectorHealthRows } from "@/lib/connectors-health";
 import { listIncidentsForUser } from "@/lib/incidents/data";
 import { getOrgContextForUser } from "@/lib/org/context";
+import { listRunbooks } from "@/lib/runbooks/catalog";
 import { listServicesForUser } from "@/lib/services/data";
 import { getErrorBudgetOverviewSummary } from "@/lib/services/slo";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
@@ -42,6 +44,16 @@ export async function loadConsoleAmbientSnapshot(options?: {
     const dryRunSuccessRate =
       dryRuns.length > 0 ? Math.round((successful / dryRuns.length) * 100) : 0;
     const approvalMetrics = approvalAmbientMetrics(approvals.pending);
+    const openIncidents = incidents.filter((r) => r.status !== "resolved");
+    const books = listRunbooks();
+    const runbookMetrics =
+      context === "runbooks"
+        ? runbookAmbientMetrics({
+            catalogCount: books.length,
+            grcCatalogCount: books.filter((book) => book.slug.startsWith("grc-")).length,
+            openIncidents,
+          })
+        : null;
 
     return buildConsoleAmbientSnapshot({
       openIncidents: open,
@@ -62,6 +74,11 @@ export async function loadConsoleAmbientSnapshot(options?: {
       hoursSinceLastEvent: null,
       canExportAudit: false,
       latestAuditEventType: null,
+      runbookCatalogCount: runbookMetrics?.catalogCount,
+      grcRunbookCount: runbookMetrics?.grcCatalogCount,
+      openWithoutRunbook: runbookMetrics?.openWithoutRunbook,
+      hotWithoutRunbook: runbookMetrics?.hotWithoutRunbook,
+      runbookLinkageCoveragePct: runbookMetrics?.linkageCoveragePct,
     });
   }
 
@@ -141,6 +158,26 @@ export async function loadConsoleAmbientSnapshot(options?: {
     latestAuditEventType = auditMetrics.latestEventType;
   }
 
+  let runbookCatalogCount = 0;
+  let grcRunbookCount = 0;
+  let openWithoutRunbook = 0;
+  let hotWithoutRunbook = 0;
+  let runbookLinkageCoveragePct = 100;
+  if (context === "runbooks") {
+    const books = listRunbooks();
+    const openIncidents = incidents.filter((row) => row.status !== "resolved");
+    const metrics = runbookAmbientMetrics({
+      catalogCount: books.length,
+      grcCatalogCount: books.filter((book) => book.slug.startsWith("grc-")).length,
+      openIncidents,
+    });
+    runbookCatalogCount = metrics.catalogCount;
+    grcRunbookCount = metrics.grcCatalogCount;
+    openWithoutRunbook = metrics.openWithoutRunbook;
+    hotWithoutRunbook = metrics.hotWithoutRunbook;
+    runbookLinkageCoveragePct = metrics.linkageCoveragePct;
+  }
+
   const open = incidents.filter((r) => r.status !== "resolved").length;
   const hot = incidents.filter((r) => r.severity === "critical" || r.severity === "high").length;
   const connectorsConfigured = connectors.filter((c) => c.baseUrl).length;
@@ -169,5 +206,10 @@ export async function loadConsoleAmbientSnapshot(options?: {
     hoursSinceLastEvent,
     canExportAudit,
     latestAuditEventType,
+    runbookCatalogCount,
+    grcRunbookCount,
+    openWithoutRunbook,
+    hotWithoutRunbook,
+    runbookLinkageCoveragePct,
   });
 }

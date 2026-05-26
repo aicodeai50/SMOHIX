@@ -29,6 +29,10 @@ const ROADMAP: {
     subtitle: "Live in console — 49 migrations and refreshed marketing site.",
     items: [
       {
+        name: "Runbooks ambient status layer",
+        detail: "Runbook-context health pulse on /runbooks — catalog coverage, incident linkage, and GRC procedure signals with triage-focused headlines.",
+      },
+      {
         name: "Audit ambient status layer",
         detail: "Audit-context health pulse on /audit — trail recency, export readiness, Slack delivery failures, and append-only posture headlines.",
       },
@@ -80,8 +84,8 @@ const ROADMAP: {
     subtitle: "In active development — sequencing follows customer demand.",
     items: [
       {
-        name: "Runbooks ambient status layer",
-        detail: "Runbook-context health pulse on /runbooks — catalog coverage, stale procedures, and incident linkage signals.",
+        name: "Copilot ambient status layer",
+        detail: "Copilot-context health pulse on /copilot — connector readiness, reasoning availability, and session guidance headlines.",
       },
     ],
   },
@@ -108,7 +112,7 @@ const HORIZON_STYLE: Record<Horizon, { badge: string; glow: string }> = {
   },
 };
 
-const SHIPPING_TOTAL = 62;
+const SHIPPING_TOTAL = 63;
 
 export default function NextPage() {
   return (

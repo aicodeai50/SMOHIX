@@ -7,6 +7,7 @@ import {
   consoleAmbientHeadline,
   CONSOLE_AMBIENT_STATUS_VERSION,
   dryRunAmbientMetrics,
+  runbookAmbientMetrics,
 } from "../lib/console/ambient-status";
 
 function assert(condition: boolean, message: string) {
@@ -287,6 +288,53 @@ assert(
   }).includes("export ready"),
   "audit nominal headline",
 );
+
+assert(
+  classifyConsoleAmbientHealthForContext(
+    {
+      hotIncidents: 1,
+      openIncidents: 2,
+      pendingApprovals: 0,
+      criticalBurnServices: 0,
+      connectorsConfigured: 0,
+      connectorsUp: 0,
+      hotWithoutRunbook: 1,
+    },
+    "runbooks",
+  ) === "critical",
+  "runbooks hot without linkage → critical",
+);
+
+const runbookMetrics = runbookAmbientMetrics({
+  catalogCount: 6,
+  grcCatalogCount: 3,
+  openIncidents: [
+    { severity: "high", runbookSlug: null },
+    { severity: "medium", runbookSlug: "api-latency" },
+  ],
+});
+assert(runbookMetrics.openWithoutRunbook === 1, "runbook metrics unlinked");
+assert(runbookMetrics.linkageCoveragePct === 50, "runbook metrics coverage");
+
+const runbooksSnapshot = buildConsoleAmbientSnapshot({
+  openIncidents: 2,
+  hotIncidents: 1,
+  totalIncidents: 4,
+  pendingApprovals: 0,
+  connectorsUp: 1,
+  connectorsConfigured: 1,
+  dryRunSuccessRate: 100,
+  dryRunCount: 0,
+  criticalBurnServices: 0,
+  signedIn: true,
+  context: "runbooks",
+  runbookCatalogCount: 6,
+  grcRunbookCount: 3,
+  openWithoutRunbook: 0,
+  hotWithoutRunbook: 0,
+  runbookLinkageCoveragePct: 100,
+});
+assert(runbooksSnapshot.phases[0]?.label === "CATALOG", "runbooks phase first");
 
 assert(snapshot.version === CONSOLE_AMBIENT_STATUS_VERSION, "version");
 
