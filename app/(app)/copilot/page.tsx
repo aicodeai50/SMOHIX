@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { ConsoleAmbientBanner } from "@/components/console/ConsoleAmbientBanner";
 import { ConnectionStatus } from "@/components/copilot/ConnectionStatus";
 import { CopilotChat } from "@/components/copilot/CopilotChat";
 import { PageHeader } from "@/components/app/PageHeader";
 import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { loadConsoleAmbientSnapshot } from "@/lib/console/load-ambient-status";
 import { appBody, appMeta } from "@/lib/app-typography";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -30,6 +32,8 @@ export default async function CopilotPage() {
     }
   }
 
+  const ambient = await loadConsoleAmbientSnapshot({ context: "copilot" });
+
   return (
     <>
       <PageHeader
@@ -37,6 +41,7 @@ export default async function CopilotPage() {
         title="Incident Copilot"
         description="Triage and next steps in plain language. Copilot drafts hypotheses, checks, and actions — you stay in control. Signed-in workspaces can keep conversation history when persistence is on."
       />
+      <ConsoleAmbientBanner snapshot={ambient} />
       <ConnectionStatus />
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">

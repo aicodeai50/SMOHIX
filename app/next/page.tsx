@@ -29,6 +29,10 @@ const ROADMAP: {
     subtitle: "Live in console — 49 migrations and refreshed marketing site.",
     items: [
       {
+        name: "Copilot ambient status layer",
+        detail: "Copilot-context health pulse on /copilot — connector readiness, reasoning availability, and session guidance headlines.",
+      },
+      {
         name: "Runbooks ambient status layer",
         detail: "Runbook-context health pulse on /runbooks — catalog coverage, incident linkage, and GRC procedure signals with triage-focused headlines.",
       },
@@ -112,7 +116,7 @@ const HORIZON_STYLE: Record<Horizon, { badge: string; glow: string }> = {
   },
 };
 
-const SHIPPING_TOTAL = 63;
+const SHIPPING_TOTAL = 64;
 
 export default function NextPage() {
   return (

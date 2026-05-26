@@ -6,6 +6,7 @@ import {
   classifyConsoleAmbientHealthForContext,
   consoleAmbientHeadline,
   CONSOLE_AMBIENT_STATUS_VERSION,
+  copilotAmbientMetrics,
   dryRunAmbientMetrics,
   runbookAmbientMetrics,
 } from "../lib/console/ambient-status";
@@ -335,6 +336,61 @@ const runbooksSnapshot = buildConsoleAmbientSnapshot({
   runbookLinkageCoveragePct: 100,
 });
 assert(runbooksSnapshot.phases[0]?.label === "CATALOG", "runbooks phase first");
+
+const copilotMetrics = copilotAmbientMetrics({
+  openaiEnabled: true,
+  reasoningConfigured: true,
+  reasoningUp: true,
+  signedIn: true,
+  copilotThreadCount: 2,
+});
+assert(copilotMetrics.assistantMode === "cloud", "copilot metrics cloud when openai");
+assert(copilotMetrics.copilotThreadCount === 2, "copilot metrics thread count");
+
+assert(
+  classifyConsoleAmbientHealthForContext(
+    {
+      hotIncidents: 1,
+      openIncidents: 1,
+      pendingApprovals: 0,
+      criticalBurnServices: 0,
+      connectorsConfigured: 1,
+      connectorsUp: 1,
+      copilotAssistantMode: "reasoning",
+      reasoningConfigured: true,
+      reasoningUp: false,
+      signedIn: true,
+    },
+    "copilot",
+  ) === "critical",
+  "copilot hot + reasoning down → critical",
+);
+
+const copilotSnapshot = buildConsoleAmbientSnapshot({
+  openIncidents: 0,
+  hotIncidents: 0,
+  totalIncidents: 0,
+  pendingApprovals: 0,
+  connectorsUp: 1,
+  connectorsConfigured: 1,
+  dryRunSuccessRate: 100,
+  dryRunCount: 0,
+  criticalBurnServices: 0,
+  signedIn: true,
+  context: "copilot",
+  copilotAssistantMode: "cloud",
+  copilotThreadCount: 3,
+  reasoningConfigured: false,
+  reasoningUp: null,
+});
+assert(copilotSnapshot.phases[0]?.label === "ASSISTANT", "copilot phase first");
+assert(
+  consoleAmbientHeadline("nominal", "copilot", {
+    copilotAssistantMode: "cloud",
+    copilotThreadCount: 3,
+  }).includes("3 saved threads"),
+  "copilot nominal cloud headline",
+);
 
 assert(snapshot.version === CONSOLE_AMBIENT_STATUS_VERSION, "version");
 

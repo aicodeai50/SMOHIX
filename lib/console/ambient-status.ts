@@ -1,6 +1,16 @@
 export const CONSOLE_AMBIENT_STATUS_VERSION = "zentro-console-ambient-status/1";
 
-export type ConsoleAmbientContext = "default" | "incidents" | "approvals" | "services" | "automations" | "audit" | "runbooks";
+export type ConsoleAmbientContext =
+  | "default"
+  | "incidents"
+  | "approvals"
+  | "services"
+  | "automations"
+  | "audit"
+  | "runbooks"
+  | "copilot";
+
+export type CopilotAssistantMode = "cloud" | "reasoning" | "guided";
 
 export type ConsoleAmbientHealth = "nominal" | "attention" | "critical";
 
@@ -60,6 +70,10 @@ export type ConsoleAmbientCounts = {
   hotWithoutRunbook?: number;
   runbookLinkageCoveragePct?: number;
   grcRunbookCount?: number;
+  copilotAssistantMode?: CopilotAssistantMode;
+  copilotThreadCount?: number;
+  reasoningConfigured?: boolean;
+  reasoningUp?: boolean | null;
 };
 
 export function classifyConsoleAmbientHealthForContext(
@@ -82,9 +96,36 @@ export function classifyConsoleAmbientHealthForContext(
     runbookCatalogCount?: number;
     openWithoutRunbook?: number;
     hotWithoutRunbook?: number;
+    copilotAssistantMode?: CopilotAssistantMode;
+    reasoningConfigured?: boolean;
+    reasoningUp?: boolean | null;
   },
   context: ConsoleAmbientContext = "default",
 ): ConsoleAmbientHealth {
+  if (context === "copilot") {
+    const mode = input.copilotAssistantMode ?? "guided";
+    const openaiLikely = mode === "cloud";
+    if (
+      input.hotIncidents > 0 &&
+      input.reasoningConfigured &&
+      input.reasoningUp === false &&
+      !openaiLikely
+    ) {
+      return "critical";
+    }
+    if (
+      input.connectorsConfigured > 0 &&
+      input.connectorsUp === 0 &&
+      mode === "guided" &&
+      !openaiLikely
+    ) {
+      return "critical";
+    }
+    if (!input.signedIn || mode === "guided" || input.openIncidents > 0 || input.pendingApprovals > 0) {
+      return "attention";
+    }
+    return "nominal";
+  }
   if (context === "runbooks") {
     const hotWithoutRunbook = input.hotWithoutRunbook ?? 0;
     const openWithoutRunbook = input.openWithoutRunbook ?? 0;
@@ -161,6 +202,38 @@ export function consoleAmbientHeadline(
   context: ConsoleAmbientContext = "default",
   counts?: ConsoleAmbientCounts,
 ): string {
+  if (context === "copilot") {
+    const mode = counts?.copilotAssistantMode ?? "guided";
+    const hot = counts?.hotIncidents ?? 0;
+    const open = counts?.openIncidents ?? 0;
+    const threads = counts?.copilotThreadCount ?? 0;
+    if (health === "critical") {
+      if (counts?.reasoningConfigured && counts?.reasoningUp === false) {
+        return "Reasoning connector unreachable — guided checklists only until service recovers";
+      }
+      return "Integration connectors unhealthy — enable cloud model or fix reasoning endpoint";
+    }
+    if (health === "attention") {
+      if (mode === "guided") {
+        if (open > 0) {
+          return "Guided assistance active — link cloud model or reasoning for richer triage on open incidents";
+        }
+        return "Guided assistance — enable OpenAI or reasoning URL in deployment settings for deeper answers";
+      }
+      if (open > 0) {
+        return `${open} open incident${open === 1 ? "" : "s"} — describe symptoms for structured next-step prompts`;
+      }
+      return "Sign in to persist conversation threads across visits";
+    }
+    if (mode === "cloud") {
+      return threads > 0
+        ? `Cloud model active · ${threads} saved thread${threads === 1 ? "" : "s"} · human-in-the-loop`
+        : "Cloud model active — triage with structured hypotheses and guardrails";
+    }
+    return threads > 0
+      ? `Reasoning service linked · ${threads} saved thread${threads === 1 ? "" : "s"}`
+      : "Reasoning service linked — draft contextual next steps with approval gates";
+  }
   if (context === "runbooks") {
     const catalog = counts?.runbookCatalogCount ?? 0;
     const openWithout = counts?.openWithoutRunbook ?? 0;
@@ -314,6 +387,27 @@ export function formatAuditRecency(hours: number | null): string {
   return `${Math.round(hours / 24)}d ago`;
 }
 
+export function copilotAmbientMetrics(input: {
+  openaiEnabled: boolean;
+  reasoningConfigured: boolean;
+  reasoningUp: boolean | null;
+  signedIn: boolean;
+  copilotThreadCount: number;
+}): {
+  assistantMode: CopilotAssistantMode;
+  copilotThreadCount: number;
+} {
+  const assistantMode: CopilotAssistantMode = input.openaiEnabled
+    ? "cloud"
+    : input.reasoningConfigured
+      ? "reasoning"
+      : "guided";
+  return {
+    assistantMode,
+    copilotThreadCount: input.copilotThreadCount,
+  };
+}
+
 export function runbookAmbientMetrics(input: {
   catalogCount: number;
   grcCatalogCount: number;
@@ -420,6 +514,10 @@ export function buildConsoleAmbientSnapshot(input: {
   openWithoutRunbook?: number;
   hotWithoutRunbook?: number;
   runbookLinkageCoveragePct?: number;
+  copilotAssistantMode?: CopilotAssistantMode;
+  copilotThreadCount?: number;
+  reasoningConfigured?: boolean;
+  reasoningUp?: boolean | null;
 }): ConsoleAmbientSnapshot {
   const context = input.context ?? "default";
   const health = classifyConsoleAmbientHealthForContext(
@@ -441,9 +539,34 @@ export function buildConsoleAmbientSnapshot(input: {
       signedIn: input.signedIn,
       openWithoutRunbook: input.openWithoutRunbook,
       hotWithoutRunbook: input.hotWithoutRunbook,
+      copilotAssistantMode: input.copilotAssistantMode,
+      reasoningConfigured: input.reasoningConfigured,
+      reasoningUp: input.reasoningUp,
     },
     context,
   );
+
+  const copilotAssistantPhaseValue =
+    input.copilotAssistantMode === "cloud"
+      ? "cloud model active"
+      : input.copilotAssistantMode === "reasoning"
+        ? "reasoning service linked"
+        : "guided checklists";
+  const copilotConnectorsPhaseValue =
+    input.connectorsConfigured === 0
+      ? "reasoning optional"
+      : input.reasoningConfigured
+        ? input.reasoningUp === true
+          ? "reasoning healthy"
+          : input.reasoningUp === false
+            ? "reasoning unreachable"
+            : "reasoning configured"
+        : `${input.connectorsUp}/${input.connectorsConfigured} healthy`;
+  const copilotThreadsPhaseValue = input.signedIn
+    ? (input.copilotThreadCount ?? 0) > 0
+      ? `${input.copilotThreadCount} saved thread${input.copilotThreadCount === 1 ? "" : "s"}`
+      : "ready to persist"
+    : "sign in to persist";
 
   const runbookCatalogPhaseValue = `${input.runbookCatalogCount ?? 0} procedure${input.runbookCatalogCount === 1 ? "" : "s"} · ${input.grcRunbookCount ?? 0} GRC`;
   const runbookLinkagePhaseValue =
@@ -525,7 +648,16 @@ export function buildConsoleAmbientSnapshot(input: {
   ];
 
   const phases: ConsoleAmbientPhase[] = input.signedIn
-    ? context === "runbooks"
+    ? context === "copilot"
+      ? [
+          { label: "ASSISTANT", value: copilotAssistantPhaseValue },
+          { label: "CONNECTORS", value: copilotConnectorsPhaseValue },
+          signedInPhases[0]!,
+          { label: "THREADS", value: copilotThreadsPhaseValue },
+          { label: "GUARDRAILS", value: "human-in-the-loop" },
+          signedInPhases[1]!,
+        ]
+      : context === "runbooks"
       ? [
           { label: "CATALOG", value: runbookCatalogPhaseValue },
           { label: "LINKAGE", value: runbookLinkagePhaseValue },
@@ -574,7 +706,14 @@ export function buildConsoleAmbientSnapshot(input: {
           signedInPhases[5]!,
         ]
       : signedInPhases
-    : context === "runbooks"
+    : context === "copilot"
+      ? [
+          { label: "ASSISTANT", value: "guided mode" },
+          { label: "MODE", value: "LOCAL SESSION" },
+          { label: "CONNECTORS", value: "optional sign-in" },
+          { label: "GUARDRAILS", value: "human-in-the-loop" },
+        ]
+      : context === "runbooks"
       ? [
           { label: "CATALOG", value: runbookCatalogPhaseValue },
           { label: "LINKAGE", value: runbookLinkagePhaseValue },
@@ -627,6 +766,10 @@ export function buildConsoleAmbientSnapshot(input: {
       openWithoutRunbook: input.openWithoutRunbook,
       hotWithoutRunbook: input.hotWithoutRunbook,
       runbookLinkageCoveragePct: input.runbookLinkageCoveragePct,
+      copilotAssistantMode: input.copilotAssistantMode,
+      copilotThreadCount: input.copilotThreadCount,
+      reasoningConfigured: input.reasoningConfigured,
+      reasoningUp: input.reasoningUp,
     }),
     phases,
   };

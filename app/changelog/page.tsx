@@ -14,6 +14,15 @@ export const metadata: Metadata = {
 const ENTRIES: { date: string; title: string; bullets: string[] }[] = [
   {
     date: "May 2026",
+    title: "Copilot ambient status layer",
+    bullets: [
+      "Live health pulse banner on /copilot with assistant mode, connector readiness, and saved-thread counts",
+      "Copilot-first phase order — ASSISTANT → CONNECTORS → INCIDENTS → THREADS → GUARDRAILS → APPROVALS",
+      "Regression: npm run test:console-ambient-status",
+    ],
+  },
+  {
+    date: "May 2026",
     title: "Runbooks ambient status layer",
     bullets: [
       "Live health pulse banner on /runbooks with catalog size, incident linkage coverage, and GRC procedure counts",

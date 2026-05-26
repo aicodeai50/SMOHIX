@@ -12,9 +12,10 @@ import {
   type ConsoleAmbientContext,
   type ConsoleAmbientSnapshot,
   approvalAmbientMetrics,
+  copilotAmbientMetrics,
   runbookAmbientMetrics,
 } from "@/lib/console/ambient-status";
-import { getConnectorHealthRows } from "@/lib/connectors-health";
+import { getConnectorHealthRows, type ConnectorRow } from "@/lib/connectors-health";
 import { listIncidentsForUser } from "@/lib/incidents/data";
 import { getOrgContextForUser } from "@/lib/org/context";
 import { listRunbooks } from "@/lib/runbooks/catalog";
@@ -22,6 +23,47 @@ import { listServicesForUser } from "@/lib/services/data";
 import { getErrorBudgetOverviewSummary } from "@/lib/services/slo";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+
+function copilotAmbientFieldsFromConnectors(
+  connectors: ConnectorRow[],
+  signedIn: boolean,
+  copilotThreadCount: number,
+) {
+  const reasoningRow = connectors.find((row) => row.id === "reasoning");
+  const reasoningConfigured = Boolean(reasoningRow?.baseUrl);
+  const reasoningUp = reasoningRow?.ok ?? null;
+  const metrics = copilotAmbientMetrics({
+    openaiEnabled: Boolean(process.env.OPENAI_API_KEY?.trim()),
+    reasoningConfigured,
+    reasoningUp,
+    signedIn,
+    copilotThreadCount,
+  });
+  return {
+    copilotAssistantMode: metrics.assistantMode,
+    copilotThreadCount: metrics.copilotThreadCount,
+    reasoningConfigured,
+    reasoningUp,
+  };
+}
+
+async function countCopilotThreadsForUser(
+  supabase: Awaited<ReturnType<typeof createServerSupabaseClient>>,
+  userId: string,
+): Promise<number> {
+  try {
+    const { count, error } = await supabase
+      .from("copilot_threads")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", userId);
+    if (error) {
+      return 0;
+    }
+    return count ?? 0;
+  } catch {
+    return 0;
+  }
+}
 
 export async function loadConsoleAmbientSnapshot(options?: {
   context?: ConsoleAmbientContext;
@@ -54,6 +96,10 @@ export async function loadConsoleAmbientSnapshot(options?: {
             openIncidents,
           })
         : null;
+    const copilotFields =
+      context === "copilot"
+        ? copilotAmbientFieldsFromConnectors([], false, 0)
+        : null;
 
     return buildConsoleAmbientSnapshot({
       openIncidents: open,
@@ -79,6 +125,10 @@ export async function loadConsoleAmbientSnapshot(options?: {
       openWithoutRunbook: runbookMetrics?.openWithoutRunbook,
       hotWithoutRunbook: runbookMetrics?.hotWithoutRunbook,
       runbookLinkageCoveragePct: runbookMetrics?.linkageCoveragePct,
+      copilotAssistantMode: copilotFields?.copilotAssistantMode,
+      copilotThreadCount: copilotFields?.copilotThreadCount,
+      reasoningConfigured: copilotFields?.reasoningConfigured,
+      reasoningUp: copilotFields?.reasoningUp,
     });
   }
 
@@ -105,7 +155,7 @@ export async function loadConsoleAmbientSnapshot(options?: {
 
   const orgContext = await getOrgContextForUser(user.id);
   const orgId = orgContext.orgId;
-  const [{ rows: incidents }, connectors, approvals] = await Promise.all([
+  const [{ rows: incidents }, connectors, approvals, copilotThreadCount] = await Promise.all([
     listIncidentsForUser(user.id, null, orgId),
     getConnectorHealthRows(),
     listApprovalsForUser({
@@ -114,6 +164,7 @@ export async function loadConsoleAmbientSnapshot(options?: {
       orgId,
       orgRole: orgContext.role,
     }),
+    context === "copilot" ? countCopilotThreadsForUser(supabase, user.id) : Promise.resolve(0),
   ]);
 
   let dryRuns = await listAutomationDryRuns(supabase, { userId: user.id, orgId });
@@ -178,6 +229,11 @@ export async function loadConsoleAmbientSnapshot(options?: {
     runbookLinkageCoveragePct = metrics.linkageCoveragePct;
   }
 
+  const copilotFields =
+    context === "copilot"
+      ? copilotAmbientFieldsFromConnectors(connectors, true, copilotThreadCount)
+      : null;
+
   const open = incidents.filter((r) => r.status !== "resolved").length;
   const hot = incidents.filter((r) => r.severity === "critical" || r.severity === "high").length;
   const connectorsConfigured = connectors.filter((c) => c.baseUrl).length;
@@ -211,5 +267,9 @@ export async function loadConsoleAmbientSnapshot(options?: {
     openWithoutRunbook,
     hotWithoutRunbook,
     runbookLinkageCoveragePct,
+    copilotAssistantMode: copilotFields?.copilotAssistantMode,
+    copilotThreadCount: copilotFields?.copilotThreadCount,
+    reasoningConfigured: copilotFields?.reasoningConfigured,
+    reasoningUp: copilotFields?.reasoningUp,
   });
 }
