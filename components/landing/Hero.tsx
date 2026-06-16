@@ -6,6 +6,7 @@ import { LivingPulse } from "@/components/landing/LivingPulse";
 import { MarketingReveal } from "@/components/marketing/MarketingReveal";
 import { getTrialHref } from "@/lib/billing";
 import { mBody, mContainer, mEyebrow, mH1, mHeroLede } from "@/lib/marketing-layout";
+import { SITE_BRAND_NAME } from "@/lib/site-brand";
 
 export function Hero({
   signedInCheckoutUrl,
@@ -28,16 +29,16 @@ export function Hero({
         <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-10">
           <div>
             <p className={`${mEyebrow} zentro-eyebrow-cyber`}>
-              ⟡ Guarded operations · Audit-grade evidence
+              ⟡ {SITE_BRAND_NAME} · Enterprise operations &amp; cybersecurity
             </p>
             <h1 className={`zentro-living-headline zentro-headline mt-3 max-w-3xl ${mH1}`}>
-              More than an automation layer — one operational command system
+              The command platform for incident response, cybersecurity, and compliance
             </h1>
             <p className={mHeroLede}>
               <span className="text-foreground/90">
-                Zentro correlates signals across your infrastructure, guides remediation behind
-                approvals and dry-runs, and records every operational decision with audit-grade
-                evidence.
+                {SITE_BRAND_NAME} correlates signals across your infrastructure, guides remediation
+                behind approvals and dry-runs, and records every operational decision with audit-grade
+                evidence — for platform, SOC, SRE, and GRC teams.
               </span>
             </p>
             <p className={`mt-3 max-w-xl ${mBody}`}>

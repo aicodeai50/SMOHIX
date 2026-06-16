@@ -6,6 +6,7 @@ import { MarketingMobileNav } from "./MarketingMobileNav";
 
 const nav = [
   { href: "/", label: "Home" },
+  { href: "/about", label: "About" },
   { href: "/platform", label: "Platform" },
   { href: "/cybersecurity", label: "Cybersecurity" },
   { href: "/enterprise", label: "Enterprise" },

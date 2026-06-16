@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+
 import { AppShell } from "@/components/app/AppShell";
 import { AuditorWorkspaceGuard } from "@/components/app/AuditorWorkspaceGuard";
 import { getUserDisplayName } from "@/lib/auth/display-name";
@@ -6,8 +8,14 @@ import { reorderNavModulesForPins } from "@/lib/console/hub-personalization";
 import { loadHubPersonalizationPrefs } from "@/lib/console/hub-personalization-db";
 import { getOrgContextForUser } from "@/lib/org/context";
 import { CONSOLE_MODULES } from "@/lib/console-nav";
+import { NOINDEX_ROBOTS } from "@/lib/metadata";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+
+export const metadata: Metadata = {
+  title: "Console",
+  robots: NOINDEX_ROBOTS,
+};
 
 /** Always SSR console HTML so deploys and nav are not served from a stale shell cache. */
 export const dynamic = "force-dynamic";

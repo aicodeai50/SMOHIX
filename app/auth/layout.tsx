@@ -1,8 +1,13 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import { AuthHeaderNav } from "@/components/auth/AuthHeaderNav";
-import { AuthHistoryNav } from "@/components/auth/AuthHistoryNav";
 import { Logo } from "@/components/site/Logo";
+import { NOINDEX_ROBOTS } from "@/lib/metadata";
+
+export const metadata: Metadata = {
+  robots: NOINDEX_ROBOTS,
+};
 
 export default function AuthLayout({
   children,
@@ -16,7 +21,6 @@ export default function AuthLayout({
           <Logo />
         </Link>
         <div className="flex flex-wrap items-center justify-end gap-3">
-          <AuthHistoryNav />
           <AuthHeaderNav />
         </div>
       </header>

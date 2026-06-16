@@ -10,7 +10,7 @@ import {
   mPanelShell,
   mSection,
 } from "@/lib/marketing-layout";
-import { SITE_EMAIL_CONTACT, getMailtoHref } from "@/lib/billing";
+import { getMailtoHref } from "@/lib/billing";
 
 const enterpriseItems = [
   {

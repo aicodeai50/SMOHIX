@@ -13,6 +13,15 @@ export const metadata: Metadata = {
 
 const ENTRIES: { date: string; title: string; bullets: string[] }[] = [
   {
+    date: "Jun 2026",
+    title: "Professional brand & SEO overhaul",
+    bullets: [
+      "Homepage company scale section, use cases, enterprise block, About and Careers pages",
+      "Auth and console routes noindexed; sitemap and robots tuned so Google shows the marketing homepage",
+      "Richer Organization + SoftwareApplication JSON-LD and unified enterprise metadata copy",
+    ],
+  },
+  {
     date: "May 2026",
     title: "Copilot reliability pass",
     bullets: [

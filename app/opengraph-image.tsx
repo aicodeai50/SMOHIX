@@ -75,7 +75,7 @@ export default function OpenGraphImage() {
           <span style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
             {SITE_PRIMARY_DOMAIN}
           </span>
-          <span style={{ fontSize: 18, opacity: 0.75 }}>Trusted AI IT operations</span>
+          <span style={{ fontSize: 18, opacity: 0.75 }}>Enterprise AI operations and cybersecurity</span>
         </div>
       </div>
     ),

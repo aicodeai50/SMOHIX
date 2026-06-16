@@ -4,12 +4,16 @@
  */
 export const SITE_BRAND_NAME = "Zentro" as const;
 export const SITE_PRIMARY_DOMAIN = "zentro.run" as const;
+export const SITE_LEGAL_NAME = "Zentro, Inc." as const;
 
 export const SITE_MARKETING_TITLE =
-  `${SITE_BRAND_NAME} — AI operations & cybersecurity command platform` as const;
+  "Zentro — Enterprise AI Operations & Cybersecurity Platform" as const;
 
 export const SITE_MARKETING_DESCRIPTION =
-  "Enterprise command platform for incident response, threat detection, exposure scanning, and guarded automation — with approvals, policy guardrails, and audit-ready evidence in one workspace." as const;
+  "Zentro is the enterprise command platform for incident response, threat detection, exposure management, and guarded automation — with human approvals, policy guardrails, and audit-ready evidence in one workspace. Built for platform, SOC, SRE, and GRC teams." as const;
 
 export const SITE_MARKETING_TWITTER_DESCRIPTION =
-  "Incident response + cybersecurity operations — guarded automation, posture visibility, and proof for enterprise teams." as const;
+  "Enterprise AI operations & cybersecurity — incident command, guarded automation, compliance evidence, and posture visibility for modern security teams." as const;
+
+export const SITE_TAGLINE =
+  "Operational command for incident response, cybersecurity, and compliance." as const;

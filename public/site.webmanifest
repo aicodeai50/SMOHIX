@@ -1,7 +1,7 @@
 {
   "name": "Zentro",
   "short_name": "Zentro",
-  "description": "Trusted AI IT operations platform — incident response with approvals, guarded automation, and an auditable record.",
+  "description": "Zentro — enterprise AI operations and cybersecurity platform for incident response, guarded automation, and compliance evidence.",
   "icons": [
     {
       "src": "/icon.png",

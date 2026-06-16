@@ -27,8 +27,9 @@ export function Footer() {
           <div className="max-w-sm space-y-3">
             <Logo />
             <p className={mBody}>
-              Operations command for modern security teams — incidents, guarded automation, and
-              compliance evidence on one plane.
+              {SITE_BRAND_NAME} is the enterprise command platform for incident response,
+              cybersecurity operations, and compliance evidence — built for platform, SOC, SRE, and
+              GRC teams.
             </p>
             <p className="text-xs text-muted">
               Product: {SITE_BRAND_NAME} <span aria-hidden>·</span> Domain: {SITE_PRIMARY_DOMAIN}
@@ -113,6 +114,12 @@ export function Footer() {
             <div className="space-y-3">
               <FooterHeading>Company</FooterHeading>
               <nav className="flex flex-col gap-2 text-sm text-muted" aria-label="Company">
+                <Link href="/about" className="w-fit hover:text-foreground md:ml-auto">
+                  About
+                </Link>
+                <Link href="/careers" className="w-fit hover:text-foreground md:ml-auto">
+                  Careers
+                </Link>
                 <Link href="/auth/sign-in" className="w-fit hover:text-foreground md:ml-auto">
                   Account
                 </Link>

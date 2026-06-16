@@ -1,8 +1,11 @@
 import {
   SITE_BRAND_NAME,
+  SITE_LEGAL_NAME,
   SITE_MARKETING_DESCRIPTION,
   SITE_PRIMARY_DOMAIN,
+  SITE_TAGLINE,
 } from "@/lib/site-brand";
+import { SITE_EMAIL_CONTACT } from "@/lib/billing";
 import { getSiteUrl } from "@/lib/site";
 
 export function SiteJsonLd() {
@@ -19,20 +22,25 @@ export function SiteJsonLd() {
     "@context": "https://schema.org",
     "@graph": [
       {
+        "@id": `${siteUrl}/#website`,
         "@type": "WebSite",
         name: SITE_BRAND_NAME,
-        alternateName: [SITE_PRIMARY_DOMAIN],
+        alternateName: [SITE_PRIMARY_DOMAIN, SITE_LEGAL_NAME],
         url: siteUrl,
         description: SITE_MARKETING_DESCRIPTION,
         inLanguage: "en-US",
-        publisher: { "@id": `${siteUrl}#organization` },
+        publisher: { "@id": `${siteUrl}/#organization` },
       },
       {
-        "@id": `${siteUrl}#organization`,
+        "@id": `${siteUrl}/#organization`,
         "@type": "Organization",
-        name: SITE_BRAND_NAME,
+        name: SITE_LEGAL_NAME,
+        legalName: SITE_LEGAL_NAME,
+        alternateName: SITE_BRAND_NAME,
         url: siteUrl,
         logo,
+        email: SITE_EMAIL_CONTACT,
+        description: SITE_TAGLINE,
       },
     ],
   };
