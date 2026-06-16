@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 
 const PHASES = [
+  { label: "DIMENSION", value: "ONLINE" },
   { label: "INGEST", value: "READY" },
   { label: "GUARDRAILS", value: "ENFORCED" },
   { label: "AUDIT", value: "APPEND-ONLY" },
-  { label: "APPROVALS", value: "CHECKPOINT" },
-  { label: "ROLLBACK", value: "ARMED" },
+  { label: "ASCENSION", value: "GLOWING" },
 ] as const;
 
 export function LivingPulse() {
@@ -30,7 +30,7 @@ export function LivingPulse() {
 
   return (
     <div
-      className="zentro-living-pulse mb-6 inline-flex flex-wrap items-center gap-x-4 gap-y-2 rounded-full border border-white/[0.08] bg-black/30 px-4 py-2 font-mono text-[10px] uppercase tracking-[0.22em] backdrop-blur-md"
+      className="zentro-living-pulse zentro-ascension-badge mb-6 inline-flex flex-wrap items-center gap-x-4 gap-y-2 rounded-full border border-white/[0.08] bg-black/30 px-4 py-2 font-mono text-[10px] uppercase tracking-[0.22em] backdrop-blur-md"
       aria-live="polite"
     >
       <span className="flex items-center gap-2 text-[#6ee7b7]">

@@ -19,7 +19,7 @@ export function Hero({
   const teamHref = signedInTeamCheckoutUrl?.trim();
 
   return (
-    <MarketingReveal className="zentro-hero-future relative overflow-hidden border-b border-white/[0.06]">
+    <MarketingReveal className="zentro-hero-future zentro-universe-hero relative overflow-hidden border-b border-white/[0.06]">
       <div
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(94,225,255,0.14),transparent)]"
         aria-hidden
@@ -29,16 +29,17 @@ export function Hero({
         <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-10">
           <div>
             <p className={`${mEyebrow} zentro-eyebrow-cyber`}>
-              ⟡ {SITE_BRAND_NAME} · Enterprise operations &amp; cybersecurity
+              ◈ Another universe of operations · Ascending now
             </p>
             <h1 className={`zentro-living-headline zentro-headline mt-3 max-w-3xl ${mH1}`}>
-              The command platform for incident response, cybersecurity, and compliance
+              Step into the command dimension — where incidents glow, automation ascends, and
+              every action leaves light
             </h1>
             <p className={mHeroLede}>
               <span className="text-foreground/90">
-                {SITE_BRAND_NAME} correlates signals across your infrastructure, guides remediation
-                behind approvals and dry-runs, and records every operational decision with audit-grade
-                evidence — for platform, SOC, SRE, and GRC teams.
+                {SITE_BRAND_NAME} is not another dashboard. It is a living operational universe —
+                correlating signals, guiding remediation behind approvals, and recording proof that
+                rises with your team.
               </span>
             </p>
             <p className={`mt-3 max-w-xl ${mBody}`}>

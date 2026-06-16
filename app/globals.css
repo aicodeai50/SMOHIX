@@ -62,10 +62,11 @@
 body {
   background-color: var(--background);
   background-image:
-    radial-gradient(ellipse 110% 70% at 50% -30%, rgba(94, 225, 255, 0.12), transparent 52%),
-    radial-gradient(ellipse 55% 45% at 100% 5%, rgba(129, 140, 248, 0.1), transparent 42%),
-    radial-gradient(ellipse 45% 35% at 0% 90%, rgba(45, 212, 191, 0.06), transparent 48%),
-    linear-gradient(180deg, #06070b 0%, #080a10 42%, #06070b 100%);
+    radial-gradient(ellipse 120% 80% at 50% -35%, rgba(94, 225, 255, 0.18), transparent 55%),
+    radial-gradient(ellipse 70% 55% at 100% 0%, rgba(167, 139, 250, 0.14), transparent 48%),
+    radial-gradient(ellipse 60% 50% at 0% 100%, rgba(236, 72, 153, 0.08), transparent 52%),
+    radial-gradient(ellipse 50% 40% at 50% 100%, rgba(52, 211, 153, 0.1), transparent 50%),
+    linear-gradient(180deg, #030408 0%, #06070b 38%, #080a12 62%, #030408 100%);
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
@@ -272,11 +273,14 @@ body {
 .zentro-bento-cell {
   border: 1px solid rgba(255, 255, 255, 0.06);
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
-  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
 }
 .zentro-bento-cell:hover {
-  border-color: rgba(94, 225, 255, 0.25);
-  box-shadow: 0 0 24px -12px var(--accent-glow);
+  border-color: rgba(94, 225, 255, 0.35);
+  box-shadow:
+    0 0 32px -10px var(--accent-glow),
+    0 0 48px -24px rgba(167, 139, 250, 0.25);
+  transform: translateY(-2px);
 }
 .zentro-future-ticker {
   overflow: hidden;
@@ -510,8 +514,222 @@ body {
 }
 .zentro-header-living {
   box-shadow:
-    0 1px 0 rgba(94, 225, 255, 0.08),
-    0 8px 32px -16px rgba(94, 225, 255, 0.12);
+    0 1px 0 rgba(94, 225, 255, 0.14),
+    0 0 48px -12px rgba(94, 225, 255, 0.22),
+    0 8px 32px -16px rgba(167, 139, 250, 0.18);
+  background: linear-gradient(
+    180deg,
+    rgba(6, 7, 11, 0.88) 0%,
+    rgba(6, 7, 11, 0.72) 100%
+  ) !important;
+}
+
+/* ── Universe ascension — another dimension ── */
+.zentro-universe-realm {
+  min-height: 100%;
+}
+
+.zentro-cosmic-nebula {
+  z-index: 0;
+}
+
+.zentro-nebula-veil {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(72px);
+  opacity: 0.55;
+  animation: zentro-nebula-drift 28s ease-in-out infinite alternate;
+}
+.zentro-nebula-veil--cyan {
+  width: min(90vw, 720px);
+  height: min(60vh, 480px);
+  top: -12%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: radial-gradient(circle, rgba(94, 225, 255, 0.35), transparent 68%);
+  animation-name: zentro-nebula-drift-centered;
+}
+.zentro-nebula-veil--violet {
+  width: min(70vw, 560px);
+  height: min(50vh, 400px);
+  top: 18%;
+  right: -12%;
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.32), transparent 70%);
+  animation-delay: -8s;
+}
+.zentro-nebula-veil--emerald {
+  width: min(65vw, 520px);
+  height: min(45vh, 360px);
+  bottom: 8%;
+  left: -10%;
+  background: radial-gradient(circle, rgba(52, 211, 153, 0.22), transparent 72%);
+  animation-delay: -14s;
+}
+@keyframes zentro-nebula-drift {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.45;
+  }
+  100% {
+    transform: translate(24px, -18px) scale(1.08);
+    opacity: 0.75;
+  }
+}
+@keyframes zentro-nebula-drift-centered {
+  0% {
+    transform: translate(-50%, 0) scale(1);
+    opacity: 0.45;
+  }
+  100% {
+    transform: translate(calc(-50% + 24px), -18px) scale(1.08);
+    opacity: 0.75;
+  }
+}
+
+.zentro-light-pillar {
+  position: absolute;
+  top: 0;
+  width: 28%;
+  height: 100%;
+  opacity: 0.35;
+  background: linear-gradient(
+    180deg,
+    rgba(94, 225, 255, 0.22) 0%,
+    rgba(167, 139, 250, 0.08) 35%,
+    transparent 72%
+  );
+  filter: blur(2px);
+  animation: zentro-pillar-pulse 9s ease-in-out infinite alternate;
+}
+.zentro-light-pillar--left {
+  left: 8%;
+  transform: skewX(-6deg);
+}
+.zentro-light-pillar--right {
+  right: 6%;
+  transform: skewX(6deg);
+  animation-delay: -4s;
+}
+@keyframes zentro-pillar-pulse {
+  0% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}
+
+.zentro-ascension-horizon {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 35%;
+  background: linear-gradient(
+    0deg,
+    rgba(94, 225, 255, 0.12) 0%,
+    rgba(167, 139, 250, 0.06) 28%,
+    transparent 100%
+  );
+  animation: zentro-horizon-rise 12s ease-in-out infinite alternate;
+}
+@keyframes zentro-horizon-rise {
+  0% {
+    opacity: 0.35;
+    transform: scaleY(0.92);
+  }
+  100% {
+    opacity: 0.85;
+    transform: scaleY(1);
+  }
+}
+
+.zentro-star-dust {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 12% 18%, rgba(255, 255, 255, 0.55), transparent),
+    radial-gradient(1px 1px at 28% 72%, rgba(94, 225, 255, 0.45), transparent),
+    radial-gradient(1.5px 1.5px at 44% 32%, rgba(255, 255, 255, 0.35), transparent),
+    radial-gradient(1px 1px at 58% 84%, rgba(167, 139, 250, 0.4), transparent),
+    radial-gradient(1px 1px at 72% 22%, rgba(255, 255, 255, 0.5), transparent),
+    radial-gradient(1.5px 1.5px at 86% 58%, rgba(94, 225, 255, 0.35), transparent),
+    radial-gradient(1px 1px at 92% 12%, rgba(255, 255, 255, 0.4), transparent),
+    radial-gradient(1px 1px at 8% 48%, rgba(52, 211, 153, 0.35), transparent),
+    radial-gradient(1px 1px at 36% 8%, rgba(255, 255, 255, 0.3), transparent),
+    radial-gradient(1px 1px at 64% 64%, rgba(255, 255, 255, 0.45), transparent);
+  animation: zentro-star-twinkle 6s ease-in-out infinite alternate;
+}
+@keyframes zentro-star-twinkle {
+  0% {
+    opacity: 0.35;
+  }
+  100% {
+    opacity: 0.9;
+  }
+}
+
+.zentro-universe-hero {
+  position: relative;
+}
+.zentro-universe-hero::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(120vw, 900px);
+  height: min(120vw, 900px);
+  transform: translate(-50%, -55%);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(94, 225, 255, 0.14) 0%,
+    rgba(167, 139, 250, 0.08) 32%,
+    transparent 62%
+  );
+  pointer-events: none;
+  animation: zentro-portal-breathe 10s ease-in-out infinite alternate;
+  z-index: 0;
+}
+@keyframes zentro-portal-breathe {
+  0% {
+    opacity: 0.5;
+    transform: translate(-50%, -55%) scale(0.92);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -55%) scale(1.06);
+  }
+}
+
+.zentro-logo-glow {
+  filter: drop-shadow(0 0 12px rgba(94, 225, 255, 0.55))
+    drop-shadow(0 0 28px rgba(167, 139, 250, 0.35));
+  animation: zentro-logo-pulse 4s ease-in-out infinite;
+}
+@keyframes zentro-logo-pulse {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 10px rgba(94, 225, 255, 0.45))
+      drop-shadow(0 0 24px rgba(167, 139, 250, 0.28));
+  }
+  50% {
+    filter: drop-shadow(0 0 18px rgba(94, 225, 255, 0.75))
+      drop-shadow(0 0 40px rgba(167, 139, 250, 0.45));
+  }
+}
+
+.zentro-brand-wordmark {
+  background: linear-gradient(135deg, #ffffff 0%, #7dd3fc 40%, #c4b5fd 70%, #5ee1ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.zentro-ascension-badge {
+  box-shadow:
+    0 0 32px -8px rgba(94, 225, 255, 0.45),
+    inset 0 0 24px -12px rgba(167, 139, 250, 0.25);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -538,6 +756,14 @@ body {
   }
   .zentro-quantum-canvas {
     display: none;
+  }
+  .zentro-nebula-veil,
+  .zentro-light-pillar,
+  .zentro-ascension-horizon,
+  .zentro-star-dust,
+  .zentro-universe-hero::before,
+  .zentro-logo-glow {
+    animation: none !important;
   }
 }
 

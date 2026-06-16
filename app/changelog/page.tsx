@@ -14,6 +14,14 @@ export const metadata: Metadata = {
 const ENTRIES: { date: string; title: string; bullets: string[] }[] = [
   {
     date: "Jun 2026",
+    title: "Universe ascension visual layer",
+    bullets: [
+      "Cosmic nebula backdrop, enhanced quantum particle field, and portal-style hero glow",
+      "Glowing Zentro wordmark, ascension live badge, and deeper space-grade color atmosphere",
+    ],
+  },
+  {
+    date: "Jun 2026",
     title: "Professional brand & SEO overhaul",
     bullets: [
       "Homepage company scale section, use cases, enterprise block, About and Careers pages",
