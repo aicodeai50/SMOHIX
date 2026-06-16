@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 
 const PHASES = [
-  { label: "DIMENSION", value: "ONLINE" },
-  { label: "INGEST", value: "READY" },
-  { label: "GUARDRAILS", value: "ENFORCED" },
-  { label: "AUDIT", value: "APPEND-ONLY" },
-  { label: "ASCENSION", value: "GLOWING" },
+  { label: "SIGNAL", value: "INGEST" },
+  { label: "GUARDRAILS", value: "ACTIVE" },
+  { label: "APPROVALS", value: "QUEUED" },
+  { label: "AUDIT", value: "RECORDING" },
+  { label: "AUTOMATION", value: "DRY-RUN" },
 ] as const;
 
 export function LivingPulse() {

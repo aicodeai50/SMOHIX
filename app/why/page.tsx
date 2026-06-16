@@ -1,102 +1,99 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
-import { mArticle, mBody, mH1, mH2 } from "@/lib/marketing-layout";
+import { MarketingQuantumShell } from "@/components/landing/MarketingQuantumShell";
+import { buildMarketingMetadata } from "@/lib/metadata";
+import {
+  mBody,
+  mContainer,
+  mEyebrow,
+  mH1,
+  mLede,
+  mSection,
+} from "@/lib/marketing-layout";
 import { SITE_BRAND_NAME } from "@/lib/site-brand";
 
-export const metadata: Metadata = {
+export const metadata = buildMarketingMetadata({
   title: `Why ${SITE_BRAND_NAME}`,
-  description:
-    "Controlled operations: why guardrails, dry-runs, approvals, and audit matter — and how this product is intentionally different.",
-};
+  description: `How ${SITE_BRAND_NAME} approaches incident command, guarded automation, and audit — built for teams who operate production under scrutiny.`,
+  path: "/why",
+});
+
+const PRINCIPLES = [
+  {
+    title: "Coordination over noise",
+    body: "Most failures are not unknown — they are unmanaged. Zentro gives responders one queue, one timeline, and one record of who decided what.",
+  },
+  {
+    title: "Assistance with accountability",
+    body: "Copilot drafts and suggests. It does not execute silently. Humans remain accountable at the points where production changes.",
+  },
+  {
+    title: "Simulation before execution",
+    body: "Dry-runs let teams agree on intent and blast radius before a connector runs. Guardrails turn ad-hoc scripts into recorded paths.",
+  },
+  {
+    title: "Approvals as judgment",
+    body: "Under stress, organizations need explicit decision points — not threads that scroll away. Approvals live beside the automation they gate.",
+  },
+  {
+    title: "Evidence by default",
+    body: "Append-only activity, export paths, and incident timelines give post-incident review material that survives the night shift.",
+  },
+  {
+    title: "One surface, fewer handoffs",
+    body: "Paging tools wake people up. ITSM suites span process breadth. Zentro focuses on the path from signal to verified change.",
+  },
+] as const;
 
 export default function WhyPage() {
   return (
     <>
       <Header />
-      <main className="flex-1 border-b border-white/[0.06]">
-        <article className={mArticle}>
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent/90">Philosophy</p>
-          <h1 className={`mt-2 ${mH1}`}>Why {SITE_BRAND_NAME}</h1>
-          <p className={`mt-4 ${mBody}`}>
-            Most outages are not mysteries — they are coordination failures. Teams already have monitoring, chat, and
-            scripts. What they often lack is a <strong className="font-medium text-foreground/90">single place</strong>{" "}
-            where work is structured, change is gated, and evidence survives the night.
-          </p>
-
-          <section className="mt-12 space-y-3" aria-labelledby="controlled-heading">
-            <h2 id="controlled-heading" className={mH2}>
-              Controlled operations, not autonomous theater
-            </h2>
-            <p className={mBody}>
-              {SITE_BRAND_NAME} treats assistance as a multiplier for responders, not a replacement for accountability.
-              Copilot can draft and suggest; it does not silently own production. The product thesis is simple:{" "}
-              <strong className="font-medium text-foreground/90">humans stay in the loop where it matters</strong>, and
-              the console makes that loop visible.
-            </p>
+      <main id="main-content" className="flex-1">
+        <MarketingQuantumShell>
+          <section className={`zentro-hero-future border-b border-white/[0.06] ${mSection}`}>
+            <div className={mContainer}>
+              <p className={mEyebrow}>Operating principles</p>
+              <h1 className={`mt-2 max-w-3xl zentro-living-headline zentro-headline ${mH1}`}>
+                Why {SITE_BRAND_NAME}
+              </h1>
+              <p className={`mt-4 max-w-2xl ${mLede}`}>
+                We build for platform, SOC, and SRE teams who run production under audit pressure —
+                not for slide-deck automation theater.
+              </p>
+            </div>
           </section>
 
-          <section className="mt-10 space-y-3" aria-labelledby="guardrails-heading">
-            <h2 id="guardrails-heading" className={mH2}>
-              Why guardrails and dry-runs matter
-            </h2>
-            <p className={mBody}>
-              Automation without simulation is optimism. Dry-runs exist so the team agrees on intent and blast radius
-              before a connector touches production. Guardrails turn “someone ran a script” into “someone ran a
-              recorded path with checkpoints.”
-            </p>
-          </section>
+          <section className={mSection}>
+            <div className={mContainer}>
+              <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {PRINCIPLES.map((item) => (
+                  <li
+                    key={item.title}
+                    className="zentro-bento-cell rounded-2xl border border-white/[0.08] p-6"
+                  >
+                    <h2 className="text-base font-semibold text-foreground">{item.title}</h2>
+                    <p className={`mt-3 ${mBody}`}>{item.body}</p>
+                  </li>
+                ))}
+              </ul>
 
-          <section className="mt-10 space-y-3" aria-labelledby="approvals-heading">
-            <h2 id="approvals-heading" className={mH2}>
-              Why approvals matter
-            </h2>
-            <p className={mBody}>
-              Approvals are not bureaucracy for its own sake — they are how organizations encode judgment under
-              stress. A queue with a clear state machine beats a thread that scrolls away. {SITE_BRAND_NAME} records
-              decisions where reviewers already work: in the console, next to the automation that will execute.
-            </p>
+              <div className="mt-12 flex flex-wrap gap-4 border-t border-white/[0.06] pt-8 text-sm">
+                <Link href="/platform" className="font-medium text-accent hover:underline">
+                  Platform overview
+                </Link>
+                <Link href="/trust" className="font-medium text-muted hover:text-foreground">
+                  Trust &amp; governance
+                </Link>
+                <Link href="/enterprise" className="font-medium text-muted hover:text-foreground">
+                  Enterprise
+                </Link>
+              </div>
+            </div>
           </section>
-
-          <section className="mt-10 space-y-3" aria-labelledby="audit-heading">
-            <h2 id="audit-heading" className={mH2}>
-              Why audit matters
-            </h2>
-            <p className={mBody}>
-              Post-incident review is not optional for mature teams. An append-oriented activity log gives you a
-              defensible story: who approved what, when status changed, and how automation participated. Export paths
-              grow with your plan — the goal is evidence you can show without rebuilding it from memory.
-            </p>
-          </section>
-
-          <section className="mt-10 space-y-3" aria-labelledby="different-heading">
-            <h2 id="different-heading" className={mH2}>
-              Why {SITE_BRAND_NAME} is different
-            </h2>
-            <p className={mBody}>
-              Paging vendors optimize for getting humans awake. ITSM suites optimize for process breadth.{" "}
-              {SITE_BRAND_NAME} optimizes for the narrow wedge between signal and production change:{" "}
-              <strong className="font-medium text-foreground/90">
-                incidents, guarded automations, and audit in one surface
-              </strong>
-              . It is opinionated on purpose — fewer tabs, fewer handoffs, one narrative for responders and reviewers.
-            </p>
-          </section>
-
-          <div className="mt-12 flex flex-wrap gap-4 text-sm font-medium">
-            <Link href="/trust" className="text-accent hover:underline">
-              Trust &amp; governance →
-            </Link>
-            <Link href="/platform" className="text-accent hover:underline">
-              Platform overview →
-            </Link>
-            <Link href="/" className="text-muted hover:text-accent hover:underline">
-              ← Home
-            </Link>
-          </div>
-        </article>
+        </MarketingQuantumShell>
       </main>
       <Footer />
     </>

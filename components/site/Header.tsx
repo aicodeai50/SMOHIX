@@ -1,57 +1,50 @@
 import Link from "next/link";
 
 import { Logo } from "./Logo";
-import { MarketingHistoryNav } from "./MarketingHistoryNav";
 import { MarketingMobileNav } from "./MarketingMobileNav";
 
 const nav = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
   { href: "/platform", label: "Platform" },
-  { href: "/cybersecurity", label: "Cybersecurity" },
   { href: "/enterprise", label: "Enterprise" },
-  { href: "/docs", label: "Docs" },
   { href: "/pricing", label: "Pricing" },
-  { href: "/integrations", label: "Integrations" },
-  { href: "/trust", label: "Trust" },
-  { href: "/security", label: "Security" },
-  { href: "/status", label: "Status" },
-  { href: "/next", label: "Next" },
-  { href: "/why", label: "Why" },
+  { href: "/docs", label: "Docs" },
+  { href: "/about", label: "About" },
 ] as const;
 
 export function Header() {
   return (
-    <header className="zentro-header-living sticky top-0 z-50 border-b border-white/[0.06] bg-background/75 backdrop-blur-xl">
-      <div className="mx-auto flex min-h-16 max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-3 px-4 py-3 sm:px-6 md:h-16 md:flex-nowrap md:py-0">
+    <header className="zentro-header-living sticky top-0 z-50 border-b border-white/[0.06] backdrop-blur-xl">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
         <Link href="/" className="min-w-0 shrink-0 text-foreground no-underline">
           <Logo />
         </Link>
-        <nav className="hidden max-w-[min(100%,46rem)] flex-wrap items-center justify-end gap-x-2.5 gap-y-1 text-[11px] text-muted md:flex md:text-[12px] lg:max-w-[52rem] lg:gap-x-3 lg:text-sm">
+
+        <nav
+          className="hidden items-center gap-1 md:flex"
+          aria-label="Primary"
+        >
           {nav.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="whitespace-nowrap transition-colors hover:text-foreground"
+              className="rounded-md px-3 py-2 text-[13px] font-medium text-muted transition-colors hover:text-foreground"
             >
               {item.label}
             </Link>
           ))}
         </nav>
-        <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 sm:w-auto sm:gap-3 md:flex-nowrap">
+
+        <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           <MarketingMobileNav />
-          <div className="hidden sm:contents">
-            <MarketingHistoryNav />
-          </div>
           <Link
             href="/auth/sign-in"
-            className="text-sm font-medium text-muted transition-colors hover:text-foreground"
+            className="hidden text-[13px] font-medium text-muted transition-colors hover:text-foreground sm:inline"
           >
-            Account
+            Sign in
           </Link>
           <Link
             href="/hub"
-            className="hidden text-sm font-medium text-muted transition-colors hover:text-accent md:inline"
+            className="inline-flex h-9 items-center rounded-lg bg-accent px-4 text-[13px] font-semibold text-background transition-opacity hover:opacity-90"
           >
             Console
           </Link>

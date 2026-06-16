@@ -29,17 +29,15 @@ export function Hero({
         <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-10">
           <div>
             <p className={`${mEyebrow} zentro-eyebrow-cyber`}>
-              ◈ Another universe of operations · Ascending now
+              Enterprise operations · Built for production
             </p>
             <h1 className={`zentro-living-headline zentro-headline mt-3 max-w-3xl ${mH1}`}>
-              Step into the command dimension — where incidents glow, automation ascends, and
-              every action leaves light
+              The command layer between alert and production change
             </h1>
             <p className={mHeroLede}>
               <span className="text-foreground/90">
-                {SITE_BRAND_NAME} is not another dashboard. It is a living operational universe —
-                correlating signals, guiding remediation behind approvals, and recording proof that
-                rises with your team.
+                {SITE_BRAND_NAME} unifies incident response, guarded automation, and compliance
+                evidence — one console for teams who operate under scrutiny, not slide-deck demos.
               </span>
             </p>
             <p className={`mt-3 max-w-xl ${mBody}`}>
