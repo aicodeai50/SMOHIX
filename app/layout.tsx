@@ -44,6 +44,9 @@ export const metadata: Metadata = {
     title: SITE_BRAND_NAME,
     statusBarStyle: "black-translucent",
   },
+  alternates: {
+    canonical: siteUrl,
+  },
   openGraph: {
     type: "website",
     locale: "en_US",

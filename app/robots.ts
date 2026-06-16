@@ -23,6 +23,8 @@ export default function robots(): MetadataRoute.Robots {
         "/governance",
         "/status",
         "/api/",
+        "/api/health",
+        "/api/connectors/status",
       ],
     },
     sitemap: `${base}/sitemap.xml`,
