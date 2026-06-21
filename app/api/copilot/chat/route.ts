@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
 
 import { enforceCopilotChatAccess } from "@/lib/copilot/chat-guard";
+import { buildIncidentCopilotContext } from "@/lib/copilot/incident-context";
 import { buildOfflineReply } from "@/lib/copilot/offline-reply";
 import { completeOpenAIChat, streamOpenAIChatDeltas } from "@/lib/copilot/openai";
 import { completeReasoningChat } from "@/lib/copilot/reasoning";
+import { hasSupabaseAuth } from "@/lib/supabase/env";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
 
@@ -39,6 +42,7 @@ export async function POST(req: Request) {
     messages?: { role?: string; content?: string }[];
     message?: string;
     stream?: boolean;
+    incidentId?: string;
   };
 
   const messages = Array.isArray(b.messages) ? b.messages : [];
@@ -60,6 +64,24 @@ export async function POST(req: Request) {
             content: String(m.content),
           }))
       : [{ role: "user", content: lastUser }];
+
+  const incidentId = typeof b.incidentId === "string" ? b.incidentId.trim() : "";
+  if (incidentId && hasSupabaseAuth()) {
+    const supabase = await createServerSupabaseClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+    }
+    const context = await buildIncidentCopilotContext({ incidentId, userId: user.id });
+    if (context) {
+      thread.unshift({
+        role: "user",
+        content: `Incident context for this chat:\n\n${context}`,
+      });
+    }
+  }
 
   const wantStream = b.stream === true;
 

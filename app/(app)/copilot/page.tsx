@@ -18,7 +18,13 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function CopilotPage() {
+export default async function CopilotPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ incident?: string }>;
+}) {
+  const sp = (await searchParams) ?? {};
+  const incidentId = typeof sp.incident === "string" ? sp.incident.trim() : "";
   let persistSession = false;
   if (hasSupabaseAuth()) {
     try {
@@ -46,7 +52,15 @@ export default async function CopilotPage() {
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
           <PlaceholderCard title="Conversation">
-            <CopilotChat persistSession={persistSession} />
+            {incidentId ? (
+              <p className={`mb-4 rounded-xl border border-accent/25 bg-accent-dim/40 px-3 py-2 text-accent ${appMeta}`}>
+                Incident context attached:{" "}
+                <Link href={`/incidents/${encodeURIComponent(incidentId)}`} className="font-medium underline-offset-2 hover:underline">
+                  {incidentId}
+                </Link>
+              </p>
+            ) : null}
+            <CopilotChat persistSession={persistSession} incidentId={incidentId || null} />
           </PlaceholderCard>
         </div>
         <div className="space-y-4">

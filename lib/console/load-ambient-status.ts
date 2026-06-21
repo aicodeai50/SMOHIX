@@ -14,6 +14,7 @@ import {
   approvalAmbientMetrics,
   copilotAmbientMetrics,
   runbookAmbientMetrics,
+  settingsAmbientMetrics,
 } from "@/lib/console/ambient-status";
 import { getConnectorHealthRows, type ConnectorRow } from "@/lib/connectors-health";
 import { listIncidentsForUser } from "@/lib/incidents/data";
@@ -65,6 +66,45 @@ async function countCopilotThreadsForUser(
   }
 }
 
+async function loadSettingsAmbientFields(
+  supabase: Awaited<ReturnType<typeof createServerSupabaseClient>>,
+  user: { id: string; email?: string | null; user_metadata?: Record<string, unknown> },
+  connectorsConfigured: number,
+  connectorsUp: number,
+) {
+  const meta = user.user_metadata;
+  const profileComplete = Boolean(
+    (typeof meta?.full_name === "string" && meta.full_name.trim()) || user.email,
+  );
+  const [{ count: apiKeysCount }, { count: ingestCount }] = await Promise.all([
+    supabase
+      .from("api_keys")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .is("revoked_at", null),
+    supabase
+      .from("alert_ingest_tokens")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .is("revoked_at", null),
+  ]);
+  const hasApiKey = (apiKeysCount ?? 0) > 0;
+  const hasIngestToken = (ingestCount ?? 0) > 0;
+  const setupSteps = [profileComplete, hasApiKey, hasIngestToken, connectorsConfigured > 0];
+  const setupStepsComplete = setupSteps.filter(Boolean).length;
+  return settingsAmbientMetrics({
+    setupStepsComplete,
+    setupStepsTotal: 4,
+    hasApiKey,
+    hasIngestToken,
+    profileComplete,
+    connectorsConfigured,
+    connectorsUp,
+    openaiEnabled: Boolean(process.env.OPENAI_API_KEY?.trim()),
+    signedIn: true,
+  });
+}
+
 export async function loadConsoleAmbientSnapshot(options?: {
   context?: ConsoleAmbientContext;
 }): Promise<ConsoleAmbientSnapshot> {
@@ -100,6 +140,20 @@ export async function loadConsoleAmbientSnapshot(options?: {
       context === "copilot"
         ? copilotAmbientFieldsFromConnectors([], false, 0)
         : null;
+    const settingsFields =
+      context === "settings"
+        ? settingsAmbientMetrics({
+            setupStepsComplete: 0,
+            setupStepsTotal: 4,
+            hasApiKey: false,
+            hasIngestToken: false,
+            profileComplete: false,
+            connectorsConfigured: 0,
+            connectorsUp: 0,
+            openaiEnabled: Boolean(process.env.OPENAI_API_KEY?.trim()),
+            signedIn: false,
+          })
+        : null;
 
     return buildConsoleAmbientSnapshot({
       openIncidents: open,
@@ -129,6 +183,12 @@ export async function loadConsoleAmbientSnapshot(options?: {
       copilotThreadCount: copilotFields?.copilotThreadCount,
       reasoningConfigured: copilotFields?.reasoningConfigured,
       reasoningUp: copilotFields?.reasoningUp,
+      setupStepsComplete: settingsFields?.setupStepsComplete,
+      setupStepsTotal: settingsFields?.setupStepsTotal,
+      hasApiKey: settingsFields?.hasApiKey,
+      hasIngestToken: settingsFields?.hasIngestToken,
+      profileComplete: settingsFields?.profileComplete,
+      openaiEnabled: settingsFields?.openaiEnabled,
     });
   }
 
@@ -138,6 +198,20 @@ export async function loadConsoleAmbientSnapshot(options?: {
   } = await supabase.auth.getUser();
 
   if (!user) {
+    const settingsFields =
+      context === "settings"
+        ? settingsAmbientMetrics({
+            setupStepsComplete: 0,
+            setupStepsTotal: 4,
+            hasApiKey: false,
+            hasIngestToken: false,
+            profileComplete: false,
+            connectorsConfigured: 0,
+            connectorsUp: 0,
+            openaiEnabled: Boolean(process.env.OPENAI_API_KEY?.trim()),
+            signedIn: false,
+          })
+        : null;
     return buildConsoleAmbientSnapshot({
       openIncidents: 0,
       hotIncidents: 0,
@@ -150,6 +224,12 @@ export async function loadConsoleAmbientSnapshot(options?: {
       criticalBurnServices: 0,
       signedIn: false,
       context,
+      setupStepsComplete: settingsFields?.setupStepsComplete,
+      setupStepsTotal: settingsFields?.setupStepsTotal,
+      hasApiKey: settingsFields?.hasApiKey,
+      hasIngestToken: settingsFields?.hasIngestToken,
+      profileComplete: settingsFields?.profileComplete,
+      openaiEnabled: settingsFields?.openaiEnabled,
     });
   }
 
@@ -167,7 +247,15 @@ export async function loadConsoleAmbientSnapshot(options?: {
     context === "copilot" ? countCopilotThreadsForUser(supabase, user.id) : Promise.resolve(0),
   ]);
 
-  let dryRuns = await listAutomationDryRuns(supabase, { userId: user.id, orgId });
+  const connectorsConfigured = connectors.filter((c) => c.baseUrl).length;
+  const connectorsUp = connectors.filter((c) => c.ok === true).length;
+
+  const settingsFields =
+    context === "settings"
+      ? await loadSettingsAmbientFields(supabase, user, connectorsConfigured, connectorsUp)
+      : null;
+
+  const dryRuns = await listAutomationDryRuns(supabase, { userId: user.id, orgId });
   const successful = dryRuns.runs.filter((r) => r.ok).length;
   const dryRunSuccessRate =
     dryRuns.runs.length > 0 ? Math.round((successful / dryRuns.runs.length) * 100) : 0;
@@ -236,8 +324,6 @@ export async function loadConsoleAmbientSnapshot(options?: {
 
   const open = incidents.filter((r) => r.status !== "resolved").length;
   const hot = incidents.filter((r) => r.severity === "critical" || r.severity === "high").length;
-  const connectorsConfigured = connectors.filter((c) => c.baseUrl).length;
-  const connectorsUp = connectors.filter((c) => c.ok === true).length;
   const approvalMetrics = approvalAmbientMetrics(approvals.pending);
 
   return buildConsoleAmbientSnapshot({
@@ -271,5 +357,11 @@ export async function loadConsoleAmbientSnapshot(options?: {
     copilotThreadCount: copilotFields?.copilotThreadCount,
     reasoningConfigured: copilotFields?.reasoningConfigured,
     reasoningUp: copilotFields?.reasoningUp,
+    setupStepsComplete: settingsFields?.setupStepsComplete,
+    setupStepsTotal: settingsFields?.setupStepsTotal,
+    hasApiKey: settingsFields?.hasApiKey,
+    hasIngestToken: settingsFields?.hasIngestToken,
+    profileComplete: settingsFields?.profileComplete,
+    openaiEnabled: settingsFields?.openaiEnabled,
   });
 }

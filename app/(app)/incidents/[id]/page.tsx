@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 
 import {
+  addIncidentCommandEventAction,
   clearIncidentLegalHoldAction,
   generateIncidentRcaAction,
   runIncidentRemediationAction,
@@ -23,11 +24,13 @@ import { getLatestDryRunForIncident } from "@/lib/automations/dry-runs-db";
 import { listRemediationRunsForIncident } from "@/lib/automations/remediation";
 import type { DryRunRecord } from "@/lib/automations/runs-dev";
 import { getIncidentForUser } from "@/lib/incidents/data";
+import { listIncidentCommandEvents, type IncidentCommandEvent } from "@/lib/incidents/command-loop";
 import { listRunbooks } from "@/lib/runbooks/catalog";
 import { appBody, appLabel, appMeta, appOverline } from "@/lib/app-typography";
 import { getIncidentTimeline } from "@/lib/incidents/timeline";
 import { getLatestIncidentRcaRun } from "@/lib/incidents/rca";
 import { getOrgContextForUser } from "@/lib/org/context";
+import { listOrgMembers, type OrgMemberRow } from "@/lib/org/data";
 import { canManageMembers } from "@/lib/org/roles";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -56,6 +59,7 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
   let userId = "";
   let canManageHold = false;
   let devTenantKey: string | null = null;
+  let orgContext: Awaited<ReturnType<typeof getOrgContextForUser>> | null = null;
   if (hasSupabaseAuth()) {
     const supabase = await createServerSupabaseClient();
     const {
@@ -65,7 +69,7 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
       redirect(`/auth/sign-in?next=/incidents/${encodeURIComponent(id)}`);
     }
     userId = user.id;
-    const orgContext = await getOrgContextForUser(user.id);
+    orgContext = await getOrgContextForUser(user.id);
     canManageHold = !orgContext.orgId || (orgContext.role ? canManageMembers(orgContext.role) : true);
   } else {
     devTenantKey = (await cookies()).get("zentro_dev_tid")?.value ?? "anon";
@@ -84,6 +88,7 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
     userId,
     incidentId: id,
     devTenantKey,
+    orgId: orgContext?.orgId,
   });
 
   const auditWhisper =
@@ -101,12 +106,22 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
   let lastIncidentDryRun: DryRunRecord | null = null;
   let latestRcaRun: Awaited<ReturnType<typeof getLatestIncidentRcaRun>> = null;
   let remediationRuns: Awaited<ReturnType<typeof listRemediationRunsForIncident>> = [];
+  let commandEvents: IncidentCommandEvent[] = [];
+  let orgMembers: OrgMemberRow[] = [];
   if (hasSupabaseAuth() && userId && source === "database") {
     const supabase = await createServerSupabaseClient();
     lastIncidentDryRun = await getLatestDryRunForIncident(supabase, userId, id);
     latestRcaRun = await getLatestIncidentRcaRun(supabase, userId, id);
     remediationRuns = await listRemediationRunsForIncident(supabase, userId, id, 8);
+    commandEvents = await listIncidentCommandEvents(supabase, id);
+    orgMembers = orgContext?.orgId ? await listOrgMembers(orgContext.orgId, { supabase }) : [];
   }
+
+  const memberLabel = (memberUserId: string | null | undefined) => {
+    if (!memberUserId) return "Unassigned";
+    const member = orgMembers.find((m) => m.userId === memberUserId);
+    return member?.displayName ?? member?.email ?? memberUserId.slice(0, 8);
+  };
 
   return (
     <>
@@ -216,12 +231,20 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
             </div>
             <form action={generateIncidentRcaAction}>
               <input type="hidden" name="id" value={row.id} />
-              <button
-                type="submit"
-                className={`h-10 rounded-xl bg-accent px-5 font-semibold text-background shadow-[0_0_28px_-8px_rgba(94,225,255,0.45)] transition-[opacity,box-shadow] hover:opacity-95 hover:shadow-[0_0_36px_-6px_rgba(94,225,255,0.55)] ${appBody}`}
-              >
-                Generate RCA
-              </button>
+              <div className="flex flex-wrap gap-2">
+                <Link
+                  href={`/copilot?incident=${encodeURIComponent(row.id)}`}
+                  className={`inline-flex h-10 items-center rounded-xl border border-accent/40 bg-accent/15 px-5 font-semibold text-accent hover:bg-accent/20 ${appBody}`}
+                >
+                  Open scoped Copilot
+                </Link>
+                <button
+                  type="submit"
+                  className={`h-10 rounded-xl bg-accent px-5 font-semibold text-background shadow-[0_0_28px_-8px_rgba(94,225,255,0.45)] transition-[opacity,box-shadow] hover:opacity-95 hover:shadow-[0_0_36px_-6px_rgba(94,225,255,0.55)] ${appBody}`}
+                >
+                  Generate RCA
+                </button>
+              </div>
             </form>
           </div>
           {latestRcaRun ? (
@@ -378,6 +401,26 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
                 className={`h-10 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 text-foreground outline-none ring-accent/25 focus:border-accent/40 focus:ring-2 ${appBody}`}
               />
             </div>
+            {orgMembers.length > 0 ? (
+              <div className="min-w-[14rem] flex-1">
+                <label htmlFor="assigned_user_id" className={`mb-1 block ${appLabel}`}>
+                  Assigned responder
+                </label>
+                <select
+                  id="assigned_user_id"
+                  name="assigned_user_id"
+                  defaultValue={row.assignedUserId ?? ""}
+                  className={`h-10 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 text-foreground outline-none ring-accent/25 focus:border-accent/40 focus:ring-2 ${appBody}`}
+                >
+                  <option value="">Unassigned</option>
+                  {orgMembers.map((member) => (
+                    <option key={member.userId} value={member.userId}>
+                      {member.displayName ?? member.email ?? member.userId.slice(0, 8)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ) : null}
             <div className="min-w-[14rem] flex-1">
               <label htmlFor="runbook_slug" className={`mb-1 block ${appLabel}`}>
                 Runbook
@@ -502,6 +545,100 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
               Save notes
             </button>
           </form>
+        </PlaceholderCard>
+      ) : null}
+      {source === "database" && hasSupabaseAuth() ? (
+        <PlaceholderCard title="Incident command loop">
+          <p className={`mb-4 ${appMeta} text-muted`}>
+            Assign ownership, record handoffs, and leave responder notes. Handoffs notify the
+            selected responder when email or in-app notifications are configured.
+          </p>
+          <form action={addIncidentCommandEventAction} className="mb-5 space-y-3">
+            <input type="hidden" name="id" value={row.id} />
+            <div className="grid gap-3 md:grid-cols-[12rem_1fr]">
+              <div>
+                <label htmlFor="event_type" className={`mb-1 block ${appLabel}`}>
+                  Entry type
+                </label>
+                <select
+                  id="event_type"
+                  name="event_type"
+                  defaultValue="comment"
+                  className={`h-10 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 text-foreground outline-none ring-accent/25 focus:border-accent/40 focus:ring-2 ${appBody}`}
+                >
+                  <option value="comment">Responder comment</option>
+                  <option value="handoff">Handoff</option>
+                  <option value="copilot_context">Copilot context</option>
+                </select>
+              </div>
+              {orgMembers.length > 0 ? (
+                <div>
+                  <label htmlFor="target_user_id" className={`mb-1 block ${appLabel}`}>
+                    Target responder
+                  </label>
+                  <select
+                    id="target_user_id"
+                    name="target_user_id"
+                    defaultValue={row.assignedUserId ?? ""}
+                    className={`h-10 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 text-foreground outline-none ring-accent/25 focus:border-accent/40 focus:ring-2 ${appBody}`}
+                  >
+                    <option value="">All responders</option>
+                    {orgMembers.map((member) => (
+                      <option key={member.userId} value={member.userId}>
+                        {member.displayName ?? member.email ?? member.userId.slice(0, 8)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              ) : null}
+            </div>
+            <label htmlFor="command_body" className={`block ${appLabel}`}>
+              Response note
+            </label>
+            <textarea
+              id="command_body"
+              name="body"
+              required
+              rows={4}
+              maxLength={4000}
+              placeholder="What changed, who owns the next step, and what should Copilot or the next responder know?"
+              className={`w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 py-2.5 text-foreground outline-none ring-accent/25 focus:border-accent/40 focus:ring-2 ${appBody}`}
+            />
+            <button
+              type="submit"
+              className={`h-10 rounded-xl bg-accent px-5 font-semibold text-background hover:opacity-95 ${appBody}`}
+            >
+              Add command entry
+            </button>
+          </form>
+          {commandEvents.length > 0 ? (
+            <ul className={`space-y-3 ${appBody}`}>
+              {commandEvents.map((event) => (
+                <li
+                  key={event.id}
+                  className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-3"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <p className={appLabel}>
+                      {event.eventType === "handoff"
+                        ? "Handoff"
+                        : event.eventType === "copilot_context"
+                          ? "Copilot context"
+                          : "Responder comment"}
+                    </p>
+                    <p className={appMeta}>{new Date(event.createdAt).toLocaleString()}</p>
+                  </div>
+                  <p className="mt-2 whitespace-pre-wrap text-foreground/90">{event.body}</p>
+                  <p className={`mt-2 ${appMeta}`}>
+                    By {memberLabel(event.userId)}
+                    {event.targetUserId ? ` · to ${memberLabel(event.targetUserId)}` : ""}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className={appMeta}>No responder comments or handoffs have been recorded yet.</p>
+          )}
         </PlaceholderCard>
       ) : null}
       <PlaceholderCard title="Timeline">

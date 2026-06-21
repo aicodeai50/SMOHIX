@@ -12,6 +12,8 @@ export type IncidentRow = {
   serviceName?: string | null;
   /** Responder / team label. */
   ownerHint?: string | null;
+  /** Assigned organization member, when the incident is org-scoped. */
+  assignedUserId?: string | null;
   /** Linked runbook catalog slug. */
   runbookSlug?: string | null;
   /** Resolved title when `runbookSlug` is set. */

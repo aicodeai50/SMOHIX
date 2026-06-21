@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { getOrgContextForUser } from "@/lib/org/context";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
@@ -19,12 +20,16 @@ export async function GET() {
       return NextResponse.json({ error: "unauthorized" }, { status: 401 });
     }
 
-    const { data, error } = await supabase
+    const orgContext = await getOrgContextForUser(user.id);
+    let query = supabase
       .from("copilot_threads")
-      .select("id, title, updated_at")
-      .eq("user_id", user.id)
+      .select("id, title, updated_at, incident_id")
       .order("updated_at", { ascending: false })
       .limit(40);
+
+    query = orgContext.orgId ? query.or(`user_id.eq.${user.id},org_id.eq.${orgContext.orgId}`) : query.eq("user_id", user.id);
+
+    const { data, error } = await query;
 
     if (error) {
       const missingTable =
@@ -54,11 +59,13 @@ export async function POST(req: Request) {
   }
 
   let title = "Conversation";
+  let incidentId: string | null = null;
   try {
-    const b = (await req.json()) as { title?: string };
+    const b = (await req.json()) as { title?: string; incidentId?: string | null };
     if (typeof b?.title === "string" && b.title.trim()) {
       title = b.title.trim().slice(0, 120);
     }
+    incidentId = typeof b?.incidentId === "string" && b.incidentId.trim() ? b.incidentId.trim() : null;
   } catch {
     /* default title */
   }
@@ -72,10 +79,11 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "unauthorized" }, { status: 401 });
     }
 
+    const orgContext = await getOrgContextForUser(user.id);
     const { data, error } = await supabase
       .from("copilot_threads")
-      .insert({ user_id: user.id, title })
-      .select("id, title, updated_at")
+      .insert({ user_id: user.id, org_id: orgContext.orgId, incident_id: incidentId, title })
+      .select("id, title, updated_at, incident_id")
       .single();
 
     if (error || !data) {

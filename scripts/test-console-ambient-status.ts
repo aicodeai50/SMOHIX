@@ -9,6 +9,7 @@ import {
   copilotAmbientMetrics,
   dryRunAmbientMetrics,
   runbookAmbientMetrics,
+  settingsAmbientMetrics,
 } from "../lib/console/ambient-status";
 
 function assert(condition: boolean, message: string) {
@@ -390,6 +391,83 @@ assert(
     copilotThreadCount: 3,
   }).includes("3 saved threads"),
   "copilot nominal cloud headline",
+);
+
+const settingsMetrics = settingsAmbientMetrics({
+  setupStepsComplete: 3,
+  setupStepsTotal: 4,
+  hasApiKey: true,
+  hasIngestToken: true,
+  profileComplete: true,
+  connectorsConfigured: 1,
+  connectorsUp: 1,
+  openaiEnabled: false,
+  signedIn: true,
+});
+assert(settingsMetrics.setupStepsComplete === 3, "settings metrics setup count");
+
+assert(
+  classifyConsoleAmbientHealthForContext(
+    {
+      hotIncidents: 0,
+      openIncidents: 0,
+      pendingApprovals: 0,
+      criticalBurnServices: 0,
+      connectorsConfigured: 2,
+      connectorsUp: 0,
+      signedIn: true,
+      setupStepsComplete: 4,
+      setupStepsTotal: 4,
+    },
+    "settings",
+  ) === "critical",
+  "settings all connectors down → critical",
+);
+
+assert(
+  classifyConsoleAmbientHealthForContext(
+    {
+      hotIncidents: 0,
+      openIncidents: 0,
+      pendingApprovals: 0,
+      criticalBurnServices: 0,
+      connectorsConfigured: 0,
+      connectorsUp: 0,
+      signedIn: true,
+      setupStepsComplete: 2,
+      setupStepsTotal: 4,
+    },
+    "settings",
+  ) === "attention",
+  "settings incomplete setup → attention",
+);
+
+const settingsSnapshot = buildConsoleAmbientSnapshot({
+  openIncidents: 0,
+  hotIncidents: 0,
+  totalIncidents: 0,
+  pendingApprovals: 0,
+  connectorsUp: 1,
+  connectorsConfigured: 1,
+  dryRunSuccessRate: 100,
+  dryRunCount: 0,
+  criticalBurnServices: 0,
+  signedIn: true,
+  context: "settings",
+  setupStepsComplete: 4,
+  setupStepsTotal: 4,
+  hasApiKey: true,
+  hasIngestToken: true,
+  profileComplete: true,
+  openaiEnabled: true,
+});
+assert(settingsSnapshot.phases[0]?.label === "SETUP", "settings phase first");
+assert(
+  consoleAmbientHeadline("nominal", "settings", {
+    setupStepsComplete: 4,
+    setupStepsTotal: 4,
+  }).includes("Workspace configured"),
+  "settings nominal headline",
 );
 
 assert(snapshot.version === CONSOLE_AMBIENT_STATUS_VERSION, "version");

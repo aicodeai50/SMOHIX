@@ -108,6 +108,24 @@ export const API_GROUPS: ApiGroup[] = [
         auth: "Session cookie when Supabase auth is enabled",
       },
       {
+        method: "GET",
+        path: "/api/integrations/connections",
+        summary: "List org-scoped first-party integration connection records.",
+        auth: "Session cookie",
+      },
+      {
+        method: "POST",
+        path: "/api/integrations/connections",
+        summary: "Create an org-scoped integration connection placeholder for Slack, PagerDuty, Jira, ServiceNow, GitHub, Datadog, or Prometheus.",
+        auth: "Session cookie (owner/admin/operator)",
+      },
+      {
+        method: "POST",
+        path: "/api/integrations/deploy-events",
+        summary: "Ingest an authenticated deploy/change event for incident and Copilot correlation.",
+        auth: "Session cookie",
+      },
+      {
         method: "POST",
         path: "/api/integrations/slack/approvals",
         summary: "Receive signed Slack action payloads and decide pending approvals.",
@@ -810,6 +828,18 @@ export const API_GROUPS: ApiGroup[] = [
         path: "/api/automations/remediate",
         summary: "Run guarded remediation with dry-run freshness and accepted policy checks.",
         auth: "Session cookie",
+      },
+      {
+        method: "GET",
+        path: "/api/automations/policies",
+        summary: "List versioned automation policy-as-code documents for the active workspace.",
+        auth: "Session cookie",
+      },
+      {
+        method: "POST",
+        path: "/api/automations/policies",
+        summary: "Create a draft or active policy-as-code version for a playbook.",
+        auth: "Session cookie (owner/admin/operator)",
       },
       {
         method: "GET",

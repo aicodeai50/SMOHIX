@@ -49,7 +49,7 @@ async function denyIfProxyUnauthenticated(
       );
     }
     const ip = clientIpFromRequest(req);
-    const rl = takeToken(
+    const rl = await takeToken(
       `proxy:${userId}:${ip}`,
       PROXY_RATE_LIMIT,
       PROXY_RATE_WINDOW_MS,
@@ -76,7 +76,7 @@ async function denyIfProxyUnauthenticated(
 }
 
 /** No Supabase auth: anonymous IP limit, or per-tenant limit when a valid session API key is sent. */
-function denyIfProxyDevOrAnon(req: NextRequest): NextResponse | null {
+async function denyIfProxyDevOrAnon(req: NextRequest): Promise<NextResponse | null> {
   if (hasSupabaseAuth()) {
     return null;
   }
@@ -87,7 +87,7 @@ function denyIfProxyDevOrAnon(req: NextRequest): NextResponse | null {
     if (!dev) {
       return NextResponse.json({ error: "Invalid or revoked API key" }, { status: 401 });
     }
-    const rl = takeToken(
+    const rl = await takeToken(
       `proxy:dev:${dev.tenantId}:${ip}`,
       PROXY_RATE_LIMIT,
       PROXY_RATE_WINDOW_MS,
@@ -103,7 +103,7 @@ function denyIfProxyDevOrAnon(req: NextRequest): NextResponse | null {
     }
     return null;
   }
-  const rl = takeToken(`proxy:anon:${ip}`, PROXY_RATE_LIMIT, PROXY_RATE_WINDOW_MS);
+  const rl = await takeToken(`proxy:anon:${ip}`, PROXY_RATE_LIMIT, PROXY_RATE_WINDOW_MS);
   if (!rl.ok) {
     return NextResponse.json(
       { error: "Too_many_requests", retry_after: rl.retryAfterSec },
@@ -159,7 +159,7 @@ export async function proxyToUpstream(
   req: NextRequest,
   pathSegments: string[] | undefined,
 ): Promise<NextResponse> {
-  const devOrAnon = denyIfProxyDevOrAnon(req);
+  const devOrAnon = await denyIfProxyDevOrAnon(req);
   if (devOrAnon) {
     return devOrAnon;
   }

@@ -20,6 +20,12 @@ export type GuardedRemediationResult = {
   };
 };
 
+type RobotExecutionReceipt = {
+  ok: boolean;
+  steps?: { label?: string; status?: string; output?: unknown }[];
+  receipt?: Record<string, unknown>;
+};
+
 export type RemediationRunRow = {
   id: string;
   playbookId: string;
@@ -133,29 +139,93 @@ export async function runGuardedRemediation(input: {
     }
   }
 
-  const executeOk = !blockedReason;
+  let executionReceipt: Record<string, unknown> = {
+    mode: executionMode,
+    connector_configured: Boolean(robotBase),
+  };
+  let robotSteps: NonNullable<RobotExecutionReceipt["steps"]> = [
+    { label: "Validate dry-run freshness", status: hasFreshDryRun ? "succeeded" : "failed" },
+    { label: "Evaluate policy guardrails", status: blockedReason ? "failed" : "succeeded" },
+  ];
+
+  if (!blockedReason && robotBase) {
+    try {
+      const res = await fetch(`${robotBase}/v1/remediate`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          playbook_id: input.playbookId,
+          incident_id: input.incidentId ?? null,
+          rollback_plan: input.rollbackPlan,
+          approval_note: input.approvalNote,
+        }),
+        cache: "no-store",
+        signal: AbortSignal.timeout(60_000),
+      });
+      const json = (await res.json().catch(() => null)) as RobotExecutionReceipt | null;
+      if (!res.ok || json?.ok === false) {
+        blockedReason = `Execution blocked: remediation connector returned ${res.status}.`;
+      } else if (json) {
+        executionReceipt = json.receipt ?? { mode: executionMode, connector_status: res.status };
+        if (Array.isArray(json.steps) && json.steps.length > 0) {
+          robotSteps = json.steps;
+        }
+      }
+    } catch {
+      blockedReason = "Execution blocked: remediation connector execution failed.";
+    }
+  }
+
+  const finalExecuteOk = !blockedReason;
   const insertRes = await input.supabase
     .from("remediation_runs")
     .insert({
       user_id: input.userId,
+      org_id: input.orgId ?? null,
       incident_id: input.incidentId ?? null,
       playbook_id: input.playbookId,
       trigger_source: input.triggerSource,
       dry_run_ok: hasFreshDryRun,
       approval_note: input.approvalNote.slice(0, 300),
       rollback_plan: input.rollbackPlan.slice(0, 500),
-      execution_ok: executeOk,
+      execution_ok: finalExecuteOk,
       execution_mode: executionMode,
       blocked_reason: blockedReason,
       guardrail_checks_json: enforcement.checks,
+      execution_receipt_json: executionReceipt,
     })
     .select("id")
     .single();
 
+  const runId = insertRes.data?.id ? String(insertRes.data.id) : null;
+  if (runId) {
+    await input.supabase.from("remediation_run_steps").insert(
+      robotSteps.map((step, idx) => ({
+        remediation_run_id: runId,
+        step_order: idx + 1,
+        label: String(step.label ?? `Step ${idx + 1}`).slice(0, 200),
+        status: ["planned", "running", "succeeded", "failed", "skipped"].includes(
+          String(step.status),
+        )
+          ? String(step.status)
+          : finalExecuteOk
+            ? "succeeded"
+            : "failed",
+        output_json:
+          step.output && typeof step.output === "object"
+            ? (step.output as Record<string, unknown>)
+            : {},
+      })),
+    );
+  }
+
   return {
-    ok: executeOk,
+    ok: finalExecuteOk,
     blockedReason,
-    runId: insertRes.data?.id ? String(insertRes.data.id) : null,
+    runId,
     checks: enforcement.checks,
   };
 }

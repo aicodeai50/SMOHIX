@@ -144,7 +144,7 @@ export function buildControlTestRunLinks(input: {
       if (!control) continue;
 
       const schedule = findScheduleForControl(controlId, input.schedules);
-      let linkStatus: TestRunLinkStatus = bundle ? "linked" : "run_only";
+      const linkStatus: TestRunLinkStatus = bundle ? "linked" : "run_only";
 
       links.push({
         linkId: `${run.id}::${controlId}`,

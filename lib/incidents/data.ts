@@ -43,6 +43,7 @@ function mapDbRow(
   serviceName?: string | null,
   ownerHint?: string | null,
   runbookSlug?: string | null,
+  assignedUserId?: string | null,
 ): IncidentRow {
   const slug = runbookSlug?.trim() || null;
   const owner = ownerHint?.trim() || null;
@@ -54,6 +55,7 @@ function mapDbRow(
     updated: formatIncidentRelative(r.updated_at),
     serviceName: serviceName ?? undefined,
     ownerHint: owner ?? undefined,
+    assignedUserId: assignedUserId ?? undefined,
     runbookSlug: slug ?? undefined,
     runbookTitle: slug ? runbookTitleForSlug(slug) ?? undefined : undefined,
   };
@@ -71,6 +73,7 @@ function mapDbRecordToRow(rec: Record<string, unknown>): IncidentRow {
     serviceNameFromJoin(rec as { services?: { name?: string } | null }),
     strOrNull(rec.owner_hint),
     strOrNull(rec.runbook_slug),
+    strOrNull(rec.assigned_user_id),
   );
 }
 
@@ -109,7 +112,7 @@ export async function listIncidentsForUser(
     let query = supabase
       .from("incidents")
       .select(
-        "id, title, severity, status, updated_at, owner_hint, runbook_slug, services(name)",
+        "id, title, severity, status, updated_at, owner_hint, assigned_user_id, runbook_slug, services(name)",
       )
       .order("updated_at", { ascending: false });
 
@@ -167,7 +170,7 @@ export async function getIncidentForUser(
       const { data, error } = await supabase
         .from("incidents")
         .select(
-          "id, title, severity, status, updated_at, postmortem, service_id, owner_hint, runbook_slug, legal_hold, legal_hold_reason, legal_hold_set_at, services(name)",
+          "id, title, severity, status, updated_at, postmortem, service_id, owner_hint, assigned_user_id, runbook_slug, legal_hold, legal_hold_reason, legal_hold_set_at, services(name)",
         )
         .eq("id", id)
         .maybeSingle();
@@ -327,13 +330,17 @@ export async function createIncidentForUser(
 export async function updateIncidentContextForUser(
   userId: string,
   id: string,
-  input: { ownerHint: string | null; runbookSlug: string | null },
+    input: { ownerHint: string | null; runbookSlug: string | null; assignedUserId?: string | null },
   options?: { devTenantKey?: string | null },
 ): Promise<{ ok: true } | { ok: false; reason: string }> {
   const ownerHint =
     input.ownerHint?.trim().slice(0, OWNER_HINT_MAX) || null;
   const runbookRaw = input.runbookSlug?.trim() || "";
   const runbookSlug = runbookRaw ? runbookRaw : null;
+  const assignedUserId =
+    typeof input.assignedUserId === "string" && isUuid(input.assignedUserId)
+      ? input.assignedUserId
+      : null;
   if (runbookSlug && !isRunbookSlugValid(runbookSlug)) {
     return { ok: false, reason: "Unknown runbook slug." };
   }
@@ -360,6 +367,7 @@ export async function updateIncidentContextForUser(
       .from("incidents")
       .update({
         owner_hint: ownerHint,
+        assigned_user_id: assignedUserId,
         runbook_slug: runbookSlug,
         updated_at: new Date().toISOString(),
       })

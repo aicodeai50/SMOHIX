@@ -14,6 +14,16 @@ export async function enforceCopilotChatAccess(
 ): Promise<NextResponse | null> {
   const ip = clientIpFromRequest(req);
 
+  if (options.cloudModelEnabled && !hasSupabaseAuth()) {
+    return NextResponse.json(
+      {
+        error: "auth_required",
+        message: "Cloud Copilot requires Supabase auth in production. Remove OPENAI_API_KEY or configure Supabase auth.",
+      },
+      { status: 503 },
+    );
+  }
+
   if (options.cloudModelEnabled && hasSupabaseAuth()) {
     try {
       const supabase = await createServerSupabaseClient();
@@ -29,7 +39,7 @@ export async function enforceCopilotChatAccess(
           { status: 401 },
         );
       }
-      const rl = takeToken(
+      const rl = await takeToken(
         `copilot:${user.id}`,
         CHAT_CLOUD_RATE_LIMIT,
         CHAT_RATE_WINDOW_MS,
@@ -52,7 +62,7 @@ export async function enforceCopilotChatAccess(
     }
   }
 
-  const rl = takeToken(`copilot:ip:${ip}`, CHAT_RATE_LIMIT, CHAT_RATE_WINDOW_MS);
+  const rl = await takeToken(`copilot:ip:${ip}`, CHAT_RATE_LIMIT, CHAT_RATE_WINDOW_MS);
   if (!rl.ok) {
     return NextResponse.json(
       { error: "too_many_requests", retry_after: rl.retryAfterSec },

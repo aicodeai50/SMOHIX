@@ -29,6 +29,10 @@ const ROADMAP: {
     subtitle: "Live in console — 49 migrations and refreshed marketing site.",
     items: [
       {
+        name: "Settings ambient status layer",
+        detail: "Settings-context health pulse on /settings — setup wizard progress, API keys, ingest tokens, connector health, and deployment mode headlines.",
+      },
+      {
         name: "Copilot ambient status layer",
         detail: "Copilot-context health pulse on /copilot — connector readiness, reasoning availability, and session guidance headlines.",
       },
@@ -88,8 +92,8 @@ const ROADMAP: {
     subtitle: "In active development — sequencing follows customer demand.",
     items: [
       {
-        name: "Copilot ambient status layer",
-        detail: "Copilot-context health pulse on /copilot — connector readiness, reasoning availability, and session guidance headlines.",
+        name: "Governance ambient status layer",
+        detail: "Governance-context health pulse on /governance/* — access posture, policy review cadence, and compliance program signals.",
       },
     ],
   },
@@ -116,7 +120,7 @@ const HORIZON_STYLE: Record<Horizon, { badge: string; glow: string }> = {
   },
 };
 
-const SHIPPING_TOTAL = 64;
+const SHIPPING_TOTAL = 65;
 
 export default function NextPage() {
   return (

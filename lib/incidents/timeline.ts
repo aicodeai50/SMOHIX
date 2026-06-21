@@ -21,12 +21,18 @@ function formatUtc(iso: string): string {
 const INCIDENT_AUDIT_TYPES = [
   "incident.status_updated",
   "incident.context_updated",
+  "incident.postmortem_updated",
+  "incident.rca_generated",
+  "incident.comment_added",
+  "incident.handoff_added",
+  "incident.copilot_context_added",
 ] as const;
 
 /** Timeline for a DB-backed incident from `audit_log`. */
 export async function listIncidentTimelineFromAudit(
   userId: string,
   incidentId: string,
+  orgId?: string | null,
 ): Promise<IncidentTimelineEntry[]> {
   if (!hasSupabaseAuth() || !userId) {
     return [];
@@ -34,13 +40,16 @@ export async function listIncidentTimelineFromAudit(
 
   try {
     const supabase = await createServerSupabaseClient();
-    const { data, error } = await supabase
+    let query = supabase
       .from("audit_log")
       .select("created_at, event_type, details")
-      .eq("user_id", userId)
       .in("event_type", [...INCIDENT_AUDIT_TYPES])
       .order("created_at", { ascending: false })
       .limit(100);
+
+    query = orgId ? query.or(`user_id.eq.${userId},org_id.eq.${orgId}`) : query.eq("user_id", userId);
+
+    const { data, error } = await query;
 
     if (error || !data) {
       return [];
@@ -65,6 +74,31 @@ export async function listIncidentTimelineFromAudit(
           at: formatUtc(String(row.created_at)),
           label: "Owner / runbook updated",
         });
+      } else if (et === "incident.postmortem_updated") {
+        out.push({
+          at: formatUtc(String(row.created_at)),
+          label: "Postmortem notes updated",
+        });
+      } else if (et === "incident.rca_generated") {
+        out.push({
+          at: formatUtc(String(row.created_at)),
+          label: "RCA hypothesis generated",
+        });
+      } else if (et === "incident.comment_added") {
+        out.push({
+          at: formatUtc(String(row.created_at)),
+          label: "Responder comment added",
+        });
+      } else if (et === "incident.handoff_added") {
+        out.push({
+          at: formatUtc(String(row.created_at)),
+          label: "Incident handoff recorded",
+        });
+      } else if (et === "incident.copilot_context_added") {
+        out.push({
+          at: formatUtc(String(row.created_at)),
+          label: "Copilot context snapshot recorded",
+        });
       }
     }
     return out;
@@ -78,6 +112,7 @@ export async function getIncidentTimeline(params: {
   userId: string;
   incidentId: string;
   devTenantKey: string | null;
+  orgId?: string | null;
 }): Promise<IncidentTimelineEntry[]> {
   if (params.source === "session" && params.devTenantKey) {
     return listDevIncidentTimeline(params.devTenantKey, params.incidentId).map(
@@ -89,7 +124,7 @@ export async function getIncidentTimeline(params: {
   }
 
   if (params.source === "database") {
-    return listIncidentTimelineFromAudit(params.userId, params.incidentId);
+    return listIncidentTimelineFromAudit(params.userId, params.incidentId, params.orgId);
   }
 
   return [];

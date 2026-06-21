@@ -80,16 +80,19 @@ export type SubscriptionSummaryResult = {
 export async function getSubscriptionSummary(
   supabase: SupabaseClient,
   userId: string,
+  orgId?: string | null,
 ): Promise<SubscriptionSummaryResult> {
-  const { data, error } = await supabase
+  let query = supabase
     .from("subscriptions")
     .select(
       "status, renews_at, ends_at, trial_ends_at, lemon_variant_id, lemon_product_id, updated_at",
     )
-    .eq("user_id", userId)
     .order("updated_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+    .limit(1);
+
+  query = orgId ? query.or(`org_id.eq.${orgId},user_id.eq.${userId}`) : query.eq("user_id", userId);
+
+  const { data, error } = await query.maybeSingle();
 
   if (error) {
     return {
@@ -108,7 +111,8 @@ export async function getSubscriptionSummary(
 export async function getBillingPlanForUser(
   supabase: SupabaseClient,
   userId: string,
+  orgId?: string | null,
 ): Promise<BillingPlan> {
-  const { summary } = await getSubscriptionSummary(supabase, userId);
+  const { summary } = await getSubscriptionSummary(supabase, userId, orgId);
   return billingPlanFromSummary(summary);
 }

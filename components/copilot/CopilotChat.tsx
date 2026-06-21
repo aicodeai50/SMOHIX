@@ -51,9 +51,12 @@ function extractAssistantText(text: string, status: number): string {
 
 export function CopilotChat({
   persistSession = false,
+  incidentId = null,
 }: {
   /** When true and the user is signed in, threads and messages persist for this workspace. */
   persistSession?: boolean;
+  /** Optional incident context loaded server-side by the built-in Copilot route. */
+  incidentId?: string | null;
 }) {
   const [input, setInput] = useState("");
   const [msgs, setMsgs] = useState<Msg[]>([]);
@@ -156,7 +159,7 @@ export function CopilotChat({
           method: "POST",
           credentials: "include",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ title: userText.slice(0, 80) }),
+          body: JSON.stringify({ title: userText.slice(0, 80), incidentId }),
         });
         const j = (await r.json()) as { id?: string; message?: string; error?: string };
         if (!r.ok || !j.id) {
@@ -200,6 +203,7 @@ export function CopilotChat({
     const payload = {
       messages: thread.map((m) => ({ role: m.role, content: m.content })),
       message: text,
+      ...(incidentId ? { incidentId } : {}),
     };
 
     try {
@@ -344,8 +348,9 @@ export function CopilotChat({
           {msgs.length === 0 ? (
             <div className={`space-y-3 text-muted ${appBody}`}>
               <p className="text-foreground/85">
-                Describe a symptom, incident, or change. Copilot suggests checks and next steps you
-                can accept, edit, or discard.
+                {incidentId
+                  ? "This conversation is scoped to the linked incident. Ask for hypotheses, handoff summaries, status updates, or next safe checks."
+                  : "Describe a symptom, incident, or change. Copilot suggests checks and next steps you can accept, edit, or discard."}
               </p>
               {persistSession ? (
                 <p className={appMeta}>

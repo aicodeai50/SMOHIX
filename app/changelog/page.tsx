@@ -13,6 +13,15 @@ export const metadata: Metadata = {
 
 const ENTRIES: { date: string; title: string; bullets: string[] }[] = [
   {
+    date: "May 2026",
+    title: "Settings ambient status layer",
+    bullets: [
+      "Live health pulse banner on /settings with setup wizard progress, credential readiness, and connector health",
+      "Settings-first phase order — SETUP → CREDENTIALS → CONNECTORS → DEPLOYMENT → INCIDENTS → GUARDRAILS",
+      "Regression: npm run test:console-ambient-status",
+    ],
+  },
+  {
     date: "Jun 2026",
     title: "Universe ascension visual layer",
     bullets: [

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { getOrgContextForUser } from "@/lib/org/context";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
@@ -28,12 +29,18 @@ export async function GET(_req: Request, { params }: Ctx) {
       return NextResponse.json({ error: "unauthorized" }, { status: 401 });
     }
 
-    const { data: thread, error: te } = await supabase
+    const orgContext = await getOrgContextForUser(user.id);
+    let threadQuery = supabase
       .from("copilot_threads")
       .select("id")
       .eq("id", id)
-      .eq("user_id", user.id)
-      .maybeSingle();
+      .limit(1);
+
+    threadQuery = orgContext.orgId
+      ? threadQuery.or(`user_id.eq.${user.id},org_id.eq.${orgContext.orgId}`)
+      : threadQuery.eq("user_id", user.id);
+
+    const { data: thread, error: te } = await threadQuery.maybeSingle();
 
     if (te || !thread) {
       return NextResponse.json({ error: "not_found" }, { status: 404 });
@@ -90,12 +97,18 @@ export async function POST(req: Request, { params }: Ctx) {
       return NextResponse.json({ error: "unauthorized" }, { status: 401 });
     }
 
-    const { data: thread, error: te } = await supabase
+    const orgContext = await getOrgContextForUser(user.id);
+    let threadQuery = supabase
       .from("copilot_threads")
       .select("id")
       .eq("id", id)
-      .eq("user_id", user.id)
-      .maybeSingle();
+      .limit(1);
+
+    threadQuery = orgContext.orgId
+      ? threadQuery.or(`user_id.eq.${user.id},org_id.eq.${orgContext.orgId}`)
+      : threadQuery.eq("user_id", user.id);
+
+    const { data: thread, error: te } = await threadQuery.maybeSingle();
 
     if (te || !thread) {
       return NextResponse.json({ error: "not_found" }, { status: 404 });
@@ -117,8 +130,7 @@ export async function POST(req: Request, { params }: Ctx) {
     await supabase
       .from("copilot_threads")
       .update({ updated_at: now })
-      .eq("id", id)
-      .eq("user_id", user.id);
+      .eq("id", id);
 
     return NextResponse.json({ ok: true });
   } catch (e) {

@@ -8,7 +8,8 @@ export type ConsoleAmbientContext =
   | "automations"
   | "audit"
   | "runbooks"
-  | "copilot";
+  | "copilot"
+  | "settings";
 
 export type CopilotAssistantMode = "cloud" | "reasoning" | "guided";
 
@@ -74,6 +75,12 @@ export type ConsoleAmbientCounts = {
   copilotThreadCount?: number;
   reasoningConfigured?: boolean;
   reasoningUp?: boolean | null;
+  setupStepsComplete?: number;
+  setupStepsTotal?: number;
+  hasApiKey?: boolean;
+  hasIngestToken?: boolean;
+  profileComplete?: boolean;
+  openaiEnabled?: boolean;
 };
 
 export function classifyConsoleAmbientHealthForContext(
@@ -99,9 +106,26 @@ export function classifyConsoleAmbientHealthForContext(
     copilotAssistantMode?: CopilotAssistantMode;
     reasoningConfigured?: boolean;
     reasoningUp?: boolean | null;
+    setupStepsComplete?: number;
+    setupStepsTotal?: number;
   },
   context: ConsoleAmbientContext = "default",
 ): ConsoleAmbientHealth {
+  if (context === "settings") {
+    if (
+      input.signedIn &&
+      input.connectorsConfigured > 0 &&
+      input.connectorsUp === 0
+    ) {
+      return "critical";
+    }
+    const total = input.setupStepsTotal ?? 4;
+    const complete = input.setupStepsComplete ?? 0;
+    if (!input.signedIn || complete < total) {
+      return "attention";
+    }
+    return "nominal";
+  }
   if (context === "copilot") {
     const mode = input.copilotAssistantMode ?? "guided";
     const openaiLikely = mode === "cloud";
@@ -202,6 +226,21 @@ export function consoleAmbientHeadline(
   context: ConsoleAmbientContext = "default",
   counts?: ConsoleAmbientCounts,
 ): string {
+  if (context === "settings") {
+    const total = counts?.setupStepsTotal ?? 4;
+    const complete = counts?.setupStepsComplete ?? 0;
+    const remaining = total - complete;
+    if (health === "critical") {
+      return "Connector endpoints unreachable — fix reasoning or automation URLs in Connectors";
+    }
+    if (health === "attention") {
+      if (remaining > 0) {
+        return `Setup incomplete — ${remaining} step${remaining === 1 ? "" : "s"} remaining before full operations readiness`;
+      }
+      return "Workspace setup in progress — complete API keys, ingest, and connectors";
+    }
+    return "Workspace configured — profile, credentials, ingest, and connectors ready";
+  }
   if (context === "copilot") {
     const mode = counts?.copilotAssistantMode ?? "guided";
     const hot = counts?.hotIncidents ?? 0;
@@ -387,6 +426,34 @@ export function formatAuditRecency(hours: number | null): string {
   return `${Math.round(hours / 24)}d ago`;
 }
 
+export function settingsAmbientMetrics(input: {
+  setupStepsComplete: number;
+  setupStepsTotal: number;
+  hasApiKey: boolean;
+  hasIngestToken: boolean;
+  profileComplete: boolean;
+  connectorsConfigured: number;
+  connectorsUp: number;
+  openaiEnabled: boolean;
+  signedIn: boolean;
+}): {
+  setupStepsComplete: number;
+  setupStepsTotal: number;
+  hasApiKey: boolean;
+  hasIngestToken: boolean;
+  profileComplete: boolean;
+  openaiEnabled: boolean;
+} {
+  return {
+    setupStepsComplete: input.setupStepsComplete,
+    setupStepsTotal: input.setupStepsTotal,
+    hasApiKey: input.hasApiKey,
+    hasIngestToken: input.hasIngestToken,
+    profileComplete: input.profileComplete,
+    openaiEnabled: input.openaiEnabled,
+  };
+}
+
 export function copilotAmbientMetrics(input: {
   openaiEnabled: boolean;
   reasoningConfigured: boolean;
@@ -518,6 +585,12 @@ export function buildConsoleAmbientSnapshot(input: {
   copilotThreadCount?: number;
   reasoningConfigured?: boolean;
   reasoningUp?: boolean | null;
+  setupStepsComplete?: number;
+  setupStepsTotal?: number;
+  hasApiKey?: boolean;
+  hasIngestToken?: boolean;
+  profileComplete?: boolean;
+  openaiEnabled?: boolean;
 }): ConsoleAmbientSnapshot {
   const context = input.context ?? "default";
   const health = classifyConsoleAmbientHealthForContext(
@@ -542,6 +615,8 @@ export function buildConsoleAmbientSnapshot(input: {
       copilotAssistantMode: input.copilotAssistantMode,
       reasoningConfigured: input.reasoningConfigured,
       reasoningUp: input.reasoningUp,
+      setupStepsComplete: input.setupStepsComplete,
+      setupStepsTotal: input.setupStepsTotal,
     },
     context,
   );
@@ -616,6 +691,20 @@ export function buildConsoleAmbientSnapshot(input: {
           ? `${input.pendingApprovals} pending · ${input.pendingPolicyGaps} policy gap${input.pendingPolicyGaps === 1 ? "" : "s"}`
           : `${input.pendingApprovals} pending`
       : "queue clear";
+
+  const settingsSetupPhaseValue = input.signedIn
+    ? `${input.setupStepsComplete ?? 0}/${input.setupStepsTotal ?? 4} complete`
+    : "sign in to track";
+  const settingsCredentialsPhaseValue = input.signedIn
+    ? input.hasApiKey && input.hasIngestToken
+      ? "API key + ingest active"
+      : input.hasApiKey
+        ? "API key only"
+        : input.hasIngestToken
+          ? "ingest only"
+          : "missing credentials"
+    : "session mode";
+  const settingsDeployPhaseValue = input.openaiEnabled ? "cloud model on" : "guided / reasoning URL";
 
   const signedInPhases: ConsoleAmbientPhase[] = [
     {
@@ -705,6 +794,15 @@ export function buildConsoleAmbientSnapshot(input: {
           signedInPhases[3]!,
           signedInPhases[5]!,
         ]
+      : context === "settings"
+      ? [
+          { label: "SETUP", value: settingsSetupPhaseValue },
+          { label: "CREDENTIALS", value: settingsCredentialsPhaseValue },
+          signedInPhases[2]!,
+          { label: "DEPLOYMENT", value: settingsDeployPhaseValue },
+          signedInPhases[0]!,
+          signedInPhases[4]!,
+        ]
       : signedInPhases
     : context === "copilot"
       ? [
@@ -733,6 +831,13 @@ export function buildConsoleAmbientSnapshot(input: {
           { label: "MODE", value: "LOCAL SESSION" },
           { label: "GUARDRAILS", value: "dry-run first" },
           { label: "AUDIT", value: "session trail" },
+        ]
+      : context === "settings"
+      ? [
+          { label: "SETUP", value: settingsSetupPhaseValue },
+          { label: "MODE", value: "LOCAL SESSION" },
+          { label: "CREDENTIALS", value: settingsCredentialsPhaseValue },
+          { label: "CONNECTORS", value: "configure after sign-in" },
         ]
       : [
         { label: "MODE", value: "LOCAL SESSION" },
@@ -770,6 +875,12 @@ export function buildConsoleAmbientSnapshot(input: {
       copilotThreadCount: input.copilotThreadCount,
       reasoningConfigured: input.reasoningConfigured,
       reasoningUp: input.reasoningUp,
+      setupStepsComplete: input.setupStepsComplete,
+      setupStepsTotal: input.setupStepsTotal,
+      hasApiKey: input.hasApiKey,
+      hasIngestToken: input.hasIngestToken,
+      profileComplete: input.profileComplete,
+      openaiEnabled: input.openaiEnabled,
     }),
     phases,
   };

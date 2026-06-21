@@ -10,6 +10,11 @@ import { getOrgContextForUser } from "@/lib/org/context";
 import { canManageMembers } from "@/lib/org/roles";
 import { runGuardedRemediation } from "@/lib/automations/remediation";
 import {
+  createIncidentCommandEvent,
+  notifyIncidentResponders,
+  type IncidentCommandEventType,
+} from "@/lib/incidents/command-loop";
+import {
   getIncidentForUser,
   updateIncidentContextForUser,
   updateIncidentPostmortemForUser,
@@ -18,6 +23,12 @@ import {
 import { createIncidentRcaRun } from "@/lib/incidents/rca";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+
+const COMMAND_EVENT_TYPES = new Set<IncidentCommandEventType>([
+  "comment",
+  "handoff",
+  "copilot_context",
+]);
 
 export async function updateIncidentStatusAction(formData: FormData) {
   const id = String(formData.get("id") ?? "").trim();
@@ -74,6 +85,7 @@ export async function updateIncidentStatusAction(formData: FormData) {
 export async function updateIncidentContextAction(formData: FormData) {
   const id = String(formData.get("id") ?? "").trim();
   const ownerHint = String(formData.get("owner_hint") ?? "");
+  const assignedUserId = String(formData.get("assigned_user_id") ?? "");
   const runbookSlug = String(formData.get("runbook_slug") ?? "");
   if (!id) {
     return;
@@ -84,7 +96,7 @@ export async function updateIncidentContextAction(formData: FormData) {
     const result = await updateIncidentContextForUser(
       "",
       id,
-      { ownerHint, runbookSlug },
+      { ownerHint, runbookSlug, assignedUserId },
       { devTenantKey: tid },
     );
     if (!result.ok) {
@@ -109,6 +121,7 @@ export async function updateIncidentContextAction(formData: FormData) {
   const orgContext = await getOrgContextForUser(user.id);
   const result = await updateIncidentContextForUser(user.id, id, {
     ownerHint,
+    assignedUserId,
     runbookSlug,
   });
   if (!result.ok) {
@@ -121,11 +134,75 @@ export async function updateIncidentContextAction(formData: FormData) {
     event_type: "incident.context_updated",
     user_id: user.id,
     org_id: orgContext.orgId,
-    details: { incident_id: id },
+    details: { incident_id: id, assigned_user_id: assignedUserId || null },
   });
 
   revalidatePath("/incidents");
   revalidatePath(`/incidents/${id}`);
+  revalidatePath("/overview");
+  redirect(`/incidents/${id}`);
+}
+
+export async function addIncidentCommandEventAction(formData: FormData) {
+  const id = String(formData.get("id") ?? "").trim();
+  const body = String(formData.get("body") ?? "").trim();
+  const rawType = String(formData.get("event_type") ?? "comment").trim();
+  const targetUserId = String(formData.get("target_user_id") ?? "").trim() || null;
+  const eventType: IncidentCommandEventType = COMMAND_EVENT_TYPES.has(rawType as IncidentCommandEventType)
+    ? (rawType as IncidentCommandEventType)
+    : "comment";
+
+  if (!id || !body) {
+    return;
+  }
+
+  if (!hasSupabaseAuth()) {
+    redirect(`/incidents/${encodeURIComponent(id)}?error=${encodeURIComponent("Command loop requires Supabase auth.")}`);
+  }
+
+  const supabase = await createServerSupabaseClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    redirect(`/auth/sign-in?next=/incidents/${encodeURIComponent(id)}`);
+  }
+
+  const orgContext = await getOrgContextForUser(user.id);
+  const result = await createIncidentCommandEvent({
+    supabase,
+    incidentId: id,
+    userId: user.id,
+    orgId: orgContext.orgId,
+    eventType,
+    body,
+    targetUserId,
+  });
+
+  if (!result.ok) {
+    redirect(`/incidents/${encodeURIComponent(id)}?error=${encodeURIComponent(result.reason)}`);
+  }
+
+  const title =
+    eventType === "handoff"
+      ? "Zentro incident handoff"
+      : eventType === "copilot_context"
+        ? "Zentro Copilot context snapshot"
+        : "Zentro incident update";
+
+  await notifyIncidentResponders({
+    supabase,
+    incidentId: id,
+    orgId: orgContext.orgId,
+    actorUserId: user.id,
+    targetUserId: eventType === "handoff" ? targetUserId : null,
+    kind: `incident.${eventType}`,
+    title,
+    body,
+  });
+
+  revalidatePath(`/incidents/${id}`);
+  revalidatePath("/incidents");
   revalidatePath("/overview");
   redirect(`/incidents/${id}`);
 }

@@ -40,7 +40,7 @@ export async function POST(request: Request) {
   }
 
   const ip = clientIpFromRequest(request);
-  const ipRl = takeToken(`lemon_webhook:${ip}`, WEBHOOK_IP_LIMIT, WEBHOOK_IP_WINDOW_MS);
+  const ipRl = await takeToken(`lemon_webhook:${ip}`, WEBHOOK_IP_LIMIT, WEBHOOK_IP_WINDOW_MS);
   if (!ipRl.ok) {
     return Response.json(
       { error: "Too_many_requests", retry_after: ipRl.retryAfterSec },

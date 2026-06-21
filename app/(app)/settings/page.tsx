@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { PageHeader } from "@/components/app/PageHeader";
+import { ConsoleAmbientBanner } from "@/components/console/ConsoleAmbientBanner";
 import { appBody, appMeta, appPanelTitle } from "@/lib/app-typography";
+import { loadConsoleAmbientSnapshot } from "@/lib/console/load-ambient-status";
 import { getConnectorHealthRows } from "@/lib/connectors-health";
 import { ProfileNameForm } from "@/components/settings/ProfileNameForm";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
@@ -241,6 +243,7 @@ export default async function SettingsIndexPage({
     `Generated: ${new Date().toISOString()}`,
   ].join("\n");
   const setupReportHref = `data:text/markdown;charset=utf-8,${encodeURIComponent(setupReport)}`;
+  const ambient = await loadConsoleAmbientSnapshot({ context: "settings" });
 
   return (
     <>
@@ -248,6 +251,7 @@ export default async function SettingsIndexPage({
         title="Settings"
         description="Billing and service links for this workspace. Runbooks and audit live under their own modules in the rail."
       />
+      <ConsoleAmbientBanner snapshot={ambient} />
       <section id="setup-wizard" className="shynvo-glass mb-6 rounded-2xl p-5 md:p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>

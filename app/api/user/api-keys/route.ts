@@ -8,6 +8,7 @@ import {
 } from "@/lib/api-keys/token";
 import { devCreateKey, devListKeys } from "@/lib/api-keys/dev-store";
 import { appendAuditEvent } from "@/lib/audit/append";
+import { getOrgContextForUser } from "@/lib/org/context";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
@@ -41,10 +42,15 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
-  const { data, error } = await supabase
+  const orgContext = await getOrgContextForUser(user.id);
+  let query = supabase
     .from("api_keys")
     .select("id, name, key_prefix, created_at, last_used_at, revoked_at")
     .order("created_at", { ascending: false });
+
+  query = orgContext.orgId ? query.or(`user_id.eq.${user.id},org_id.eq.${orgContext.orgId}`) : query.eq("user_id", user.id);
+
+  const { data, error } = await query;
 
   if (error) {
     return NextResponse.json(
@@ -94,11 +100,13 @@ export async function POST(req: NextRequest) {
   const plain = generateApiKeyPlaintext();
   const key_prefix = displayKeyPrefix(plain);
   const secret_hash = hashApiKeyPlaintext(plain);
+  const orgContext = await getOrgContextForUser(user.id);
 
   const { data, error } = await supabase
     .from("api_keys")
     .insert({
       user_id: user.id,
+      org_id: orgContext.orgId,
       name,
       key_prefix,
       secret_hash,
@@ -116,6 +124,7 @@ export async function POST(req: NextRequest) {
   await appendAuditEvent({
     event_type: "api_key.created",
     user_id: user.id,
+    org_id: orgContext.orgId,
     details: { key_id: data.id, name: data.name },
   });
 

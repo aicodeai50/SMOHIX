@@ -54,44 +54,50 @@ export function HubQuickLinksPanel({
   const [localHydrated, setLocalHydrated] = useState(canPersistServer);
 
   useEffect(() => {
-    setQuickLinks(initialQuickLinks);
-    setPinnedHrefs(initialPinnedHrefs);
-    setCustomized(initialCustomized);
+    const id = window.setTimeout(() => {
+      setQuickLinks(initialQuickLinks);
+      setPinnedHrefs(initialPinnedHrefs);
+      setCustomized(initialCustomized);
+    }, 0);
+    return () => window.clearTimeout(id);
   }, [initialCustomized, initialPinnedHrefs, initialQuickLinks]);
 
   useEffect(() => {
     if (canPersistServer || localHydrated) return;
-    const raw = window.localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (!raw) {
-      setLocalHydrated(true);
-      return;
-    }
-    try {
-      const parsed = JSON.parse(raw) as StoredPrefs;
-      const prefs = sanitizeHubPersonalizationPrefs(parsed, null);
-      const byHref = new Map(availableModules.map((m) => [m.href, m]));
-      const pinnedSet = new Set(prefs.pinnedHrefs);
-      const links = prefs.quickLinkHrefs
-        .map((href) => {
-          const mod = byHref.get(href);
-          if (!mod) return null;
-          return {
-            href,
-            title: mod.label,
-            blurb: HUB_QUICK_LINK_BLURBS[href] ?? mod.description,
-            pinned: pinnedSet.has(href),
-          };
-        })
-        .filter((link): link is HubQuickLink => link !== null);
-      if (links.length > 0) {
-        setQuickLinks(links);
-        setPinnedHrefs(prefs.pinnedHrefs);
-        setCustomized(true);
+    const id = window.setTimeout(() => {
+      const raw = window.localStorage.getItem(LOCAL_STORAGE_KEY);
+      if (!raw) {
+        setLocalHydrated(true);
+        return;
       }
-    } catch {
-      // Ignore malformed local payloads.
-    }
-    setLocalHydrated(true);
+      try {
+        const parsed = JSON.parse(raw) as StoredPrefs;
+        const prefs = sanitizeHubPersonalizationPrefs(parsed, null);
+        const byHref = new Map(availableModules.map((m) => [m.href, m]));
+        const pinnedSet = new Set(prefs.pinnedHrefs);
+        const links = prefs.quickLinkHrefs
+          .map((href) => {
+            const mod = byHref.get(href);
+            if (!mod) return null;
+            return {
+              href,
+              title: mod.label,
+              blurb: HUB_QUICK_LINK_BLURBS[href] ?? mod.description,
+              pinned: pinnedSet.has(href),
+            };
+          })
+          .filter((link): link is HubQuickLink => link !== null);
+        if (links.length > 0) {
+          setQuickLinks(links);
+          setPinnedHrefs(prefs.pinnedHrefs);
+          setCustomized(true);
+        }
+      } catch {
+        // Ignore malformed local payloads.
+      }
+      setLocalHydrated(true);
+    }, 0);
+    return () => window.clearTimeout(id);
   }, [availableModules, canPersistServer, localHydrated]);
 
   const persist = useCallback(

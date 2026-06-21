@@ -8,6 +8,7 @@ import {
 } from "@/lib/api-keys/token";
 import { appendAuditEvent } from "@/lib/audit/append";
 import { getBillingPlanForUser } from "@/lib/billing/plan";
+import { getOrgContextForUser } from "@/lib/org/context";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
@@ -35,7 +36,8 @@ export async function GET() {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
-  const plan = await getBillingPlanForUser(supabase, user.id);
+  const orgContext = await getOrgContextForUser(user.id);
+  const plan = await getBillingPlanForUser(supabase, user.id, orgContext.orgId);
   if (plan === "free") {
     return NextResponse.json(
       { error: "subscription_required", message: "Alert ingest tokens require a paid plan." },
@@ -43,10 +45,14 @@ export async function GET() {
     );
   }
 
-  const { data, error } = await supabase
+  let query = supabase
     .from("alert_ingest_tokens")
     .select("id, name, key_prefix, created_at, last_used_at, revoked_at")
     .order("created_at", { ascending: false });
+
+  query = orgContext.orgId ? query.or(`user_id.eq.${user.id},org_id.eq.${orgContext.orgId}`) : query.eq("user_id", user.id);
+
+  const { data, error } = await query;
 
   if (error) {
     return NextResponse.json(
@@ -81,7 +87,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
-  const plan = await getBillingPlanForUser(supabase, user.id);
+  const orgContext = await getOrgContextForUser(user.id);
+  const plan = await getBillingPlanForUser(supabase, user.id, orgContext.orgId);
   if (plan === "free") {
     return NextResponse.json(
       { error: "subscription_required", message: "Alert ingest requires an active subscription." },
@@ -97,6 +104,7 @@ export async function POST(req: NextRequest) {
     .from("alert_ingest_tokens")
     .insert({
       user_id: user.id,
+      org_id: orgContext.orgId,
       name,
       key_prefix,
       secret_hash,
@@ -114,6 +122,7 @@ export async function POST(req: NextRequest) {
   await appendAuditEvent({
     event_type: "alert_ingest_token.created",
     user_id: user.id,
+    org_id: orgContext.orgId,
     details: { token_id: data.id, name: data.name },
   });
 
