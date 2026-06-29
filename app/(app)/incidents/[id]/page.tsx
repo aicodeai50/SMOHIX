@@ -16,7 +16,7 @@ import {
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { AuditWhisperInline } from "@/components/guardrails/AuditWhisperInline";
 import { ExecutionOutcomeBadge } from "@/components/guardrails/ExecutionOutcomeBadge";
 import { getLatestAuditWhisperForIncident } from "@/lib/audit/whispers";
@@ -126,13 +126,13 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
   return (
     <>
       {source === "session" ? (
-        <p className={`shynvo-glass-subtle mb-4 rounded-xl px-4 py-3 ${appMeta}`}>
+        <p className={`zentro-glass-subtle mb-4 rounded-xl px-4 py-3 ${appMeta}`}>
           Session-scoped incident. The timeline below records opens and status changes from this
           browser session; connect Supabase and integrations for shared history and external
           events.
         </p>
       ) : (
-        <p className={`shynvo-glass-subtle mb-4 rounded-xl px-4 py-3 ${appMeta}`}>
+        <p className={`zentro-glass-subtle mb-4 rounded-xl px-4 py-3 ${appMeta}`}>
           Timeline entries come from your <span className="font-mono">audit_log</span> (status and
           owner/runbook updates) when the service role can append audits.
         </p>
@@ -221,7 +221,7 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
         </p>
       ) : null}
       {source === "database" && hasSupabaseAuth() ? (
-        <div className="shynvo-glass mb-6 space-y-3 rounded-2xl p-4 md:p-5">
+        <div className="zentro-glass mb-6 space-y-3 rounded-2xl p-4 md:p-5">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <p className={appOverline}>RCA Copilot</p>
@@ -383,7 +383,7 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
         <form
           id="incident-context"
           action={updateIncidentContextAction}
-          className="shynvo-glass mb-6 space-y-4 rounded-2xl p-4 md:p-5"
+          className="zentro-glass mb-6 space-y-4 rounded-2xl p-4 md:p-5"
         >
           <input type="hidden" name="id" value={row.id} />
           <p className={appOverline}>Owner & runbook</p>
@@ -453,7 +453,7 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
         <form
           id="incident-status"
           action={updateIncidentStatusAction}
-          className="shynvo-glass mb-6 flex flex-wrap items-end gap-3 rounded-2xl p-4 md:p-5"
+          className="zentro-glass mb-6 flex flex-wrap items-end gap-3 rounded-2xl p-4 md:p-5"
         >
           <input type="hidden" name="id" value={row.id} />
           <div>
@@ -481,7 +481,7 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
         </form>
       ) : null}
       {source === "database" && hasSupabaseAuth() && canManageHold ? (
-        <PlaceholderCard title="Legal hold">
+        <ConsolePanel title="Legal hold">
           <p className={`mb-4 ${appMeta} text-muted`}>
             Freezes this incident and linked audit rows from org retention purge.{" "}
             <Link href="/governance/legal-holds" className="text-accent hover:underline">
@@ -520,10 +520,10 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
               </button>
             </form>
           )}
-        </PlaceholderCard>
+        </ConsolePanel>
       ) : null}
       {source === "database" && hasSupabaseAuth() ? (
-        <PlaceholderCard title="Postmortem & notes">
+        <ConsolePanel title="Postmortem & notes">
           <form action={updateIncidentPostmortemAction} className="space-y-3">
             <input type="hidden" name="id" value={row.id} />
             <label htmlFor="postmortem" className={`block ${appLabel}`}>
@@ -545,10 +545,10 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
               Save notes
             </button>
           </form>
-        </PlaceholderCard>
+        </ConsolePanel>
       ) : null}
       {source === "database" && hasSupabaseAuth() ? (
-        <PlaceholderCard title="Incident command loop">
+        <ConsolePanel title="Incident command loop">
           <p className={`mb-4 ${appMeta} text-muted`}>
             Assign ownership, record handoffs, and leave responder notes. Handoffs notify the
             selected responder when email or in-app notifications are configured.
@@ -639,9 +639,9 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
           ) : (
             <p className={appMeta}>No responder comments or handoffs have been recorded yet.</p>
           )}
-        </PlaceholderCard>
+        </ConsolePanel>
       ) : null}
-      <PlaceholderCard title="Timeline">
+      <ConsolePanel title="Timeline">
         {timeline.length === 0 ? (
           <ConsoleEmptyState
             title="No events recorded yet"
@@ -673,7 +673,7 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
             ))}
           </ul>
         )}
-      </PlaceholderCard>
+      </ConsolePanel>
     </>
   );
 }

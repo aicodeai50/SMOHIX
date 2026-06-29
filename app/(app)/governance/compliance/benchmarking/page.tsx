@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import {
@@ -131,7 +131,7 @@ export default async function ControlBenchmarkingPage() {
             </div>
           </div>
 
-          <PlaceholderCard title="Framework vs industry cohort">
+          <ConsolePanel title="Framework vs industry cohort">
             <div className="overflow-x-auto">
               <table className={`w-full text-left ${appBody}`}>
                 <thead className="border-b border-border text-[10px] uppercase tracking-wide text-muted">
@@ -213,7 +213,7 @@ export default async function ControlBenchmarkingPage() {
               ), not peer-identifiable customer data. Your scores are computed from live org{" "}
               <code className="text-foreground/80">audit_log</code> and accepted policies.
             </p>
-          </PlaceholderCard>
+          </ConsolePanel>
         </>
       )}
     </>

@@ -1,20 +1,18 @@
 import { MarketingReveal } from "@/components/marketing/MarketingReveal";
 import { mBody, mContainer, mEyebrow } from "@/lib/marketing-layout";
 
-const ROLES = ["Platform engineering", "SOC operations", "SRE & reliability", "GRC & compliance"] as const;
+const ROLES = ["Platform engineering", "SRE & reliability", "SOC operations", "GRC & compliance"] as const;
 
-const INTEGRATIONS = ["Datadog", "PagerDuty", "Slack", "Splunk", "Prometheus", "HTTP ingest"] as const;
+const INTEGRATIONS = ["HTTP ingest", "Slack webhooks", "Datadog payloads", "PagerDuty payloads", "Prometheus alerts", "Custom scripts"] as const;
 
-const QUOTES = [
+const CAPABILITIES = [
   {
-    quote:
-      "We needed automations that stop at an approval gate — not scripts that touch production silently.",
-    role: "Platform lead",
+    title: "Human approval before high-impact action",
+    body: "Dry-runs, policy checks, and approval notes are captured before remediation is recorded.",
   },
   {
-    quote:
-      "Incident timeline, dry-runs, and audit export in one place — that is what our post-incident reviews were missing.",
-    role: "SOC manager",
+    title: "One evidence trail",
+    body: "Incidents, owner changes, automation runs, Copilot context, and exports share the same audit spine.",
   },
 ] as const;
 
@@ -23,7 +21,7 @@ export function SocialProofBand() {
     <MarketingReveal className="border-b border-white/[0.06] py-10 sm:py-12 zentro-quantum-section">
       <div className={mContainer}>
         <p className={`${mEyebrow} text-center zentro-eyebrow-cyber`}>
-          Trusted by teams building reliable automation
+          Built for accountable operations teams
         </p>
         <ul className="mt-6 flex flex-wrap items-center justify-center gap-2">
           {ROLES.map((role) => (
@@ -37,7 +35,7 @@ export function SocialProofBand() {
         </ul>
 
         <p className={`${mBody} mt-8 text-center text-xs uppercase tracking-[0.14em] text-muted`}>
-          Supported ingest &amp; connector shapes
+          Available today: ingest and webhook paths
         </p>
         <ul className="mt-3 flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
           {INTEGRATIONS.map((name) => (
@@ -48,14 +46,14 @@ export function SocialProofBand() {
         </ul>
 
         <div className="mt-10 grid gap-4 md:grid-cols-2">
-          {QUOTES.map((item) => (
-            <blockquote
-              key={item.role}
+          {CAPABILITIES.map((item) => (
+            <section
+              key={item.title}
               className="zentro-bento-cell rounded-2xl p-5 sm:p-6"
             >
-              <p className="text-sm leading-relaxed text-foreground/90">&ldquo;{item.quote}&rdquo;</p>
-              <footer className="mt-3 text-xs font-medium text-muted">— {item.role}</footer>
-            </blockquote>
+              <h2 className="text-sm font-semibold text-foreground">{item.title}</h2>
+              <p className="mt-2 text-sm leading-relaxed text-muted">{item.body}</p>
+            </section>
           ))}
         </div>
       </div>

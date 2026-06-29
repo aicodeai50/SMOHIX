@@ -1,6 +1,6 @@
 import { appPanelTitle } from "@/lib/app-typography";
 
-export function PlaceholderCard({
+export function ConsolePanel({
   title,
   children,
 }: {

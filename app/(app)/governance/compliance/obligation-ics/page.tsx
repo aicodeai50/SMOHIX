@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import { buildComplianceObligationIcs } from "@/lib/compliance/compliance-obligation-ics";
@@ -114,7 +114,7 @@ export default async function ObligationIcsPage() {
             </Link>
           </div>
 
-          <PlaceholderCard title="Subscribe in your calendar app">
+          <ConsolePanel title="Subscribe in your calendar app">
             <ol className={`list-decimal space-y-3 pl-5 ${appBody}`}>
               <li>
                 Download the <strong>.ics</strong> file using the button above (includes obligations for the
@@ -139,7 +139,7 @@ export default async function ObligationIcsPage() {
               ):{" "}
               <span className="break-all text-foreground/70">{assessorApiUrl}</span>
             </p>
-          </PlaceholderCard>
+          </ConsolePanel>
         </>
       )}
     </>

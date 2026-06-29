@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { PageHeader } from "@/components/app/PageHeader";
 import { appBody, appMeta } from "@/lib/app-typography";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 
 export const metadata: Metadata = {
   title: "Vision & roadmap",
@@ -90,7 +90,7 @@ const HORIZON = [
 export default function VisionPage() {
   return (
     <>
-      <div className="shynvo-vision-hero mb-8 rounded-2xl border border-white/[0.1] p-6 shadow-[0_0_80px_-30px_rgba(94,225,255,0.18)] md:p-8">
+      <div className="zentro-vision-hero mb-8 rounded-2xl border border-white/[0.1] p-6 shadow-[0_0_80px_-30px_rgba(94,225,255,0.18)] md:p-8">
         <PageHeader
           className="mb-0"
           eyebrow="Strategy"
@@ -101,7 +101,7 @@ export default function VisionPage() {
 
       <div className="mb-6 grid gap-4 md:grid-cols-2">
         {TRACKS.map((t) => (
-          <PlaceholderCard key={t.title} title={t.title}>
+          <ConsolePanel key={t.title} title={t.title}>
             <p className="mb-3 inline-flex rounded-md bg-accent-dim/80 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-accent">
               {t.tag}
             </p>
@@ -113,11 +113,11 @@ export default function VisionPage() {
                 </li>
               ))}
             </ul>
-          </PlaceholderCard>
+          </ConsolePanel>
         ))}
       </div>
 
-      <PlaceholderCard title="Horizon — research & long-term direction">
+      <ConsolePanel title="Horizon — research & long-term direction">
         <p className={`text-muted ${appBody}`}>
           These ideas are <span className="font-medium text-foreground/90">research and long-term</span>{" "}
           — not a committed backlog. They inform tone, architecture, and partnerships (models, data
@@ -133,7 +133,7 @@ export default function VisionPage() {
             </li>
           ))}
         </ul>
-      </PlaceholderCard>
+      </ConsolePanel>
 
       <p className={`mt-8 max-w-2xl text-pretty text-muted ${appMeta}`}>
         <span className="font-medium text-foreground/85">Next spec focus (recommended):</span> incidents +

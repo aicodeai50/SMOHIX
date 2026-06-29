@@ -66,7 +66,7 @@ export default async function AutomationsPage({
           <div className="mb-4">
             <GuardedAutomationIdentity />
           </div>
-          <div className="shynvo-glass rounded-2xl p-6 md:p-8">
+          <div className="zentro-glass rounded-2xl p-6 md:p-8">
             <div className="flex flex-wrap items-center gap-2">
               <h2 className={`${appPanelTitle} text-foreground`}>Subscription required</h2>
               <ExecutionBadge tone="warn" title="Paid plan required for automation console">

@@ -145,7 +145,7 @@ export default async function ApprovalsPage({ searchParams }: Props) {
         </p>
       ) : null}
       {source === "session" ? (
-        <p className={`shynvo-glass-subtle mb-4 rounded-xl px-4 py-3 ${appMeta}`}>
+        <p className={`zentro-glass-subtle mb-4 rounded-xl px-4 py-3 ${appMeta}`}>
           Approvals are scoped to this browser session (server memory +{" "}
           <span className="font-mono">zentro_dev_tid</span>). Connect Supabase and run{" "}
           <code className="rounded bg-surface px-1 font-mono text-accent">
@@ -154,12 +154,12 @@ export default async function ApprovalsPage({ searchParams }: Props) {
           for a shared <span className="font-mono">approval_requests</span> queue.
         </p>
       ) : hasSupabaseAuth() && pending.length === 0 && recent.length === 0 ? (
-        <p className={`shynvo-glass-subtle mb-4 rounded-xl px-4 py-3 ${appMeta}`}>
+        <p className={`zentro-glass-subtle mb-4 rounded-xl px-4 py-3 ${appMeta}`}>
           No rows in <span className="font-mono">approval_requests</span> yet. Use the form below or
           your API/automation to enqueue work.
         </p>
       ) : null}
-      <section className="shynvo-glass mb-6 rounded-2xl p-5 md:p-6">
+      <section className="zentro-glass mb-6 rounded-2xl p-5 md:p-6">
         <h2 className={`${appPanelTitle} text-foreground/95`}>New approval request</h2>
         <p className={`mt-1 ${appMeta}`}>
           Describe the change. Optional fields help reviewers apply the right policy.
@@ -306,7 +306,7 @@ export default async function ApprovalsPage({ searchParams }: Props) {
             </ul>
           )}
         </section>
-        <section className="shynvo-glass rounded-2xl p-5 md:p-6">
+        <section className="zentro-glass rounded-2xl p-5 md:p-6">
           <h2 className={`${appPanelTitle} text-muted`}>Recent</h2>
           {recent.length === 0 ? (
             <div className="mt-4">

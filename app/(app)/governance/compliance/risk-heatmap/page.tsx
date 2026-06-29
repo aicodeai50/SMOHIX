@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import {
@@ -150,7 +150,7 @@ export default async function ComplianceRiskHeatmapPage() {
             </div>
           </div>
 
-          <PlaceholderCard title="Framework risk concentration">
+          <ConsolePanel title="Framework risk concentration">
             <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
               {RISK_HEATMAP_FRAMEWORK_ORDER.map((fw) => {
                 const cell = frameworkByKey.get(fw);
@@ -172,10 +172,10 @@ export default async function ComplianceRiskHeatmapPage() {
                 );
               })}
             </div>
-          </PlaceholderCard>
+          </ConsolePanel>
 
           <div className="mt-6">
-            <PlaceholderCard title="Vendor tier × category matrix">
+            <ConsolePanel title="Vendor tier × category matrix">
               <div className="overflow-x-auto">
                 <table className={`w-full min-w-[640px] text-left ${appMeta}`}>
                   <thead>
@@ -224,11 +224,11 @@ export default async function ComplianceRiskHeatmapPage() {
                 Cell values are composite risk scores (0–100, higher is worse) from vendor tier weight and
                 inherited control readiness.
               </p>
-            </PlaceholderCard>
+            </ConsolePanel>
           </div>
 
           <div className="mt-6">
-            <PlaceholderCard title="Top risk hotspots">
+            <ConsolePanel title="Top risk hotspots">
               {pack.hotspots.length === 0 ? (
                 <p className={`${appMeta} text-emerald-300`}>No elevated concentration in the current window.</p>
               ) : (
@@ -252,7 +252,7 @@ export default async function ComplianceRiskHeatmapPage() {
                   ))}
                 </ul>
               )}
-            </PlaceholderCard>
+            </ConsolePanel>
           </div>
         </>
       )}

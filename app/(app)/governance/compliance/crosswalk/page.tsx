@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import {
   buildSoc2IsoCrosswalkPack,
@@ -138,7 +138,7 @@ export default async function Soc2IsoCrosswalkPage() {
         </div>
       </div>
 
-      <PlaceholderCard title="Mapping matrix (with evidence overlay)">
+      <ConsolePanel title="Mapping matrix (with evidence overlay)">
         <div className="overflow-x-auto">
           <table className={`w-full text-left ${appBody}`}>
             <thead className="border-b border-border text-[11px] uppercase tracking-wide text-muted">
@@ -187,7 +187,7 @@ export default async function Soc2IsoCrosswalkPage() {
           Mapping notes are included in CSV/JSON exports. Primary links indicate the strongest objective
           alignment; supporting links show related Annex A coverage for the same SOC 2 criterion.
         </p>
-      </PlaceholderCard>
+      </ConsolePanel>
     </>
   );
 }

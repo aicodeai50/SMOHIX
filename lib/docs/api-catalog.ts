@@ -927,6 +927,30 @@ export const API_GROUPS: ApiGroup[] = [
         summary: "Revoke ingest token.",
         auth: "Session cookie",
       },
+      {
+        method: "GET",
+        path: "/api/user/export",
+        summary: "Download JSON export of user incidents and profile metadata.",
+        auth: "Session cookie",
+      },
+      {
+        method: "GET",
+        path: "/api/user/notification-preferences",
+        summary: "Read notification preference flags.",
+        auth: "Session cookie",
+      },
+      {
+        method: "PUT",
+        path: "/api/user/notification-preferences",
+        summary: "Update notification preference flags on profile.",
+        auth: "Session cookie",
+      },
+      {
+        method: "POST",
+        path: "/api/user/account/delete-request",
+        summary: "Submit account deletion request for manual review.",
+        auth: "Session cookie",
+      },
     ],
   },
   {
@@ -971,9 +995,27 @@ export const API_GROUPS: ApiGroup[] = [
     title: "Billing",
     operations: [
       {
+        method: "GET",
+        path: "/api/billing/checkout",
+        summary: "Redirect signed-in user to PayPal approval URL for tier (pro|team|top_up).",
+        auth: "Session cookie",
+      },
+      {
+        method: "POST",
+        path: "/api/billing/checkout",
+        summary: "Create PayPal subscription or top-up order; returns approvalUrl.",
+        auth: "Session cookie",
+      },
+      {
+        method: "POST",
+        path: "/api/webhooks/paypal",
+        summary: "PayPal billing webhook (subscriptions, top-ups, cancellations).",
+        auth: "PayPal webhook signature",
+      },
+      {
         method: "POST",
         path: "/api/webhooks/lemonsqueezy",
-        summary: "Lemon Squeezy subscription webhook.",
+        summary: "Lemon Squeezy subscription webhook (legacy).",
         auth: "Webhook signature (Lemon)",
       },
     ],

@@ -12,7 +12,24 @@ import { CONSOLE_MODULES } from "@/lib/console-nav";
 
 type ModuleItem = (typeof CONSOLE_MODULES)[number];
 
-function NavTile({ href, label, description, icon, live, pinned }: ModuleItem & { pinned?: boolean }) {
+function maturityLabel(maturity: ModuleItem["maturity"]): string {
+  return maturity === "core" ? "Core" : maturity === "beta" ? "Beta" : maturity === "internal" ? "Internal" : "Planned";
+}
+
+function maturityClassName(maturity: ModuleItem["maturity"]): string {
+  if (maturity === "core") {
+    return "bg-emerald-500/16 text-emerald-300/95";
+  }
+  if (maturity === "beta") {
+    return "bg-amber-400/14 text-amber-200/95";
+  }
+  if (maturity === "internal") {
+    return "bg-sky-400/14 text-sky-200/95";
+  }
+  return "bg-white/[0.08] text-muted";
+}
+
+function NavTile({ href, label, description, icon, maturity, pinned }: ModuleItem & { pinned?: boolean }) {
   const pathname = usePathname();
   const active = pathname === href || pathname.startsWith(`${href}/`);
   return (
@@ -28,11 +45,9 @@ function NavTile({ href, label, description, icon, live, pinned }: ModuleItem & 
         <AppIcon name={icon} size={20} strokeWidth={1.7} className="text-accent/90" aria-hidden />
         <span className="flex items-center gap-1">
           {pinned ? <AppIcon name="pin" size={12} className="text-accent/75" aria-hidden /> : null}
-          {live ? (
-            <span className="rounded-md bg-emerald-500/18 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-emerald-300/95 shadow-[0_0_12px_-4px_rgba(52,211,153,0.35)]">
-              Live
-            </span>
-          ) : null}
+          <span className={`rounded-md px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider ${maturityClassName(maturity)}`}>
+            {maturityLabel(maturity)}
+          </span>
         </span>
       </div>
       <span className="mt-1.5 text-[13px] font-semibold text-foreground/95">{label}</span>
@@ -46,7 +61,7 @@ function NavRailLink({
   label,
   description,
   icon,
-  live,
+  maturity,
   pinned,
 }: ModuleItem & { pinned?: boolean }) {
   const pathname = usePathname();
@@ -75,13 +90,14 @@ function NavRailLink({
       </span>
       {pinned ? (
         <AppIcon name="pin" size={12} className="shrink-0 text-accent/70" aria-hidden />
-      ) : live ? (
+      ) : (
         <span
-          className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400/90 shadow-[0_0_8px_rgba(52,211,153,0.45)]"
-          title="Live"
-          aria-hidden
-        />
-      ) : null}
+          className={`shrink-0 rounded-md px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider ${maturityClassName(maturity)}`}
+          title={`${maturityLabel(maturity)} module`}
+        >
+          {maturityLabel(maturity)}
+        </span>
+      )}
     </Link>
   );
 }
@@ -304,8 +320,14 @@ export function AppShell({
       </aside>
 
       <main className="flex min-h-0 min-w-0 flex-1 flex-col lg:overflow-hidden">
-        <div className="shynvo-console-main mx-auto flex min-h-0 w-full max-w-7xl flex-1 flex-col overflow-y-auto overscroll-contain p-4 md:p-8 md:pb-10">
+        <div className="zentro-console-main mx-auto flex min-h-0 w-full max-w-7xl flex-1 flex-col overflow-y-auto overscroll-contain p-4 md:p-8 md:pb-10">
           <ConsoleNavPanel pinnedNavHrefs={pinnedNavHrefs} />
+          {!authEnabled ? (
+            <p className={`mb-4 rounded-xl border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-amber-100 ${appMeta}`}>
+              Local demo workspace: authentication, shared organization data, billing, and durable Supabase
+              history are not configured in this environment.
+            </p>
+          ) : null}
           {auditorWorkspace ? (
             <p className={`mb-4 rounded-xl border border-indigo-400/35 bg-indigo-400/10 px-4 py-3 text-indigo-100 ${appMeta}`}>
               Auditor read-only workspace — SOC 2 Type II monitoring, compliance mapping, and audit log

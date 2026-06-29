@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import { buildControlDependencyGraphPack } from "@/lib/compliance/control-dependency-graph";
@@ -141,7 +141,7 @@ export default async function ControlGraphPage() {
             </div>
           </div>
 
-          <PlaceholderCard title="Hub controls (highest degree)">
+          <ConsolePanel title="Hub controls (highest degree)">
             {hubNodes.length === 0 ? (
               <p className={`${appMeta} text-muted`}>No linked controls in the current graph slice.</p>
             ) : (
@@ -166,10 +166,10 @@ export default async function ControlGraphPage() {
                 ))}
               </ul>
             )}
-          </PlaceholderCard>
+          </ConsolePanel>
 
           <div className="mt-6">
-          <PlaceholderCard title="Framework pair density">
+          <ConsolePanel title="Framework pair density">
             {pack.frameworkPairs.length === 0 ? (
               <p className={`${appMeta} text-muted`}>No cross-framework edges in this period.</p>
             ) : (
@@ -187,11 +187,11 @@ export default async function ControlGraphPage() {
                 ))}
               </ul>
             )}
-          </PlaceholderCard>
+          </ConsolePanel>
           </div>
 
           <div className="mt-6">
-          <PlaceholderCard title="Top dependency edges">
+          <ConsolePanel title="Top dependency edges">
             {pack.edges.length === 0 ? (
               <p className={`${appMeta} text-muted`}>No edges — add audit events or accept policies that map to multiple controls.</p>
             ) : (
@@ -215,7 +215,7 @@ export default async function ControlGraphPage() {
                 ))}
               </ul>
             )}
-          </PlaceholderCard>
+          </ConsolePanel>
           </div>
         </>
       )}

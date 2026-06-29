@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { GrcCalendarMonthGrid } from "@/components/compliance/GrcCalendarMonthGrid";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
@@ -155,7 +155,7 @@ export default async function ComplianceCalendarPage({
 
           <div className="grid gap-6 lg:grid-cols-3">
             <div className="lg:col-span-2">
-              <PlaceholderCard title={`${grid.monthLabel} planner`}>
+              <ConsolePanel title={`${grid.monthLabel} planner`}>
                 <div className="mb-4 flex items-center justify-between gap-2">
                   <Link
                     href={prevHref}
@@ -180,10 +180,10 @@ export default async function ComplianceCalendarPage({
                   Legend: attestations (teal) · vendors (cyan) · bundles (green) · framework checkpoints
                   (violet) · digest/SLA cadence (gray)
                 </p>
-              </PlaceholderCard>
+              </ConsolePanel>
             </div>
 
-            <PlaceholderCard title="Next 90 days">
+            <ConsolePanel title="Next 90 days">
               <ul className={`space-y-2 ${appBody}`}>
                 {upcomingList.length === 0 ? (
                   <li className={`${appMeta} text-emerald-300`}>No upcoming milestones.</li>
@@ -205,7 +205,7 @@ export default async function ComplianceCalendarPage({
                 Digest webhook: {pack.digestWebhookConfigured ? "configured" : "not set"} · SLA
                 reminders: {pack.slaRemindersEnabled ? "enabled" : "disabled"}
               </p>
-            </PlaceholderCard>
+            </ConsolePanel>
           </div>
         </>
       )}

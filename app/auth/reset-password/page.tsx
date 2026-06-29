@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 function ResetFallback() {
   return (
     <div
-      className="shynvo-glass-subtle h-64 animate-pulse rounded-3xl"
+      className="zentro-glass-subtle h-64 animate-pulse rounded-3xl"
       aria-hidden
     />
   );

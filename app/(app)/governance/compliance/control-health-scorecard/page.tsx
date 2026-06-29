@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import { buildComplianceControlHealthScorecardPack } from "@/lib/compliance/compliance-control-health-scorecard";
@@ -145,7 +145,7 @@ export default async function ControlHealthScorecardPage() {
           </div>
 
           <div className="mb-6">
-          <PlaceholderCard title="Health metrics">
+          <ConsolePanel title="Health metrics">
             <div className="overflow-x-auto">
               <table className="w-full min-w-[520px] text-left text-sm">
                 <thead>
@@ -177,10 +177,10 @@ export default async function ControlHealthScorecardPage() {
                 </tbody>
               </table>
             </div>
-          </PlaceholderCard>
+          </ConsolePanel>
           </div>
 
-          <PlaceholderCard title="Leadership actions">
+          <ConsolePanel title="Leadership actions">
             <ul className={`list-disc space-y-2 pl-5 ${appBody}`}>
               {pack.leadershipActions.map((action) => (
                 <li key={action}>{action}</li>
@@ -190,7 +190,7 @@ export default async function ControlHealthScorecardPage() {
               {pack.vendorCount} vendor(s) · {pack.vendorsWithGaps} with inherited gaps ·{" "}
               {pack.openGapRemediations} open remediation(s)
             </p>
-          </PlaceholderCard>
+          </ConsolePanel>
         </>
       )}
     </>

@@ -10,7 +10,7 @@ import { mergeIdleJumpModules } from "@/lib/console/hub-personalization";
 import { appMeta } from "@/lib/app-typography";
 import { CONSOLE_MODULES } from "@/lib/console-nav";
 
-const HUB_PREFS_STORAGE_KEY = "shynvo.hub.personalization";
+const HUB_PREFS_STORAGE_KEY = "zentro.hub.personalization";
 
 const SEARCH_ALIASES: ReadonlyArray<{ alias: string; targets: readonly string[] }> = [
   { alias: "gov", targets: ["/governance/policies", "/governance/access"] },
@@ -34,7 +34,7 @@ const SEARCH_ALIASES: ReadonlyArray<{ alias: string; targets: readonly string[] 
   { alias: "service", targets: ["/services"] },
   { alias: "runbook", targets: ["/runbooks"] },
 ];
-const RECENT_MODULES_STORAGE_KEY = "shynvo.console.recent-modules";
+const RECENT_MODULES_STORAGE_KEY = "zentro.console.recent-modules";
 const MAX_RECENT_MODULES = 5;
 const SEARCH_LINKS = [
   { href: "/docs", label: "Docs", description: "Knowledge base" },
@@ -42,6 +42,17 @@ const SEARCH_LINKS = [
   { href: "/platform", label: "Platform", description: "Product surface" },
   { href: "/", label: "Website", description: "Public homepage" },
 ] as const;
+
+type SearchEntry = {
+  href: string;
+  label: string;
+  description: string;
+  maturity?: (typeof CONSOLE_MODULES)[number]["maturity"];
+};
+
+function maturityLabel(maturity: NonNullable<SearchEntry["maturity"]>): string {
+  return maturity === "core" ? "Core" : maturity === "beta" ? "Beta" : maturity === "internal" ? "Internal" : "Planned";
+}
 
 function fuzzyScore(query: string, text: string): number {
   if (!query) return 0;
@@ -90,10 +101,22 @@ export function ConsoleNavPanel({ pinnedNavHrefs = [] }: { pinnedNavHrefs?: read
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const searchPanelRef = useRef<HTMLDivElement | null>(null);
   const searchCatalog = useMemo(
-    () => [
-      ...CONSOLE_MODULES.map((m) => ({ href: m.href, label: m.label, description: m.description })),
-      ...SEARCH_LINKS,
-    ],
+    () => {
+      const entries: SearchEntry[] = [
+        ...CONSOLE_MODULES.map((m) => ({
+          href: m.href,
+          label: m.label,
+          description: m.description,
+          maturity: m.maturity,
+        })),
+        ...SEARCH_LINKS.map((m) => ({
+          href: m.href,
+          label: m.label,
+          description: m.description,
+        })),
+      ];
+      return entries;
+    },
     [],
   );
   const searchResults = useMemo(() => {
@@ -119,7 +142,12 @@ export function ConsoleNavPanel({ pinnedNavHrefs = [] }: { pinnedNavHrefs?: read
   const idleJumpModules = useMemo(
     () =>
       mergeIdleJumpModules(
-        CONSOLE_MODULES.map((m) => ({ href: m.href, label: m.label, description: m.description })),
+        CONSOLE_MODULES.map((m) => ({
+          href: m.href,
+          label: m.label,
+          description: m.description,
+          maturity: m.maturity,
+        })),
         effectivePinnedHrefs,
         recentModuleHrefs,
       ),
@@ -388,6 +416,11 @@ export function ConsoleNavPanel({ pinnedNavHrefs = [] }: { pinnedNavHrefs?: read
                           <span className="ml-1 text-muted">
                             ({renderHighlightedText(m.description, searchQuery)})
                           </span>
+                          {m.maturity ? (
+                            <span className="ml-1 rounded bg-white/[0.07] px-1 py-0.5 font-mono text-[9px] uppercase tracking-wide text-muted">
+                              {maturityLabel(m.maturity)}
+                            </span>
+                          ) : null}
                           {!searchQuery.trim() && effectivePinnedHrefs.includes(m.href) ? (
                             <AppIcon name="pin" size={10} className="ml-1 inline text-accent/75" aria-hidden />
                           ) : null}
@@ -436,7 +469,7 @@ export function ConsoleNavPanel({ pinnedNavHrefs = [] }: { pinnedNavHrefs?: read
             <option value="">Jump to…</option>
             {CONSOLE_MODULES.map((m) => (
               <option key={m.href} value={m.href}>
-                {m.label}
+                {m.label} · {maturityLabel(m.maturity)}
               </option>
             ))}
           </select>

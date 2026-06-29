@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { appBody, appLabel, appMeta, appOverline } from "@/lib/app-typography";
 import {
   deploymentTierLabel,
@@ -128,7 +128,7 @@ export default async function SettingsDeploymentPage({
         />
       ) : (
         <div className="grid gap-6 lg:grid-cols-2">
-          <PlaceholderCard title="Current posture">
+          <ConsolePanel title="Current posture">
             <dl className={`space-y-3 ${appBody}`}>
               <div>
                 <dt className={appOverline}>Organization</dt>
@@ -157,9 +157,9 @@ export default async function SettingsDeploymentPage({
                 ))}
               </ul>
             ) : null}
-          </PlaceholderCard>
+          </ConsolePanel>
 
-          <PlaceholderCard title={canEdit ? "Update profile" : "View only"}>
+          <ConsolePanel title={canEdit ? "Update profile" : "View only"}>
             {canEdit ? (
               <form action={updateDeploymentProfileAction} className="space-y-4">
                 <div>
@@ -241,13 +241,13 @@ export default async function SettingsDeploymentPage({
                 Ask an org owner or admin to update region and boundary settings.
               </p>
             )}
-          </PlaceholderCard>
+          </ConsolePanel>
         </div>
       )}
 
       {orgContext.orgId && profile && retention ? (
         <div className="mt-6">
-          <PlaceholderCard title="Data retention">
+          <ConsolePanel title="Data retention">
             <p className={`mb-4 ${appMeta} text-muted`}>
               Effective retention for org-scoped audit events and closed incidents. Tier defaults apply when
               overrides are blank. Scheduled purge uses{" "}
@@ -317,7 +317,7 @@ export default async function SettingsDeploymentPage({
             ) : (
               <p className={`${appMeta} text-muted`}>Only org owners and admins can edit retention overrides.</p>
             )}
-          </PlaceholderCard>
+          </ConsolePanel>
         </div>
       ) : null}
     </>

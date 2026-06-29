@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import {
   buildEvidenceFreshnessDashboard,
@@ -134,7 +134,7 @@ export default async function EvidenceFreshnessPage() {
             </div>
           </div>
 
-          <PlaceholderCard title="By framework">
+          <ConsolePanel title="By framework">
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {dashboard.byFramework.map((fw) => (
                 <div
@@ -148,10 +148,10 @@ export default async function EvidenceFreshnessPage() {
                 </div>
               ))}
             </div>
-          </PlaceholderCard>
+          </ConsolePanel>
 
           <div className="mt-6">
-            <PlaceholderCard title="Stale control queue">
+            <ConsolePanel title="Stale control queue">
               {dashboard.staleQueue.length === 0 ? (
                 <p className={`${appMeta} text-emerald-300`}>
                   No stale or empty controls — all catalog items have recent evidence.
@@ -200,11 +200,11 @@ export default async function EvidenceFreshnessPage() {
                   ) : null}
                 </div>
               )}
-            </PlaceholderCard>
+            </ConsolePanel>
           </div>
 
           <div className="mt-6">
-            <PlaceholderCard title="All controls (sample)">
+            <ConsolePanel title="All controls (sample)">
               <div className="overflow-x-auto">
                 <table className={`w-full text-left ${appBody}`}>
                   <thead className="border-b border-border text-[11px] uppercase tracking-wide text-muted">
@@ -239,7 +239,7 @@ export default async function EvidenceFreshnessPage() {
                 Scanned {dashboard.auditEventsScanned} audit events ({dashboard.periodDays}d coverage window,{" "}
                 {DEFAULT_STALE_DAYS}d stale threshold).
               </p>
-            </PlaceholderCard>
+            </ConsolePanel>
           </div>
         </>
       )}

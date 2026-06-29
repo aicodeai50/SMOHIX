@@ -59,7 +59,7 @@ export default async function IncidentsPage() {
       </div>
       <ConsoleAmbientBanner snapshot={ambient} />
       {source === "session" ? (
-        <p className={`shynvo-glass-subtle mb-4 rounded-xl px-4 py-3 ${appMeta}`}>
+        <p className={`zentro-glass-subtle mb-4 rounded-xl px-4 py-3 ${appMeta}`}>
           Incidents are currently scoped to this browser session. Sign in to a configured workspace
           for shared, persistent incident history and team visibility.
         </p>
@@ -88,7 +88,7 @@ export default async function IncidentsPage() {
           ]}
         />
       ) : (
-      <div className="shynvo-table-wrap">
+      <div className="zentro-table-wrap">
         <table className={`w-full text-left ${appBody}`}>
           <thead className="border-b border-white/[0.06] bg-white/[0.03] font-mono text-[11px] font-medium uppercase tracking-[0.1em] text-muted">
             <tr>

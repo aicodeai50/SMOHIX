@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import { buildRegulatoryChangeImpactPack } from "@/lib/compliance/regulatory-change-impact";
@@ -129,7 +129,7 @@ export default async function RegulatoryImpactPage() {
             </div>
           </div>
 
-          <PlaceholderCard title="Scenario rankings">
+          <ConsolePanel title="Scenario rankings">
             <ul className={`space-y-3 ${appBody}`}>
               {pack.results.map((result) => (
                 <li
@@ -159,11 +159,11 @@ export default async function RegulatoryImpactPage() {
                 </li>
               ))}
             </ul>
-          </PlaceholderCard>
+          </ConsolePanel>
 
           {topResult ? (
             <div className="mt-6">
-              <PlaceholderCard title={`Top scenario — ${topResult.scenario.title}`}>
+              <ConsolePanel title={`Top scenario — ${topResult.scenario.title}`}>
                 <ul className={`space-y-3 ${appBody}`}>
                   {topResult.rows.map((row) => (
                     <li
@@ -186,7 +186,7 @@ export default async function RegulatoryImpactPage() {
                     </li>
                   ))}
                 </ul>
-              </PlaceholderCard>
+              </ConsolePanel>
             </div>
           ) : null}
         </>

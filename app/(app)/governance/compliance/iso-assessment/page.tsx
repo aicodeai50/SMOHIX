@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceControlTags } from "@/components/compliance/ComplianceControlTags";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import { buildIso27001AssessmentReport } from "@/lib/compliance/iso-assessment";
@@ -124,7 +124,7 @@ export default async function Iso27001AssessmentPage() {
 
       <p className={`mb-6 ${appMeta} text-muted`}>{report.monitoringNote}</p>
 
-      <PlaceholderCard title="Domain readiness (Annex A)">
+      <ConsolePanel title="Domain readiness (Annex A)">
         <div className="grid gap-3 sm:grid-cols-2">
           {report.domainSummary.map((d) => (
             <div
@@ -139,10 +139,10 @@ export default async function Iso27001AssessmentPage() {
             </div>
           ))}
         </div>
-      </PlaceholderCard>
+      </ConsolePanel>
 
       <div className="mt-6">
-        <PlaceholderCard title="Annex A control monitoring (30d vs prior 30d)">
+        <ConsolePanel title="Annex A control monitoring (30d vs prior 30d)">
           <div className="overflow-x-auto">
             <table className={`w-full text-left ${appBody}`}>
               <thead className="border-b border-border text-[11px] uppercase tracking-wide text-muted">
@@ -183,11 +183,11 @@ export default async function Iso27001AssessmentPage() {
               </tbody>
             </table>
           </div>
-        </PlaceholderCard>
+        </ConsolePanel>
       </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
-        <PlaceholderCard title="Gap analysis">
+        <ConsolePanel title="Gap analysis">
           {report.exceptions.length === 0 ? (
             <p className={`${appMeta} text-emerald-300`}>No gaps in the current monitoring window.</p>
           ) : (
@@ -202,9 +202,9 @@ export default async function Iso27001AssessmentPage() {
               ))}
             </ul>
           )}
-        </PlaceholderCard>
+        </ConsolePanel>
 
-        <PlaceholderCard title="Assessor export">
+        <ConsolePanel title="Assessor export">
           <p className={`mb-4 ${appMeta} text-muted`}>
             Download the structured ISO 27001 assessment JSON including domain summaries.
           </p>
@@ -214,7 +214,7 @@ export default async function Iso27001AssessmentPage() {
           >
             Download assessment JSON
           </a>
-        </PlaceholderCard>
+        </ConsolePanel>
       </div>
     </>
   );

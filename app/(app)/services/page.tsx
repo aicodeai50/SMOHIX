@@ -6,7 +6,7 @@ import { AlertIngestPanel } from "@/components/settings/AlertIngestPanel";
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
 import { ConsoleAmbientBanner } from "@/components/console/ConsoleAmbientBanner";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { appBody, appLabel, appMeta, appOverline, appPanelTitle } from "@/lib/app-typography";
 import { billingPlanFromSummary, getSubscriptionSummary } from "@/lib/billing/plan";
 import { loadConsoleAmbientSnapshot } from "@/lib/console/load-ambient-status";
@@ -112,7 +112,7 @@ export default async function ServicesPage({
             {err}
           </p>
         ) : null}
-        <div className="shynvo-glass rounded-2xl p-6 md:p-8">
+        <div className="zentro-glass rounded-2xl p-6 md:p-8">
           <h2 className={appPanelTitle}>Subscription required</h2>
           <p className={`mt-2 max-w-md text-muted ${appBody}`}>
             Service catalog and alert ingest are paid capabilities: they tie your observability
@@ -144,7 +144,7 @@ export default async function ServicesPage({
       ) : null}
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <PlaceholderCard title="Catalog">
+        <ConsolePanel title="Catalog">
           <div className="mb-4 grid gap-3 sm:grid-cols-3">
             <div className="rounded-lg border border-white/[0.08] bg-white/[0.02] px-3 py-2">
               <p className={appMeta}>SLO-covered services</p>
@@ -474,11 +474,11 @@ export default async function ServicesPage({
               <p className={`mt-2 ${appMeta}`}>No dependencies recorded yet.</p>
             )}
           </div>
-        </PlaceholderCard>
+        </ConsolePanel>
 
-        <PlaceholderCard title="Monitoring ingest">
+        <ConsolePanel title="Monitoring ingest">
           <AlertIngestPanel serviceRoleConfigured={serviceRoleConfigured} />
-        </PlaceholderCard>
+        </ConsolePanel>
       </div>
     </>
   );

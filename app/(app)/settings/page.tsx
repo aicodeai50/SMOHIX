@@ -6,6 +6,8 @@ import { ConsoleAmbientBanner } from "@/components/console/ConsoleAmbientBanner"
 import { appBody, appMeta, appPanelTitle } from "@/lib/app-typography";
 import { loadConsoleAmbientSnapshot } from "@/lib/console/load-ambient-status";
 import { getConnectorHealthRows } from "@/lib/connectors-health";
+import { AccountDeletionPanel } from "@/components/settings/AccountDeletionPanel";
+import { NotificationPreferencesForm } from "@/components/settings/NotificationPreferencesForm";
 import { ProfileNameForm } from "@/components/settings/ProfileNameForm";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -107,6 +109,7 @@ export default async function SettingsIndexPage({
   let connectorsConfigured = 0;
   let connectorsReachable = 0;
   let setupMode: "supabase" | "session" = "session";
+  let notificationPrefs: Record<string, boolean> = {};
 
   if (hasSupabaseAuth()) {
     try {
@@ -121,7 +124,7 @@ export default async function SettingsIndexPage({
       }
       if (user?.id) {
         setupMode = "supabase";
-        const [connectorRows, { count: apiKeysCount }, { count: ingestCount }] =
+        const [connectorRows, { count: apiKeysCount }, { count: ingestCount }, profileRow] =
           await Promise.all([
             getConnectorHealthRows(),
             supabase
@@ -134,7 +137,14 @@ export default async function SettingsIndexPage({
               .select("id", { count: "exact", head: true })
               .eq("user_id", user.id)
               .is("revoked_at", null),
+            supabase
+              .from("profiles")
+              .select("notification_preferences")
+              .eq("id", user.id)
+              .maybeSingle(),
           ]);
+        notificationPrefs =
+          (profileRow.data?.notification_preferences as Record<string, boolean>) ?? {};
         hasApiKey = (apiKeysCount ?? 0) > 0;
         hasIngestToken = (ingestCount ?? 0) > 0;
         connectorsConfigured = connectorRows.filter((c) => Boolean(c.baseUrl)).length;
@@ -252,7 +262,7 @@ export default async function SettingsIndexPage({
         description="Billing and service links for this workspace. Runbooks and audit live under their own modules in the rail."
       />
       <ConsoleAmbientBanner snapshot={ambient} />
-      <section id="setup-wizard" className="shynvo-glass mb-6 rounded-2xl p-5 md:p-6">
+      <section id="setup-wizard" className="zentro-glass mb-6 rounded-2xl p-5 md:p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 className={`${appPanelTitle} text-foreground/95`}>First-run setup wizard</h2>
@@ -447,7 +457,7 @@ export default async function SettingsIndexPage({
         ) : null}
       </section>
       {accountEmail ? (
-        <section id="profile-settings" className="shynvo-glass mb-6 rounded-2xl p-5 md:p-6">
+        <section id="profile-settings" className="zentro-glass mb-6 rounded-2xl p-5 md:p-6">
           <h2 className={`${appPanelTitle} text-foreground/95`}>Profile</h2>
           <p className={`mt-1 ${appMeta}`}>
             Your display name appears in the console rail. Clear the field to fall back to your email.
@@ -455,12 +465,48 @@ export default async function SettingsIndexPage({
           <ProfileNameForm initialFullName={initialFullName} email={accountEmail} />
         </section>
       ) : null}
+      {accountEmail ? (
+        <section id="notification-settings" className="zentro-glass mb-6 rounded-2xl p-5 md:p-6">
+          <h2 className={`${appPanelTitle} text-foreground/95`}>Notifications</h2>
+          <p className={`mt-1 ${appMeta}`}>
+            Choose which email notifications you receive from {accountEmail}.
+          </p>
+          <div className="mt-4">
+            <NotificationPreferencesForm initial={notificationPrefs} />
+          </div>
+        </section>
+      ) : null}
+      {accountEmail ? (
+        <section id="account-settings" className="zentro-glass mb-6 rounded-2xl p-5 md:p-6">
+          <h2 className={`${appPanelTitle} text-foreground/95`}>Account & data</h2>
+          <p className={`mt-1 ${appMeta}`}>
+            Export your workspace data or request permanent account deletion.
+          </p>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <a
+              href="/api/user/export"
+              className={`inline-flex h-10 items-center rounded-xl border border-white/[0.12] px-4 font-medium text-foreground transition-colors hover:border-accent/40 ${appBody}`}
+            >
+              Download data export
+            </a>
+          </div>
+          <div className="mt-6 border-t border-white/[0.08] pt-6">
+            <h3 className={`${appBody} font-medium text-foreground/90`}>Danger zone</h3>
+            <p className={`mt-1 ${appMeta}`}>
+              Permanently delete your account and associated workspace data.
+            </p>
+            <div className="mt-3">
+              <AccountDeletionPanel email={accountEmail} />
+            </div>
+          </div>
+        </section>
+      ) : null}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {cards.map((c) => (
           <Link
             key={c.href}
             href={c.href}
-            className="shynvo-glass group flex flex-col rounded-2xl p-5 transition-[border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-[0_0_40px_-14px_rgba(94,225,255,0.2)]"
+            className="zentro-glass group flex flex-col rounded-2xl p-5 transition-[border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-[0_0_40px_-14px_rgba(94,225,255,0.2)]"
           >
             <h2 className={`${appPanelTitle} group-hover:text-accent`}>{c.title}</h2>
             <p className={`mt-2 flex-1 text-muted ${appBody}`}>{c.description}</p>

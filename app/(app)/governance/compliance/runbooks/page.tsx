@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import { PLAYBOOKS } from "@/lib/automations/playbooks";
@@ -129,7 +129,7 @@ export default async function ComplianceGapRunbooksPage({
         </div>
       </div>
 
-      <PlaceholderCard title="Gap remediation queue">
+      <ConsolePanel title="Gap remediation queue">
         {queue.gaps.length === 0 ? (
           <ConsoleEmptyState
             title="No gaps in window"
@@ -248,10 +248,10 @@ export default async function ComplianceGapRunbooksPage({
             ))}
           </ul>
         )}
-      </PlaceholderCard>
+      </ConsolePanel>
 
       <div className="mt-6">
-      <PlaceholderCard title="Automation playbooks">
+      <ConsolePanel title="Automation playbooks">
         <ul className={`space-y-2 ${appMeta}`}>
           {PLAYBOOKS.map((p) => (
             <li key={p.id}>
@@ -266,7 +266,7 @@ export default async function ComplianceGapRunbooksPage({
           </Link>{" "}
           after dry-run; audit events feed compliance evidence.
         </p>
-      </PlaceholderCard>
+      </ConsolePanel>
       </div>
     </>
   );

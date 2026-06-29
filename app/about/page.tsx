@@ -50,7 +50,7 @@ export default function AboutPage() {
           <section className={`zentro-hero-future border-b border-white/[0.06] ${mSection}`}>
             <article className={`${mArticle} ${mContainer}`}>
               <p className={`${mEyebrow} zentro-eyebrow-cyber`}>Company</p>
-              <h1 className={`mt-2 shynvo-headline zentro-living-headline ${mH1}`}>
+              <h1 className={`mt-2 zentro-headline zentro-living-headline ${mH1}`}>
                 About {SITE_BRAND_NAME}
               </h1>
               <p className={`mt-4 max-w-3xl text-base sm:text-lg ${mBody}`}>

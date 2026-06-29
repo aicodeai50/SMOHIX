@@ -16,7 +16,7 @@ export function PageHeaderSkeleton({ withCta }: { withCta?: boolean }) {
 
 export function TableSkeleton({ columns, rows }: { columns: number; rows: number }) {
   return (
-    <div className="shynvo-table-wrap animate-pulse">
+    <div className="zentro-table-wrap animate-pulse">
       <div className="flex border-b border-white/[0.06] bg-white/[0.03] px-4 py-3.5">
         {Array.from({ length: columns }).map((_, i) => (
           <SkeletonText key={i} className="mx-1 flex-1" />

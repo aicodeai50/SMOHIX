@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appLabel, appMeta, appOverline } from "@/lib/app-typography";
 import {
@@ -163,7 +163,7 @@ export default async function CommitteeDigestPage({
           </div>
 
           {canEdit && settings ? (
-            <PlaceholderCard title="Delivery settings">
+            <ConsolePanel title="Delivery settings">
               <form action={updateCommitteeDigestSettingsAction} className={`space-y-4 ${appBody}`}>
                 <label className="flex items-center gap-2">
                   <input
@@ -215,20 +215,20 @@ export default async function CommitteeDigestPage({
                   </form>
                 )}
               </div>
-            </PlaceholderCard>
+            </ConsolePanel>
           ) : null}
 
           <div className="mt-6">
-            <PlaceholderCard title="Digest preview">
+            <ConsolePanel title="Digest preview">
               <pre className={`max-h-[480px] overflow-auto whitespace-pre-wrap ${appMeta} text-foreground/85`}>
                 {pack.digestPreviewMarkdown}
               </pre>
-            </PlaceholderCard>
+            </ConsolePanel>
           </div>
 
           {deliveries.length > 0 ? (
             <div className="mt-6">
-              <PlaceholderCard title="Delivery history">
+              <ConsolePanel title="Delivery history">
                 <ul className={`space-y-2 ${appMeta}`}>
                   {deliveries.map((d) => (
                     <li key={d.id} className="rounded-lg border border-white/[0.06] px-3 py-2">
@@ -247,7 +247,7 @@ export default async function CommitteeDigestPage({
                     </li>
                   ))}
                 </ul>
-              </PlaceholderCard>
+              </ConsolePanel>
             </div>
           ) : null}
         </>

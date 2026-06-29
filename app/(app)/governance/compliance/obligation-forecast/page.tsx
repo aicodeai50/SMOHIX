@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import { buildBoardObligationForecastPack } from "@/lib/compliance/board-obligation-forecast";
@@ -142,7 +142,7 @@ export default async function BoardObligationForecastPage() {
             </div>
           </div>
 
-          <PlaceholderCard title="Weekly obligation density">
+          <ConsolePanel title="Weekly obligation density">
             <ul className={`space-y-3 ${appBody}`}>
               {pack.buckets.map((bucket) => (
                 <li
@@ -176,10 +176,10 @@ export default async function BoardObligationForecastPage() {
                 </li>
               ))}
             </ul>
-          </PlaceholderCard>
+          </ConsolePanel>
 
           <div className="mt-6">
-            <PlaceholderCard title="Upcoming milestones">
+            <ConsolePanel title="Upcoming milestones">
               {pack.milestones.length === 0 ? (
                 <p className={`${appMeta} text-emerald-300`}>No milestones in the forecast window.</p>
               ) : (
@@ -207,7 +207,7 @@ export default async function BoardObligationForecastPage() {
                   ))}
                 </ul>
               )}
-            </PlaceholderCard>
+            </ConsolePanel>
           </div>
         </>
       )}

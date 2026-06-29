@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { appBody, appLabel, appMeta, appOverline } from "@/lib/app-typography";
 import { listAccessRulesForUser, listAccessSnapshotsForUser } from "@/lib/equipment/data";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
@@ -70,17 +70,17 @@ export default async function GovernanceAccessPage({
       ) : null}
 
       <div className="mb-6 grid gap-4 sm:grid-cols-3">
-        <div className="shynvo-glass rounded-2xl p-5">
+        <div className="zentro-glass rounded-2xl p-5">
           <p className={`${appMeta} font-medium`}>Policy rules</p>
           <p className="mt-1 text-2xl font-semibold text-foreground">{rules.length}</p>
         </div>
-        <div className="shynvo-glass rounded-2xl p-5">
+        <div className="zentro-glass rounded-2xl p-5">
           <p className={`${appMeta} font-medium`}>Latest MFA coverage</p>
           <p className="mt-1 text-2xl font-semibold text-foreground">
             {latest?.mfaCoveragePercent != null ? `${latest.mfaCoveragePercent}%` : "n/a"}
           </p>
         </div>
-        <div className="shynvo-glass rounded-2xl p-5">
+        <div className="zentro-glass rounded-2xl p-5">
           <p className={`${appMeta} font-medium`}>Stale privileged accounts</p>
           <p className="mt-1 text-2xl font-semibold text-foreground">
             {latest?.stalePrivilegedAccounts ?? "n/a"}
@@ -89,7 +89,7 @@ export default async function GovernanceAccessPage({
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <PlaceholderCard title="Add policy rule">
+        <ConsolePanel title="Add policy rule">
           <form action={createAccessRuleAction} className="space-y-3">
             <div>
               <label htmlFor="rule-name" className={`mb-1 block ${appLabel}`}>
@@ -135,9 +135,9 @@ export default async function GovernanceAccessPage({
               Add rule
             </button>
           </form>
-        </PlaceholderCard>
+        </ConsolePanel>
 
-        <PlaceholderCard title="Add posture snapshot">
+        <ConsolePanel title="Add posture snapshot">
           <form action={createAccessSnapshotAction} className="space-y-3">
             <div className="grid gap-3 sm:grid-cols-2">
               <div>
@@ -225,11 +225,11 @@ export default async function GovernanceAccessPage({
               Add snapshot
             </button>
           </form>
-        </PlaceholderCard>
+        </ConsolePanel>
       </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
-        <PlaceholderCard title="Policy rules">
+        <ConsolePanel title="Policy rules">
           <h3 className={appOverline}>Active rules</h3>
           {rules.length === 0 ? (
             <div className="mt-4">
@@ -264,9 +264,9 @@ export default async function GovernanceAccessPage({
               ))}
             </ul>
           )}
-        </PlaceholderCard>
+        </ConsolePanel>
 
-        <PlaceholderCard title="Recent posture snapshots">
+        <ConsolePanel title="Recent posture snapshots">
           <h3 className={appOverline}>Latest snapshots</h3>
           {snapshots.length === 0 ? (
             <div className="mt-4">
@@ -290,7 +290,7 @@ export default async function GovernanceAccessPage({
               ))}
             </ul>
           )}
-        </PlaceholderCard>
+        </ConsolePanel>
       </div>
     </>
   );

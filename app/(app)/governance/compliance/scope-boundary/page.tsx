@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import { buildScopeBoundaryMapperPack } from "@/lib/compliance/scope-boundary-mapper";
@@ -130,7 +130,7 @@ export default async function ScopeBoundaryPage() {
             </div>
           </div>
 
-          <PlaceholderCard title="Framework coverage (in-scope systems)">
+          <ConsolePanel title="Framework coverage (in-scope systems)">
             {pack.frameworkCoverage.length === 0 ? (
               <p className={`${appMeta} text-muted`}>No framework mappings yet.</p>
             ) : (
@@ -154,10 +154,10 @@ export default async function ScopeBoundaryPage() {
                 ))}
               </ul>
             )}
-          </PlaceholderCard>
+          </ConsolePanel>
 
           <div className="mt-6">
-            <PlaceholderCard title="In-scope systems">
+            <ConsolePanel title="In-scope systems">
               <ul className={`space-y-3 ${appBody}`}>
                 {inScopeSystems.slice(0, 40).map((s) => (
                   <li
@@ -189,12 +189,12 @@ export default async function ScopeBoundaryPage() {
                   </li>
                 ))}
               </ul>
-            </PlaceholderCard>
+            </ConsolePanel>
           </div>
 
           {pack.dataFlows.length > 0 ? (
             <div className="mt-6">
-              <PlaceholderCard title="Data flows (dependency graph)">
+              <ConsolePanel title="Data flows (dependency graph)">
                 <ul className={`space-y-2 ${appBody}`}>
                   {pack.dataFlows
                     .filter((f) => f.inScope)
@@ -211,7 +211,7 @@ export default async function ScopeBoundaryPage() {
                       </li>
                     ))}
                 </ul>
-              </PlaceholderCard>
+              </ConsolePanel>
             </div>
           ) : null}
         </>

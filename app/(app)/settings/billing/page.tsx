@@ -3,29 +3,37 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { PageHeader } from "@/components/app/PageHeader";
+import { BillingCheckoutActions } from "@/components/settings/BillingCheckoutActions";
+import { Card, CardHeader } from "@/components/ui/Card";
 import { appBody, appMeta, appPanelTitle } from "@/lib/app-typography";
-import {
-  getCheckoutUrlForUser,
-  getCustomerPortalUrl,
-  getMailtoHref,
-  getTeamCheckoutUrlForUser,
-  SITE_EMAIL_CONTACT,
-} from "@/lib/billing";
+import { isBillingConfigured } from "@/lib/billing";
+import { getMailtoHref, SITE_EMAIL_CONTACT } from "@/lib/billing";
 import {
   billingPlanFromSummary,
+  getBillingBalance,
+  getBillingTransactions,
   getSubscriptionSummary,
   paidProductDisplayName,
   paidProductTierFromSummary,
 } from "@/lib/billing/plan";
+import { isPayPalConfigured } from "@/lib/paypal/config";
+import { PRICING_TIERS } from "@/lib/product-identity";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   title: "Billing",
-  description: "Plan, subscription status, and upgrade checkout.",
+  description: "Plan, balance, PayPal checkout, and transaction history.",
 };
 
 export const dynamic = "force-dynamic";
+
+function formatCents(cents: number, currency = "USD"): string {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency,
+  }).format(cents / 100);
+}
 
 export default async function BillingPage({
   searchParams,
@@ -33,20 +41,19 @@ export default async function BillingPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const sp = await searchParams;
-  const upgradeHint =
-    typeof sp.upgrade === "string" ? sp.upgrade : undefined;
+  const upgradeHint = typeof sp.upgrade === "string" ? sp.upgrade : undefined;
+  const checkoutStatus = typeof sp.checkout === "string" ? sp.checkout : undefined;
+  const errorHint = typeof sp.error === "string" ? sp.error : undefined;
 
   if (!hasSupabaseAuth()) {
     return (
       <>
         <PageHeader
           title="Billing"
-          description="Connect Supabase to manage accounts and subscription state."
+          description="Connect Supabase to manage accounts and billing."
         />
         <p className={`max-w-xl text-muted ${appBody}`}>
-          Set <span className="font-mono text-foreground/90">NEXT_PUBLIC_SUPABASE_URL</span> and{" "}
-          <span className="font-mono text-foreground/90">NEXT_PUBLIC_SUPABASE_ANON_KEY</span> in
-          your environment, then redeploy.
+          Set Supabase environment variables and redeploy to enable billing.
         </p>
       </>
     );
@@ -65,231 +72,203 @@ export default async function BillingPage({
   const plan = billingPlanFromSummary(summary);
   const planDisplayName = paidProductDisplayName(summary, plan);
   const paidTier = paidProductTierFromSummary(summary, plan);
-  const checkoutHref = getCheckoutUrlForUser(user.id);
-  const teamCheckoutHref = getTeamCheckoutUrlForUser(user.id);
-  const portalHref = getCustomerPortalUrl();
+  const { balanceCents, error: balanceError } = await getBillingBalance(supabase, user.id);
+  const { transactions, error: txError } = await getBillingTransactions(supabase, user.id);
+  const paypalReady = isPayPalConfigured();
 
   return (
     <>
       <PageHeader
         eyebrow="Settings"
         title="Billing"
-        description="Plan and subscription status sync from your billing provider via webhooks. Apply database migrations so this page can read your subscription."
+        description="Manage your plan, account balance, and PayPal transactions."
       />
 
+      {checkoutStatus === "success" ? (
+        <div className={`mb-6 rounded-xl border border-success/35 bg-success-dim px-4 py-3 ${appBody}`}>
+          <p className="font-medium text-success">Payment submitted</p>
+          <p className={`mt-1 text-muted ${appMeta}`}>
+            Your subscription or top-up will appear here once PayPal confirms the webhook.
+          </p>
+        </div>
+      ) : null}
+
+      {checkoutStatus === "cancelled" ? (
+        <div className={`mb-6 rounded-xl border border-white/[0.12] bg-white/[0.03] px-4 py-3 ${appBody}`}>
+          Checkout was cancelled. You can try again below.
+        </div>
+      ) : null}
+
+      {errorHint ? (
+        <div className={`mb-6 rounded-xl border border-danger/35 bg-danger-dim px-4 py-3 ${appBody}`}>
+          {decodeURIComponent(errorHint)}
+        </div>
+      ) : null}
+
       {upgradeHint === "automations" && plan === "free" && !queryError ? (
-        <div className={`mb-6 rounded-xl border border-accent/35 bg-accent/[0.08] px-4 py-3 text-foreground/90 shadow-[0_0_32px_-12px_rgba(94,225,255,0.35)] backdrop-blur-sm ${appBody}`}>
+        <div className={`mb-6 rounded-xl border border-accent/35 bg-accent/[0.08] px-4 py-3 ${appBody}`}>
           <p className="font-medium text-foreground">Automations require a paid plan</p>
           <p className={`mt-1 text-muted ${appMeta}`}>
-            Subscribe below (or finish billing webhook setup) to unlock the Automations console.
+            Subscribe to Pro or Team below to unlock automation execution.
           </p>
         </div>
       ) : null}
 
-      {queryError ? (
-        <div className={`mb-6 rounded-xl border border-amber-400/25 bg-amber-500/[0.08] px-4 py-3 text-foreground/90 backdrop-blur-sm ${appBody}`}>
-          <p className="font-medium">Could not read subscriptions</p>
-          <p className={`mt-1 font-mono ${appMeta}`}>
-            {queryError.message}
-            {queryError.code ? ` (${queryError.code})` : ""}
-          </p>
-          <p className={`mt-2 ${appMeta}`}>
-            Apply{" "}
-            <code className="rounded bg-surface px-1 py-0.5 text-accent">
-              supabase/migrations/20260418120000_platform_spine.sql
-            </code>{" "}
-            in the Supabase SQL Editor, and set{" "}
-            <code className="rounded bg-surface px-1 py-0.5">SUPABASE_SERVICE_ROLE_KEY</code> on
-            the server for webhooks.
-          </p>
-        </div>
-      ) : null}
-
-      <div className="max-w-xl space-y-6">
-        {plan === "free" && !queryError ? (
-          <div className="shynvo-glass rounded-2xl border border-accent/20 bg-accent/[0.06] p-5 md:p-6 shadow-[0_0_32px_-14px_rgba(94,225,255,0.25)]">
-            <h2 className={`${appPanelTitle} text-foreground/95`}>You&apos;re on the free tier</h2>
-            <p className={`mt-2 text-muted ${appBody}`}>
-              Core console features stay available while you evaluate. Limits below are the current
-              product stance; billing adjusts automatically when you subscribe.
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
+        <div className="space-y-6">
+          <Card>
+            <CardHeader title="Account balance" description="Prepaid credits for usage-based features." />
+            <p className="text-3xl font-bold text-foreground">
+              {formatCents(balanceCents)}
             </p>
-            <ul className={`mt-4 space-y-2 text-foreground/85 ${appBody}`}>
-              <li className="flex gap-2">
-                <span className="text-accent">·</span>
-                <span>
-                  <span className="font-medium text-foreground/90">Incidents &amp; services</span> —
-                  full tracking; export needs Supabase sign-in.
-                </span>
-              </li>
-              <li className="flex gap-2">
-                <span className="text-accent">·</span>
-                <span>
-                  <span className="font-medium text-foreground/90">Automations</span> — dry-run and
-                  review flows; provider execution stays on paid plans.
-                </span>
-              </li>
-              <li className="flex gap-2">
-                <span className="text-accent">·</span>
-                <span>
-                  <span className="font-medium text-foreground/90">API &amp; connectors</span> —
-                  keys and proxies scale with your deployment; alert ingest is paid-gated in
-                  production.
-                </span>
-              </li>
-            </ul>
-            <div className="mt-5 flex flex-wrap gap-3">
-              <Link
-                href="/pricing"
-                className={`inline-flex h-10 items-center justify-center rounded-xl border border-white/[0.14] bg-white/[0.04] px-4 font-medium text-foreground transition-colors hover:border-accent/40 ${appBody}`}
-              >
-                View pricing
-              </Link>
-              {checkoutHref || teamCheckoutHref ? (
-                <a
-                  href={(checkoutHref ?? teamCheckoutHref) as string}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`inline-flex h-10 items-center justify-center rounded-xl bg-accent px-4 font-semibold text-background hover:opacity-95 ${appBody}`}
-                >
-                  Upgrade
-                </a>
-              ) : null}
-            </div>
-          </div>
-        ) : null}
-
-        <div className="shynvo-glass rounded-2xl p-5 md:p-6">
-          <h2 className={`${appPanelTitle} text-foreground/95`}>Current plan</h2>
-          <p className="mt-2 text-2xl font-semibold text-foreground">{planDisplayName}</p>
-          {plan === "paid" && paidTier === "unknown" && !queryError ? (
-            <p className={`mt-2 ${appMeta}`}>
-              To show <span className="text-foreground/80">Zentro Pro</span> or{" "}
-              <span className="text-foreground/80">Zentro Team</span> here, set{" "}
-              <code className={`rounded bg-surface px-1 font-mono text-accent ${appMeta}`}>
-                NEXT_PUBLIC_LEMONSQUEEZY_PRO_VARIANT_ID
-              </code>{" "}
-              and{" "}
-              <code className={`rounded bg-surface px-1 font-mono text-accent ${appMeta}`}>
-                NEXT_PUBLIC_LEMONSQUEEZY_TEAM_VARIANT_ID
-              </code>{" "}
-              to match your Lemon variant ids.
-            </p>
-          ) : null}
-          {summary ? (
-            <dl className={`mt-4 space-y-2 font-mono ${appMeta}`}>
-              <div className="flex justify-between gap-4">
-                <dt>Status</dt>
-                <dd className="text-foreground/90">{summary.status}</dd>
+            {balanceError ? (
+              <p className={`mt-2 text-danger ${appMeta}`}>{balanceError}</p>
+            ) : null}
+            {paypalReady ? (
+              <div className="mt-4">
+                <BillingCheckoutActions
+                  tier="top_up"
+                  label="Top up $25"
+                  topUpAmount={25}
+                />
               </div>
-              {summary.lemon_variant_id ? (
+            ) : (
+              <p className={`mt-3 text-muted ${appMeta}`}>
+                Configure PayPal credentials to enable top-ups.
+              </p>
+            )}
+          </Card>
+
+          <Card>
+            <CardHeader title="Current plan" />
+            <p className="text-2xl font-semibold text-foreground">{planDisplayName}</p>
+            {summary ? (
+              <dl className={`mt-4 space-y-2 font-mono ${appMeta}`}>
                 <div className="flex justify-between gap-4">
-                  <dt>Variant</dt>
-                  <dd className="truncate text-foreground/90" title={summary.lemon_variant_id}>
-                    {summary.lemon_variant_id}
-                  </dd>
+                  <dt>Status</dt>
+                  <dd className="text-foreground/90">{summary.status}</dd>
                 </div>
-              ) : null}
-              {summary.renews_at ? (
-                <div className="flex justify-between gap-4">
-                  <dt>Renews</dt>
-                  <dd className="text-foreground/90">{summary.renews_at}</dd>
-                </div>
-              ) : null}
-              {summary.ends_at ? (
-                <div className="flex justify-between gap-4">
-                  <dt>Ends</dt>
-                  <dd className="text-foreground/90">{summary.ends_at}</dd>
-                </div>
-              ) : null}
-            </dl>
-          ) : !queryError ? (
-            <p className={`mt-3 text-muted ${appBody}`}>
-              No subscription on file yet. After you subscribe, the provider sends a webhook and
-              this page will update (usually within seconds).
-            </p>
-          ) : null}
+                {summary.paypal_subscription_id ? (
+                  <div className="flex justify-between gap-4">
+                    <dt>PayPal sub</dt>
+                    <dd className="truncate text-foreground/90" title={summary.paypal_subscription_id}>
+                      {summary.paypal_subscription_id.slice(0, 12)}…
+                    </dd>
+                  </div>
+                ) : null}
+                {summary.renews_at ? (
+                  <div className="flex justify-between gap-4">
+                    <dt>Renews</dt>
+                    <dd className="text-foreground/90">{summary.renews_at}</dd>
+                  </div>
+                ) : null}
+              </dl>
+            ) : !queryError ? (
+              <p className={`mt-3 text-muted ${appBody}`}>
+                No active subscription. Choose a plan below to upgrade.
+              </p>
+            ) : null}
+            {queryError ? (
+              <p className={`mt-3 text-amber-300 ${appMeta}`}>{queryError.message}</p>
+            ) : null}
+          </Card>
         </div>
 
-        <div className="shynvo-glass rounded-2xl p-5 md:p-6">
-          <h2 className={`${appPanelTitle} text-foreground/95`}>Upgrade</h2>
-          <p className={`mt-2 text-muted ${appBody}`}>
-            Checkout includes your account id so webhooks can attach the subscription to your
-            profile.
-          </p>
-          {checkoutHref || teamCheckoutHref ? (
-            <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-              {checkoutHref ? (
-                <a
-                  href={checkoutHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`inline-flex h-11 flex-1 items-center justify-center rounded-xl bg-accent px-5 font-semibold text-background shadow-[0_0_28px_-8px_rgba(94,225,255,0.45)] transition-[opacity,box-shadow] hover:opacity-95 hover:shadow-[0_0_36px_-6px_rgba(94,225,255,0.55)] sm:min-w-[10rem] ${appBody}`}
-                >
-                  {teamCheckoutHref ? "Pro checkout" : "Open checkout"}
-                </a>
-              ) : null}
-              {teamCheckoutHref ? (
-                <a
-                  href={teamCheckoutHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`inline-flex h-11 flex-1 items-center justify-center rounded-xl border border-white/[0.12] bg-white/[0.04] px-5 font-semibold text-foreground transition-[border-color,box-shadow] hover:border-accent/40 hover:shadow-[0_0_24px_-12px_rgba(94,225,255,0.2)] sm:min-w-[10rem] ${appBody}`}
-                >
-                  Team checkout
-                </a>
-              ) : null}
-            </div>
-          ) : (
-            <p className={`mt-3 text-muted ${appBody}`}>
-              Set{" "}
-              <code className={`rounded bg-surface px-1 py-0.5 font-mono text-accent ${appMeta}`}>
-                NEXT_PUBLIC_LEMONSQUEEZY_CHECKOUT_URL
-              </code>{" "}
-              (Pro) and optionally{" "}
-              <code className={`rounded bg-surface px-1 py-0.5 font-mono text-accent ${appMeta}`}>
-                NEXT_PUBLIC_LEMONSQUEEZY_TEAM_CHECKOUT_URL
-              </code>{" "}
-              (Team) to your Lemon checkout links.
-            </p>
-          )}
+        <div className="space-y-6">
+          <Card>
+            <CardHeader
+              title="Upgrade plan"
+              description="Secure checkout powered by PayPal. Subscriptions sync via webhook."
+            />
+            {paypalReady && isBillingConfigured() ? (
+              <div className="grid gap-4 sm:grid-cols-2">
+                {PRICING_TIERS.filter((t) => t.id !== "free").map((tier) => (
+                  <div
+                    key={tier.id}
+                    className={`rounded-xl border p-4 ${
+                      paidTier === tier.id
+                        ? "border-accent/40 bg-accent/[0.06]"
+                        : "border-white/[0.08]"
+                    }`}
+                  >
+                    <p className={`${appPanelTitle}`}>{tier.name}</p>
+                    <p className="mt-1 text-lg font-bold">
+                      {tier.price}
+                      <span className="text-sm font-normal text-muted">{tier.period}</span>
+                    </p>
+                    <p className={`mt-2 ${appMeta} text-muted`}>{tier.description}</p>
+                    {paidTier === tier.id && plan === "paid" ? (
+                      <p className={`mt-3 text-success ${appMeta}`}>Current plan</p>
+                    ) : (
+                      <div className="mt-4">
+                        <BillingCheckoutActions
+                          tier={tier.id as "pro" | "team"}
+                          label={tier.cta}
+                          variant={tier.highlight ? "primary" : "secondary"}
+                        />
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className={`text-muted ${appBody}`}>
+                Set{" "}
+                <code className="rounded bg-surface px-1 font-mono text-accent">PAYPAL_CLIENT_ID</code>,{" "}
+                <code className="rounded bg-surface px-1 font-mono text-accent">PAYPAL_CLIENT_SECRET</code>, and plan IDs{" "}
+                <code className="rounded bg-surface px-1 font-mono text-accent">PAYPAL_PLAN_ID_PRO</code> /{" "}
+                <code className="rounded bg-surface px-1 font-mono text-accent">PAYPAL_PLAN_ID_TEAM</code>.
+              </p>
+            )}
+          </Card>
+
+          <Card>
+            <CardHeader title="Transaction history" />
+            {txError ? (
+              <p className={`text-muted ${appMeta}`}>{txError}</p>
+            ) : transactions.length === 0 ? (
+              <p className={`text-muted ${appBody}`}>No transactions yet.</p>
+            ) : (
+              <ul className="divide-y divide-white/[0.06]">
+                {transactions.map((tx) => (
+                  <li key={tx.id} className="flex flex-wrap items-center justify-between gap-2 py-3">
+                    <div>
+                      <p className={`font-medium text-foreground/90 ${appBody}`}>
+                        {tx.description ?? tx.type}
+                      </p>
+                      <p className={`${appMeta} text-muted`}>
+                        {new Date(tx.created_at).toLocaleString()} · {tx.status}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-mono text-sm text-foreground">
+                        {formatCents(tx.amount_cents, tx.currency)}
+                      </p>
+                      {tx.invoice_url ? (
+                        <a
+                          href={tx.invoice_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`${appMeta} text-accent hover:underline`}
+                        >
+                          Invoice
+                        </a>
+                      ) : null}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Card>
         </div>
-
-        {plan === "paid" && portalHref ? (
-          <div className="shynvo-glass rounded-2xl p-5 md:p-6">
-            <h2 className={`${appPanelTitle} text-foreground/95`}>Manage subscription</h2>
-            <p className={`mt-2 text-muted ${appBody}`}>
-              Open your billing customer portal to update payment method, view invoices, or cancel.
-            </p>
-            <a
-              href={portalHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`mt-4 inline-flex h-11 items-center justify-center rounded-xl border border-white/[0.1] bg-white/[0.03] px-5 font-semibold text-foreground transition-[border-color,color,box-shadow] hover:border-accent/40 hover:text-accent hover:shadow-[0_0_24px_-12px_rgba(94,225,255,0.2)] ${appBody}`}
-            >
-              Customer portal
-            </a>
-          </div>
-        ) : plan === "paid" && !portalHref ? (
-          <div className="shynvo-glass-subtle rounded-2xl border border-dashed border-white/[0.12] p-5 md:p-6">
-            <h2 className={`${appPanelTitle} text-foreground/95`}>Customer portal</h2>
-            <p className={`mt-2 text-muted ${appBody}`}>
-              Optional: set{" "}
-              <code className={`rounded bg-surface px-1 font-mono text-accent ${appMeta}`}>
-                NEXT_PUBLIC_LEMONSQUEEZY_CUSTOMER_PORTAL_URL
-              </code>{" "}
-              (or <code className={`font-mono ${appMeta}`}>LEMONSQUEEZY_CUSTOMER_PORTAL_URL</code>) to
-              your provider&apos;s customer portal URL.
-            </p>
-          </div>
-        ) : null}
-
-        <p className={appMeta}>
-          Billing changes at your provider (cancel, payment method) sync via webhook. Questions?{" "}
-          <Link href={getMailtoHref("billing")} className="text-accent hover:underline">
-            {SITE_EMAIL_CONTACT}
-          </Link>
-        </p>
       </div>
+
+      <p className={`mt-8 ${appMeta}`}>
+        Billing questions?{" "}
+        <Link href={getMailtoHref("billing")} className="text-accent hover:underline">
+          {SITE_EMAIL_CONTACT}
+        </Link>
+      </p>
     </>
   );
 }

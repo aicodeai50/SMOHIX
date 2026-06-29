@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { appBody, appLabel, appMeta, appOverline } from "@/lib/app-typography";
 import {
   buildCurrentMappingSnapshot,
@@ -143,7 +143,7 @@ export default async function MappingDigestPage({
 
           {pending.changes.length > 0 ? (
             <div className="mb-6">
-              <PlaceholderCard title="Pending changes vs last snapshot">
+              <ConsolePanel title="Pending changes vs last snapshot">
                 <ul className={`space-y-2 ${appBody}`}>
                   {pending.changes.slice(0, 12).map((c) => (
                     <li key={`${c.kind}-${c.id}`} className="border-b border-white/[0.06] pb-2 last:border-0">
@@ -152,7 +152,7 @@ export default async function MappingDigestPage({
                     </li>
                   ))}
                 </ul>
-              </PlaceholderCard>
+              </ConsolePanel>
             </div>
           ) : (
             <p className={`mb-6 ${appMeta} text-muted`}>
@@ -164,7 +164,7 @@ export default async function MappingDigestPage({
 
           {canEdit ? (
             <div className="mb-6">
-              <PlaceholderCard title="Notification settings">
+              <ConsolePanel title="Notification settings">
                 <form action={updateMappingDigestSettingsAction} className={`space-y-4 ${appBody}`}>
                   <div>
                     <label className={appLabel} htmlFor="compliance_mapping_digest_webhook_url">
@@ -195,7 +195,7 @@ export default async function MappingDigestPage({
                     Save settings
                   </button>
                 </form>
-              </PlaceholderCard>
+              </ConsolePanel>
             </div>
           ) : null}
 
@@ -227,7 +227,7 @@ export default async function MappingDigestPage({
             Preview JSON payload
           </a>
 
-          <PlaceholderCard title="Delivery log">
+          <ConsolePanel title="Delivery log">
             {deliveries.length === 0 ? (
               <p className={appMeta}>No digest deliveries yet.</p>
             ) : (
@@ -242,7 +242,7 @@ export default async function MappingDigestPage({
                 ))}
               </ul>
             )}
-          </PlaceholderCard>
+          </ConsolePanel>
         </>
       )}
     </>

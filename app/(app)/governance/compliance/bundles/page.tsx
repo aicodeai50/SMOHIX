@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { appBody, appLabel, appMeta, appOverline } from "@/lib/app-typography";
 import { listEvidenceBundlesForOrg } from "@/lib/compliance/evidence-bundle";
 import { getOrgContextForUser } from "@/lib/org/context";
@@ -119,7 +119,7 @@ export default async function ComplianceBundlesPage({
         />
       ) : (
         <div className="grid gap-6 lg:grid-cols-2">
-          <PlaceholderCard title={canEdit ? "Generate bundle" : "View only"}>
+          <ConsolePanel title={canEdit ? "Generate bundle" : "View only"}>
             {canEdit ? (
               <form action={createEvidenceBundleAction} className="space-y-4">
                 <div>
@@ -151,9 +151,9 @@ export default async function ComplianceBundlesPage({
             ) : (
               <p className={`${appMeta} text-muted`}>Ask an org owner or admin to generate bundles.</p>
             )}
-          </PlaceholderCard>
+          </ConsolePanel>
 
-          <PlaceholderCard title="Secure delivery webhook">
+          <ConsolePanel title="Secure delivery webhook">
             {canEdit ? (
               <form action={updateEvidenceWebhookAction} className="space-y-3">
                 <label className={appLabel} htmlFor="evidence_bundle_webhook_url">
@@ -182,12 +182,12 @@ export default async function ComplianceBundlesPage({
             ) : (
               <p className={`font-mono text-sm text-muted ${appBody}`}>{webhookUrl || "—"}</p>
             )}
-          </PlaceholderCard>
+          </ConsolePanel>
         </div>
       )}
 
       <div className="mt-6">
-        <PlaceholderCard title="Stored bundles">
+        <ConsolePanel title="Stored bundles">
           {bundles.length === 0 ? (
             <ConsoleEmptyState
               title="No bundles yet"
@@ -237,7 +237,7 @@ export default async function ComplianceBundlesPage({
               </table>
             </div>
           )}
-        </PlaceholderCard>
+        </ConsolePanel>
       </div>
     </>
   );

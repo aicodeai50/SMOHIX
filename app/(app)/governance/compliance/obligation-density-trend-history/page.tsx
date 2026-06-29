@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import { buildObligationDensityTrendHistoryPack } from "@/lib/compliance/obligation-density-trend-history";
@@ -138,7 +138,7 @@ export default async function ObligationDensityTrendHistoryPage() {
 
           <p className={`mb-6 ${appMeta} text-muted`}>{pack.capacitySummary}</p>
 
-          <PlaceholderCard title="Trailing quarter — obligations due per week">
+          <ConsolePanel title="Trailing quarter — obligations due per week">
             <ul className={`space-y-3 ${appBody}`}>
               {trailingPoints.map((p) => (
                 <li key={p.weekKey}>
@@ -176,11 +176,11 @@ export default async function ObligationDensityTrendHistoryPage() {
                 </li>
               ))}
             </ul>
-          </PlaceholderCard>
+          </ConsolePanel>
 
           {forwardPoints.length > 0 ? (
             <div className="mt-6">
-              <PlaceholderCard title="Forward forecast weeks">
+              <ConsolePanel title="Forward forecast weeks">
                 <ul className={`space-y-3 ${appBody}`}>
                   {forwardPoints.map((p) => (
                     <li key={p.weekKey}>
@@ -202,13 +202,13 @@ export default async function ObligationDensityTrendHistoryPage() {
                     </li>
                   ))}
                 </ul>
-              </PlaceholderCard>
+              </ConsolePanel>
             </div>
           ) : null}
 
           {pack.totalAlertDeliveries > 0 ? (
             <div className="mt-6">
-              <PlaceholderCard title="Alert types in trailing quarter">
+              <ConsolePanel title="Alert types in trailing quarter">
                 <p className={appMeta}>
                   Deliveries from{" "}
                   <Link
@@ -219,7 +219,7 @@ export default async function ObligationDensityTrendHistoryPage() {
                   </Link>{" "}
                   log — weekly_density, peak_week, overdue_spike.
                 </p>
-              </PlaceholderCard>
+              </ConsolePanel>
             </div>
           ) : null}
 

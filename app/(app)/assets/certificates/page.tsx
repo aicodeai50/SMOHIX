@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { appBody, appLabel, appMeta, appOverline } from "@/lib/app-typography";
 import { listCertificatesForUser } from "@/lib/equipment/data";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
@@ -63,7 +63,7 @@ export default async function CertificatesPage({
       ) : null}
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <PlaceholderCard title="Add certificate">
+        <ConsolePanel title="Add certificate">
           <form action={createCertificateAction} className="space-y-3">
             <div>
               <label htmlFor="cert-name" className={`mb-1 block ${appLabel}`}>
@@ -177,9 +177,9 @@ export default async function CertificatesPage({
               Add certificate
             </button>
           </form>
-        </PlaceholderCard>
+        </ConsolePanel>
 
-        <PlaceholderCard title="Inventory">
+        <ConsolePanel title="Inventory">
           <h3 className={appOverline}>Tracked certificates</h3>
           {rows.length === 0 ? (
             <div className="mt-4">
@@ -216,7 +216,7 @@ export default async function CertificatesPage({
               ))}
             </ul>
           )}
-        </PlaceholderCard>
+        </ConsolePanel>
       </div>
     </>
   );

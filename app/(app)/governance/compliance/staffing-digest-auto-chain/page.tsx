@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import {
@@ -104,7 +104,7 @@ export default async function StaffingDigestAutoChainPage({
       ) : (
         <>
           <div className="mb-6">
-            <PlaceholderCard title="Auto-chain overview">
+            <ConsolePanel title="Auto-chain overview">
             <p className={appOverline}>Current UTC week</p>
             <p className={`mt-1 font-mono text-sm text-foreground`}>{periodKey}</p>
             <p className={`mt-3 ${appBody}`}>
@@ -128,12 +128,12 @@ export default async function StaffingDigestAutoChainPage({
                 Committee escalation
               </Link>
             </div>
-            </PlaceholderCard>
+            </ConsolePanel>
           </div>
 
           {canEdit && settings ? (
             <div className="mb-6">
-              <PlaceholderCard title="Settings & run">
+              <ConsolePanel title="Settings & run">
               <form action={updateStaffingDigestAutoChainSettingsAction} className="space-y-4">
                 <label className={`flex items-center gap-2 ${appBody}`}>
                   <input
@@ -168,11 +168,11 @@ export default async function StaffingDigestAutoChainPage({
                   Force re-run (this week)
                 </button>
               </form>
-            </PlaceholderCard>
+            </ConsolePanel>
             </div>
           ) : null}
 
-          <PlaceholderCard title="Recent runs">
+          <ConsolePanel title="Recent runs">
             {runs.length === 0 ? (
               <p className={`mt-3 ${appBody}`}>No auto-chain runs recorded yet.</p>
             ) : (
@@ -199,7 +199,7 @@ export default async function StaffingDigestAutoChainPage({
                 ))}
               </ul>
             )}
-          </PlaceholderCard>
+          </ConsolePanel>
         </>
       )}
     </>

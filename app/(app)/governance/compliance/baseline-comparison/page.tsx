@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import {
@@ -138,7 +138,7 @@ export default async function BaselineComparisonPage() {
             </div>
           </div>
 
-          <PlaceholderCard title="Framework baseline matrix">
+          <ConsolePanel title="Framework baseline matrix">
             <div className="overflow-x-auto">
               <table className={`w-full text-left ${appBody}`}>
                 <thead className="border-b border-border text-[11px] uppercase tracking-wide text-muted">
@@ -199,7 +199,7 @@ export default async function BaselineComparisonPage() {
               starting {pack.sinceIso.slice(0, 10)}. Prior period is the immediately preceding {pack.periodDays}{" "}
               days.
             </p>
-          </PlaceholderCard>
+          </ConsolePanel>
         </>
       )}
     </>

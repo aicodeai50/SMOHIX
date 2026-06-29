@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceControlTags } from "@/components/compliance/ComplianceControlTags";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import { buildCisV8AssessmentReport } from "@/lib/compliance/cis-v8-assessment";
@@ -125,7 +125,7 @@ export default async function CisV8AssessmentPage() {
 
       <p className={`mb-6 ${appMeta} text-muted`}>{report.monitoringNote}</p>
 
-      <PlaceholderCard title="Implementation Group readiness">
+      <ConsolePanel title="Implementation Group readiness">
         <div className="grid gap-3 sm:grid-cols-3">
           {report.igReadiness.map((ig) => (
             <div
@@ -140,10 +140,10 @@ export default async function CisV8AssessmentPage() {
             </div>
           ))}
         </div>
-      </PlaceholderCard>
+      </ConsolePanel>
 
       <div className="mt-6">
-        <PlaceholderCard title="CIS safeguard monitoring (30d vs prior 30d)">
+        <ConsolePanel title="CIS safeguard monitoring (30d vs prior 30d)">
           <div className="overflow-x-auto">
             <table className={`w-full text-left ${appBody}`}>
               <thead className="border-b border-border text-[11px] uppercase tracking-wide text-muted">
@@ -183,11 +183,11 @@ export default async function CisV8AssessmentPage() {
               </tbody>
             </table>
           </div>
-        </PlaceholderCard>
+        </ConsolePanel>
       </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
-        <PlaceholderCard title="Gap analysis">
+        <ConsolePanel title="Gap analysis">
           {report.exceptions.length === 0 ? (
             <p className={`${appMeta} text-emerald-300`}>No gaps in the current monitoring window.</p>
           ) : (
@@ -201,9 +201,9 @@ export default async function CisV8AssessmentPage() {
               ))}
             </ul>
           )}
-        </PlaceholderCard>
+        </ConsolePanel>
 
-        <PlaceholderCard title="Assessor export">
+        <ConsolePanel title="Assessor export">
           <p className={`mb-4 ${appMeta} text-muted`}>
             Download CIS v8 assessment JSON for benchmark workpapers alongside other framework exports.
           </p>
@@ -213,7 +213,7 @@ export default async function CisV8AssessmentPage() {
           >
             Download CIS v8 JSON
           </a>
-        </PlaceholderCard>
+        </ConsolePanel>
       </div>
     </>
   );

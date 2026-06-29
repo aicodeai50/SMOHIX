@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import { buildEvidenceLineagePack } from "@/lib/compliance/evidence-lineage";
@@ -127,7 +127,7 @@ export default async function EvidenceLineagePage() {
             </div>
           </div>
 
-          <PlaceholderCard title="Evidence pipeline">
+          <ConsolePanel title="Evidence pipeline">
             <ol className={`space-y-3 ${appBody}`}>
               {pack.pipeline.map((stage, idx) => (
                 <li
@@ -153,11 +153,11 @@ export default async function EvidenceLineagePage() {
                 </li>
               ))}
             </ol>
-          </PlaceholderCard>
+          </ConsolePanel>
 
           {pack.bundles.length > 0 ? (
             <div className="mt-6">
-              <PlaceholderCard title="Recent evidence bundles">
+              <ConsolePanel title="Recent evidence bundles">
                 <ul className={`space-y-2 ${appBody}`}>
                   {pack.bundles.slice(0, 6).map((b) => (
                     <li
@@ -180,12 +180,12 @@ export default async function EvidenceLineagePage() {
                 >
                   All bundles
                 </Link>
-              </PlaceholderCard>
+              </ConsolePanel>
             </div>
           ) : null}
 
           <div className="mt-6">
-            <PlaceholderCard title="Control evidence trails">
+            <ConsolePanel title="Control evidence trails">
               {pack.trails.length === 0 ? (
                 <p className={`${appMeta} text-muted`}>
                   No mapped controls in this window — add audit events or accept automation policies.
@@ -239,7 +239,7 @@ export default async function EvidenceLineagePage() {
                   ))}
                 </ul>
               )}
-            </PlaceholderCard>
+            </ConsolePanel>
           </div>
         </>
       )}

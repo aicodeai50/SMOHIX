@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appLabel, appMeta, appOverline } from "@/lib/app-typography";
 import {
@@ -139,7 +139,7 @@ export default async function StaffingSlaBreachDigestPage({
           </div>
 
           {canEdit ? (
-            <PlaceholderCard title="Digest settings">
+            <ConsolePanel title="Digest settings">
               <form
                 action={updateStaffingSlaBreachDigestSettingsAction}
                 className={`space-y-4 ${appBody}`}
@@ -214,12 +214,12 @@ export default async function StaffingSlaBreachDigestPage({
                   ZENTRO_STAFFING_SLA_BREACH_DIGEST_CRON_SECRET
                 </code>
               </p>
-            </PlaceholderCard>
+            </ConsolePanel>
           ) : null}
 
           {pack.breachItems.length > 0 ? (
             <div className="mt-6">
-              <PlaceholderCard title="SLA breach queue">
+              <ConsolePanel title="SLA breach queue">
                 <ul className={`space-y-2 ${appMeta}`}>
                   {pack.breachItems.map((item) => (
                     <li
@@ -236,13 +236,13 @@ export default async function StaffingSlaBreachDigestPage({
                     </li>
                   ))}
                 </ul>
-              </PlaceholderCard>
+              </ConsolePanel>
             </div>
           ) : null}
 
           {deliveries.length > 0 ? (
             <div className="mt-6">
-              <PlaceholderCard title="Delivery log">
+              <ConsolePanel title="Delivery log">
                 <ul className={`space-y-2 ${appMeta}`}>
                   {deliveries.map((row) => (
                     <li key={row.id} className="rounded-lg border border-white/[0.06] px-3 py-2">
@@ -256,7 +256,7 @@ export default async function StaffingSlaBreachDigestPage({
                     </li>
                   ))}
                 </ul>
-              </PlaceholderCard>
+              </ConsolePanel>
             </div>
           ) : null}
 

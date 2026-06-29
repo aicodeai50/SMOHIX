@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import { buildEvidenceRequestSlaDashboardPack } from "@/lib/compliance/evidence-request-sla-dashboard";
@@ -160,7 +160,7 @@ export default async function EvidenceRequestSlaPage({
           </div>
 
           <div className="mb-6 grid gap-6 lg:grid-cols-2">
-            <PlaceholderCard title="Overdue queue">
+            <ConsolePanel title="Overdue queue">
               {pack.overdueQueue.length === 0 ? (
                 <p className={appMeta}>No overdue assessor evidence requests.</p>
               ) : (
@@ -178,9 +178,9 @@ export default async function EvidenceRequestSlaPage({
                   ))}
                 </ul>
               )}
-            </PlaceholderCard>
+            </ConsolePanel>
 
-            <PlaceholderCard title="At-risk queue">
+            <ConsolePanel title="At-risk queue">
               {pack.atRiskQueue.length === 0 ? (
                 <p className={appMeta}>No requests in the at-risk window.</p>
               ) : (
@@ -192,12 +192,12 @@ export default async function EvidenceRequestSlaPage({
                   ))}
                 </ul>
               )}
-            </PlaceholderCard>
+            </ConsolePanel>
           </div>
 
           {pack.assigneeSummaries.length > 0 ? (
             <div className="mb-6">
-              <PlaceholderCard title="Assignee SLA rollup">
+              <ConsolePanel title="Assignee SLA rollup">
                 <ul className={`space-y-2 ${appBody}`}>
                   {pack.assigneeSummaries.slice(0, 10).map((a) => (
                     <li key={a.assigneeUserId ?? "unassigned"}>
@@ -211,15 +211,15 @@ export default async function EvidenceRequestSlaPage({
                     </li>
                   ))}
                 </ul>
-              </PlaceholderCard>
+              </ConsolePanel>
             </div>
           ) : null}
 
-          <PlaceholderCard title="Auditor digest preview">
+          <ConsolePanel title="Auditor digest preview">
             <pre className={`max-h-64 overflow-auto whitespace-pre-wrap text-xs text-muted ${appMeta}`}>
               {pack.auditorDigestPreview}
             </pre>
-          </PlaceholderCard>
+          </ConsolePanel>
         </>
       )}
     </>

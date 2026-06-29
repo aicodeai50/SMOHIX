@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import { buildObligationStaffingActionTrackerPack } from "@/lib/compliance/obligation-staffing-action-tracker";
@@ -158,7 +158,7 @@ export default async function StaffingActionsPage({
 
           <p className={`mb-6 ${appMeta} text-muted`}>{pack.committeeSummary}</p>
 
-          <PlaceholderCard title="Staffing actions">
+          <ConsolePanel title="Staffing actions">
             <ul className={`space-y-4 ${appBody}`}>
               {pack.items.map((item) => (
                 <li
@@ -239,7 +239,7 @@ export default async function StaffingActionsPage({
                 </li>
               ))}
             </ul>
-          </PlaceholderCard>
+          </ConsolePanel>
 
           <p className={`mt-6 ${appMeta}`}>
             <Link

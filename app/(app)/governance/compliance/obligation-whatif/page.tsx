@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import { buildBoardObligationWhatIfPack } from "@/lib/compliance/board-obligation-whatif";
@@ -133,7 +133,7 @@ export default async function ObligationWhatIfPage() {
             </div>
           </div>
 
-          <PlaceholderCard title="Scenario rankings (peak week delta vs baseline)">
+          <ConsolePanel title="Scenario rankings (peak week delta vs baseline)">
             <ul className={`space-y-3 ${appBody}`}>
               {pack.results.map((result) => (
                 <li
@@ -166,11 +166,11 @@ export default async function ObligationWhatIfPage() {
                 </li>
               ))}
             </ul>
-          </PlaceholderCard>
+          </ConsolePanel>
 
           {topRelief ? (
             <div className="mt-6">
-              <PlaceholderCard title={`Recommended relief — ${topRelief.scenario.title}`}>
+              <ConsolePanel title={`Recommended relief — ${topRelief.scenario.title}`}>
                 <p className={appBody}>{topRelief.capacityNote}</p>
                 <p className={`mt-4 ${appMeta}`}>
                   <Link
@@ -187,7 +187,7 @@ export default async function ObligationWhatIfPage() {
                     Density trends
                   </Link>
                 </p>
-              </PlaceholderCard>
+              </ConsolePanel>
             </div>
           ) : null}
 

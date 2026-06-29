@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import { FRAMEWORK_CONSOLE_PATHS } from "@/lib/compliance/baseline-comparison";
@@ -130,7 +130,7 @@ export default async function ObligationCrossoverPage() {
           </div>
 
           {pack.frameworkPairs.length > 0 ? (
-            <PlaceholderCard title="Framework pair crossovers">
+            <ConsolePanel title="Framework pair crossovers">
               <div className="overflow-x-auto">
                 <table className={`w-full min-w-[480px] text-left ${appMeta}`}>
                   <thead>
@@ -171,11 +171,11 @@ export default async function ObligationCrossoverPage() {
                   </tbody>
                 </table>
               </div>
-            </PlaceholderCard>
+            </ConsolePanel>
           ) : null}
 
           <div className="mt-6">
-            <PlaceholderCard title="Evidence reuse clusters">
+            <ConsolePanel title="Evidence reuse clusters">
               {pack.clusters.length === 0 ? (
                 <p className={`${appMeta} text-emerald-300`}>
                   No multi-framework crossover clusters in the current horizon — obligations are isolated by
@@ -217,12 +217,12 @@ export default async function ObligationCrossoverPage() {
                   ))}
                 </ul>
               )}
-            </PlaceholderCard>
+            </ConsolePanel>
           </div>
 
           {pack.topReuseOpportunities.length > 0 ? (
             <div className="mt-6">
-              <PlaceholderCard title="Top reuse opportunities">
+              <ConsolePanel title="Top reuse opportunities">
                 <ul className={`space-y-2 ${appBody}`}>
                   {pack.topReuseOpportunities.map((opp) => (
                     <li
@@ -234,7 +234,7 @@ export default async function ObligationCrossoverPage() {
                     </li>
                   ))}
                 </ul>
-              </PlaceholderCard>
+              </ConsolePanel>
             </div>
           ) : null}
         </>

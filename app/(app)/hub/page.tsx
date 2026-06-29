@@ -4,6 +4,7 @@ import { launchGuidedScenarioAction } from "./actions";
 
 import { PageHeader } from "@/components/app/PageHeader";
 import { ConsoleAmbientBanner } from "@/components/console/ConsoleAmbientBanner";
+import { DashboardStats, QuickActions } from "@/components/console/DashboardStats";
 import { HubQuickLinksPanel } from "@/components/console/HubQuickLinksPanel";
 import { getUserDisplayName, getUserFirstName } from "@/lib/auth/display-name";
 import { buildHubPersonalizationState } from "@/lib/console/hub-personalization";
@@ -50,10 +51,10 @@ export default async function HubPage() {
   }
 
   const signedIn = Boolean(displayName);
-  const title = signedIn && firstName ? `Welcome, ${firstName}` : "Platform";
+  const title = signedIn && firstName ? `Welcome back, ${firstName}` : "Dashboard";
   const description = signedIn
-    ? "Your workspace is live. Start with the essentials below — the rail above reaches every module without repeating it here."
-    : "Core flows work without accounts. Add organization sign-in when you want shared sessions, billing, and durable history.";
+    ? "Your operations command center — stats, quick actions, and module shortcuts."
+    : "Core flows work without accounts. Sign in for shared sessions, billing, and durable history.";
   const guidedFlow = [
     "Alert opens incident",
     "System proposes guarded action",
@@ -83,6 +84,8 @@ export default async function HubPage() {
     <>
       <PageHeader eyebrow={SITE_BRAND_NAME} title={title} description={description} />
       <ConsoleAmbientBanner snapshot={ambient} />
+      <DashboardStats userId={userId} />
+      <QuickActions />
       <HubQuickLinksPanel
         quickLinks={hubPersonalization.quickLinks}
         pinnedHrefs={hubPersonalization.pinnedHrefs}
@@ -90,12 +93,17 @@ export default async function HubPage() {
         canPersistServer={Boolean(userId && hasSupabaseAuth())}
         customized={hubPersonalization.customized}
       />
-      <section className="shynvo-glass mt-6 rounded-2xl p-5 md:p-6">
+      <section className="zentro-glass mt-6 rounded-2xl p-5 md:p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h2 className={appPanelTitle}>Guided scenario flow</h2>
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className={appPanelTitle}>Demo scenario flow</h2>
+              <span className={`rounded-md border border-amber-400/25 bg-amber-400/10 px-2 py-0.5 font-semibold uppercase tracking-wide text-amber-200 ${appMeta}`}>
+                Demo data
+              </span>
+            </div>
             <p className={`mt-1 ${appBody} text-muted`}>
-              Seed a realistic incident-to-approval evidence scenario in one click.
+              Seed a clearly labeled local scenario to evaluate the incident-to-approval evidence loop.
             </p>
           </div>
           <form action={launchGuidedScenarioAction}>
@@ -103,7 +111,7 @@ export default async function HubPage() {
               type="submit"
               className={`inline-flex h-10 items-center justify-center rounded-xl bg-accent px-4 font-semibold text-background shadow-[0_0_28px_-8px_rgba(94,225,255,0.45)] transition-[opacity,box-shadow] hover:opacity-95 hover:shadow-[0_0_36px_-6px_rgba(94,225,255,0.55)] ${appBody}`}
             >
-              Run guided scenario
+              Create demo scenario
             </button>
           </form>
         </div>
@@ -114,8 +122,8 @@ export default async function HubPage() {
         </ol>
       </section>
       <p className={`mt-6 max-w-2xl text-pretty ${appBody} text-muted`}>
-        Automations, runbooks, approvals, audit, billing, connectors, and the full module rail stay
-        above — one navigation surface, no duplicate module grids.{" "}
+        Automations, runbooks, approvals, audit, billing, connectors, and the focused module rail stay
+        above.{" "}
         <Link href="/vision" className="font-medium text-accent hover:underline">
           Vision & roadmap
         </Link>{" "}

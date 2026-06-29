@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import { runAttackPathSimulationForUser } from "@/lib/attack-paths/data";
 import { getOrgContextForUser } from "@/lib/org/context";
@@ -92,7 +92,7 @@ export default async function AttackPathsPage() {
         </div>
       </div>
 
-      <PlaceholderCard title="Ranked attack paths">
+      <ConsolePanel title="Ranked attack paths">
         {paths.length === 0 ? (
           <ConsoleEmptyState
             title="No paths simulated yet"
@@ -131,7 +131,7 @@ export default async function AttackPathsPage() {
             ))}
           </ul>
         )}
-      </PlaceholderCard>
+      </ConsolePanel>
     </>
   );
 }

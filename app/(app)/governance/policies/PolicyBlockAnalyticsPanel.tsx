@@ -68,7 +68,7 @@ export function PolicyBlockAnalyticsPanel() {
   }, [summary]);
 
   return (
-    <section className="shynvo-glass mb-4 rounded-2xl p-5 md:p-6">
+    <section className="zentro-glass mb-4 rounded-2xl p-5 md:p-6">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h2 className={appPanelTitle}>Policy block analytics</h2>
         <div className="flex items-center gap-2">

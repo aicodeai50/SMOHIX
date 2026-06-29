@@ -8,8 +8,8 @@ export function AuthCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="shynvo-glass rounded-2xl p-8 md:p-10">
-      <h1 className="shynvo-headline text-xl font-semibold tracking-tight md:text-2xl">{title}</h1>
+    <div className="zentro-glass rounded-2xl p-8 md:p-10">
+      <h1 className="zentro-headline text-xl font-semibold tracking-tight md:text-2xl">{title}</h1>
       {subtitle ? <p className="mt-2 text-sm text-muted">{subtitle}</p> : null}
       <div className="mt-8">{children}</div>
     </div>

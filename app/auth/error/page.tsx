@@ -12,8 +12,8 @@ export default async function AuthErrorPage({
 }) {
   const { reason } = await searchParams;
   return (
-    <div className="shynvo-glass rounded-3xl p-8 md:p-10">
-      <h1 className="shynvo-headline text-lg font-semibold tracking-tight md:text-xl">
+    <div className="zentro-glass rounded-3xl p-8 md:p-10">
+      <h1 className="zentro-headline text-lg font-semibold tracking-tight md:text-xl">
         Something went wrong
       </h1>
       <p className="mt-2 text-sm text-muted">

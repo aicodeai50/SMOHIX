@@ -19,7 +19,7 @@ export async function ConnectionStatus() {
         : "Guided assistance — add OPENAI_API_KEY or ZENTRO_REASONING_API_URL in deployment settings for deeper answers.";
 
   return (
-    <div className={`shynvo-glass mb-6 rounded-2xl px-4 py-4 md:px-5 md:py-5 ${appBody}`}>
+    <div className={`zentro-glass mb-6 rounded-2xl px-4 py-4 md:px-5 md:py-5 ${appBody}`}>
       <div className="flex flex-col gap-4 md:flex-row md:gap-8">
         <div className="min-w-0 flex-1">
           <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-accent/90">

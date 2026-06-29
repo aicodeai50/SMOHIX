@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appLabel, appMeta, appOverline } from "@/lib/app-typography";
 import {
@@ -154,7 +154,7 @@ export default async function PeakWeekStaffingDigestPage({
           </div>
 
           {canEdit ? (
-            <PlaceholderCard title="Delivery settings">
+            <ConsolePanel title="Delivery settings">
               <form action={updatePeakWeekStaffingDigestSettingsAction} className={`space-y-4 ${appBody}`}>
                 <label className="flex items-center gap-2">
                   <input
@@ -221,20 +221,20 @@ export default async function PeakWeekStaffingDigestPage({
                 {" · "}
                 Cron: <code className="text-foreground/80">ZENTRO_PEAK_WEEK_STAFFING_DIGEST_CRON_SECRET</code>
               </p>
-            </PlaceholderCard>
+            </ConsolePanel>
           ) : null}
 
           <div className="mt-6">
-            <PlaceholderCard title="Digest preview">
+            <ConsolePanel title="Digest preview">
               <pre className={`max-h-64 overflow-auto whitespace-pre-wrap text-xs ${appMeta}`}>
                 {pack.digestPreviewMarkdown}
               </pre>
-            </PlaceholderCard>
+            </ConsolePanel>
           </div>
 
           {deliveries.length > 0 ? (
             <div className="mt-6">
-              <PlaceholderCard title="Delivery log">
+              <ConsolePanel title="Delivery log">
                 <ul className={`space-y-2 ${appMeta}`}>
                   {deliveries.map((row) => (
                     <li key={row.id} className="rounded-lg border border-white/[0.06] px-3 py-2">
@@ -244,7 +244,7 @@ export default async function PeakWeekStaffingDigestPage({
                     </li>
                   ))}
                 </ul>
-              </PlaceholderCard>
+              </ConsolePanel>
             </div>
           ) : null}
 

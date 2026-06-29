@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import {
@@ -137,7 +137,7 @@ export default async function InheritedControlGapsPage() {
 
           {pack.tierSummaries.length > 0 ? (
             <div className="mb-6">
-              <PlaceholderCard title="Gaps by risk tier">
+              <ConsolePanel title="Gaps by risk tier">
                 <ul className={`space-y-2 ${appBody}`}>
                   {pack.tierSummaries.map((t) => (
                     <li
@@ -152,13 +152,13 @@ export default async function InheritedControlGapsPage() {
                     </li>
                   ))}
                 </ul>
-              </PlaceholderCard>
+              </ConsolePanel>
             </div>
           ) : null}
 
           {vendorsBelowFloor.length > 0 ? (
             <div className="mb-6">
-              <PlaceholderCard title="Vendors below tier readiness floor">
+              <ConsolePanel title="Vendors below tier readiness floor">
                 <ul className={`space-y-2 ${appBody}`}>
                   {vendorsBelowFloor.slice(0, 10).map((v) => (
                     <li key={v.vendorId}>
@@ -170,11 +170,11 @@ export default async function InheritedControlGapsPage() {
                     </li>
                   ))}
                 </ul>
-              </PlaceholderCard>
+              </ConsolePanel>
             </div>
           ) : null}
 
-          <PlaceholderCard title="Inherited control gaps">
+          <ConsolePanel title="Inherited control gaps">
             {topGaps.length === 0 ? (
               <p className={appMeta}>All inherited controls meet tier evidence expectations.</p>
             ) : (
@@ -223,7 +223,7 @@ export default async function InheritedControlGapsPage() {
                 Showing 25 of {pack.gaps.length} gaps — export CSV for the full report.
               </p>
             ) : null}
-          </PlaceholderCard>
+          </ConsolePanel>
         </>
       )}
     </>

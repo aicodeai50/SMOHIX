@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import { buildComplianceProgramDashboard } from "@/lib/compliance/program-dashboard";
@@ -260,7 +260,7 @@ export default async function ComplianceProgramDashboardPage() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <PlaceholderCard title="Top control gaps">
+        <ConsolePanel title="Top control gaps">
           {dashboard.topGaps.length === 0 ? (
             <p className={`${appMeta} text-emerald-300`}>No open gaps in the current monitoring window.</p>
           ) : (
@@ -291,9 +291,9 @@ export default async function ComplianceProgramDashboardPage() {
               ))}
             </ul>
           )}
-        </PlaceholderCard>
+        </ConsolePanel>
 
-        <PlaceholderCard title="Overdue attestations">
+        <ConsolePanel title="Overdue attestations">
           {dashboard.overdueAttestations.length === 0 ? (
             <p className={`${appMeta} text-emerald-300`}>No overdue control attestations.</p>
           ) : (
@@ -319,7 +319,7 @@ export default async function ComplianceProgramDashboardPage() {
               Gap runbooks
             </Link>
           </p>
-        </PlaceholderCard>
+        </ConsolePanel>
       </div>
     </>
   );

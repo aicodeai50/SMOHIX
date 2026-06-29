@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { DimensionGate } from "@/components/landing/DimensionGate";
-import { LivingPulse } from "@/components/landing/LivingPulse";
 import { MarketingQuantumShell } from "@/components/landing/MarketingQuantumShell";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
@@ -23,13 +21,13 @@ const TODAY = [
   },
   {
     name: "SIEM & EDR shapes",
-    body: "Auto-normalize Splunk, Microsoft Sentinel, and CrowdStrike payloads — plus Datadog, Prometheus, PagerDuty, New Relic.",
+    body: "Normalize common alert payloads into Zentro incidents. Vendor-specific OAuth connectors are planned, not implied as live.",
     href: "/docs/api",
     cta: "API docs",
   },
   {
-    name: "Reasoning & automation connectors",
-    body: "Optional HTTP backends for extended reasoning and robot-style automation — health-checked from the console.",
+    name: "Reasoning & robot HTTP endpoints",
+    body: "Optional internal endpoints for extended reasoning and guarded remediation execution, health-checked from the console.",
     href: "/settings/connectors",
     cta: "Connectors",
   },
@@ -57,9 +55,8 @@ export default function IntegrationsPage() {
         <main className="flex-1 border-b border-white/[0.06]">
           <div className="zentro-hero-future zentro-quantum-section border-b border-white/[0.06]">
             <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
-              <LivingPulse />
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent/90 zentro-eyebrow-cyber">
-                ⟡ Integrations
+                Integrations
               </p>
               <h1 className="mt-2 max-w-3xl text-3xl font-semibold tracking-tight zentro-living-headline sm:text-4xl">
                 Integrations — today and next
@@ -71,8 +68,6 @@ export default function IntegrationsPage() {
               </p>
             </div>
           </div>
-
-          <DimensionGate />
 
           <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-16 zentro-quantum-section">
             <section aria-labelledby="today-heading">
@@ -142,9 +137,9 @@ export default function IntegrationsPage() {
               <div className="mt-8 zentro-bento-cell rounded-2xl p-5 sm:p-6">
                 <h3 className="text-sm font-semibold text-foreground">How users connect vendors</h3>
                 <ol className="mt-3 list-inside list-decimal space-y-2 text-sm leading-relaxed text-muted">
-                  <li>Choose a shipped connector in Settings and provide OAuth or API credentials.</li>
-                  <li>Map incoming vendor signals to services, incidents, and change windows.</li>
-                  <li>Run with approvals/audit enabled so high-impact actions stay reviewable.</li>
+                  <li>Create an ingest token or configure an internal HTTP endpoint from Settings.</li>
+                  <li>Send alert, deploy, or remediation payloads with service and environment context.</li>
+                  <li>Use approvals and audit capture so high-impact actions stay reviewable.</li>
                 </ol>
               </div>
             </section>

@@ -1,5 +1,9 @@
 import { CONSOLE_MODULES } from "@/lib/console-nav";
-import { filterConsoleModulesForRole } from "@/lib/org/auditor-workspace";
+import {
+  AUDITOR_WORKSPACE_HOME,
+  filterConsoleModulesForRole,
+  isAuditorWorkspaceRole,
+} from "@/lib/org/auditor-workspace";
 import type { OrgRole } from "@/lib/org/roles";
 
 export const HUB_PERSONALIZATION_VERSION = 1;
@@ -50,9 +54,13 @@ export function hubPersonalizationDefaults(): HubPersonalizationPrefs {
 }
 
 export function allowedHubModuleHrefs(role: OrgRole | null | undefined): string[] {
-  return filterConsoleModulesForRole(CONSOLE_MODULES, role)
+  const allowed = filterConsoleModulesForRole(CONSOLE_MODULES, role)
     .map((m) => m.href)
     .filter((href) => href !== "/hub");
+  if (isAuditorWorkspaceRole(role) && !allowed.includes(AUDITOR_WORKSPACE_HOME)) {
+    return [AUDITOR_WORKSPACE_HOME, ...allowed];
+  }
+  return allowed;
 }
 
 function dedupeHrefs(hrefs: unknown, allowed: Set<string>, max: number): string[] {
@@ -76,11 +84,14 @@ export function sanitizeHubPersonalizationPrefs(
 ): HubPersonalizationPrefs {
   const allowed = new Set(allowedHubModuleHrefs(role));
   const defaults = hubPersonalizationDefaults();
+  const fallbackQuickLinks = isAuditorWorkspaceRole(role)
+    ? allowedHubModuleHrefs(role).slice(0, MAX_HUB_QUICK_LINKS)
+    : defaults.quickLinkHrefs;
   const quickLinkHrefs = dedupeHrefs(raw?.quickLinkHrefs, allowed, MAX_HUB_QUICK_LINKS);
   const pinnedHrefs = dedupeHrefs(raw?.pinnedHrefs, allowed, MAX_PINNED_NAV_MODULES);
 
   return {
-    quickLinkHrefs: quickLinkHrefs.length > 0 ? quickLinkHrefs : defaults.quickLinkHrefs,
+    quickLinkHrefs: quickLinkHrefs.length > 0 ? quickLinkHrefs : fallbackQuickLinks,
     pinnedHrefs,
   };
 }
@@ -91,6 +102,16 @@ export function resolveHubQuickLinks(
 ): HubQuickLink[] {
   const modules = filterConsoleModulesForRole(CONSOLE_MODULES, role);
   const byHref = new Map(modules.map((m) => [m.href, m]));
+  if (isAuditorWorkspaceRole(role) && !byHref.has(AUDITOR_WORKSPACE_HOME)) {
+    byHref.set(AUDITOR_WORKSPACE_HOME, {
+      href: AUDITOR_WORKSPACE_HOME,
+      label: "SOC 2 Type II",
+      description: "Auditor report mode",
+      icon: "scrollText",
+      live: true,
+      maturity: "beta",
+    });
+  }
   const pinnedSet = new Set(prefs.pinnedHrefs);
 
   return prefs.quickLinkHrefs
@@ -149,8 +170,8 @@ export function moveHref(hrefs: string[], href: string, direction: "up" | "down"
   return next;
 }
 
-export function mergeIdleJumpModules(
-  modules: readonly { href: string; label: string; description: string }[],
+export function mergeIdleJumpModules<T extends { href: string; label: string; description: string }>(
+  modules: readonly T[],
   pinnedHrefs: readonly string[],
   recentHrefs: readonly string[],
   max = 8,
@@ -159,11 +180,11 @@ export function mergeIdleJumpModules(
   const byHref = new Map(modules.map((m) => [m.href, m]));
   const pinned = pinnedHrefs
     .map((href) => byHref.get(href))
-    .filter((m): m is (typeof modules)[number] => m !== undefined);
+    .filter((m): m is T => m !== undefined);
   const recents = recentHrefs
     .filter((href) => !pinnedSet.has(href))
     .map((href) => byHref.get(href))
-    .filter((m): m is (typeof modules)[number] => m !== undefined);
+    .filter((m): m is T => m !== undefined);
   return [...pinned, ...recents].slice(0, max);
 }
 

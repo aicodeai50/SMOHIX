@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { appBody, appLabel, appMeta, appOverline } from "@/lib/app-typography";
 import {
   collectComplianceSlaReminders,
@@ -149,7 +149,7 @@ export default async function ComplianceSlaRemindersPage({
           </div>
 
           <div className="grid gap-6 lg:grid-cols-2">
-            <PlaceholderCard title={canEdit ? "Send reminders" : "Preview"}>
+            <ConsolePanel title={canEdit ? "Send reminders" : "Preview"}>
               {canEdit ? (
                 <form action={runSlaRemindersAction} className="space-y-3">
                   <p className={`${appMeta} text-muted`}>
@@ -166,9 +166,9 @@ export default async function ComplianceSlaRemindersPage({
               ) : (
                 <p className={`${appMeta} text-muted`}>Owners and admins can trigger delivery.</p>
               )}
-            </PlaceholderCard>
+            </ConsolePanel>
 
-            <PlaceholderCard title="Org settings">
+            <ConsolePanel title="Org settings">
               {canEdit && settings ? (
                 <form action={updateSlaReminderSettingsAction} className="space-y-3">
                   <label className={`flex items-center gap-2 ${appBody}`}>
@@ -216,7 +216,7 @@ export default async function ComplianceSlaRemindersPage({
                   {settings?.dueDaysBefore ?? 7}d
                 </p>
               )}
-            </PlaceholderCard>
+            </ConsolePanel>
           </div>
 
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
@@ -235,7 +235,7 @@ export default async function ComplianceSlaRemindersPage({
       )}
 
       <div className="mt-6">
-        <PlaceholderCard title="Delivery log">
+        <ConsolePanel title="Delivery log">
           {log.length === 0 ? (
             <p className={`${appMeta} text-muted`}>No reminders sent yet this org.</p>
           ) : (
@@ -262,7 +262,7 @@ export default async function ComplianceSlaRemindersPage({
               </table>
             </div>
           )}
-        </PlaceholderCard>
+        </ConsolePanel>
       </div>
     </>
   );

@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import { buildObligationConsolidationPlaybookPack } from "@/lib/compliance/obligation-consolidation-playbook";
@@ -171,7 +171,7 @@ export default async function ObligationConsolidationPage({
               const status = workflow.play?.status ?? "planned";
               const completedSteps = workflow.steps.filter((s) => s.completed).length;
               return (
-                <PlaceholderCard
+                <ConsolePanel
                   key={workflow.clusterKey}
                   title={`${workflow.frameworkLabels.join(" · ")} (${workflow.obligationCount} obligations)`}
                 >
@@ -258,7 +258,7 @@ export default async function ObligationConsolidationPage({
                       )}
                     </div>
                   ) : null}
-                </PlaceholderCard>
+                </ConsolePanel>
               );
             })}
           </div>

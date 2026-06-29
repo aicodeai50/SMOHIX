@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceControlTags } from "@/components/compliance/ComplianceControlTags";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import { buildGdprArt32AssessmentReport } from "@/lib/compliance/gdpr-art32-assessment";
@@ -123,7 +123,7 @@ export default async function GdprArt32AssessmentPage() {
         {report.dpaBandDescription} {report.monitoringNote}
       </p>
 
-      <PlaceholderCard title="Measure domain readiness (Article 32)">
+      <ConsolePanel title="Measure domain readiness (Article 32)">
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {report.domainReadiness.map((d) => (
             <div
@@ -138,10 +138,10 @@ export default async function GdprArt32AssessmentPage() {
             </div>
           ))}
         </div>
-      </PlaceholderCard>
+      </ConsolePanel>
 
       <div className="mt-6">
-        <PlaceholderCard title="Article 32 measure monitoring (30d vs prior 30d)">
+        <ConsolePanel title="Article 32 measure monitoring (30d vs prior 30d)">
           <div className="overflow-x-auto">
             <table className={`w-full text-left ${appBody}`}>
               <thead className="border-b border-border text-[11px] uppercase tracking-wide text-muted">
@@ -181,11 +181,11 @@ export default async function GdprArt32AssessmentPage() {
               </tbody>
             </table>
           </div>
-        </PlaceholderCard>
+        </ConsolePanel>
       </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
-        <PlaceholderCard title="Gap analysis">
+        <ConsolePanel title="Gap analysis">
           {report.exceptions.length === 0 ? (
             <p className={`${appMeta} text-emerald-300`}>No gaps in the current monitoring window.</p>
           ) : (
@@ -199,9 +199,9 @@ export default async function GdprArt32AssessmentPage() {
               ))}
             </ul>
           )}
-        </PlaceholderCard>
+        </ConsolePanel>
 
-        <PlaceholderCard title="Assessor export">
+        <ConsolePanel title="Assessor export">
           <p className={`mb-4 ${appMeta} text-muted`}>
             Download Article 32 assessment JSON for DPA packs, ROPA security annexes, and customer due diligence.
           </p>
@@ -211,7 +211,7 @@ export default async function GdprArt32AssessmentPage() {
           >
             Download Article 32 JSON
           </a>
-        </PlaceholderCard>
+        </ConsolePanel>
       </div>
     </>
   );

@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import { ASSESSOR_WORKBOOK_VERSION, buildAssessorWorkbookFiles } from "@/lib/compliance/assessor-workbook";
 import { getOrgContextForUser } from "@/lib/org/context";
@@ -144,7 +144,7 @@ export default async function AssessorWorkbookPage() {
         </div>
       </div>
 
-      <PlaceholderCard title="ZIP contents">
+      <ConsolePanel title="ZIP contents">
         <ul className={`space-y-4 ${appBody}`}>
           {WORKBOOK_SECTIONS.map((section) => (
             <li key={section.folder} className="rounded-lg border border-white/[0.08] px-4 py-3">
@@ -158,7 +158,7 @@ export default async function AssessorWorkbookPage() {
         <p className={`mt-4 ${appMeta} text-muted`}>
           manifest.json lists SHA-256 hashes for every file. Verify before sending to auditors or customers.
         </p>
-      </PlaceholderCard>
+      </ConsolePanel>
     </>
   );
 }

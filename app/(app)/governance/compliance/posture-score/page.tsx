@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import { buildCompliancePostureScorePack } from "@/lib/compliance/compliance-posture-score";
@@ -153,7 +153,7 @@ export default async function PostureScorePage() {
           </div>
 
           {pack.drivers.length > 0 ? (
-            <PlaceholderCard title="Top score drivers (improvement opportunities)">
+            <ConsolePanel title="Top score drivers (improvement opportunities)">
               <ul className={`space-y-2 ${appBody}`}>
                 {pack.drivers.map((d) => (
                   <li
@@ -170,7 +170,7 @@ export default async function PostureScorePage() {
                   </li>
                 ))}
               </ul>
-            </PlaceholderCard>
+            </ConsolePanel>
           ) : (
             <p className={`${appMeta} text-emerald-300`}>
               No major negative drivers — posture pillars are balanced for this period.

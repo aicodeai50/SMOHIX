@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceControlTags } from "@/components/compliance/ComplianceControlTags";
 import {
   createThirdPartyVendorAction,
@@ -145,7 +145,7 @@ export default async function ThirdPartyRiskPage({
       </div>
 
       {canAdmin && !readOnly ? (
-        <PlaceholderCard title="Add vendor">
+        <ConsolePanel title="Add vendor">
           <form action={createThirdPartyVendorAction} className="flex flex-wrap items-end gap-3">
             <div>
               <label className={appLabel} htmlFor="vendor-name">
@@ -215,11 +215,11 @@ export default async function ThirdPartyRiskPage({
               Add vendor
             </button>
           </form>
-        </PlaceholderCard>
+        </ConsolePanel>
       ) : null}
 
       <div className="mt-6">
-        <PlaceholderCard title="Vendor inventory">
+        <ConsolePanel title="Vendor inventory">
           {vendors.length === 0 ? (
             <ConsoleEmptyState
               title="No vendors yet"
@@ -360,7 +360,7 @@ export default async function ThirdPartyRiskPage({
               ))}
             </div>
           )}
-        </PlaceholderCard>
+        </ConsolePanel>
       </div>
     </>
   );

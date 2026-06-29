@@ -1,27 +1,30 @@
 @import "tailwindcss";
 
 :root {
-  --background: #06070b;
-  --foreground: #eef0f4;
-  --muted: #8b93a8;
-  --surface: #0e1118;
-  --surface-elevated: #141922;
-  --border: rgba(255, 255, 255, 0.075);
-  --accent: #5ee1ff;
-  --accent-muted: #38bdf8;
-  --accent-dim: rgba(94, 225, 255, 0.1);
-  --accent-glow: rgba(94, 225, 255, 0.22);
-  --ring: rgba(94, 225, 255, 0.42);
+  --background: #09090b;
+  --foreground: #fafafa;
+  --muted: #a1a1aa;
+  --surface: #18181b;
+  --surface-elevated: #27272a;
+  --border: rgba(255, 255, 255, 0.08);
+  --primary: #6366f1;
+  --primary-muted: #818cf8;
+  --primary-dim: rgba(99, 102, 241, 0.12);
+  --accent: #10b981;
+  --accent-muted: #34d399;
+  --accent-dim: rgba(16, 185, 129, 0.12);
+  --accent-glow: rgba(16, 185, 129, 0.28);
+  --ring: rgba(99, 102, 241, 0.45);
   --success: #4ade80;
   --success-dim: rgba(74, 222, 128, 0.12);
   --warning: #fcd34d;
   --warning-dim: rgba(252, 211, 77, 0.12);
   --danger: #fb7185;
   --danger-dim: rgba(251, 113, 133, 0.1);
-  --violet-glow: rgba(129, 140, 248, 0.12);
-  --cyber: #a78bfa;
-  --cyber-dim: rgba(167, 139, 250, 0.14);
-  --cyber-glow: rgba(167, 139, 250, 0.28);
+  --violet-glow: rgba(99, 102, 241, 0.12);
+  --cyber: #818cf8;
+  --cyber-dim: rgba(99, 102, 241, 0.14);
+  --cyber-glow: rgba(99, 102, 241, 0.28);
   --scan: #34d399;
   --scan-dim: rgba(52, 211, 153, 0.12);
 
@@ -55,18 +58,21 @@
   --color-warning-dim: var(--warning-dim);
   --color-danger: var(--danger);
   --color-danger-dim: var(--danger-dim);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-jetbrains-mono);
+  --color-primary: var(--primary);
+  --color-primary-dim: var(--primary-dim);
+  --color-primary-muted: var(--primary-muted);
 }
 
 body {
   background-color: var(--background);
   background-image:
-    radial-gradient(ellipse 100% 60% at 50% -25%, rgba(94, 225, 255, 0.08), transparent 58%),
-    radial-gradient(ellipse 50% 40% at 100% 0%, rgba(167, 139, 250, 0.05), transparent 50%),
-    linear-gradient(180deg, #06070b 0%, #070910 50%, #06070b 100%);
+    radial-gradient(ellipse 100% 60% at 50% -25%, rgba(99, 102, 241, 0.1), transparent 58%),
+    radial-gradient(ellipse 50% 40% at 100% 0%, rgba(16, 185, 129, 0.05), transparent 50%),
+    linear-gradient(180deg, #09090b 0%, #0c0c0f 50%, #09090b 100%);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-family: var(--font-inter), system-ui, sans-serif;
 }
 
 ::selection {
@@ -80,7 +86,7 @@ body {
 }
 
 /* Glass panels — console cards & elevated surfaces */
-.shynvo-glass {
+.zentro-glass {
   background: linear-gradient(
     168deg,
     rgba(24, 30, 42, 0.78) 0%,
@@ -96,7 +102,7 @@ body {
     0 32px 100px -48px rgba(0, 0, 0, 0.85);
 }
 
-.shynvo-glass-subtle {
+.zentro-glass-subtle {
   background: rgba(14, 17, 24, 0.55);
   backdrop-filter: blur(16px) saturate(150%);
   -webkit-backdrop-filter: blur(16px) saturate(150%);
@@ -105,8 +111,7 @@ body {
 }
 
 /* Page titles — restrained iridescent headline */
-.zentro-headline,
-.shynvo-headline {
+.zentro-headline {
   background: linear-gradient(
     118deg,
     #fafafa 0%,
@@ -520,7 +525,7 @@ body {
   ) !important;
 }
 
-/* ── Universe ascension — another dimension ── */
+/* Layered marketing atmosphere */
 .zentro-universe-realm {
   min-height: 100%;
 }
@@ -676,7 +681,7 @@ body {
 }
 
 /* Data tables — shared chrome */
-.shynvo-table-wrap {
+.zentro-table-wrap {
   border-radius: 1rem;
   border: 1px solid rgba(255, 255, 255, 0.07);
   background: rgba(14, 17, 24, 0.45);
@@ -687,7 +692,7 @@ body {
 }
 
 /* Vision / roadmap hero — soft aurora without heavy animation */
-.shynvo-vision-hero {
+.zentro-vision-hero {
   position: relative;
   overflow: hidden;
   background: linear-gradient(
@@ -697,7 +702,7 @@ body {
     rgba(18, 22, 34, 0.96) 100%
   );
 }
-.shynvo-vision-hero::before {
+.zentro-vision-hero::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -710,18 +715,18 @@ body {
     radial-gradient(ellipse 50% 40% at 80% 100%, rgba(45, 212, 191, 0.06), transparent 45%);
   pointer-events: none;
 }
-.shynvo-vision-hero > * {
+.zentro-vision-hero > * {
   position: relative;
   z-index: 1;
 }
 
 /* ── Console main column: depth + slow ambient light (instrument-panel, not sci-fi skin) ── */
-.shynvo-console-main {
+.zentro-console-main {
   position: relative;
   isolation: isolate;
 }
 
-.shynvo-console-main::before {
+.zentro-console-main::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -733,15 +738,15 @@ body {
     radial-gradient(ellipse 50% 42% at 100% 100%, rgba(129, 140, 248, 0.06), transparent 48%),
     radial-gradient(ellipse 40% 35% at 0% 85%, rgba(45, 212, 191, 0.045), transparent 46%);
   opacity: 0.42;
-  animation: shynvo-console-ambient 32s ease-in-out infinite alternate;
+  animation: zentro-console-ambient 32s ease-in-out infinite alternate;
 }
 
-.shynvo-console-main > * {
+.zentro-console-main > * {
   position: relative;
   z-index: 1;
 }
 
-@keyframes shynvo-console-ambient {
+@keyframes zentro-console-ambient {
   0% {
     opacity: 0.3;
   }
@@ -751,7 +756,7 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .shynvo-console-main::before {
+  .zentro-console-main::before {
     animation: none;
     opacity: 0.38;
   }

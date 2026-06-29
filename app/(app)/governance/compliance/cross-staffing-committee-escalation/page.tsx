@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import {
@@ -146,7 +146,7 @@ export default async function CrossStaffingCommitteeEscalationPage({
           </div>
 
           {canEdit ? (
-            <PlaceholderCard title="Escalation settings">
+            <ConsolePanel title="Escalation settings">
               <form
                 action={updateCrossStaffingEscalationSettingsAction}
                 className={`space-y-4 ${appBody}`}
@@ -217,12 +217,12 @@ export default async function CrossStaffingCommitteeEscalationPage({
                   ZENTRO_CROSS_STAFFING_COMMITTEE_ESCALATION_CRON_SECRET
                 </code>
               </p>
-            </PlaceholderCard>
+            </ConsolePanel>
           ) : null}
 
           {pack.breachItems.length > 0 ? (
             <div className="mt-6">
-              <PlaceholderCard title="Escalation queue">
+              <ConsolePanel title="Escalation queue">
                 <ul className={`space-y-2 ${appMeta}`}>
                   {pack.breachItems.map((item) => (
                     <li
@@ -239,13 +239,13 @@ export default async function CrossStaffingCommitteeEscalationPage({
                     </li>
                   ))}
                 </ul>
-              </PlaceholderCard>
+              </ConsolePanel>
             </div>
           ) : null}
 
           {deliveries.length > 0 ? (
             <div className="mt-6">
-              <PlaceholderCard title="Delivery log">
+              <ConsolePanel title="Delivery log">
                 <ul className={`space-y-2 ${appMeta}`}>
                   {deliveries.map((row) => (
                     <li key={row.id} className="rounded-lg border border-white/[0.06] px-3 py-2">
@@ -259,7 +259,7 @@ export default async function CrossStaffingCommitteeEscalationPage({
                     </li>
                   ))}
                 </ul>
-              </PlaceholderCard>
+              </ConsolePanel>
             </div>
           ) : null}
 

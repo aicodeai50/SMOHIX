@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { appBody, appLabel, appMeta, appOverline } from "@/lib/app-typography";
 import { COMPLIANCE_DIGEST_VERSION, listComplianceDigestDeliveries } from "@/lib/compliance/compliance-digest";
 import { getOrgContextForUser } from "@/lib/org/context";
@@ -119,7 +119,7 @@ export default async function ComplianceDigestPage({
         />
       ) : (
         <div className="grid gap-6 lg:grid-cols-2">
-          <PlaceholderCard title={canEdit ? "Send digest now" : "View only"}>
+          <ConsolePanel title={canEdit ? "Send digest now" : "View only"}>
             {canEdit ? (
               <form action={runComplianceDigestAction} className="space-y-4">
                 <p className={`${appMeta} text-muted`}>
@@ -137,9 +137,9 @@ export default async function ComplianceDigestPage({
             ) : (
               <p className={`${appMeta} text-muted`}>Ask an org owner or admin to run digests.</p>
             )}
-          </PlaceholderCard>
+          </ConsolePanel>
 
-          <PlaceholderCard title="GRC webhook URL">
+          <ConsolePanel title="GRC webhook URL">
             {canEdit ? (
               <form action={updateComplianceDigestWebhookAction} className="space-y-3">
                 <label className={appLabel} htmlFor="compliance_digest_webhook_url">
@@ -168,12 +168,12 @@ export default async function ComplianceDigestPage({
             ) : (
               <p className={`font-mono text-sm text-muted ${appBody}`}>{webhookUrl || "—"}</p>
             )}
-          </PlaceholderCard>
+          </ConsolePanel>
         </div>
       )}
 
       <div className="mt-6">
-        <PlaceholderCard title="Delivery history">
+        <ConsolePanel title="Delivery history">
           {deliveries.length === 0 ? (
             <ConsoleEmptyState
               title="No digests yet"
@@ -203,7 +203,7 @@ export default async function ComplianceDigestPage({
               </table>
             </div>
           )}
-        </PlaceholderCard>
+        </ConsolePanel>
       </div>
 
       <div className="mt-6 rounded-xl border border-border bg-surface/40 px-4 py-3">

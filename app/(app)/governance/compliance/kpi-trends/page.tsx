@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import { buildComplianceKpiTrendsPack } from "@/lib/compliance/compliance-kpi-trends";
@@ -134,7 +134,7 @@ export default async function KpiTrendsPage() {
             </div>
           </div>
 
-          <PlaceholderCard title="Weekly remediation & attestation activity">
+          <ConsolePanel title="Weekly remediation & attestation activity">
             <ul className={`space-y-3 ${appBody}`}>
               {pack.weeklyActivity.map((w) => (
                 <li key={w.weekKey} className="rounded-lg border border-white/[0.08] px-3 py-2">
@@ -174,10 +174,10 @@ export default async function KpiTrendsPage() {
                 </li>
               ))}
             </ul>
-          </PlaceholderCard>
+          </ConsolePanel>
 
           <div className="mt-6">
-            <PlaceholderCard title="Framework readiness trends">
+            <ConsolePanel title="Framework readiness trends">
               <p className={`mb-4 ${appMeta} text-muted`}>
                 Endpoints are measured from live assessments; intermediate weeks are interpolated
                 between prior and current period readiness.
@@ -217,7 +217,7 @@ export default async function KpiTrendsPage() {
                   );
                 })}
               </ul>
-            </PlaceholderCard>
+            </ConsolePanel>
           </div>
         </>
       )}

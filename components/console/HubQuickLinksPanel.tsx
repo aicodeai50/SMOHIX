@@ -18,7 +18,7 @@ import {
 } from "@/lib/console/hub-personalization";
 import { appBody, appMeta, appPanelTitle } from "@/lib/app-typography";
 
-const LOCAL_STORAGE_KEY = "shynvo.hub.personalization";
+const LOCAL_STORAGE_KEY = "zentro.hub.personalization";
 
 type StoredPrefs = {
   quickLinkHrefs: string[];
@@ -249,7 +249,7 @@ export function HubQuickLinksPanel({
           <div key={item.href} className="relative">
             <Link
               href={item.href}
-              className={`shynvo-glass group flex h-full flex-col rounded-2xl p-5 transition-[border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-[0_0_40px_-14px_rgba(94,225,255,0.2)] ${
+              className={`zentro-glass group flex h-full flex-col rounded-2xl p-5 transition-[border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-[0_0_40px_-14px_rgba(94,225,255,0.2)] ${
                 editMode ? "pointer-events-none pr-12" : ""
               }`}
             >

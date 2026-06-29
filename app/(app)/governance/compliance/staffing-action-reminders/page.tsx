@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import {
@@ -159,7 +159,7 @@ export default async function StaffingActionRemindersPage({
           </div>
 
           {canEdit ? (
-            <PlaceholderCard title="Reminder settings">
+            <ConsolePanel title="Reminder settings">
               <form
                 action={updateStaffingOverdueReminderSettingsAction}
                 className={`space-y-4 ${appBody}`}
@@ -218,12 +218,12 @@ export default async function StaffingActionRemindersPage({
                 Cron:{" "}
                 <code className="text-foreground/80">ZENTRO_STAFFING_OVERDUE_REMINDER_CRON_SECRET</code>
               </p>
-            </PlaceholderCard>
+            </ConsolePanel>
           ) : null}
 
           {pack.overdueItems.length > 0 ? (
             <div className="mt-6">
-              <PlaceholderCard title="Overdue actions">
+              <ConsolePanel title="Overdue actions">
                 <ul className={`space-y-2 ${appMeta}`}>
                   {pack.overdueItems.map((item) => (
                     <li
@@ -240,13 +240,13 @@ export default async function StaffingActionRemindersPage({
                     </li>
                   ))}
                 </ul>
-              </PlaceholderCard>
+              </ConsolePanel>
             </div>
           ) : null}
 
           {reminderLog.length > 0 ? (
             <div className="mt-6">
-              <PlaceholderCard title="Reminder log">
+              <ConsolePanel title="Reminder log">
                 <ul className={`space-y-2 ${appMeta}`}>
                   {reminderLog.map((row) => (
                     <li key={row.id} className="rounded-lg border border-white/[0.06] px-3 py-2">
@@ -261,7 +261,7 @@ export default async function StaffingActionRemindersPage({
                     </li>
                   ))}
                 </ul>
-              </PlaceholderCard>
+              </ConsolePanel>
             </div>
           ) : null}
 

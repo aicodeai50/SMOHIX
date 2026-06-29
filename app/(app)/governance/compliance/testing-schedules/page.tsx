@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import { buildControlTestingSchedulesPack } from "@/lib/compliance/control-testing-schedules";
@@ -136,7 +136,7 @@ export default async function TestingSchedulesPage() {
             </div>
           </div>
 
-          <PlaceholderCard title="Active schedules">
+          <ConsolePanel title="Active schedules">
             {pack.schedules.length === 0 ? (
               <p className={`${appMeta} text-emerald-300`}>
                 No open collection windows — attestations current and evidence fresh.
@@ -176,7 +176,7 @@ export default async function TestingSchedulesPage() {
                 ))}
               </ul>
             )}
-          </PlaceholderCard>
+          </ConsolePanel>
         </>
       )}
     </>

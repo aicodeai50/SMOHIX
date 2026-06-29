@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { appBody, appLabel, appMeta } from "@/lib/app-typography";
 import { ASSESSOR_API_KEY_PREFIX } from "@/lib/api-keys/token";
 import { listComplianceAssessorApiTokens } from "@/lib/compliance/assessor-api-token";
@@ -115,7 +115,7 @@ export default async function AssessorApiPage({
         />
       ) : (
         <div className="grid gap-6 lg:grid-cols-2">
-          <PlaceholderCard title={canEdit ? "Create token" : "View only"}>
+          <ConsolePanel title={canEdit ? "Create token" : "View only"}>
             {canEdit ? (
               <form action={createAssessorApiTokenAction} className="space-y-3">
                 <label className={appLabel} htmlFor="assessor_token_name">
@@ -138,9 +138,9 @@ export default async function AssessorApiPage({
             ) : (
               <p className={`${appMeta} text-muted`}>Owners and admins can create tokens.</p>
             )}
-          </PlaceholderCard>
+          </ConsolePanel>
 
-          <PlaceholderCard title="How to call the API">
+          <ConsolePanel title="How to call the API">
             <p className={`${appMeta} text-muted`}>
               Prefix: <span className="font-mono text-foreground/90">{ASSESSOR_API_KEY_PREFIX}…</span>
             </p>
@@ -154,20 +154,20 @@ export default async function AssessorApiPage({
             <p className={`mt-3 ${appMeta} text-muted`}>
               Allowed paths: <span className="font-mono">/api/governance/compliance/assessor/&lt;resource&gt;</span>
             </p>
-          </PlaceholderCard>
+          </ConsolePanel>
         </div>
       )}
 
       <div className="mt-6">
-        <PlaceholderCard title="Allowed resources">
+        <ConsolePanel title="Allowed resources">
           <p className={`mb-3 ${appMeta} text-muted`}>
             {ASSESSOR_API_RESOURCES.join(", ")}
           </p>
-        </PlaceholderCard>
+        </ConsolePanel>
       </div>
 
       <div className="mt-6">
-        <PlaceholderCard title="Active tokens">
+        <ConsolePanel title="Active tokens">
           {tokens.length === 0 ? (
             <p className={`${appMeta} text-muted`}>No assessor tokens yet.</p>
           ) : (
@@ -216,7 +216,7 @@ export default async function AssessorApiPage({
               </table>
             </div>
           )}
-        </PlaceholderCard>
+        </ConsolePanel>
       </div>
     </>
   );

@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import {
@@ -139,7 +139,7 @@ export default async function CommitteeMeetingPackPage() {
             </div>
           </div>
 
-          <PlaceholderCard title="ZIP contents">
+          <ConsolePanel title="ZIP contents">
             <ul className={`space-y-4 ${appBody}`}>
               {PACK_SECTIONS.map((section) => (
                 <li key={section.folder}>
@@ -154,7 +154,7 @@ export default async function CommitteeMeetingPackPage() {
               Open <strong>committee-pack-summary.html</strong> from the ZIP in your browser and use Print → Save
               as PDF for board distribution.
             </p>
-          </PlaceholderCard>
+          </ConsolePanel>
         </>
       )}
     </>

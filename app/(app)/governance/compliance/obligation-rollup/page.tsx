@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import { buildObligationExecutiveRollupPack } from "@/lib/compliance/obligation-executive-rollup";
@@ -143,7 +143,7 @@ export default async function ObligationExecutiveRollupPage() {
             </div>
           </div>
 
-          <PlaceholderCard title="Rollup sections included">
+          <ConsolePanel title="Rollup sections included">
             <ul className={`list-disc space-y-2 pl-5 ${appBody}`}>
               <li>
                 <Link href="/governance/compliance/obligation-forecast" className="text-accent hover:underline">
@@ -173,7 +173,7 @@ export default async function ObligationExecutiveRollupPage() {
                 — overdue and at-risk queue
               </li>
             </ul>
-          </PlaceholderCard>
+          </ConsolePanel>
         </>
       )}
     </>

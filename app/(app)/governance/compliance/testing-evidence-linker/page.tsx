@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import { buildControlTestingEvidenceLinkerPack } from "@/lib/compliance/control-testing-evidence-linker";
@@ -147,7 +147,7 @@ export default async function TestingEvidenceLinkerPage({
           </div>
 
           <div className="mb-6 grid gap-6 lg:grid-cols-2">
-            <PlaceholderCard title="Recent links">
+            <ConsolePanel title="Recent links">
               {pack.links.length === 0 ? (
                 <p className={appMeta}>No automation dry-runs in the last {pack.periodDays} days.</p>
               ) : (
@@ -167,9 +167,9 @@ export default async function TestingEvidenceLinkerPage({
                   ))}
                 </ul>
               )}
-            </PlaceholderCard>
+            </ConsolePanel>
 
-            <PlaceholderCard title="Schedule coverage">
+            <ConsolePanel title="Schedule coverage">
               {pack.scheduleCoverage.length === 0 ? (
                 <p className={appMeta}>No scheduled control tests in horizon.</p>
               ) : (
@@ -187,7 +187,7 @@ export default async function TestingEvidenceLinkerPage({
                   ))}
                 </ul>
               )}
-            </PlaceholderCard>
+            </ConsolePanel>
           </div>
 
           {pack.unlinkedRunCount > 0 ? (

@@ -12,10 +12,10 @@ import {
 import { SITE_BRAND_NAME } from "@/lib/site-brand";
 
 const METRICS = [
-  { value: "64+", label: "Shipped capabilities", detail: "Console modules, GRC depth, and governance automation" },
-  { value: "49", label: "Database migrations", detail: "Production-grade persistence, RLS, and org scoping" },
-  { value: "15+", label: "Compliance frameworks", detail: "SOC 2, ISO 27001, PCI, HIPAA, NIST CSF, CMMC, GDPR, and more" },
-  { value: "136", label: "Documented API operations", detail: "Integrations, webhooks, assessor exports, and governance cron" },
+  { value: "1", label: "Incident record", detail: "Owners, status, runbooks, Copilot context, remediation, and exports stay attached." },
+  { value: "4", label: "Guardrail layers", detail: "Dry-run freshness, policy checks, approval notes, and rollback evidence." },
+  { value: "8", label: "Framework packs", detail: "Representative control packs mapped to audit events and evidence exports." },
+  { value: "52", label: "Database migrations", detail: "Auth, org scope, audit, compliance evidence, billing, and operational records." },
 ] as const;
 
 const PILLARS = [
@@ -29,7 +29,7 @@ const PILLARS = [
   },
   {
     title: "Cybersecurity operations",
-    body: "Exposure scanning, vulnerability priority, attack-path simulation, and pentest rollups in the same console.",
+    body: "Alert ingest, vulnerability findings, attack-path simulation from catalog data, and pentest rollups in the same console.",
   },
   {
     title: "GRC & evidence",
@@ -41,14 +41,14 @@ export function CompanyScaleSection() {
   return (
     <MarketingReveal id="company" className={mSection}>
       <div className={mContainer}>
-        <p className={mEyebrow}>Built as a real operations company</p>
+        <p className={mEyebrow}>Built around the work operators actually do</p>
         <h2 className={`mt-2 ${mH2}`}>
-          {SITE_BRAND_NAME} is engineered for teams who run production — not slide decks
+          {SITE_BRAND_NAME} focuses on the evidence behind each operational decision
         </h2>
         <p className={mLede}>
-          We ship continuously: migrations, regression suites, governance cron jobs, and console modules
-          that security and platform leaders can assign owners to. This is operational software with
-          procurement-ready evidence — not a static landing mock.
+          The product is strongest where incidents, approvals, automation runs, service context, and
+          audit records meet. The console is designed to show who decided, what ran, and what evidence
+          remains afterward.
         </p>
 
         <dl className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

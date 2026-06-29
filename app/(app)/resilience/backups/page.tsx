@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { appBody, appLabel, appMeta, appOverline, appPanelTitle } from "@/lib/app-typography";
 import { listBackupPoliciesForUser } from "@/lib/equipment/data";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
@@ -62,18 +62,18 @@ export default async function BackupsPage({
       ) : null}
 
       <div className="mb-6 grid gap-4 sm:grid-cols-2">
-        <div className="shynvo-glass rounded-2xl p-5">
+        <div className="zentro-glass rounded-2xl p-5">
           <p className={`${appMeta} font-medium`}>Policies tracked</p>
           <p className="mt-1 text-2xl font-semibold text-foreground">{rows.length}</p>
         </div>
-        <div className="shynvo-glass rounded-2xl p-5">
+        <div className="zentro-glass rounded-2xl p-5">
           <p className={`${appMeta} font-medium`}>Enabled</p>
           <p className="mt-1 text-2xl font-semibold text-foreground">{enabledCount}</p>
         </div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <PlaceholderCard title="Add backup policy">
+        <ConsolePanel title="Add backup policy">
           <form action={createBackupPolicyAction} className="space-y-3">
             <div>
               <label htmlFor="bp-name" className={`mb-1 block ${appLabel}`}>
@@ -157,9 +157,9 @@ export default async function BackupsPage({
               Add policy
             </button>
           </form>
-        </PlaceholderCard>
+        </ConsolePanel>
 
-        <PlaceholderCard title="Policy inventory">
+        <ConsolePanel title="Policy inventory">
           <h3 className={appOverline}>Registered policies</h3>
           {rows.length === 0 ? (
             <div className="mt-4">
@@ -197,7 +197,7 @@ export default async function BackupsPage({
             <span className={appPanelTitle}>Next:</span> add backup runs and restore test logs through APIs
             or import jobs so this module can score stale backup risk automatically.
           </p>
-        </PlaceholderCard>
+        </ConsolePanel>
       </div>
     </>
   );

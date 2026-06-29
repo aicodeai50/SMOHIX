@@ -5,7 +5,7 @@ import { ConsoleAmbientBanner } from "@/components/console/ConsoleAmbientBanner"
 import { ConnectionStatus } from "@/components/copilot/ConnectionStatus";
 import { CopilotChat } from "@/components/copilot/CopilotChat";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { loadConsoleAmbientSnapshot } from "@/lib/console/load-ambient-status";
 import { appBody, appMeta } from "@/lib/app-typography";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
@@ -51,7 +51,7 @@ export default async function CopilotPage({
       <ConnectionStatus />
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          <PlaceholderCard title="Conversation">
+          <ConsolePanel title="Conversation">
             {incidentId ? (
               <p className={`mb-4 rounded-xl border border-accent/25 bg-accent-dim/40 px-3 py-2 text-accent ${appMeta}`}>
                 Incident context attached:{" "}
@@ -61,10 +61,10 @@ export default async function CopilotPage({
               </p>
             ) : null}
             <CopilotChat persistSession={persistSession} incidentId={incidentId || null} />
-          </PlaceholderCard>
+          </ConsolePanel>
         </div>
         <div className="space-y-4">
-          <PlaceholderCard title="Shortcuts">
+          <ConsolePanel title="Shortcuts">
             <ul className={`space-y-1 ${appBody}`}>
               <li>
                 <Link
@@ -100,14 +100,15 @@ export default async function CopilotPage({
                 </Link>
               </li>
             </ul>
-          </PlaceholderCard>
-          <PlaceholderCard title="On the horizon">
-            <p className={`text-muted ${appBody}`}>
-              Annotation-grade Copilot: structured labels on hypotheses, human-in-the-loop
-              approvals before actions, runbook citations on every suggestion, timeline
-              auto-summaries, and an audit trail tying AI output to incidents and owners.
-            </p>
-          </PlaceholderCard>
+          </ConsolePanel>
+          <ConsolePanel title="Available today">
+            <ul className={`space-y-2 text-muted ${appBody}`}>
+              <li>Incident-scoped context when launched from an incident.</li>
+              <li>Conversation persistence for signed-in Supabase workspaces.</li>
+              <li>Fallback guided replies when cloud AI is not configured.</li>
+              <li>Rate limits and access checks before requests reach the model.</li>
+            </ul>
+          </ConsolePanel>
         </div>
       </div>
     </>

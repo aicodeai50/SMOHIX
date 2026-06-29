@@ -64,7 +64,7 @@ export default function CybersecurityPage() {
             <article className={`${mArticle} max-w-4xl`}>
               <LivingPulse />
               <p className={`${mEyebrow} zentro-eyebrow-cyber`}>⟡ Cybersecurity</p>
-              <h1 className={`mt-2 shynvo-headline zentro-living-headline ${mH1}`}>
+              <h1 className={`mt-2 zentro-headline zentro-living-headline ${mH1}`}>
                 Threat detection, exposure control, and guarded remediation
               </h1>
               <p className={`mt-4 ${mBody} text-base sm:text-lg`}>

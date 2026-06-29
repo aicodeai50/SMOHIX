@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import { buildComplianceExceptionRegisterPack } from "@/lib/compliance/compliance-exception-register";
@@ -147,7 +147,7 @@ export default async function ExceptionRegisterPage() {
 
           {pack.frameworkSummaries.length > 0 ? (
             <div className="mb-6">
-              <PlaceholderCard title="By framework">
+              <ConsolePanel title="By framework">
                 <ul className={`space-y-2 ${appBody}`}>
                   {pack.frameworkSummaries.map((fw) => (
                     <li
@@ -161,11 +161,11 @@ export default async function ExceptionRegisterPage() {
                     </li>
                   ))}
                 </ul>
-              </PlaceholderCard>
+              </ConsolePanel>
             </div>
           ) : null}
 
-          <PlaceholderCard title="Exception register">
+          <ConsolePanel title="Exception register">
             <div className="overflow-x-auto">
               <table className={`w-full min-w-[800px] text-left text-sm ${appBody}`}>
                 <thead>
@@ -214,7 +214,7 @@ export default async function ExceptionRegisterPage() {
                 CSV for the full register.
               </p>
             ) : null}
-          </PlaceholderCard>
+          </ConsolePanel>
         </>
       )}
     </>

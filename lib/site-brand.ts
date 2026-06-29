@@ -7,13 +7,30 @@ export const SITE_PRIMARY_DOMAIN = "zentro.run" as const;
 export const SITE_LEGAL_NAME = "Zentro, Inc." as const;
 
 export const SITE_MARKETING_TITLE =
-  "Zentro — Enterprise AI Operations & Cybersecurity Platform" as const;
+  "Zentro — Incident Command, Guarded Automation, and Audit Evidence" as const;
 
 export const SITE_MARKETING_DESCRIPTION =
-  "Zentro is the enterprise command platform for incident response, threat detection, exposure management, and guarded automation — with human approvals, policy guardrails, and audit-ready evidence in one workspace. Built for platform, SOC, SRE, and GRC teams." as const;
+  "Zentro brings incident response, guarded automation, service context, and audit evidence into one workspace. Built for platform, SRE, SOC, and GRC teams that need accountable operations." as const;
 
 export const SITE_MARKETING_TWITTER_DESCRIPTION =
-  "Enterprise AI operations & cybersecurity — incident command, guarded automation, compliance evidence, and posture visibility for modern security teams." as const;
+  "Incident command, guarded automation, service context, and audit-ready evidence for accountable operations teams." as const;
 
 export const SITE_TAGLINE =
-  "Operational command for incident response, cybersecurity, and compliance." as const;
+  "Accountable operations for incidents, automation, and evidence." as const;
+
+/** 8px base spacing scale (multiples of 0.5rem) */
+export const SPACING_UNIT_PX = 8 as const;
+
+/** Brand palette — distinct indigo/emerald identity for Zentro product platform */
+export const BRAND_COLORS = {
+  primary: "#6366F1",
+  primaryMuted: "#818CF8",
+  accent: "#10B981",
+  accentMuted: "#34D399",
+  background: "#09090B",
+  surface: "#18181B",
+  surfaceElevated: "#27272A",
+  foreground: "#FAFAFA",
+  muted: "#A1A1AA",
+  border: "rgba(255, 255, 255, 0.08)",
+} as const;

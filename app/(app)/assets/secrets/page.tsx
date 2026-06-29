@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { appBody, appLabel, appMeta, appOverline } from "@/lib/app-typography";
 import { listSecretsForUser } from "@/lib/equipment/data";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
@@ -61,7 +61,7 @@ export default async function SecretsPage({
       ) : null}
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <PlaceholderCard title="Add secret record">
+        <ConsolePanel title="Add secret record">
           <form action={createSecretAction} className="space-y-3">
             <div>
               <label htmlFor="secret-name" className={`mb-1 block ${appLabel}`}>
@@ -174,9 +174,9 @@ export default async function SecretsPage({
               Add secret
             </button>
           </form>
-        </PlaceholderCard>
+        </ConsolePanel>
 
-        <PlaceholderCard title="Rotation queue">
+        <ConsolePanel title="Rotation queue">
           <h3 className={appOverline}>Tracked secrets</h3>
           {rows.length === 0 ? (
             <div className="mt-4">
@@ -212,7 +212,7 @@ export default async function SecretsPage({
               ))}
             </ul>
           )}
-        </PlaceholderCard>
+        </ConsolePanel>
       </div>
     </>
   );

@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import { listLegalHoldsForUser } from "@/lib/legal-hold/list";
 import { getOrgContextForUser } from "@/lib/org/context";
@@ -75,7 +75,7 @@ export default async function LegalHoldsPage() {
         </div>
       </div>
 
-      <PlaceholderCard title="Active incident holds">
+      <ConsolePanel title="Active incident holds">
         {summary.incidents.length === 0 ? (
           <ConsoleEmptyState
             title="No legal holds"
@@ -115,7 +115,7 @@ export default async function LegalHoldsPage() {
             </table>
           </div>
         )}
-      </PlaceholderCard>
+      </ConsolePanel>
     </>
   );
 }

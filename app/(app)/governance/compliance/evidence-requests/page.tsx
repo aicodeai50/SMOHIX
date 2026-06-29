@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appLabel, appMeta, appOverline } from "@/lib/app-typography";
 import {
@@ -173,7 +173,7 @@ export default async function EvidenceRequestsPage({
 
           {canCreate ? (
             <div className="mb-6">
-              <PlaceholderCard title="New evidence request">
+              <ConsolePanel title="New evidence request">
                 <form action={createEvidenceRequestAction} className={`space-y-4 ${appBody}`}>
                   <div>
                     <label className={appLabel} htmlFor="controlId">
@@ -272,11 +272,11 @@ export default async function EvidenceRequestsPage({
                     Create request
                   </button>
                 </form>
-              </PlaceholderCard>
+              </ConsolePanel>
             </div>
           ) : null}
 
-          <PlaceholderCard title="Open requests">
+          <ConsolePanel title="Open requests">
             {openRequests.length === 0 ? (
               <p className={appMeta}>No open or overdue evidence requests.</p>
             ) : (
@@ -347,11 +347,11 @@ export default async function EvidenceRequestsPage({
                 ))}
               </ul>
             )}
-          </PlaceholderCard>
+          </ConsolePanel>
 
           {pack.requests.filter((r) => r.status === "fulfilled" || r.status === "cancelled").length > 0 ? (
             <div className="mt-6">
-              <PlaceholderCard title="Closed requests">
+              <ConsolePanel title="Closed requests">
                 <ul className={`space-y-2 ${appBody}`}>
                   {pack.requests
                     .filter((r) => r.status === "fulfilled" || r.status === "cancelled")
@@ -366,7 +366,7 @@ export default async function EvidenceRequestsPage({
                       </li>
                     ))}
                 </ul>
-              </PlaceholderCard>
+              </ConsolePanel>
             </div>
           ) : null}
         </>

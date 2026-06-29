@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appLabel, appMeta, appOverline } from "@/lib/app-typography";
 import {
@@ -146,7 +146,7 @@ export default async function ObligationDensityAlertsPage({
           </p>
 
           {canEdit ? (
-            <PlaceholderCard title="Threshold settings">
+            <ConsolePanel title="Threshold settings">
               <form action={updateObligationDensityAlertSettingsAction} className={`space-y-4 ${appBody}`}>
                 <label className="flex items-center gap-2">
                   <input
@@ -238,12 +238,12 @@ export default async function ObligationDensityAlertsPage({
                   </form>
                 ) : null}
               </div>
-            </PlaceholderCard>
+            </ConsolePanel>
           ) : null}
 
           {pack.breaches.length > 0 ? (
             <div className="mt-6">
-              <PlaceholderCard title="Active breaches">
+              <ConsolePanel title="Active breaches">
                 <ul className={`space-y-2 ${appBody}`}>
                   {pack.breaches.map((b) => (
                     <li key={b.alertKey} className="rounded-lg border border-danger/25 px-3 py-2">
@@ -252,13 +252,13 @@ export default async function ObligationDensityAlertsPage({
                     </li>
                   ))}
                 </ul>
-              </PlaceholderCard>
+              </ConsolePanel>
             </div>
           ) : null}
 
           {log.length > 0 ? (
             <div className="mt-6">
-              <PlaceholderCard title="Alert delivery log">
+              <ConsolePanel title="Alert delivery log">
                 <ul className={`space-y-2 ${appMeta}`}>
                   {log.map((row) => (
                     <li key={row.id} className="rounded-lg border border-white/[0.06] px-3 py-2">
@@ -269,7 +269,7 @@ export default async function ObligationDensityAlertsPage({
                     </li>
                   ))}
                 </ul>
-              </PlaceholderCard>
+              </ConsolePanel>
             </div>
           ) : null}
 

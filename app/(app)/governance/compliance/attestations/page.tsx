@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceControlTags } from "@/components/compliance/ComplianceControlTags";
 import {
   assignControlAttestationAction,
@@ -156,7 +156,7 @@ export default async function ControlAttestationsPage({
         </div>
       </div>
 
-      <PlaceholderCard title="Control attestation board">
+      <ConsolePanel title="Control attestation board">
         <div className="space-y-6">
           {board.map((row) => {
             const trail = trails.get(row.id) ?? [];
@@ -304,7 +304,7 @@ export default async function ControlAttestationsPage({
             );
           })}
         </div>
-      </PlaceholderCard>
+      </ConsolePanel>
     </>
   );
 }

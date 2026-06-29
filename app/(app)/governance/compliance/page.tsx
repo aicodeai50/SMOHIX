@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceControlTags } from "@/components/compliance/ComplianceControlTags";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
@@ -166,7 +166,7 @@ export default async function CompliancePage({
         </div>
       </div>
 
-      <PlaceholderCard title="Control coverage matrix">
+      <ConsolePanel title="Control coverage matrix">
         {rows.length === 0 ? (
           <ConsoleEmptyState
             title="No controls in view"
@@ -203,7 +203,7 @@ export default async function CompliancePage({
             </table>
           </div>
         )}
-      </PlaceholderCard>
+      </ConsolePanel>
     </>
   );
 }

@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { appBody, appLabel, appMeta, appOverline } from "@/lib/app-typography";
 import { listRecentChangeRiskScoresForUser } from "@/lib/approvals/change-risk-db";
 import { listChangeActionsForUser, listChangeWindowsForUser } from "@/lib/equipment/data";
@@ -84,26 +84,26 @@ export default async function ChangesPage({
       ) : null}
 
       <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="shynvo-glass rounded-2xl p-5">
+        <div className="zentro-glass rounded-2xl p-5">
           <p className={`${appMeta} font-medium`}>Scheduled windows</p>
           <p className="mt-1 text-2xl font-semibold text-foreground">{windows.length}</p>
         </div>
-        <div className="shynvo-glass rounded-2xl p-5">
+        <div className="zentro-glass rounded-2xl p-5">
           <p className={`${appMeta} font-medium`}>Upcoming / active</p>
           <p className="mt-1 text-2xl font-semibold text-foreground">{upcoming}</p>
         </div>
-        <div className="shynvo-glass rounded-2xl p-5">
+        <div className="zentro-glass rounded-2xl p-5">
           <p className={`${appMeta} font-medium`}>Avg change risk (50)</p>
           <p className="mt-1 text-2xl font-semibold text-foreground">{avgRiskScore ?? "—"}</p>
         </div>
-        <div className="shynvo-glass rounded-2xl p-5">
+        <div className="zentro-glass rounded-2xl p-5">
           <p className={`${appMeta} font-medium`}>Risk blocks</p>
           <p className="mt-1 text-2xl font-semibold text-foreground">{blockedRiskCount}</p>
         </div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <PlaceholderCard title="Create change window">
+        <ConsolePanel title="Create change window">
           <form action={createChangeWindowAction} className="space-y-3">
             <div>
               <label htmlFor="cw-title" className={`mb-1 block ${appLabel}`}>
@@ -216,9 +216,9 @@ export default async function ChangesPage({
               Add window
             </button>
           </form>
-        </PlaceholderCard>
+        </ConsolePanel>
 
-        <PlaceholderCard title="Log change action">
+        <ConsolePanel title="Log change action">
           <form action={createChangeActionAction} className="space-y-3">
             <div>
               <label htmlFor="ca-window" className={`mb-1 block ${appLabel}`}>
@@ -300,11 +300,11 @@ export default async function ChangesPage({
               Log action
             </button>
           </form>
-        </PlaceholderCard>
+        </ConsolePanel>
       </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
-        <PlaceholderCard title="Scheduled windows">
+        <ConsolePanel title="Scheduled windows">
           <h3 className={appOverline}>Calendar entries</h3>
           {windows.length === 0 ? (
             <div className="mt-4">
@@ -341,9 +341,9 @@ export default async function ChangesPage({
               ))}
             </ul>
           )}
-        </PlaceholderCard>
+        </ConsolePanel>
 
-        <PlaceholderCard title="Recent change actions">
+        <ConsolePanel title="Recent change actions">
           <h3 className={appOverline}>Execution log</h3>
           {actions.length === 0 ? (
             <div className="mt-4">
@@ -367,7 +367,7 @@ export default async function ChangesPage({
               ))}
             </ul>
           )}
-        </PlaceholderCard>
+        </ConsolePanel>
       </div>
     </>
   );

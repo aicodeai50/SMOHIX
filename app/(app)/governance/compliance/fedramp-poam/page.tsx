@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import {
   buildFedrampPoamPack,
@@ -152,7 +152,7 @@ export default async function FedrampPoamPage() {
             </p>
           ) : null}
 
-          <PlaceholderCard title="POA&M preview (open items)">
+          <ConsolePanel title="POA&M preview (open items)">
             {pack.rows.length === 0 ? (
               <p className={`${appMeta} text-emerald-300`}>
                 No open POA&M items — continuous assessment found no exceptions in the{" "}
@@ -195,7 +195,7 @@ export default async function FedrampPoamPage() {
                 ) : null}
               </div>
             )}
-          </PlaceholderCard>
+          </ConsolePanel>
         </>
       )}
     </>

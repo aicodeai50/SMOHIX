@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import { buildAttestationRenewalCalendarPack } from "@/lib/compliance/attestation-renewal-calendar";
@@ -160,7 +160,7 @@ export default async function AttestationRenewalPage({
 
           {pack.frameworkSummaries.length > 0 ? (
             <div className="mb-6">
-              <PlaceholderCard title="By framework pack">
+              <ConsolePanel title="By framework pack">
                 <div className="flex flex-wrap gap-2">
                   {pack.frameworkSummaries.map((f) => (
                     <Link
@@ -175,11 +175,11 @@ export default async function AttestationRenewalPage({
                     </Link>
                   ))}
                 </div>
-              </PlaceholderCard>
+              </ConsolePanel>
             </div>
           ) : null}
 
-          <PlaceholderCard title="Renewal waves">
+          <ConsolePanel title="Renewal waves">
             {topWaves.length === 0 ? (
               <p className={appMeta}>No attestations due within the {pack.horizonDays}-day horizon.</p>
             ) : (
@@ -218,11 +218,11 @@ export default async function AttestationRenewalPage({
                 ))}
               </div>
             )}
-          </PlaceholderCard>
+          </ConsolePanel>
 
           {pack.ownerNudgeTargets.length > 0 ? (
             <div className="mt-6">
-              <PlaceholderCard title="Owner nudge queue">
+              <ConsolePanel title="Owner nudge queue">
                 <ul className={`space-y-2 ${appBody}`}>
                   {pack.ownerNudgeTargets.slice(0, 10).map((t) => (
                     <li key={t.ownerUserId}>
@@ -238,7 +238,7 @@ export default async function AttestationRenewalPage({
                     </li>
                   ))}
                 </ul>
-              </PlaceholderCard>
+              </ConsolePanel>
             </div>
           ) : null}
         </>

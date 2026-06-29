@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import { buildPolicyDriftPack } from "@/lib/compliance/policy-drift";
@@ -127,7 +127,7 @@ export default async function PolicyDriftPage() {
             </div>
           </div>
 
-          <PlaceholderCard title="Drift findings">
+          <ConsolePanel title="Drift findings">
             {pack.findings.length === 0 ? (
               <p className={`${appMeta} text-emerald-300`}>
                 No guardrail drift detected — accepted policies align with current assessment gaps.
@@ -172,7 +172,7 @@ export default async function PolicyDriftPage() {
                 ))}
               </ul>
             )}
-          </PlaceholderCard>
+          </ConsolePanel>
         </>
       )}
     </>

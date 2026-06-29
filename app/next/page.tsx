@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { DimensionGate } from "@/components/landing/DimensionGate";
-import { LivingPulse } from "@/components/landing/LivingPulse";
 import { MarketingQuantumShell } from "@/components/landing/MarketingQuantumShell";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
@@ -25,83 +23,60 @@ const ROADMAP: {
 }[] = [
   {
     horizon: "shipping",
-    title: "Shipping now",
-    subtitle: "Live in console — 49 migrations and refreshed marketing site.",
+    title: "Available now",
+    subtitle: "Core workflows available in the console today.",
     items: [
       {
-        name: "Settings ambient status layer",
-        detail: "Settings-context health pulse on /settings — setup wizard progress, API keys, ingest tokens, connector health, and deployment mode headlines.",
+        name: "Incident command and response loop",
+        detail: "Incidents, assignees, comments, handoffs, runbooks, RCA context, and evidence export in one workspace.",
       },
       {
-        name: "Copilot ambient status layer",
-        detail: "Copilot-context health pulse on /copilot — connector readiness, reasoning availability, and session guidance headlines.",
+        name: "Guarded automation",
+        detail: "Dry-runs, approval gates, rollback evidence, policy checks, and step-level remediation receipts.",
       },
       {
-        name: "Runbooks ambient status layer",
-        detail: "Runbook-context health pulse on /runbooks — catalog coverage, incident linkage, and GRC procedure signals with triage-focused headlines.",
+        name: "Audit and compliance evidence",
+        detail: "Org-scoped audit log, evidence bundles, compliance mappings, retention controls, and assessor exports.",
       },
       {
-        name: "Audit ambient status layer",
-        detail: "Audit-context health pulse on /audit — trail recency, export readiness, Slack delivery failures, and append-only posture headlines.",
+        name: "Service and deploy context",
+        detail: "Service catalog, SLO context, deploy event ingest, change correlation, and incident-linked context for Copilot.",
       },
-      {
-        name: "Automations ambient status layer",
-        detail: "Automation-context health pulse on /automations — dry-run success rate, failed runs, and connector health with guardrail-focused headlines.",
-      },
-      {
-        name: "Services ambient status layer",
-        detail: "Service-context health pulse on /services — SLO burn, catalog size, and connector health with error-budget headlines.",
-      },
-      {
-        name: "Approvals ambient status layer",
-        detail: "Approval-context health pulse on /approvals — pending, high-risk, and policy-gap counts with guardrail-focused headlines.",
-      },
-      {
-        name: "Incidents ambient status layer",
-        detail: "Incident-context health pulse on /incidents — hot/open queue counts and triage-focused headlines.",
-      },
-      {
-        name: "Hub module personalization",
-        detail: "Pin console modules and reorder /hub quick links per user — pinned modules float to the top of the nav rail.",
-      },
-      {
-        name: "Console jump search pinned shortcuts",
-        detail: "Ctrl/Cmd+K shows pinned modules before recents, synced from hub personalization prefs.",
-      },
-      {
-        name: "Console ambient status layer",
-        detail: "Live health pulse and particle lattice on /hub and /overview from workspace telemetry.",
-      },
-      {
-        name: "Staffing digest auto-chain cron",
-        detail: "Single UTC-week run at /governance/compliance/staffing-digest-auto-chain — rollup → SLA digest → escalation.",
-      },
-      { name: "Marketing site refresh", detail: "Futuristic visual identity with clearer operational copy across homepage and key pages." },
-      { name: "Cross-staffing committee escalation", detail: "Post-rollup SLA breach escalation at /governance/compliance/cross-staffing-committee-escalation." },
-      { name: "Staffing action SLA breach digest", detail: "Post-peak completion SLA alerts at /governance/compliance/staffing-sla-breach-digest." },
-      { name: "Staffing completion rollup export", detail: "Printable HTML/PDF archive at /governance/compliance/staffing-completion-rollup." },
-      { name: "Staffing action overdue reminders", detail: "Past-peak-week nudges at /governance/compliance/staffing-action-reminders." },
-      { name: "Obligation staffing action tracker", detail: "Track relief actions at /governance/compliance/staffing-actions." },
-      { name: "Committee peak-week staffing digest", detail: "Capacity + load alert at /governance/compliance/peak-week-staffing-digest." },
-      { name: "Compliance program dashboard", detail: "Executive rollup at /governance/compliance/program." },
     ],
   },
   {
     horizon: "building",
     title: "Building next",
-    subtitle: "In active development — sequencing follows customer demand.",
+    subtitle: "Near-term product work, sequenced by customer demand and safety review.",
     items: [
       {
-        name: "Governance ambient status layer",
-        detail: "Governance-context health pulse on /governance/* — access posture, policy review cadence, and compliance program signals.",
+        name: "Native vendor connectors",
+        detail: "OAuth-backed integrations for paging, monitoring, SIEM, ticketing, and chat beyond today's webhook/API paths.",
+      },
+      {
+        name: "Organization administration",
+        detail: "Stronger member lifecycle, SSO configuration, billing seat controls, and workspace policy controls.",
+      },
+      {
+        name: "Compliance workflow consolidation",
+        detail: "Fewer deeper compliance surfaces, clearer review queues, and buyer-ready evidence packaging.",
       },
     ],
   },
   {
     horizon: "exploring",
     title: "Exploring",
-    subtitle: "Research and design — not committed timelines.",
-    items: [],
+    subtitle: "Research areas only; not committed timelines or live product claims.",
+    items: [
+      {
+        name: "Advanced Copilot review controls",
+        detail: "Structured citations, model output review queues, and richer incident summarization after operator validation.",
+      },
+      {
+        name: "Remediation partner ecosystem",
+        detail: "Safer execution handoffs to internal robot services and future vendor automation partners.",
+      },
+    ],
   },
 ];
 
@@ -120,8 +95,6 @@ const HORIZON_STYLE: Record<Horizon, { badge: string; glow: string }> = {
   },
 };
 
-const SHIPPING_TOTAL = 65;
-
 export default function NextPage() {
   return (
     <>
@@ -130,9 +103,8 @@ export default function NextPage() {
         <main className="flex-1 border-b border-white/[0.06]">
           <div className="zentro-hero-future zentro-quantum-section border-b border-white/[0.06]">
             <article className={`${mArticle} max-w-4xl`}>
-              <LivingPulse />
-              <p className={`${mEyebrow} zentro-eyebrow-cyber`}>⟡ Product roadmap</p>
-              <h1 className={`mt-2 shynvo-headline zentro-living-headline ${mH1}`}>
+              <p className={`${mEyebrow} zentro-eyebrow-cyber`}>Product roadmap</p>
+              <h1 className={`mt-2 zentro-headline zentro-living-headline ${mH1}`}>
                 What&apos;s next for {SITE_BRAND_NAME}
               </h1>
               <p className={`mt-4 ${mBody} text-base sm:text-lg`}>
@@ -141,8 +113,6 @@ export default function NextPage() {
               </p>
             </article>
           </div>
-
-          <DimensionGate />
 
           <div className={`${mContainer} zentro-quantum-section py-12 sm:py-16`}>
             <div className="grid gap-6 lg:grid-cols-3">
@@ -192,10 +162,11 @@ export default function NextPage() {
 
                       {block.horizon === "shipping" ? (
                         <p className={`mt-6 text-xs ${mBody}`}>
-                          Showing latest 8 of {SHIPPING_TOTAL}+ shipped capabilities.{" "}
+                          For release-level history, see the{" "}
                           <Link href="/changelog" className="font-medium text-accent hover:underline">
-                            Full changelog →
+                            changelog
                           </Link>
+                          .
                         </p>
                       ) : null}
                     </div>

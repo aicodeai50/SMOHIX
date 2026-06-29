@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { appBody, appLabel, appMeta, appOverline } from "@/lib/app-typography";
 import { listNetworkDevicesForUser } from "@/lib/equipment/data";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
@@ -61,7 +61,7 @@ export default async function NetworkAssetsPage({
       ) : null}
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <PlaceholderCard title="Add network device">
+        <ConsolePanel title="Add network device">
           <form action={createNetworkDeviceAction} className="space-y-3">
             <div>
               <label htmlFor="net-host" className={`mb-1 block ${appLabel}`}>
@@ -185,9 +185,9 @@ export default async function NetworkAssetsPage({
               Add device
             </button>
           </form>
-        </PlaceholderCard>
+        </ConsolePanel>
 
-        <PlaceholderCard title="Device inventory">
+        <ConsolePanel title="Device inventory">
           <h3 className={appOverline}>Tracked network devices</h3>
           {rows.length === 0 ? (
             <div className="mt-4">
@@ -221,7 +221,7 @@ export default async function NetworkAssetsPage({
               ))}
             </ul>
           )}
-        </PlaceholderCard>
+        </ConsolePanel>
       </div>
     </>
   );

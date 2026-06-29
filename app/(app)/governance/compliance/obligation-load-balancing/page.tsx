@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import { buildObligationOwnerLoadBalancingPack } from "@/lib/compliance/obligation-owner-load-balancing";
@@ -127,7 +127,7 @@ export default async function ObligationLoadBalancingPage() {
           <p className={`mb-6 ${appMeta} text-muted`}>{pack.committeeSummary}</p>
 
           {pack.ownerLoads.length > 0 ? (
-            <PlaceholderCard title="Peak-week owner load">
+            <ConsolePanel title="Peak-week owner load">
               <ul className={`space-y-3 ${appBody}`}>
                 {pack.ownerLoads.map((o) => (
                   <li key={o.userId}>
@@ -153,12 +153,12 @@ export default async function ObligationLoadBalancingPage() {
                   </li>
                 ))}
               </ul>
-            </PlaceholderCard>
+            </ConsolePanel>
           ) : null}
 
           {pack.suggestions.length > 0 ? (
             <div className="mt-6">
-              <PlaceholderCard title="Rebalance suggestions">
+              <ConsolePanel title="Rebalance suggestions">
                 <ul className={`space-y-3 ${appBody}`}>
                   {pack.suggestions.map((s) => (
                     <li
@@ -180,13 +180,13 @@ export default async function ObligationLoadBalancingPage() {
                     </li>
                   ))}
                 </ul>
-              </PlaceholderCard>
+              </ConsolePanel>
             </div>
           ) : null}
 
           {pack.frameworkOwners.length > 0 ? (
             <div className="mt-6">
-              <PlaceholderCard title="Framework primary accountables">
+              <ConsolePanel title="Framework primary accountables">
                 <ul className={`space-y-2 ${appMeta}`}>
                   {pack.frameworkOwners.map((fw) => (
                     <li key={fw.framework} className="rounded-lg border border-white/[0.06] px-3 py-2">
@@ -196,7 +196,7 @@ export default async function ObligationLoadBalancingPage() {
                     </li>
                   ))}
                 </ul>
-              </PlaceholderCard>
+              </ConsolePanel>
             </div>
           ) : null}
 

@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import { getOrgContextForUser } from "@/lib/org/context";
 import { listVulnerabilityFindingsForUser } from "@/lib/vulnerabilities/data";
@@ -110,7 +110,7 @@ export default async function VulnerabilitiesPage() {
         </div>
       </div>
 
-      <PlaceholderCard title="Prioritized exposure queue">
+      <ConsolePanel title="Prioritized exposure queue">
         {rows.length === 0 ? (
           <ConsoleEmptyState
             title="No findings yet"
@@ -166,7 +166,7 @@ export default async function VulnerabilitiesPage() {
             ))}
           </ul>
         )}
-      </PlaceholderCard>
+      </ConsolePanel>
     </>
   );
 }

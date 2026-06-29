@@ -1,64 +1,10 @@
-/**
- * Lemon Squeezy checkout: paste your product/checkout URL from the Lemon dashboard.
- * Public so marketing CTAs can link to checkout without a server round-trip.
- */
-export function getCheckoutUrl(): string | undefined {
-  const url = process.env.NEXT_PUBLIC_LEMONSQUEEZY_CHECKOUT_URL?.trim();
-  return url || undefined;
-}
-
-/** Optional second product (e.g. Team) — separate Lemon checkout URL. */
-export function getTeamCheckoutUrl(): string | undefined {
-  const url = process.env.NEXT_PUBLIC_LEMONSQUEEZY_TEAM_CHECKOUT_URL?.trim();
-  return url || undefined;
-}
-
-/** Primary trial CTA: Lemon checkout when configured, else in-page anchor. */
-export function getTrialHref(): string {
-  return getCheckoutUrl() ?? "#trial";
-}
-
-/**
- * Append Lemon Squeezy checkout custom data so webhooks can link `subscriptions.user_id`.
- * Pass the signed-in user’s UUID (same as `auth.users.id`).
- * @see https://docs.lemonsqueezy.com/help/checkout/passing-custom-data
- */
-export function appendCheckoutCustomData(
-  checkoutUrl: string,
-  entries: Record<string, string>,
-): string {
-  const u = new URL(checkoutUrl);
-  for (const [key, value] of Object.entries(entries)) {
-    if (!key || !value) continue;
-    u.searchParams.set(`checkout[custom][${key}]`, value);
-  }
-  return u.toString();
-}
-
-/** Paid checkout URL including `zentro_user_id` for webhook upsert. */
-export function getCheckoutUrlForUser(userId: string): string | undefined {
-  const base = getCheckoutUrl();
-  if (!base) return undefined;
-  return appendCheckoutCustomData(base, { zentro_user_id: userId });
-}
-
-/** Team checkout with `zentro_user_id` when team URL is set. */
-export function getTeamCheckoutUrlForUser(userId: string): string | undefined {
-  const base = getTeamCheckoutUrl();
-  if (!base) return undefined;
-  return appendCheckoutCustomData(base, { zentro_user_id: userId });
-}
-
-/**
- * Lemon Squeezy **Customer portal** (manage payment method, cancel, invoices).
- * Paste the URL from Lemon → Settings → Customer portal (or your hosted billing link).
- * Prefer `NEXT_PUBLIC_*` if you need it client-side; server reads both.
- */
-export function getCustomerPortalUrl(): string | undefined {
-  const pub = process.env.NEXT_PUBLIC_LEMONSQUEEZY_CUSTOMER_PORTAL_URL?.trim();
-  const srv = process.env.LEMONSQUEEZY_CUSTOMER_PORTAL_URL?.trim();
-  return pub || srv || undefined;
-}
+import { getSiteUrl } from "@/lib/site";
+import {
+  createPayPalOrder,
+  createPayPalSubscription,
+  approvalUrlFromLinks,
+} from "@/lib/paypal/client";
+import { getPayPalPlanId, isPayPalConfigured } from "@/lib/paypal/config";
 
 /** Single contact inbox for product, billing, security, and partnerships. */
 export const SITE_EMAIL_CONTACT = "hi@zentro.run";
@@ -95,4 +41,128 @@ export function getSupportMailtoHref(): string {
 /** @deprecated Use getMailtoHref */
 export function getContactMailtoHref(): string {
   return getGeneralMailtoHref();
+}
+
+/** Whether PayPal billing is configured server-side */
+export function isBillingConfigured(): boolean {
+  return isPayPalConfigured();
+}
+
+/** Primary trial CTA: billing page when PayPal configured */
+export function getTrialHref(): string {
+  return isPayPalConfigured() ? "/settings/billing" : "#pricing";
+}
+
+/** @deprecated Lemon Squeezy — use PayPal checkout via /api/billing/checkout */
+export function getCheckoutUrl(): string | undefined {
+  return isPayPalConfigured() ? "/settings/billing?tier=pro" : undefined;
+}
+
+/** @deprecated Lemon Squeezy — use PayPal checkout via /api/billing/checkout */
+export function getTeamCheckoutUrl(): string | undefined {
+  return isPayPalConfigured() ? "/settings/billing?tier=team" : undefined;
+}
+
+/** @deprecated Use PayPal subscription flow */
+export function appendCheckoutCustomData(
+  checkoutUrl: string,
+  entries: Record<string, string>,
+): string {
+  const u = new URL(checkoutUrl, "https://zentro.run");
+  for (const [key, value] of Object.entries(entries)) {
+    if (!key || !value) continue;
+    u.searchParams.set(key, value);
+  }
+  return u.toString();
+}
+
+/** Billing page URL with tier pre-selected for signed-in users */
+export function getCheckoutUrlForUser(userId: string): string | undefined {
+  if (!isPayPalConfigured()) return undefined;
+  return `/settings/billing?tier=pro&uid=${encodeURIComponent(userId)}`;
+}
+
+export function getTeamCheckoutUrlForUser(userId: string): string | undefined {
+  if (!isPayPalConfigured()) return undefined;
+  return `/settings/billing?tier=team&uid=${encodeURIComponent(userId)}`;
+}
+
+/** @deprecated PayPal manages subscriptions in-app */
+export function getCustomerPortalUrl(): string | undefined {
+  return isPayPalConfigured() ? "/settings/billing" : undefined;
+}
+
+export type CheckoutTier = "pro" | "team" | "top_up";
+
+export type CreateCheckoutResult =
+  | { ok: true; approvalUrl: string; resourceId: string; kind: "subscription" | "order" }
+  | { ok: false; error: string };
+
+/** Create PayPal subscription or top-up order for a user */
+export async function createBillingCheckout(input: {
+  userId: string;
+  tier: CheckoutTier;
+  topUpAmountCents?: number;
+}): Promise<CreateCheckoutResult> {
+  if (!isPayPalConfigured()) {
+    return { ok: false, error: "PayPal not configured" };
+  }
+
+  const site = getSiteUrl();
+  const returnUrl = `${site}/settings/billing?checkout=success`;
+  const cancelUrl = `${site}/settings/billing?checkout=cancelled`;
+  const customId = input.userId;
+
+  if (input.tier === "top_up") {
+    const amountCents = input.topUpAmountCents ?? 2500;
+    if (amountCents < 500) {
+      return { ok: false, error: "Minimum top-up is $5.00" };
+    }
+    try {
+      const order = await createPayPalOrder({
+        amountCents,
+        description: "Zentro account balance top-up",
+        customId,
+        returnUrl,
+        cancelUrl,
+      });
+      const approvalUrl = approvalUrlFromLinks(order.links);
+      if (!approvalUrl) {
+        return { ok: false, error: "No PayPal approval URL returned" };
+      }
+      return { ok: true, approvalUrl, resourceId: order.id, kind: "order" };
+    } catch (e) {
+      return {
+        ok: false,
+        error: e instanceof Error ? e.message : "Checkout failed",
+      };
+    }
+  }
+
+  const planId = getPayPalPlanId(input.tier);
+  if (!planId) {
+    return {
+      ok: false,
+      error: `PayPal plan not configured for ${input.tier}`,
+    };
+  }
+
+  try {
+    const sub = await createPayPalSubscription({
+      planId,
+      customId,
+      returnUrl,
+      cancelUrl,
+    });
+    const approvalUrl = approvalUrlFromLinks(sub.links);
+    if (!approvalUrl) {
+      return { ok: false, error: "No PayPal approval URL returned" };
+    }
+    return { ok: true, approvalUrl, resourceId: sub.id, kind: "subscription" };
+  } catch (e) {
+    return {
+      ok: false,
+      error: e instanceof Error ? e.message : "Checkout failed",
+    };
+  }
 }

@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import {
@@ -178,7 +178,7 @@ export default async function StaffingCompletionRollupPage({
           <p className={`mb-6 ${appMeta} text-muted`}>{pack.committeeSummary}</p>
 
           {canEdit && !readOnly ? (
-            <PlaceholderCard title="Scheduled delivery">
+            <ConsolePanel title="Scheduled delivery">
               <form
                 action={updateStaffingCompletionRollupSettingsAction}
                 className={`space-y-4 ${appBody}`}
@@ -238,12 +238,12 @@ export default async function StaffingCompletionRollupPage({
                 {" · "}
                 Use browser Print → Save as PDF on the printable HTML link.
               </p>
-            </PlaceholderCard>
+            </ConsolePanel>
           ) : null}
 
           {deliveries.length > 0 ? (
             <div className="mt-6">
-              <PlaceholderCard title="Delivery log">
+              <ConsolePanel title="Delivery log">
                 <ul className={`space-y-2 ${appMeta}`}>
                   {deliveries.map((row) => (
                     <li key={row.id} className="rounded-lg border border-white/[0.06] px-3 py-2">
@@ -257,7 +257,7 @@ export default async function StaffingCompletionRollupPage({
                     </li>
                   ))}
                 </ul>
-              </PlaceholderCard>
+              </ConsolePanel>
             </div>
           ) : null}
 

@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import { buildControlOwnershipMatrixPack } from "@/lib/compliance/control-ownership-matrix";
@@ -134,7 +134,7 @@ export default async function ControlOwnershipPage() {
 
           {pack.frameworkSummaries.length > 0 ? (
             <div className="mb-6">
-            <PlaceholderCard title="By framework">
+            <ConsolePanel title="By framework">
               <ul className={`space-y-2 ${appBody}`}>
                 {pack.frameworkSummaries.map((fw) => (
                   <li
@@ -149,13 +149,13 @@ export default async function ControlOwnershipPage() {
                   </li>
                 ))}
               </ul>
-            </PlaceholderCard>
+            </ConsolePanel>
             </div>
           ) : null}
 
           {gapRows.length > 0 ? (
             <div className="mb-6">
-            <PlaceholderCard title="Ownership gaps (sample)">
+            <ConsolePanel title="Ownership gaps (sample)">
               <ul className={`space-y-3 ${appBody}`}>
                 {gapRows.map((row) => (
                   <li key={row.controlId}>
@@ -170,11 +170,11 @@ export default async function ControlOwnershipPage() {
                   </li>
                 ))}
               </ul>
-            </PlaceholderCard>
+            </ConsolePanel>
             </div>
           ) : null}
 
-          <PlaceholderCard title="Control RACI matrix">
+          <ConsolePanel title="Control RACI matrix">
             <div className="overflow-x-auto">
               <table className={`w-full min-w-[720px] text-left text-sm ${appBody}`}>
                 <thead>
@@ -226,7 +226,7 @@ export default async function ControlOwnershipPage() {
                 </tbody>
               </table>
             </div>
-          </PlaceholderCard>
+          </ConsolePanel>
         </>
       )}
     </>

@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appLabel, appMeta, appOverline } from "@/lib/app-typography";
 import { buildCommitteeObligationCapacityBudgetPack } from "@/lib/compliance/committee-obligation-capacity-budget";
@@ -151,7 +151,7 @@ export default async function CommitteeCapacityBudgetPage({
           <p className={`mb-6 ${appMeta} text-muted`}>{pack.committeeSummary}</p>
 
           {canEdit && !readOnly ? (
-            <PlaceholderCard title="Capacity assumptions">
+            <ConsolePanel title="Capacity assumptions">
               <form action={updateCommitteeCapacityBudgetSettingsAction} className={`space-y-4 ${appBody}`}>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
@@ -192,11 +192,11 @@ export default async function CommitteeCapacityBudgetPage({
                   Save assumptions
                 </button>
               </form>
-            </PlaceholderCard>
+            </ConsolePanel>
           ) : null}
 
           <div className="mt-6">
-            <PlaceholderCard title="Weekly capacity vs forecast obligations">
+            <ConsolePanel title="Weekly capacity vs forecast obligations">
               <ul className={`space-y-3 ${appBody}`}>
                 {pack.weeks.map((w) => (
                   <li key={w.weekKey}>
@@ -226,7 +226,7 @@ export default async function CommitteeCapacityBudgetPage({
                   </li>
                 ))}
               </ul>
-            </PlaceholderCard>
+            </ConsolePanel>
           </div>
 
           <p className={`mt-6 ${appMeta}`}>

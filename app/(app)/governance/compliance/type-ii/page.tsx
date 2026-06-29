@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceControlTags } from "@/components/compliance/ComplianceControlTags";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import { buildSoc2TypeIIReport } from "@/lib/compliance/type-ii-report";
@@ -124,7 +124,7 @@ export default async function Soc2TypeIIPage() {
 
       <p className={`mb-6 ${appMeta} text-muted`}>{report.monitoringNote}</p>
 
-      <PlaceholderCard title="SOC 2 control monitoring (30d vs prior 30d)">
+      <ConsolePanel title="SOC 2 control monitoring (30d vs prior 30d)">
         <div className="overflow-x-auto">
           <table className={`w-full text-left ${appBody}`}>
             <thead className="border-b border-border text-[11px] uppercase tracking-wide text-muted">
@@ -163,10 +163,10 @@ export default async function Soc2TypeIIPage() {
             </tbody>
           </table>
         </div>
-      </PlaceholderCard>
+      </ConsolePanel>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
-        <PlaceholderCard title="Exceptions & gaps">
+        <ConsolePanel title="Exceptions & gaps">
           {report.exceptions.length === 0 ? (
             <p className={`${appMeta} text-emerald-300`}>No exceptions in the current monitoring window.</p>
           ) : (
@@ -180,9 +180,9 @@ export default async function Soc2TypeIIPage() {
               ))}
             </ul>
           )}
-        </PlaceholderCard>
+        </ConsolePanel>
 
-        <PlaceholderCard title="Assessor export">
+        <ConsolePanel title="Assessor export">
           <p className={`mb-4 ${appMeta} text-muted`}>
             Download the structured Type II report JSON for your audit workpapers.
           </p>
@@ -201,7 +201,7 @@ export default async function Soc2TypeIIPage() {
               with the <span className="font-mono">auditor</span> role for read-only workspace access.
             </p>
           ) : null}
-        </PlaceholderCard>
+        </ConsolePanel>
       </div>
     </>
   );

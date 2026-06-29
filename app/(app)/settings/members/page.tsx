@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { appBody, appLabel, appMeta, appOverline } from "@/lib/app-typography";
 import { getOrgContextForUser } from "@/lib/org/context";
 import { listOrgMembers } from "@/lib/org/data";
@@ -94,7 +94,7 @@ export default async function SettingsMembersPage({
       ) : null}
 
       {orgContext.memberships.length === 0 ? (
-        <PlaceholderCard title="Create organization">
+        <ConsolePanel title="Create organization">
           <p className={`mb-4 text-muted ${appBody}`}>
             Start a shared workspace to enable delegated approvers, security reviewers, and org-scoped
             approval queues.
@@ -120,7 +120,7 @@ export default async function SettingsMembersPage({
               Create organization
             </button>
           </form>
-        </PlaceholderCard>
+        </ConsolePanel>
       ) : (
         <>
           <div className="mb-6 grid gap-4 sm:grid-cols-3">
@@ -146,7 +146,7 @@ export default async function SettingsMembersPage({
           </div>
 
           {orgContext.memberships.length > 1 ? (
-            <PlaceholderCard title="Switch organization">
+            <ConsolePanel title="Switch organization">
               <form action={setActiveOrganizationAction} className="flex flex-wrap gap-3">
                 <select
                   name="org_id"
@@ -163,12 +163,12 @@ export default async function SettingsMembersPage({
                   Set active
                 </button>
               </form>
-            </PlaceholderCard>
+            </ConsolePanel>
           ) : null}
 
           <div className="mt-6 grid gap-6 lg:grid-cols-2">
             {canAdmin ? (
-              <PlaceholderCard title="Invite member">
+              <ConsolePanel title="Invite member">
                 <form action={addOrganizationMemberAction} className="space-y-3">
                   <div>
                     <label htmlFor="member-email" className={`mb-1 block ${appLabel}`}>
@@ -211,16 +211,16 @@ export default async function SettingsMembersPage({
                   Approver decides pending requests. Security reviewer handles high-risk (70+) and policy
                   review. Operator submits requests. Viewer is read-only.
                 </p>
-              </PlaceholderCard>
+              </ConsolePanel>
             ) : (
-              <PlaceholderCard title="Member admin">
+              <ConsolePanel title="Member admin">
                 <p className={`text-muted ${appBody}`}>
                   Only owners and admins can invite or change roles.
                 </p>
-              </PlaceholderCard>
+              </ConsolePanel>
             )}
 
-            <PlaceholderCard title="Members">
+            <ConsolePanel title="Members">
               {members.length === 0 ? (
                 <ConsoleEmptyState title="No members" description="Invite teammates to share approvals." />
               ) : (
@@ -277,7 +277,7 @@ export default async function SettingsMembersPage({
                   ))}
                 </ul>
               )}
-            </PlaceholderCard>
+            </ConsolePanel>
           </div>
         </>
       )}

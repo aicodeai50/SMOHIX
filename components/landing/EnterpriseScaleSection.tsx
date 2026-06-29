@@ -7,7 +7,6 @@ import {
   mEyebrow,
   mH2,
   mLede,
-  mPanelShell,
   mSection,
 } from "@/lib/marketing-layout";
 import { getMailtoHref } from "@/lib/billing";
@@ -39,12 +38,12 @@ export function EnterpriseScaleSection() {
       <div className={mContainer}>
         <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
           <div>
-            <p className={mEyebrow}>Built for large organizations</p>
-            <h2 className={`mt-2 ${mH2}`}>Enterprise-grade operations at Fortune scale</h2>
+            <p className={mEyebrow}>Built for teams preparing for enterprise review</p>
+            <h2 className={`mt-2 ${mH2}`}>Controls, approvals, and evidence for regulated operations</h2>
             <p className={mLede}>
-              Global platform teams, MSSPs, and internal security groups use Zentro as the control
-              layer between detection tools and production — where every containment step is
-              authorized, recorded, and replayable.
+              Zentro is designed for teams that need a reviewable path from detection to response:
+              clear ownership, explicit approvals, retention-aware audit records, and exportable
+              evidence for security and vendor review.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link

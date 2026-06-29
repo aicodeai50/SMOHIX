@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
-import { PlaceholderCard } from "@/components/app/PlaceholderCard";
+import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { ComplianceHubLinks } from "@/components/compliance/ComplianceHubLinks";
 import { appBody, appMeta, appOverline } from "@/lib/app-typography";
 import type { RiskHeatLevel } from "@/lib/compliance/compliance-risk-heatmap";
@@ -161,7 +161,7 @@ export default async function RegulatoryObligationHeatmapPage() {
             ))}
           </div>
 
-          <PlaceholderCard title="Framework obligation concentration">
+          <ConsolePanel title="Framework obligation concentration">
             <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
               {pack.frameworkGrid.map((cell) => (
                 <Link
@@ -182,10 +182,10 @@ export default async function RegulatoryObligationHeatmapPage() {
                 </Link>
               ))}
             </div>
-          </PlaceholderCard>
+          </ConsolePanel>
 
           <div className="mt-6 grid gap-6 lg:grid-cols-2">
-            <PlaceholderCard title="Vendor tier obligations">
+            <ConsolePanel title="Vendor tier obligations">
               <div className="grid gap-2 sm:grid-cols-2">
                 {pack.vendorTierGrid.map((cell) => (
                   <Link
@@ -203,9 +203,9 @@ export default async function RegulatoryObligationHeatmapPage() {
                   </Link>
                 ))}
               </div>
-            </PlaceholderCard>
+            </ConsolePanel>
 
-            <PlaceholderCard title="Control testing schedule kinds">
+            <ConsolePanel title="Control testing schedule kinds">
               <div className="grid gap-2">
                 {pack.testingKindGrid.map((cell) => (
                   <Link
@@ -220,11 +220,11 @@ export default async function RegulatoryObligationHeatmapPage() {
                   </Link>
                 ))}
               </div>
-            </PlaceholderCard>
+            </ConsolePanel>
           </div>
 
           <div className="mt-6">
-            <PlaceholderCard title="Priority obligations">
+            <ConsolePanel title="Priority obligations">
               {pack.topObligations.length === 0 ? (
                 <p className={`${appMeta} text-emerald-300`}>
                   No open obligations in the current horizon.
@@ -262,7 +262,7 @@ export default async function RegulatoryObligationHeatmapPage() {
                   ))}
                 </ul>
               )}
-            </PlaceholderCard>
+            </ConsolePanel>
           </div>
         </>
       )}
