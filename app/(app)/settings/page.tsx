@@ -19,19 +19,9 @@ export const metadata: Metadata = {
 
 const cards = [
   {
-    href: "/vision",
-    title: "Vision & roadmap",
-    description: "Product direction from ops console to long-horizon autonomy (in-app + docs).",
-  },
-  {
     href: "/settings/billing",
     title: "Billing",
-    description: "Plan, checkout, and subscription status for this workspace.",
-  },
-  {
-    href: "/settings/deployment",
-    title: "Deployment & residency",
-    description: "FedRAMP-oriented region pins and data boundaries.",
+    description: "Plan, PayPal checkout, balance top-ups, and transaction history.",
   },
   {
     href: "/settings/members",
@@ -49,44 +39,14 @@ const cards = [
     description: "Reasoning and automation endpoints plus health checks.",
   },
   {
-    href: "/services",
-    title: "Services",
-    description: "Service catalog and monitoring webhook ingest (subscription).",
+    href: "/settings/deployment",
+    title: "Deployment & residency",
+    description: "Region pins, data boundaries, and retention controls.",
   },
   {
-    href: "/assets/certificates",
-    title: "Certificates",
-    description: "Certificate inventory with expiry and ownership tracking.",
-  },
-  {
-    href: "/assets/secrets",
-    title: "Secrets",
-    description: "Secret rotation metadata and governance visibility.",
-  },
-  {
-    href: "/assets/network",
-    title: "Network assets",
-    description: "Routers, firewalls, switches, and firmware posture.",
-  },
-  {
-    href: "/resilience/backups",
-    title: "Backup readiness",
-    description: "Backup policy inventory with recovery targets.",
-  },
-  {
-    href: "/governance/access",
-    title: "Access posture",
-    description: "MFA and privileged-account governance snapshots.",
-  },
-  {
-    href: "/governance/policies",
-    title: "Policy review",
-    description: "Review decision-intelligence suggestions and promote safe automation policy.",
-  },
-  {
-    href: "/changes",
-    title: "Change calendar",
-    description: "Maintenance windows and action execution log.",
+    href: "/vision",
+    title: "Vision & roadmap",
+    description: "Product direction and upcoming capabilities.",
   },
 ] as const;
 
