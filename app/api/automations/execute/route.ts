@@ -35,6 +35,7 @@ import {
   evaluateChangeRiskApprovalTightening,
 } from "@/lib/approvals/change-risk";
 import { insertChangeRiskScore } from "@/lib/approvals/change-risk-db";
+import { getRobotBackendUrl } from "@/lib/backend-urls";
 import { getOrgContextForUser } from "@/lib/org/context";
 import { getSiteUrl } from "@/lib/site";
 import { getLatestBurnStateForService } from "@/lib/services/slo";
@@ -48,12 +49,6 @@ const UUID_RE =
 
 function isUuid(s: string): boolean {
   return UUID_RE.test(s);
-}
-
-function normalizeBase(url: string | undefined): string | null {
-  const t = url?.trim();
-  if (!t) return null;
-  return t.replace(/\/+$/, "");
 }
 
 type RunContext =
@@ -321,7 +316,7 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const robotBase = normalizeBase(process.env.ZENTRO_ROBOT_API_URL);
+  const robotBase = getRobotBackendUrl();
   const mode: "simulated" | "connector" = robotBase ? "connector" : "simulated";
   const ok = true;
   const decisionBrief = preDecisionBrief;

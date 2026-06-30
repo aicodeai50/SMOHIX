@@ -7,6 +7,7 @@ import { getLatestAuditWhisper, type AuditWhisper } from "@/lib/audit/whispers";
 import { billingPlanFromSummary, getSubscriptionSummary } from "@/lib/billing/plan";
 import { dryRunOutcomePresentation } from "@/lib/guardrails/execution-outcome";
 import type { ConnectorRow } from "@/lib/connectors-health";
+import { isRobotBackendConfigured } from "@/lib/backend-urls";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
@@ -220,7 +221,7 @@ export async function loadOverviewCommandCenterData(input: {
   incidents: IncidentRow[];
   connectors: ConnectorRow[];
 }): Promise<OverviewCommandCenterData> {
-  const robotEnvConfigured = Boolean(process.env.ZENTRO_ROBOT_API_URL?.trim());
+  const robotEnvConfigured = isRobotBackendConfigured();
   const triageGapCount = input.incidents.filter((r) => {
     const g = openIncidentContextGaps(r);
     return g.missingOwner || g.missingRunbook;

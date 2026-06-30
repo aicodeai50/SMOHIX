@@ -8,6 +8,7 @@ import {
 } from "@/lib/api-keys/resolve";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { getRobotBackendUrl, getShBackendApiUrl } from "@/lib/backend-urls";
 import { clientIpFromRequest, takeToken } from "@/lib/rate-limit/memory";
 
 const TIMEOUT_MS = 60_000;
@@ -117,12 +118,7 @@ async function denyIfProxyDevOrAnon(req: NextRequest): Promise<NextResponse | nu
 }
 
 function baseUrl(kind: "reasoning" | "robot"): string | null {
-  const raw =
-    kind === "reasoning"
-      ? process.env.ZENTRO_REASONING_API_URL
-      : process.env.ZENTRO_ROBOT_API_URL;
-  const t = raw?.trim().replace(/\/+$/, "");
-  return t || null;
+  return kind === "reasoning" ? getShBackendApiUrl() : getRobotBackendUrl();
 }
 
 /** Reject path traversal and odd segments. */

@@ -21,6 +21,7 @@ import { listAcceptedPolicyGuardrailsByPlaybook } from "@/lib/approvals/policy-s
 import { listAutomationDryRuns } from "@/lib/automations/dry-runs-db";
 import { listDryRuns } from "@/lib/automations/runs-dev";
 import { getConnectorHealthRows } from "@/lib/connectors-health";
+import { isRobotBackendConfigured, isShBackendConfigured } from "@/lib/backend-urls";
 import { listIncidentsForUser } from "@/lib/incidents/data";
 import { getOrgContextForUser } from "@/lib/org/context";
 import { loadOverviewCommandCenterData } from "@/lib/overview/command-center-data";
@@ -108,8 +109,8 @@ export default async function OverviewPage() {
   const setup = {
     accounts: hasSupabaseAuth(),
     openai: Boolean(process.env.OPENAI_API_KEY?.trim()),
-    robot: Boolean(process.env.ZENTRO_ROBOT_API_URL?.trim()),
-    reasoning: Boolean(process.env.ZENTRO_REASONING_API_URL?.trim()),
+    robot: isRobotBackendConfigured(),
+    reasoning: isShBackendConfigured(),
   };
 
   const setupDone = Object.values(setup).filter(Boolean).length;

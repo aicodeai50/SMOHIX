@@ -2,6 +2,7 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 
+import { getRobotBackendUrl } from "@/lib/backend-urls";
 import { getOrgContextForUser } from "@/lib/org/context";
 import { insertAutomationDryRun } from "@/lib/automations/dry-runs-db";
 import { recordDryRun } from "@/lib/automations/runs-dev";
@@ -17,12 +18,6 @@ const UUID_RE =
 
 function isUuid(s: string): boolean {
   return UUID_RE.test(s);
-}
-
-function normalizeBase(url: string | undefined): string | null {
-  const t = url?.trim();
-  if (!t) return null;
-  return t.replace(/\/+$/, "");
 }
 
 type RunContext =
@@ -112,7 +107,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const robotBase = normalizeBase(process.env.ZENTRO_ROBOT_API_URL);
+  const robotBase = getRobotBackendUrl();
   let ok = true;
   let detail = "Simulated dry-run (no robot URL configured).";
 

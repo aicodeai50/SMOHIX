@@ -1020,8 +1020,8 @@ export default async function ConnectorsPage({
             ]}
             footnote={
               <p>
-                Set <span className="font-mono text-foreground/80">ZENTRO_REASONING_API_URL</span>{" "}
-                and <span className="font-mono text-foreground/80">ZENTRO_ROBOT_API_URL</span> to
+                Set <span className="font-mono text-foreground/80">REACT_APP_SH_BACKEND_API</span>{" "}
+                and <span className="font-mono text-foreground/80">REACT_APP_ROBOT_BACKEND</span> to
                 HTTPS base URLs (no trailing slash required).
               </p>
             }

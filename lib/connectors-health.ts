@@ -1,10 +1,6 @@
-const TIMEOUT_MS = 8000;
+import { getRobotBackendUrl, getShBackendApiUrl } from "@/lib/backend-urls";
 
-function normalizeBase(url: string | undefined): string | null {
-  const t = url?.trim();
-  if (!t) return null;
-  return t.replace(/\/+$/, "");
-}
+const TIMEOUT_MS = 8000;
 
 async function probe(
   base: string,
@@ -45,8 +41,8 @@ export type ConnectorRow = {
 };
 
 export async function getConnectorHealthRows(): Promise<ConnectorRow[]> {
-  const reasoningBase = normalizeBase(process.env.ZENTRO_REASONING_API_URL);
-  const robotBase = normalizeBase(process.env.ZENTRO_ROBOT_API_URL);
+  const reasoningBase = getShBackendApiUrl();
+  const robotBase = getRobotBackendUrl();
 
   const reasoning: ConnectorRow = {
     id: "reasoning",

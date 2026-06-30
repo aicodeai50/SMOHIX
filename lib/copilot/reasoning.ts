@@ -1,3 +1,5 @@
+import { getShBackendApiUrl } from "@/lib/backend-urls";
+
 const TIMEOUT_MS = 60_000;
 
 export type ReasoningChatMessage = {
@@ -29,11 +31,11 @@ function extractReasoningText(body: unknown): string | null {
   return null;
 }
 
-/** Server-side call to ZENTRO_REASONING_API_URL/v1/chat (no browser CORS). */
+/** Server-side call to SH backend /v1/chat (no browser CORS). */
 export async function completeReasoningChat(
   messages: ReasoningChatMessage[],
 ): Promise<{ text: string } | null> {
-  const base = process.env.ZENTRO_REASONING_API_URL?.trim().replace(/\/+$/, "");
+  const base = getShBackendApiUrl();
   if (!base) {
     return null;
   }

@@ -1,4 +1,4 @@
-import { getZentroOwnApiUrl } from "@/lib/paypal/config";
+import { getZentroOwnApiUrl } from "@/lib/backend-urls";
 
 export type OwnApiBillingEvent = {
   userId: string;

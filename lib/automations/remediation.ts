@@ -8,6 +8,7 @@ import {
 import { listAcceptedPolicyGuardrailsForPlaybook } from "@/lib/approvals/policy-suggestions";
 import { buildDecisionBrief } from "@/lib/decision-intelligence";
 import { getLatestBurnStateForService } from "@/lib/services/slo";
+import { getRobotBackendUrl } from "@/lib/backend-urls";
 
 export type GuardedRemediationResult = {
   ok: boolean;
@@ -41,12 +42,6 @@ export type RemediationRunRow = {
     blastRadiusAllowed: boolean;
   };
 };
-
-function normalizeBase(url: string | undefined): string | null {
-  const t = url?.trim();
-  if (!t) return null;
-  return t.replace(/\/+$/, "");
-}
 
 export async function runGuardedRemediation(input: {
   supabase: SupabaseClient;
@@ -119,7 +114,7 @@ export async function runGuardedRemediation(input: {
     }
   }
   let executionMode: "simulated" | "connector" = "simulated";
-  const robotBase = normalizeBase(process.env.ZENTRO_ROBOT_API_URL);
+  const robotBase = getRobotBackendUrl();
   if (robotBase) {
     executionMode = "connector";
     try {

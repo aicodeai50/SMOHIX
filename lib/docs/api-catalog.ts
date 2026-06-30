@@ -956,7 +956,7 @@ export const API_GROUPS: ApiGroup[] = [
   {
     id: "proxy",
     title: "Connector proxies",
-    description: "Forward to ZENTRO_REASONING_API_URL and ZENTRO_ROBOT_API_URL when set.",
+    description: "Forward to REACT_APP_SH_BACKEND_API and REACT_APP_ROBOT_BACKEND when set.",
     operations: [
       {
         method: "GET|POST|PUT|PATCH|DELETE",

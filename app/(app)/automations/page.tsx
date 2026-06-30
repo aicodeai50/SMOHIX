@@ -17,6 +17,7 @@ import type { ExecutionReceipt } from "@/lib/automations/executions-dev";
 import { listDryRuns } from "@/lib/automations/runs-dev";
 import type { DryRunRecord } from "@/lib/automations/runs-dev";
 import { getLatestAuditWhisper } from "@/lib/audit/whispers";
+import { isRobotBackendConfigured } from "@/lib/backend-urls";
 import { billingPlanFromSummary, getSubscriptionSummary } from "@/lib/billing/plan";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -135,14 +136,14 @@ export default async function AutomationsPage({
     runs = listDryRuns(tenantKey);
   }
 
-  const robotConnectorConfigured = Boolean(process.env.ZENTRO_ROBOT_API_URL?.trim());
+  const robotConnectorConfigured = isRobotBackendConfigured();
   const ambient = await loadConsoleAmbientSnapshot({ context: "automations" });
 
   return (
     <>
       <PageHeader
         title="Automations"
-        description="Playbooks with dry-runs against your robot service when ZENTRO_ROBOT_API_URL is set; otherwise simulated runs are recorded. Signed-in accounts persist dry-runs and emit audit events when the automation_dry_runs migration is applied."
+        description="Playbooks with dry-runs against your robot service when REACT_APP_ROBOT_BACKEND is set; otherwise simulated runs are recorded. Signed-in accounts persist dry-runs and emit audit events when the automation_dry_runs migration is applied."
       />
       <ConsoleAmbientBanner snapshot={ambient} />
       <AutomationsConsole

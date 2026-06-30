@@ -29,6 +29,7 @@ import { listRunbooks } from "@/lib/runbooks/catalog";
 import { appBody, appLabel, appMeta, appOverline } from "@/lib/app-typography";
 import { getIncidentTimeline } from "@/lib/incidents/timeline";
 import { getLatestIncidentRcaRun } from "@/lib/incidents/rca";
+import { isRobotBackendConfigured } from "@/lib/backend-urls";
 import { getOrgContextForUser } from "@/lib/org/context";
 import { listOrgMembers, type OrgMemberRow } from "@/lib/org/data";
 import { canManageMembers } from "@/lib/org/roles";
@@ -101,7 +102,7 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
       ? `/automations?incident=${encodeURIComponent(id)}`
       : "/automations";
 
-  const robotConnectorConfigured = Boolean(process.env.ZENTRO_ROBOT_API_URL?.trim());
+  const robotConnectorConfigured = isRobotBackendConfigured();
 
   let lastIncidentDryRun: DryRunRecord | null = null;
   let latestRcaRun: Awaited<ReturnType<typeof getLatestIncidentRcaRun>> = null;

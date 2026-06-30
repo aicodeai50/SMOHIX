@@ -34,7 +34,4 @@ export function getPayPalWebhookId(): string | undefined {
   return process.env.PAYPAL_WEBHOOK_ID?.trim() || undefined;
 }
 
-/** Optional centralized billing API */
-export function getZentroOwnApiUrl(): string | undefined {
-  return process.env.ZENTRO_OWN_API_URL?.trim() || undefined;
-}
+export { getZentroOwnApiUrl } from "@/lib/backend-urls";

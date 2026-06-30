@@ -18,7 +18,7 @@ type ChatTurn = { role: "user" | "assistant"; content: string };
 
 /**
  * Copilot chat: OpenAI when OPENAI_API_KEY is set; else reasoning service when
- * ZENTRO_REASONING_API_URL is set; else offline guided replies.
+ * REACT_APP_SH_BACKEND_API is set; else offline guided replies.
  * JSON: `{ message: string }`. With `{ stream: true }`, responds with `text/event-stream`
  * (`delta` / `done` / `error` events).
  */

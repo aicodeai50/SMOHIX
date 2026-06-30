@@ -1,3 +1,4 @@
+import { isShBackendConfigured } from "@/lib/backend-urls";
 import { appBody, appMeta } from "@/lib/app-typography";
 import { getConnectorHealthRows } from "@/lib/connectors-health";
 
@@ -5,7 +6,7 @@ import { getConnectorHealthRows } from "@/lib/connectors-health";
 export async function ConnectionStatus() {
   const rows = await getConnectorHealthRows();
   const openai = Boolean(process.env.OPENAI_API_KEY?.trim());
-  const reasoning = Boolean(process.env.ZENTRO_REASONING_API_URL?.trim());
+  const reasoning = isShBackendConfigured();
   const proxyPath =
     process.env.NEXT_PUBLIC_COPILOT_PROXY_PATH?.trim() || "/api/copilot/chat";
   const usesReasoningProxy =
@@ -16,7 +17,7 @@ export async function ConnectionStatus() {
       ? "Chat is routed to your reasoning service via the configured proxy path (session required when auth is on)."
       : reasoning
         ? "Reasoning service linked — built-in chat uses it automatically when no cloud model key is set."
-        : "Guided assistance — add OPENAI_API_KEY or ZENTRO_REASONING_API_URL in deployment settings for deeper answers.";
+        : "Guided assistance — add OPENAI_API_KEY or REACT_APP_SH_BACKEND_API in deployment settings for deeper answers.";
 
   return (
     <div className={`zentro-glass mb-6 rounded-2xl px-4 py-4 md:px-5 md:py-5 ${appBody}`}>
