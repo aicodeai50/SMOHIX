@@ -1,15 +1,27 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { CommercialPaths } from "@/components/marketing/CommercialPaths";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
-import { mArticle, mBody, mCard, mH1, mH2, mPanelShell } from "@/lib/marketing-layout";
-import { SITE_BRAND_NAME, SITE_PRIMARY_DOMAIN } from "@/lib/site-brand";
+import { getMailtoHref } from "@/lib/billing";
+import { buildMarketingMetadata } from "@/lib/metadata";
+import {
+  TRUST_AI,
+  TRUST_MATURITY,
+  TRUST_NOT_CLAIMED,
+  TRUST_PRIVACY,
+  TRUST_SECURITY,
+  trustStatusLabel,
+} from "@/lib/trust-center";
+import { mArticle, mBody, mCard, mH1, mH2, mH3 } from "@/lib/marketing-layout";
+import { SITE_PUBLIC_BRAND } from "@/lib/site-brand";
 
-export const metadata: Metadata = {
-  title: "Trust & governance",
-  description: `Audit, approvals, connectors, API access, execution posture, and rate limits — how ${SITE_BRAND_NAME} is designed for review.`,
-};
+export const metadata: Metadata = buildMarketingMetadata({
+  title: "Trust Center",
+  description: `Security, privacy, responsible AI, and product maturity disclosure for ${SITE_PUBLIC_BRAND} — truthful commitments only.`,
+  path: "/trust",
+});
 
 const PILLARS = [
   {
@@ -38,30 +50,55 @@ const PILLARS = [
   },
 ] as const;
 
+function TrustItemList({
+  title,
+  items,
+}: {
+  title: string;
+  items: readonly { title: string; body: string; status: "current" | "in-progress" | "planned" }[];
+}) {
+  return (
+    <section aria-labelledby={title.replace(/\s/g, "-").toLowerCase()}>
+      <h2 id={title.replace(/\s/g, "-").toLowerCase()} className={mH2}>
+        {title}
+      </h2>
+      <ul className="mt-6 space-y-4">
+        {items.map((item) => (
+          <li key={item.title} className={mCard}>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h3 className={`${mH3} text-base`}>{item.title}</h3>
+              <span className="rounded-full border border-white/[0.12] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted">
+                {trustStatusLabel(item.status)}
+              </span>
+            </div>
+            <p className={`mt-2 ${mBody}`}>{item.body}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 export default function TrustPage() {
   return (
     <>
       <Header />
       <main className="flex-1 border-b border-white/[0.06]">
         <article className={mArticle}>
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent/90">Trust</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent/90">
+            Trust center
+          </p>
           <h1 className={`mt-2 ${mH1}`}>Trust &amp; governance</h1>
           <p className={`mt-4 ${mBody}`}>
-            {SITE_BRAND_NAME} is built for teams that are accountable for operational changes. This
-            page summarizes the control surfaces and commitments customers can rely on.
+            {SITE_PUBLIC_BRAND} is built for teams accountable for operational changes. This
+            page states what is current, in progress, or planned — without unverified
+            certification claims.
           </p>
 
-          <section className="mt-12 space-y-4" aria-labelledby="pillars-heading">
+          <section className="mt-12" aria-labelledby="pillars-heading">
             <h2 id="pillars-heading" className={mH2}>
               Control surfaces
             </h2>
-            <p className={mBody}>
-              Each block below maps to a signed-in route. Read the full narrative on the{" "}
-              <Link href="/platform" className="font-medium text-accent hover:underline">
-                platform overview
-              </Link>
-              .
-            </p>
             <ul className="mt-6 grid gap-4 sm:grid-cols-2">
               {PILLARS.map((p) => (
                 <li key={p.title} className={mCard}>
@@ -78,49 +115,61 @@ export default function TrustPage() {
             </ul>
           </section>
 
-          <section className="mt-12" aria-labelledby="execution-heading">
-            <h2 id="execution-heading" className={mH2}>
-              Operational execution posture
+          <div className="mt-12 space-y-12">
+            <TrustItemList title="Security principles" items={TRUST_SECURITY} />
+            <TrustItemList title="Privacy principles" items={TRUST_PRIVACY} />
+            <TrustItemList title="Responsible AI" items={TRUST_AI} />
+          </div>
+
+          <section className="mt-12" aria-labelledby="maturity-heading">
+            <h2 id="maturity-heading" className={mH2}>
+              {TRUST_MATURITY.title}
+            </h2>
+            <p className={`mt-3 ${mBody}`}>{TRUST_MATURITY.body}</p>
+            <Link href="/products" className="mt-4 inline-block text-sm font-medium text-accent hover:underline">
+              View product maturity labels →
+            </Link>
+          </section>
+
+          <section className="mt-12" aria-labelledby="not-claimed-heading">
+            <h2 id="not-claimed-heading" className={mH2}>
+              What we do not claim
+            </h2>
+            <ul className={`mt-4 list-inside list-disc space-y-1 ${mBody}`}>
+              {TRUST_NOT_CLAIMED.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </section>
+
+          <section className="mt-12" aria-labelledby="report-heading">
+            <h2 id="report-heading" className={mH2}>
+              Vulnerability reporting &amp; status
             </h2>
             <p className={`mt-3 ${mBody}`}>
-              The product is designed for review-first operations: dry-run and approval workflows for
-              high-impact actions, with auditable records of approved execution paths.
+              Report security issues via{" "}
+              <a href={getMailtoHref("security")} className="text-accent hover:underline">
+                security contact
+              </a>
+              . For runtime availability see{" "}
+              <Link href="/status" className="text-accent hover:underline">
+                service status
+              </Link>
+              . Read{" "}
+              <Link href="/security" className="text-accent hover:underline">
+                Security
+              </Link>{" "}
+              for disclosure expectations.
             </p>
           </section>
 
-          <section className="mt-12" aria-labelledby="limits-heading">
-            <h2 id="limits-heading" className={mH2}>
-              Availability and abuse resistance
-            </h2>
-            <p className={`mt-3 ${mBody}`}>
-              Public and sensitive routes are protected with authentication boundaries and request
-              controls designed to reduce abuse and preserve service availability.
-            </p>
-            <div className={`mt-6 p-5 ${mPanelShell}`}>
-              <p className={`text-sm font-medium text-foreground`}>Customers can expect</p>
-              <ul className={`mt-3 list-inside list-disc space-y-2 ${mBody}`}>
-                <li>Explicit authentication for user APIs and alert ingest</li>
-                <li>Audit-focused operational records for key platform actions</li>
-                <li>Clear separation between evaluation mode and production-backed workspaces</li>
-              </ul>
-            </div>
-          </section>
-
-          <section className="mt-12" aria-labelledby="disclosure-heading">
-            <h2 id="disclosure-heading" className={mH2}>
-              Security communication
-            </h2>
-            <p className={`mt-3 ${mBody}`}>
-              For security disclosures, data handling questions, and procurement review requests,
-              contact support via <a href={`https://${SITE_PRIMARY_DOMAIN}`}>{SITE_PRIMARY_DOMAIN}</a>{" "}
-              channels. Customer-specific architecture and implementation details are shared through
-              authenticated support and enterprise review workflows.
-            </p>
-          </section>
+          <div className="mt-12">
+            <CommercialPaths compact />
+          </div>
 
           <p className={`mt-12 flex flex-wrap gap-x-4 gap-y-2 ${mBody}`}>
-            <Link href="/why" className="font-medium text-accent hover:underline">
-              Why {SITE_BRAND_NAME} →
+            <Link href="/privacy" className="font-medium text-accent hover:underline">
+              Privacy →
             </Link>
             <Link href="/" className="font-medium text-accent hover:underline">
               ← Home

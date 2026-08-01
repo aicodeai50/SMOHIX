@@ -991,6 +991,111 @@ export const API_GROUPS: ApiGroup[] = [
     ],
   },
   {
+    id: "marketing",
+    title: "Marketing & leads",
+    description: "Public contact intake and platform-admin lead review on zentro.run.",
+    operations: [
+      {
+        method: "POST",
+        path: "/api/contact",
+        summary: "Submit a contact or pilot enquiry (validated, rate-limited, stored via service role).",
+        auth: "None (public form)",
+        notes:
+          "Returns referenceId (ZEN-XXXXXX). Honeypot, consent, and minimum submit duration enforced. No PII in logs.",
+      },
+      {
+        method: "GET",
+        path: "/api/admin/leads",
+        summary: "List contact leads with pagination and filters (platform admin email allowlist).",
+        auth: "Session cookie + ZENTRO_PLATFORM_ADMIN_EMAILS",
+      },
+      {
+        method: "PATCH",
+        path: "/api/admin/leads",
+        summary: "Update lead status, internal notes, or assignment.",
+        auth: "Session cookie + ZENTRO_PLATFORM_ADMIN_EMAILS",
+      },
+      {
+        method: "GET",
+        path: "/api/admin/leads/{id}",
+        summary: "Lead detail with append-only activity history.",
+        auth: "Session cookie + ZENTRO_PLATFORM_ADMIN_EMAILS",
+      },
+      {
+        method: "PATCH",
+        path: "/api/admin/leads/{id}",
+        summary: "Update lead pipeline fields (stage, owner, follow-up, priority).",
+        auth: "Session cookie + ZENTRO_PLATFORM_ADMIN_EMAILS",
+      },
+      {
+        method: "POST",
+        path: "/api/admin/leads/{id}/convert-pilot",
+        summary: "Create pilot project from lead (admin action only).",
+        auth: "Session cookie + ZENTRO_PLATFORM_ADMIN_EMAILS",
+      },
+      {
+        method: "POST",
+        path: "/api/admin/leads/{id}/email",
+        summary: "Prepare or send follow-up email template (Resend if configured).",
+        auth: "Session cookie + ZENTRO_PLATFORM_ADMIN_EMAILS",
+      },
+      {
+        method: "GET",
+        path: "/api/admin/leads/export",
+        summary: "CSV export of filtered leads (formula-safe).",
+        auth: "Session cookie + ZENTRO_PLATFORM_ADMIN_EMAILS",
+      },
+      {
+        method: "GET",
+        path: "/api/admin/dashboard",
+        summary: "RevOps dashboard metrics from live lead/pilot data.",
+        auth: "Session cookie + ZENTRO_PLATFORM_ADMIN_EMAILS",
+      },
+      {
+        method: "GET",
+        path: "/api/admin/pilots",
+        summary: "List pilot projects.",
+        auth: "Session cookie + ZENTRO_PLATFORM_ADMIN_EMAILS",
+      },
+      {
+        method: "POST",
+        path: "/api/admin/pilots",
+        summary: "Create pilot from lead ID.",
+        auth: "Session cookie + ZENTRO_PLATFORM_ADMIN_EMAILS",
+      },
+      {
+        method: "GET",
+        path: "/api/admin/pilots/{id}",
+        summary: "Pilot detail with activity history.",
+        auth: "Session cookie + ZENTRO_PLATFORM_ADMIN_EMAILS",
+      },
+      {
+        method: "PATCH",
+        path: "/api/admin/pilots/{id}",
+        summary: "Update pilot fields and status.",
+        auth: "Session cookie + ZENTRO_PLATFORM_ADMIN_EMAILS",
+      },
+      {
+        method: "GET",
+        path: "/api/admin/pilots/{id}/proposal",
+        summary: "Deterministic pilot proposal (JSON, HTML, or Markdown).",
+        auth: "Session cookie + ZENTRO_PLATFORM_ADMIN_EMAILS",
+      },
+      {
+        method: "GET",
+        path: "/api/admin/pilots/{id}/calendar",
+        summary: "Download .ics for discovery, kickoff, or review dates.",
+        auth: "Session cookie + ZENTRO_PLATFORM_ADMIN_EMAILS",
+      },
+      {
+        method: "GET",
+        path: "/api/admin/pilots/export",
+        summary: "CSV export of pilot projects.",
+        auth: "Session cookie + ZENTRO_PLATFORM_ADMIN_EMAILS",
+      },
+    ],
+  },
+  {
     id: "billing",
     title: "Billing",
     operations: [

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import {
   SITE_BRAND_NAME,
+  SITE_COMPANY_NAME,
   SITE_MARKETING_DESCRIPTION,
   SITE_MARKETING_TITLE,
   SITE_MARKETING_TWITTER_DESCRIPTION,
@@ -33,7 +34,7 @@ export function buildMarketingMetadata(input: {
     openGraph: {
       type: "website",
       url: canonical,
-      siteName: SITE_BRAND_NAME,
+      siteName: SITE_COMPANY_NAME,
       title: fullTitle,
       description: input.description,
     },

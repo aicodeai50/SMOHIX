@@ -3,20 +3,26 @@
  * Do not introduce alternate spellings in UI copy or SEO fields.
  */
 export const SITE_BRAND_NAME = "Zentro" as const;
+/** Public-facing domain brand */
+export const SITE_PUBLIC_BRAND = "Zentro.run" as const;
 export const SITE_PRIMARY_DOMAIN = "zentro.run" as const;
 export const SITE_LEGAL_NAME = "Zentro, Inc." as const;
+export const SITE_COMPANY_NAME = "Zentro Technologies" as const;
+
+/** Recommended public usage: "Zentro.run by Zentro Technologies" */
+export const SITE_BRAND_BYLINE = `${SITE_PUBLIC_BRAND} by ${SITE_COMPANY_NAME}` as const;
 
 export const SITE_MARKETING_TITLE =
-  "Zentro — Incident Command, Guarded Automation, and Audit Evidence" as const;
+  "Zentro Technologies — AI Platform for Accountable Operations" as const;
 
 export const SITE_MARKETING_DESCRIPTION =
-  "Zentro brings incident response, guarded automation, service context, and audit evidence into one workspace. Built for platform, SRE, SOC, and GRC teams that need accountable operations." as const;
+  "Zentro Technologies builds unified AI platforms, APIs, and agent infrastructure for developers, enterprises, and regulated teams — incident command, guarded automation, and audit-ready evidence at zentro.run." as const;
 
 export const SITE_MARKETING_TWITTER_DESCRIPTION =
-  "Incident command, guarded automation, service context, and audit-ready evidence for accountable operations teams." as const;
+  "Official home of Zentro Technologies — AI-first platform, APIs, and developer tools for accountable operations." as const;
 
 export const SITE_TAGLINE =
-  "Accountable operations for incidents, automation, and evidence." as const;
+  "AI infrastructure with accountability built in." as const;
 
 /** 8px base spacing scale (multiples of 0.5rem) */
 export const SPACING_UNIT_PX = 8 as const;

@@ -6,15 +6,15 @@ import { LivingPulse } from "@/components/landing/LivingPulse";
 import { MarketingQuantumShell } from "@/components/landing/MarketingQuantumShell";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
-import { SITE_EMAIL_CONTACT, getMailtoHref } from "@/lib/billing";
+import { buildMarketingMetadata } from "@/lib/metadata";
 import { mArticle, mBody, mCard, mCardTitle, mEyebrow, mH1, mH2 } from "@/lib/marketing-layout";
-import { SITE_BRAND_NAME } from "@/lib/site-brand";
+import { SITE_BRAND_NAME, SITE_COMPANY_NAME } from "@/lib/site-brand";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMarketingMetadata({
   title: "Enterprise",
-  description:
-    "Enterprise deployment for global platform and security teams — governance, evidence, and guarded operations at scale.",
-};
+  description: `Enterprise deployment for ${SITE_COMPANY_NAME} — governance, evidence, pilots, and guarded operations at scale.`,
+  path: "/enterprise",
+});
 
 const packages = [
   {
@@ -36,8 +36,6 @@ const packages = [
 ] as const;
 
 export default function EnterprisePage() {
-  const salesHref = getMailtoHref("enterprise");
-
   return (
     <>
       <Header />
@@ -56,12 +54,18 @@ export default function EnterprisePage() {
                 that survives audits without replacing the tools you already trust.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <a
-                  href={salesHref}
+                <Link
+                  href="/contact?inquiry=enterprise"
                   className="zentro-launch-beacon inline-flex h-10 items-center rounded-lg bg-accent px-4 text-sm font-semibold text-background"
                 >
-                  Contact {SITE_EMAIL_CONTACT}
-                </a>
+                  Contact enterprise sales
+                </Link>
+                <Link
+                  href="/pilot"
+                  className="inline-flex h-10 items-center rounded-lg border border-white/[0.12] px-4 text-sm font-medium hover:border-accent/35"
+                >
+                  Start a pilot
+                </Link>
                 <Link
                   href="/cybersecurity"
                   className="inline-flex h-10 items-center rounded-lg border border-white/[0.12] px-4 text-sm font-medium hover:border-accent/35"

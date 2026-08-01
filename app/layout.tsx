@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import {
   SITE_BRAND_NAME,
+  SITE_COMPANY_NAME,
   SITE_MARKETING_DESCRIPTION,
   SITE_MARKETING_TITLE,
   SITE_MARKETING_TWITTER_DESCRIPTION,
 } from "@/lib/site-brand";
 import { SiteJsonLd } from "@/components/site/SiteJsonLd";
+import { AnalyticsConsentBanner } from "@/components/consent/AnalyticsConsentBanner";
 import { getSiteUrl } from "@/lib/site";
 import "./globals.css";
 
@@ -26,7 +28,7 @@ const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  applicationName: SITE_BRAND_NAME,
+  applicationName: SITE_COMPANY_NAME,
   title: {
     default: SITE_MARKETING_TITLE,
     template: `%s · ${SITE_BRAND_NAME}`,
@@ -53,7 +55,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: siteUrl,
-    siteName: SITE_BRAND_NAME,
+    siteName: SITE_COMPANY_NAME,
     title: SITE_MARKETING_TITLE,
     description: SITE_MARKETING_DESCRIPTION,
   },
@@ -90,6 +92,7 @@ export default function RootLayout({
         </a>
         <SiteJsonLd />
         {children}
+        <AnalyticsConsentBanner />
       </body>
     </html>
   );

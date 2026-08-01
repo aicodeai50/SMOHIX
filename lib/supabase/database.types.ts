@@ -17,6 +17,197 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      contact_leads: {
+        Row: {
+          id: string;
+          public_reference: string;
+          created_at: string;
+          updated_at: string;
+          name: string;
+          email: string;
+          company: string;
+          country: string;
+          inquiry_type: string;
+          problem_summary: string;
+          budget_range: string | null;
+          timeline: string | null;
+          product_context: string | null;
+          pilot_category: string | null;
+          consent: boolean;
+          source_path: string | null;
+          status: string;
+          assigned_to: string | null;
+          notes: string | null;
+          metadata: Json;
+          next_action: string | null;
+          follow_up_date: string | null;
+          priority: string;
+          source_label: string | null;
+          discovery_call_date: string | null;
+          pilot_kickoff_date: string | null;
+          review_meeting_date: string | null;
+          pilot_project_id: string | null;
+        };
+        Insert: {
+          id?: string;
+          public_reference: string;
+          created_at?: string;
+          updated_at?: string;
+          name: string;
+          email: string;
+          company: string;
+          country: string;
+          inquiry_type: string;
+          problem_summary: string;
+          budget_range?: string | null;
+          timeline?: string | null;
+          product_context?: string | null;
+          pilot_category?: string | null;
+          consent?: boolean;
+          source_path?: string | null;
+          status?: string;
+          assigned_to?: string | null;
+          notes?: string | null;
+          metadata?: Json;
+          next_action?: string | null;
+          follow_up_date?: string | null;
+          priority?: string;
+          source_label?: string | null;
+          discovery_call_date?: string | null;
+          pilot_kickoff_date?: string | null;
+          review_meeting_date?: string | null;
+          pilot_project_id?: string | null;
+        };
+        Update: {
+          id?: string;
+          public_reference?: string;
+          created_at?: string;
+          updated_at?: string;
+          name?: string;
+          email?: string;
+          company?: string;
+          country?: string;
+          inquiry_type?: string;
+          problem_summary?: string;
+          budget_range?: string | null;
+          timeline?: string | null;
+          product_context?: string | null;
+          pilot_category?: string | null;
+          consent?: boolean;
+          source_path?: string | null;
+          status?: string;
+          assigned_to?: string | null;
+          notes?: string | null;
+          metadata?: Json;
+          next_action?: string | null;
+          follow_up_date?: string | null;
+          priority?: string;
+          source_label?: string | null;
+          discovery_call_date?: string | null;
+          pilot_kickoff_date?: string | null;
+          review_meeting_date?: string | null;
+          pilot_project_id?: string | null;
+        };
+        Relationships: [];
+      };
+      lead_activity: {
+        Row: {
+          id: string;
+          lead_id: string;
+          created_at: string;
+          actor_email: string;
+          event_type: string;
+          summary: string;
+          metadata: Json;
+        };
+        Insert: {
+          id?: string;
+          lead_id: string;
+          created_at?: string;
+          actor_email: string;
+          event_type: string;
+          summary: string;
+          metadata?: Json;
+        };
+        Update: Record<string, never>;
+        Relationships: [];
+      };
+      pilot_projects: {
+        Row: {
+          id: string;
+          public_reference: string;
+          lead_id: string | null;
+          created_at: string;
+          updated_at: string;
+          name: string;
+          organization: string;
+          contact_name: string;
+          contact_email: string;
+          category: string | null;
+          related_product: string | null;
+          objective: string | null;
+          scope: string | null;
+          status: string;
+          start_date: string | null;
+          target_review_date: string | null;
+          owner: string | null;
+          risks: string | null;
+          next_action: string | null;
+          notes: string | null;
+          discovery_call_date: string | null;
+          pilot_kickoff_date: string | null;
+          review_meeting_date: string | null;
+          metadata: Json;
+        };
+        Insert: {
+          id?: string;
+          public_reference: string;
+          lead_id?: string | null;
+          name: string;
+          organization: string;
+          contact_name: string;
+          contact_email: string;
+          category?: string | null;
+          related_product?: string | null;
+          objective?: string | null;
+          scope?: string | null;
+          status?: string;
+          start_date?: string | null;
+          target_review_date?: string | null;
+          owner?: string | null;
+          risks?: string | null;
+          next_action?: string | null;
+          notes?: string | null;
+          discovery_call_date?: string | null;
+          pilot_kickoff_date?: string | null;
+          review_meeting_date?: string | null;
+          metadata?: Json;
+        };
+        Update: Partial<Database["public"]["Tables"]["pilot_projects"]["Insert"]>;
+        Relationships: [];
+      };
+      pilot_activity: {
+        Row: {
+          id: string;
+          pilot_id: string;
+          created_at: string;
+          actor_email: string;
+          event_type: string;
+          summary: string;
+          metadata: Json;
+        };
+        Insert: {
+          id?: string;
+          pilot_id: string;
+          created_at?: string;
+          actor_email: string;
+          event_type: string;
+          summary: string;
+          metadata?: Json;
+        };
+        Update: Record<string, never>;
+        Relationships: [];
+      };
       profiles: {
         Row: {
           id: string;

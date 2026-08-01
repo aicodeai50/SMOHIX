@@ -49,7 +49,10 @@ export default function PrivacyPage() {
         </li>
         <li>
           <strong>Support and communications:</strong> messages, attachments, meeting
-          notes, and feedback you send us.
+          notes, and feedback you send us — including contact and pilot enquiry forms
+          on zentro.run (name, work email, organization, country, inquiry type, and
+          problem summary). These are stored securely for follow-up and are not used
+          for unrelated marketing without separate consent.
         </li>
         <li>
           <strong>Customer Data:</strong> content you upload or generate in the
@@ -101,8 +104,10 @@ export default function PrivacyPage() {
         Where GDPR/UK GDPR applies, we rely on appropriate bases such as:{" "}
         <strong>contract</strong> (providing the Services you request),{" "}
         <strong>legitimate interests</strong> (security, product improvement balanced
-        against your rights), <strong>consent</strong> (non-essential cookies and
-        certain marketing where required), and <strong>legal obligation</strong>.
+        against your rights),           <strong>consent</strong> (non-essential cookies and
+          certain marketing where required), and <strong>legal obligation</strong>.
+          Contact form submissions rely on consent you provide at submit time and our
+          legitimate interest in responding to business enquiries.
       </p>
 
       <h2>6. Sharing and subprocessors</h2>

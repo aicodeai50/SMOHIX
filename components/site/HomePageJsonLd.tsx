@@ -1,11 +1,16 @@
 import {
-  SITE_BRAND_NAME,
+  COMPANY_NAME,
+  ECOSYSTEM_PRODUCTS,
+} from "@/lib/company-identity";
+import { SITE_EMAIL_CONTACT } from "@/lib/billing";
+import {
+  SITE_COMPANY_NAME,
   SITE_LEGAL_NAME,
   SITE_MARKETING_DESCRIPTION,
   SITE_PRIMARY_DOMAIN,
+  SITE_PUBLIC_BRAND,
   SITE_TAGLINE,
 } from "@/lib/site-brand";
-import { SITE_EMAIL_CONTACT } from "@/lib/billing";
 import { getSiteUrl } from "@/lib/site";
 
 export function HomePageJsonLd() {
@@ -16,49 +21,47 @@ export function HomePageJsonLd() {
     "@context": "https://schema.org",
     "@graph": [
       {
-        "@type": "WebPage",
-        "@id": `${siteUrl}/#webpage`,
+        "@type": "WebSite",
+        "@id": `${siteUrl}/#website`,
         url: siteUrl,
-        name: SITE_BRAND_NAME,
+        name: SITE_COMPANY_NAME,
         description: SITE_MARKETING_DESCRIPTION,
-        isPartOf: { "@id": `${siteUrl}/#website` },
-        about: { "@id": `${siteUrl}/#software` },
+        publisher: { "@id": `${siteUrl}/#organization` },
         inLanguage: "en-US",
       },
       {
-        "@type": "SoftwareApplication",
-        "@id": `${siteUrl}/#software`,
-        name: SITE_BRAND_NAME,
-        applicationCategory: "BusinessApplication",
-        operatingSystem: "Web",
+        "@type": "WebPage",
+        "@id": `${siteUrl}/#webpage`,
         url: siteUrl,
+        name: `${SITE_COMPANY_NAME} — Official Home`,
         description: SITE_MARKETING_DESCRIPTION,
-        offers: {
-          "@type": "Offer",
-          price: "0",
-          priceCurrency: "USD",
-          description: "Free tier with upgrade paths for Pro, Team, and Enterprise",
-        },
-        featureList: [
-          "Incident response command center",
-          "Guarded automation with dry-runs and approvals",
-          "Cybersecurity exposure and vulnerability management",
-          "GRC compliance program and assessor exports",
-          "Append-only audit trail",
-          "AI Copilot with human-in-the-loop",
-        ],
+        isPartOf: { "@id": `${siteUrl}/#website` },
+        about: { "@id": `${siteUrl}/#organization` },
+        inLanguage: "en-US",
       },
       {
         "@type": "Organization",
         "@id": `${siteUrl}/#organization`,
-        name: SITE_LEGAL_NAME,
+        name: SITE_COMPANY_NAME,
         legalName: SITE_LEGAL_NAME,
-        alternateName: [SITE_BRAND_NAME, SITE_PRIMARY_DOMAIN],
+        alternateName: [COMPANY_NAME, SITE_PRIMARY_DOMAIN, SITE_PUBLIC_BRAND],
         url: siteUrl,
         logo: logoUrl,
         email: SITE_EMAIL_CONTACT,
         description: SITE_TAGLINE,
-        sameAs: [`https://${SITE_PRIMARY_DOMAIN}`],
+        sameAs: [`https://${SITE_PRIMARY_DOMAIN}`, "https://github.com/aicodeai50/ZENTRO"],
+      },
+      {
+        "@type": "ItemList",
+        "@id": `${siteUrl}/#products`,
+        name: "Zentro ecosystem products",
+        itemListElement: ECOSYSTEM_PRODUCTS.map((product, index) => ({
+          "@type": "ListItem",
+          position: index + 1,
+          name: product.name,
+          url: new URL(product.href, siteUrl).href,
+          description: product.description,
+        })),
       },
     ],
   };

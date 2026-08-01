@@ -92,10 +92,10 @@ export default function CookiesPage() {
             <td>Session</td>
           </tr>
           <tr>
-            <td>consent_preferences</td>
-            <td>Stores banner choices</td>
-            <td>Functional</td>
-            <td>6–12 months</td>
+            <td>zentro_analytics_consent (local storage)</td>
+            <td>Stores analytics banner choice on marketing pages</td>
+            <td>Functional / analytics gate</td>
+            <td>Until cleared</td>
           </tr>
           <tr>
             <td>Telemetry events</td>
@@ -109,8 +109,10 @@ export default function CookiesPage() {
       <h2>5. Your choices</h2>
       <ul>
         <li>
-          <strong>Consent banner:</strong> where implemented, adjust non-essential
-          categories.
+          <strong>Consent banner:</strong> on zentro.run marketing pages, optional
+          analytics load only after you accept. Decline or clear{" "}
+          <code className="text-accent">zentro_analytics_consent</code> in browser
+          storage to withdraw. Contact forms work without analytics consent.
         </li>
         <li>
           <strong>Browser controls:</strong> block or delete cookies via browser
