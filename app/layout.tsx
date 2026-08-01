@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
+import { getBrandMetadataIcons } from "@/lib/brand";
 import {
   SITE_BRAND_NAME,
   SITE_COMPANY_NAME,
@@ -35,14 +36,7 @@ export const metadata: Metadata = {
   },
   description: SITE_MARKETING_DESCRIPTION,
   manifest: "/site.webmanifest",
-  icons: {
-    icon: [
-      { url: "/favicon.ico", sizes: "48x48" },
-      { url: "/icon.png", sizes: "512x512", type: "image/png" },
-      { url: "/icon.svg", type: "image/svg+xml" },
-    ],
-    apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
-  },
+  icons: getBrandMetadataIcons(),
   appleWebApp: {
     capable: true,
     title: SITE_BRAND_NAME,

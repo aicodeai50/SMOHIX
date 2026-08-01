@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 
+import { ZentroMarkOgContent } from "@/components/brand/zentroMarkPaths";
 import {
   SITE_BRAND_NAME,
   SITE_MARKETING_TWITTER_DESCRIPTION,
@@ -28,23 +29,7 @@ export default function OpenGraphImage() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 36 }}>
-          <div
-            style={{
-              width: 96,
-              height: 96,
-              borderRadius: 22,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              background: "linear-gradient(145deg, #0b0f14 0%, #121922 100%)",
-              border: "2px solid rgba(94,225,255,0.22)",
-              fontSize: 52,
-              fontWeight: 700,
-              color: "#5ee1ff",
-            }}
-          >
-            Z
-          </div>
+          <ZentroMarkOgContent size={96} />
           <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 860 }}>
             <div style={{ fontSize: 58, fontWeight: 700, letterSpacing: -1.2, lineHeight: 1.1 }}>
               {SITE_BRAND_NAME}

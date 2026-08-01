@@ -1,3 +1,4 @@
+import { getBrandLogoUrl } from "@/lib/brand";
 import {
   COMPANY_NAME,
   ECOSYSTEM_PRODUCTS,
@@ -15,7 +16,7 @@ import { getSiteUrl } from "@/lib/site";
 
 export function HomePageJsonLd() {
   const siteUrl = getSiteUrl();
-  const logoUrl = new URL("/icon.png", siteUrl).href;
+  const logoUrl = getBrandLogoUrl(siteUrl);
 
   const payload = {
     "@context": "https://schema.org",

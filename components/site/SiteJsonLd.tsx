@@ -1,3 +1,4 @@
+import { getBrandLogoUrl } from "@/lib/brand";
 import {
   SITE_BRAND_NAME,
   SITE_LEGAL_NAME,
@@ -10,7 +11,7 @@ import { getSiteUrl } from "@/lib/site";
 
 export function SiteJsonLd() {
   const siteUrl = getSiteUrl();
-  const logoUrl = new URL("/icon.png", siteUrl).href;
+  const logoUrl = getBrandLogoUrl(siteUrl);
   const logo = {
     "@type": "ImageObject",
     url: logoUrl,
