@@ -1,46 +1,25 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { RealStatusPanel } from "@/components/status/RealStatusPanel";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
-import { mArticle, mBody, mH1, mPanelShell } from "@/lib/marketing-layout";
-import { SITE_BRAND_NAME } from "@/lib/site-brand";
+import { fetchSiteHealthView } from "@/lib/status/adapters";
+import { buildMarketingMetadata } from "@/lib/metadata";
+import { mArticle, mBody, mH1, mLinkInline, mPanelShell } from "@/lib/marketing-layout";
 import { getSiteUrl } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMarketingMetadata({
   title: "Status",
-  description: `${SITE_BRAND_NAME} API health check for the configured deployment.`,
-};
+  description: "Real-time product and service status for Zentro Technologies — server-side health probes only.",
+  path: "/status",
+});
 
 export const dynamic = "force-dynamic";
 
-async function fetchHealth(): Promise<Record<string, unknown> | null> {
-  const base = getSiteUrl();
-  try {
-    const res = await fetch(`${base}/api/health`, {
-      cache: "no-store",
-      headers: { Accept: "application/json" },
-    });
-    if (!res.ok) return null;
-    return (await res.json()) as Record<string, unknown>;
-  } catch {
-    return null;
-  }
-}
-
 export default async function StatusPage() {
-  const health = await fetchHealth();
-  const ok = health?.ok === true;
-  const statusView = health
-    ? {
-        ok: health.ok === true,
-        service: typeof health.service === "string" ? health.service : "zentro-web",
-        uptime_s:
-          typeof health.uptime_s === "number" && Number.isFinite(health.uptime_s)
-            ? Math.max(0, Math.round(health.uptime_s))
-            : null,
-      }
-    : null;
+  const statusView = await fetchSiteHealthView();
+  const ok = statusView?.ok === true;
 
   return (
     <>
@@ -48,24 +27,26 @@ export default async function StatusPage() {
       <main className="flex-1 border-b border-white/[0.06]">
         <div className={mArticle}>
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent/90">
-            {SITE_BRAND_NAME}
+            Service status
           </p>
-          <h1 className={`mt-2 ${mH1}`}>Service status</h1>
+          <h1 className={`mt-2 ${mH1}`}>Product &amp; service status</h1>
           <p className={`mt-4 ${mBody}`}>
-            Live availability signal from{" "}
-            <code className="font-mono text-xs text-accent/90">GET /api/health</code> on the canonical
-            deployment (<span className="font-mono text-xs">{getSiteUrl()}</span>).
+            Server-side health probes against allowlisted public endpoints. We do not publish uptime
+            percentages without stored historical data.
           </p>
 
           <div
-            className={`mt-8 overflow-hidden p-6 ${mPanelShell} ${
+            className={`mt-8 p-5 ${mPanelShell} ${
               ok
                 ? "border-emerald-500/30 bg-emerald-500/[0.08]"
                 : "border-amber-500/30 bg-amber-500/[0.08]"
             }`}
           >
             <p className="text-sm font-semibold text-foreground">
-              {ok ? "Operational" : "Check failed or unreachable"}
+              {ok ? "zentro.run health endpoint operational" : "Health check failed or unreachable"}
+            </p>
+            <p className={`mt-2 ${mBody}`}>
+              Canonical host: <span className="font-mono text-xs">{getSiteUrl()}</span>
             </p>
             {statusView ? (
               <pre className="mt-4 overflow-x-auto rounded-xl border border-white/[0.06] bg-black/40 p-4 font-mono text-xs text-foreground/85">
@@ -73,25 +54,31 @@ export default async function StatusPage() {
               </pre>
             ) : (
               <p className={`mt-4 ${mBody}`}>
-                Could not reach the health endpoint from this server build. Try{" "}
+                Could not reach{" "}
                 <a href="/api/health" className="text-accent hover:underline">
                   /api/health
                 </a>{" "}
-                in the browser on the same host you are testing.
+                from this build.
               </p>
             )}
           </div>
 
+          <section className="mt-10" aria-labelledby="products-status-heading">
+            <h2 id="products-status-heading" className="text-xl font-semibold text-foreground">
+              Products
+            </h2>
+            <div className="mt-6">
+              <RealStatusPanel />
+            </div>
+          </section>
+
           <p className={`mt-10 ${mBody}`}>
-            For release notes and product updates, see{" "}
-            <Link href="/changelog" className="font-medium text-accent hover:underline">
-              Changelog
+            <Link href="/products" className={mLinkInline}>
+              Product Access →
             </Link>
-            .
-          </p>
-          <p className={`mt-6 ${mBody}`}>
-            <Link href="/" className="font-medium text-accent hover:underline">
-              ← Home
+            {" · "}
+            <Link href="/changelog" className={mLinkInline}>
+              Changelog →
             </Link>
           </p>
         </div>

@@ -2,6 +2,8 @@ import Link from "next/link";
 
 import { Logo } from "./Logo";
 import { MarketingMobileNav } from "./MarketingMobileNav";
+import { Button } from "@/components/ui/Button";
+import { mFocusRing } from "@/lib/marketing-layout";
 import { HEADER_NAV } from "@/lib/site-nav";
 
 export function Header() {
@@ -17,7 +19,7 @@ export function Header() {
             <Link
               key={item.href}
               href={item.href}
-              className="rounded-md px-2.5 py-2 text-[13px] font-medium text-muted transition-colors hover:text-foreground"
+              className={`rounded-md px-2.5 py-2 text-[13px] font-medium text-muted transition-colors hover:text-foreground ${mFocusRing}`}
             >
               {item.label}
             </Link>
@@ -32,11 +34,14 @@ export function Header() {
           >
             Pilot
           </Link>
-          <Link
-            href="/developers"
-            className="hidden text-[13px] font-medium text-muted transition-colors hover:text-foreground lg:inline"
-          >
+          <Link href="/explore" className="hidden text-[13px] font-medium text-muted transition-colors hover:text-foreground lg:inline">
+            Explore
+          </Link>
+          <Link href="/developers" className="hidden text-[13px] font-medium text-muted transition-colors hover:text-foreground lg:inline">
             Developers
+          </Link>
+          <Link href="/search" className="hidden text-[13px] font-medium text-muted transition-colors hover:text-foreground md:inline">
+            Search
           </Link>
           <Link
             href="/auth/sign-in"
@@ -44,11 +49,8 @@ export function Header() {
           >
             Sign in
           </Link>
-          <Link
-            href="/products"
-            className="inline-flex h-9 items-center rounded-lg bg-accent px-4 text-[13px] font-semibold text-background transition-opacity hover:opacity-90"
-          >
-            Try Zentro
+          <Link href="/products" className="inline-flex">
+            <Button size="sm">Try Zentro</Button>
           </Link>
         </div>
       </div>

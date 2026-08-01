@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { ApiRequestBuilder } from "@/components/developers/ApiRequestBuilder";
 import { CommercialPaths } from "@/components/marketing/CommercialPaths";
 import { TrackableLink } from "@/components/marketing/TrackableLink";
 import { Footer } from "@/components/site/Footer";
@@ -8,6 +9,7 @@ import { Header } from "@/components/site/Header";
 import { MarketingJsonLd, developersPageJsonLd } from "@/components/site/MarketingJsonLd";
 import { Button } from "@/components/ui/Button";
 import {
+  DEVELOPER_AI_NOTE,
   DEVELOPER_AUTH,
   DEVELOPER_BILLING,
   DEVELOPER_ERROR_HANDLING,
@@ -27,6 +29,8 @@ export const metadata: Metadata = buildMarketingMetadata({
 });
 
 const DEV_LINKS = [
+  { href: "/products", title: "Product Access", description: "Open live Zentro products and documentation." },
+  { href: "/playground", title: "API request builder", description: "Copyable curl and SDK examples — not executed in browser." },
   { href: "/docs", title: "Documentation", description: "Guides for setup, console modules, and deployment." },
   { href: "/docs/api", title: "API reference", description: "Catalog of public and authenticated API routes." },
   { href: "/integrations", title: "Integrations", description: "Alert ingest, Slack approvals, and connector health." },
@@ -144,6 +148,21 @@ export default function DevelopersPage() {
         </section>
 
         <section className={`${mSection} border-t border-white/[0.06]`}>
+          <div className={mContainer}>
+            <h2 className={mH3}>{DEVELOPER_AI_NOTE.title}</h2>
+            <p className={`mt-3 max-w-2xl ${mBody}`}>{DEVELOPER_AI_NOTE.body}</p>
+            <a
+              href={DEVELOPER_AI_NOTE.href}
+              className="mt-4 inline-block text-sm font-medium text-accent hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Open Zentro AI ↗
+            </a>
+          </div>
+        </section>
+
+        <section className={`${mSection} border-t border-white/[0.06]`}>
           <div className={`${mContainer} grid gap-10 lg:grid-cols-2`}>
             <div>
               <h2 className={mH3}>{DEVELOPER_AUTH.title}</h2>
@@ -165,6 +184,18 @@ export default function DevelopersPage() {
         </section>
 
         <section className={mSection}>
+          <div className={mContainer}>
+            <h2 className={mH3}>API request builder</h2>
+            <p className={`mt-2 max-w-2xl ${mBody}`}>
+              Copy example requests for documented routes — run them in your terminal or server.
+            </p>
+            <div className="mt-6">
+              <ApiRequestBuilder />
+            </div>
+          </div>
+        </section>
+
+        <section className={`${mSection} border-t border-white/[0.06]`}>
           <div className={mContainer}>
             <h2 className={mH3}>Example request</h2>
             <pre className="mt-4 overflow-x-auto rounded-xl border border-white/[0.08] bg-black/40 p-4 text-xs leading-relaxed text-foreground/90">

@@ -1,5 +1,7 @@
+import { ProductExperienceSections } from "@/components/experience/ProductExperienceSections";
+import { MaturityBadge } from "@/components/marketing/MaturityBadge";
 import type { ProductPageContent } from "@/lib/ecosystem-graph";
-import { maturityLabel, PLATFORM_NODE_MAP } from "@/lib/ecosystem-graph";
+import { PLATFORM_NODE_MAP } from "@/lib/ecosystem-graph";
 import { TrackableLink } from "@/components/marketing/TrackableLink";
 import { CommercialPaths } from "@/components/marketing/CommercialPaths";
 import {
@@ -97,17 +99,7 @@ export function ProductRelationships({ product }: { product: ProductPageContent 
       </div>
 
       <div className="mt-8 border-t border-white/[0.08] pt-6">
-        <span
-          className={`inline-block rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide ${
-            product.maturity === "live"
-              ? "border-accent/35 bg-accent-dim text-accent"
-              : product.maturity === "preview" || product.maturity === "prototype"
-                ? "border-warning/35 bg-warning-dim text-warning"
-                : "border-white/[0.12] text-muted"
-          }`}
-        >
-          {maturityLabel(product.maturity)}
-        </span>
+        <MaturityBadge maturity={product.maturity} size="md" />
         <p className={`mt-3 text-xs ${mBody}`}>{maturityCtaHint(product.maturity)}</p>
       </div>
     </aside>
@@ -186,7 +178,7 @@ export function ProductDetailContent({ product }: { product: ProductPageContent 
         </section>
         <section aria-labelledby="roadmap-heading">
           <h2 id="roadmap-heading" className={mH3}>
-            What is planned
+            Roadmap
           </h2>
           <ul className={`mt-3 space-y-2 ${mBody}`}>
             {product.roadmap.map((r) => (
@@ -199,6 +191,8 @@ export function ProductDetailContent({ product }: { product: ProductPageContent 
             ))}
           </ul>
         </section>
+
+        <ProductExperienceSections product={product} />
         <div className="flex flex-wrap gap-3 pt-2">
           <TrackableLink
             href={ctas.primary.href}

@@ -29,7 +29,7 @@ export const mLede = `mt-2 max-w-2xl ${mBody}`;
 
 /** Subtle lift on interactive cards — pairs with duration-200 transition. */
 export const mCardMotion =
-  "transition-[transform,box-shadow,border-color] duration-200 ease-out hover:-translate-y-0.5 hover:shadow-[0_20px_50px_-28px_rgba(0,0,0,0.55)]";
+  "transition-[transform,box-shadow,border-color,background-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:shadow-[0_20px_50px_-28px_rgba(0,0,0,0.55)] motion-reduce:transition-none motion-reduce:hover:transform-none";
 
 /** Card chrome without padding (tables, stacked headers). */
 export const mPanelShell = "rounded-2xl border border-white/[0.08] bg-white/[0.02]";
@@ -64,3 +64,23 @@ export const mRevealVisible = "m-marketing-reveal--visible";
 
 /** Direct children: subtle sequential rise (transform-only; pairs with globals). */
 export const mStaggerGrid = "m-marketing-stagger-grid";
+
+/** Product / trust card grids — consistent gap rhythm. */
+export const mProductGrid = "grid gap-5 sm:grid-cols-2 lg:grid-cols-3";
+export const mTrustGrid = "grid gap-3 sm:grid-cols-2 lg:grid-cols-4";
+
+/** Inline CTA on cards — arrow slides on group hover. */
+export const mLinkCta =
+  "mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-accent transition-[gap,color] duration-200 group-hover:gap-2.5";
+
+/** Text link with accent underline on hover. */
+export const mLinkInline =
+  "font-medium text-accent underline-offset-4 transition-[color,text-decoration] hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
+
+/** Shared keyboard focus ring for interactive marketing surfaces. */
+export const mFocusRing =
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
+
+/** Subtle section background wash — pairs with MarketingReveal. */
+export const mSectionGlow =
+  "relative before:pointer-events-none before:absolute before:inset-0 before:bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(99,102,241,0.06),transparent_55%)]";

@@ -7,6 +7,7 @@ import { type ReactNode } from "react";
 import { Logo } from "@/components/site/Logo";
 import { MarketingMobileNav } from "@/components/site/MarketingMobileNav";
 import { Button } from "@/components/ui/Button";
+import { mFocusRing } from "@/lib/marketing-layout";
 import { HEADER_NAV } from "@/lib/site-nav";
 
 export function Navbar({
@@ -37,7 +38,7 @@ export function Navbar({
                 href={item.href}
                 className={`rounded-md px-2.5 py-2 text-[13px] font-medium transition-colors ${
                   active ? "text-foreground" : "text-muted hover:text-foreground"
-                }`}
+                } ${mFocusRing}`}
               >
                 {item.label}
               </Link>

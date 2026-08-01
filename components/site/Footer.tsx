@@ -7,6 +7,7 @@ import { mBody, mContainer, mFooterLabel } from "@/lib/marketing-layout";
 import {
   FOOTER_COMPANY,
   FOOTER_DEVELOPERS,
+  FOOTER_EXPERIENCE,
   FOOTER_LEGAL,
   FOOTER_PRODUCTS,
   FOOTER_SUPPORT,
@@ -59,7 +60,16 @@ export function Footer() {
             </p>
           </div>
 
-          <div className="grid flex-1 gap-8 sm:grid-cols-2 lg:grid-cols-5 lg:gap-8 md:text-right">
+          <div className="grid flex-1 gap-8 sm:grid-cols-2 lg:grid-cols-6 lg:gap-8 md:text-right">
+            <div className="space-y-3">
+              <FooterHeading>Experience</FooterHeading>
+              <nav className="flex flex-col gap-2" aria-label="Experience">
+                {FOOTER_EXPERIENCE.map((item) => (
+                  <FooterLink key={item.href} href={item.href} label={item.label} />
+                ))}
+              </nav>
+            </div>
+
             <div className="space-y-3">
               <FooterHeading>Products</FooterHeading>
               <nav className="flex flex-col gap-2" aria-label="Products">

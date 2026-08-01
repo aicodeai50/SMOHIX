@@ -5,7 +5,7 @@ import {
   COMPANY_NAME,
   COMPANY_VISION,
 } from "@/lib/company-identity";
-import { mBody, mContainer, mEyebrow, mH2, mLede, mSection } from "@/lib/marketing-layout";
+import { mBody, mCard, mContainer, mEyebrow, mH2, mLede, mSection, mStaggerGrid } from "@/lib/marketing-layout";
 
 export function AboutCompanySection() {
   return (
@@ -24,20 +24,20 @@ export function AboutCompanySection() {
           real production systems — not slide decks.
         </p>
 
-        <div className="mt-12 grid gap-8 lg:grid-cols-3">
-          <article className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6">
+        <div className={`mt-12 grid gap-6 lg:grid-cols-3 ${mStaggerGrid}`}>
+          <article className={mCard}>
             <h3 className="text-sm font-semibold uppercase tracking-wide text-primary-muted">
               Mission
             </h3>
             <p className={`mt-3 ${mBody} text-foreground/90`}>{COMPANY_MISSION}</p>
           </article>
-          <article className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6">
+          <article className={mCard}>
             <h3 className="text-sm font-semibold uppercase tracking-wide text-primary-muted">
               Vision
             </h3>
             <p className={`mt-3 ${mBody} text-foreground/90`}>{COMPANY_VISION}</p>
           </article>
-          <article className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6">
+          <article className={mCard}>
             <h3 className="text-sm font-semibold uppercase tracking-wide text-primary-muted">
               Long-term goals
             </h3>

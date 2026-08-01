@@ -68,9 +68,9 @@ export function PilotsAdminPanel() {
           onChange={(e) => setSearch(e.target.value)}
           className="min-w-[12rem] flex-1 rounded-lg border border-white/[0.1] bg-surface px-3 py-2 text-sm"
         />
-        <a href="/api/admin/pilots/export" className="text-sm font-medium text-accent hover:underline self-center">
+        <Link href="/api/admin/pilots/export" className="self-center text-sm font-medium text-accent hover:underline">
           Export CSV
-        </a>
+        </Link>
       </div>
 
       {loading ? (

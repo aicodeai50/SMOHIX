@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { CommercialPaths } from "@/components/marketing/CommercialPaths";
+import { MarketingReveal } from "@/components/marketing/MarketingReveal";
+import { TrustStatusBadge } from "@/components/marketing/TrustStatusBadge";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
 import { getMailtoHref } from "@/lib/billing";
@@ -12,9 +14,8 @@ import {
   TRUST_NOT_CLAIMED,
   TRUST_PRIVACY,
   TRUST_SECURITY,
-  trustStatusLabel,
 } from "@/lib/trust-center";
-import { mArticle, mBody, mCard, mH1, mH2, mH3 } from "@/lib/marketing-layout";
+import { mArticle, mBody, mCard, mEyebrow, mH1, mH2, mH3, mLinkInline, mStaggerGrid } from "@/lib/marketing-layout";
 import { SITE_PUBLIC_BRAND } from "@/lib/site-brand";
 
 export const metadata: Metadata = buildMarketingMetadata({
@@ -67,9 +68,7 @@ function TrustItemList({
           <li key={item.title} className={mCard}>
             <div className="flex flex-wrap items-center justify-between gap-2">
               <h3 className={`${mH3} text-base`}>{item.title}</h3>
-              <span className="rounded-full border border-white/[0.12] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted">
-                {trustStatusLabel(item.status)}
-              </span>
+              <TrustStatusBadge status={item.status} />
             </div>
             <p className={`mt-2 ${mBody}`}>{item.body}</p>
           </li>
@@ -85,35 +84,32 @@ export default function TrustPage() {
       <Header />
       <main className="flex-1 border-b border-white/[0.06]">
         <article className={mArticle}>
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent/90">
-            Trust center
-          </p>
-          <h1 className={`mt-2 ${mH1}`}>Trust &amp; governance</h1>
-          <p className={`mt-4 ${mBody}`}>
-            {SITE_PUBLIC_BRAND} is built for teams accountable for operational changes. This
-            page states what is current, in progress, or planned — without unverified
-            certification claims.
-          </p>
+          <MarketingReveal as="div">
+            <p className={`${mEyebrow} text-primary-muted`}>Trust center</p>
+            <h1 className={`mt-2 ${mH1}`}>Trust &amp; governance</h1>
+            <p className={`mt-4 ${mBody}`}>
+              {SITE_PUBLIC_BRAND} is built for teams accountable for operational changes. This
+              page states what is current, in progress, or planned — without unverified
+              certification claims.
+            </p>
+          </MarketingReveal>
 
-          <section className="mt-12" aria-labelledby="pillars-heading">
+          <MarketingReveal as="div" className="mt-12">
             <h2 id="pillars-heading" className={mH2}>
               Control surfaces
             </h2>
-            <ul className="mt-6 grid gap-4 sm:grid-cols-2">
+            <ul className={`mt-6 grid gap-4 sm:grid-cols-2 ${mStaggerGrid}`}>
               {PILLARS.map((p) => (
                 <li key={p.title} className={mCard}>
                   <h3 className="text-lg font-semibold text-foreground">{p.title}</h3>
                   <p className={`mt-2 ${mBody}`}>{p.body}</p>
-                  <Link
-                    href={p.href}
-                    className="mt-4 inline-block text-xs font-semibold text-accent hover:underline"
-                  >
+                  <Link href={p.href} className={`mt-4 inline-block text-xs ${mLinkInline}`}>
                     {p.cta} →
                   </Link>
                 </li>
               ))}
             </ul>
-          </section>
+          </MarketingReveal>
 
           <div className="mt-12 space-y-12">
             <TrustItemList title="Security principles" items={TRUST_SECURITY} />
@@ -126,7 +122,7 @@ export default function TrustPage() {
               {TRUST_MATURITY.title}
             </h2>
             <p className={`mt-3 ${mBody}`}>{TRUST_MATURITY.body}</p>
-            <Link href="/products" className="mt-4 inline-block text-sm font-medium text-accent hover:underline">
+            <Link href="/products" className={`mt-4 inline-block text-sm ${mLinkInline}`}>
               View product maturity labels →
             </Link>
           </section>
@@ -168,10 +164,10 @@ export default function TrustPage() {
           </div>
 
           <p className={`mt-12 flex flex-wrap gap-x-4 gap-y-2 ${mBody}`}>
-            <Link href="/privacy" className="font-medium text-accent hover:underline">
+            <Link href="/privacy" className={mLinkInline}>
               Privacy →
             </Link>
-            <Link href="/" className="font-medium text-accent hover:underline">
+            <Link href="/" className={mLinkInline}>
               ← Home
             </Link>
           </p>

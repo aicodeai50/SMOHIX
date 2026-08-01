@@ -24,7 +24,7 @@ export function Input({
       ) : null}
       <input
         id={id}
-        className={`w-full rounded-lg border border-white/[0.1] bg-surface px-3 py-2 text-sm text-foreground placeholder:text-muted/60 transition-colors focus:border-accent/50 focus:outline-none focus:ring-2 focus:ring-accent/20 ${className}`}
+        className={`w-full rounded-lg border border-white/[0.1] bg-surface px-3 py-2.5 text-sm text-foreground placeholder:text-muted/60 transition-[border-color,box-shadow] duration-200 focus-visible:border-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/20 ${className}`}
         {...props}
       />
       {hint ? <p className="text-xs text-muted">{hint}</p> : null}
@@ -54,7 +54,7 @@ export function Textarea({
       ) : null}
       <textarea
         id={id}
-        className={`w-full rounded-lg border border-white/[0.1] bg-surface px-3 py-2 text-sm text-foreground placeholder:text-muted/60 transition-colors focus:border-accent/50 focus:outline-none focus:ring-2 focus:ring-accent/20 ${className}`}
+        className={`w-full rounded-lg border border-white/[0.1] bg-surface px-3 py-2.5 text-sm text-foreground placeholder:text-muted/60 transition-[border-color,box-shadow] duration-200 focus-visible:border-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/20 ${className}`}
         {...props}
       />
       {hint ? <p className="text-xs text-muted">{hint}</p> : null}

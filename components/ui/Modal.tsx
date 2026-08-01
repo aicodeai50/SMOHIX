@@ -37,7 +37,7 @@ export function Modal({
     <div className="fixed inset-0 z-[150] flex items-center justify-center p-4">
       <button
         type="button"
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        className="zentro-modal-backdrop absolute inset-0 bg-black/60 backdrop-blur-sm"
         aria-label="Close dialog"
         onClick={onClose}
       />
@@ -45,7 +45,7 @@ export function Modal({
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
-        className="relative z-10 w-full max-w-md rounded-2xl border border-white/[0.1] bg-surface-elevated p-6 shadow-2xl"
+        className="zentro-modal-panel relative z-10 w-full max-w-md rounded-2xl border border-white/[0.1] bg-surface-elevated p-6 shadow-2xl"
       >
         <div className="flex items-start justify-between gap-3">
           <div>
@@ -59,7 +59,7 @@ export function Modal({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-1.5 text-muted hover:bg-white/[0.06] hover:text-foreground"
+            className="rounded-lg p-1.5 text-muted transition-colors hover:bg-white/[0.06] hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             aria-label="Close"
           >
             <AppIcon name="close" size={18} />

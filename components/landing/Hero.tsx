@@ -8,7 +8,7 @@ import {
   COMPANY_HERO_HEADLINE,
   COMPANY_HERO_SUBHEADING,
 } from "@/lib/company-identity";
-import { mBody, mContainer, mEyebrow, mHeroLede } from "@/lib/marketing-layout";
+import { mBody, mContainer, mEyebrow, mHeroLede, mStaggerGrid } from "@/lib/marketing-layout";
 import { SITE_BRAND_BYLINE } from "@/lib/site-brand";
 
 export function Hero() {
@@ -31,7 +31,7 @@ export function Hero() {
               who need speed without sacrificing control.
             </p>
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <div className={`mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap ${mStaggerGrid}`}>
               <TrackableLink href="/products" event="explore_products">
                 <Button size="lg">Try Zentro</Button>
               </TrackableLink>

@@ -2,6 +2,15 @@
  * Shared marketing navigation — Header, Navbar, mobile nav, and footer.
  */
 
+export const FOOTER_EXPERIENCE = [
+  { href: "/products", label: "Product Access" },
+  { href: "/explore", label: "Explore Zentro" },
+  { href: "/playground", label: "API request builder" },
+  { href: "/use-cases", label: "Use cases" },
+  { href: "/faq", label: "FAQ" },
+  { href: "/search", label: "Search" },
+] as const;
+
 export const PRIMARY_NAV = [
   { href: "/", label: "Home" },
   { href: "/products", label: "Products" },

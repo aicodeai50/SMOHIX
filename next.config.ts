@@ -20,6 +20,9 @@ const nextConfig: NextConfig = {
         destination: "https://zentro.run/:path*",
         permanent: true,
       },
+      { source: "/demo", destination: "/products", permanent: true },
+      { source: "/demo/:path*", destination: "/products", permanent: true },
+      { source: "/tour", destination: "/explore", permanent: true },
     ];
   },
   async headers() {

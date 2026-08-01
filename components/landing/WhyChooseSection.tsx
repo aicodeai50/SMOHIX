@@ -1,7 +1,7 @@
 import { AppIcon } from "@/components/icons/AppIcon";
 import { MarketingReveal } from "@/components/marketing/MarketingReveal";
 import { WHY_CHOOSE_ZENTRO } from "@/lib/company-identity";
-import { mBody, mContainer, mEyebrow, mH2, mLede, mSection } from "@/lib/marketing-layout";
+import { mBody, mCard, mContainer, mEyebrow, mH2, mLede, mSection, mStaggerGrid } from "@/lib/marketing-layout";
 
 export function WhyChooseSection() {
   return (
@@ -20,12 +20,9 @@ export function WhyChooseSection() {
           developer-first APIs, and architecture designed to scale.
         </p>
 
-        <ul className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className={`mt-12 ${mStaggerGrid} grid gap-5 sm:grid-cols-2 lg:grid-cols-3`}>
           {WHY_CHOOSE_ZENTRO.map((item) => (
-            <li
-              key={item.title}
-              className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5"
-            >
+            <li key={item.title} className={mCard}>
               <div className="flex items-center gap-2">
                 <AppIcon name="check" size={18} className="text-accent" aria-hidden />
                 <h3 className="font-semibold text-foreground">{item.title}</h3>

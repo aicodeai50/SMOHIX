@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { AppIcon } from "@/components/icons/AppIcon";
+import { MaturityBadge } from "@/components/marketing/MaturityBadge";
 import { ProductDetailContent } from "@/components/products/ProductDetailContent";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
@@ -13,7 +14,7 @@ import {
   PLATFORM_NODE_MAP,
 } from "@/lib/ecosystem-graph";
 import { buildMarketingMetadata } from "@/lib/metadata";
-import { mBody, mContainer, mEyebrow, mSection } from "@/lib/marketing-layout";
+import { mBody, mContainer, mEyebrow, mH1, mSection } from "@/lib/marketing-layout";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -62,21 +63,11 @@ export default async function ProductDetailPage({ params }: Props) {
                 </div>
               ) : null}
               <div>
-                <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                  {product.name}
-                </h1>
+                <h1 className={mH1}>{product.name}</h1>
                 <p className={`mt-3 max-w-2xl ${mBody}`}>{product.tagline}</p>
-                <span
-                  className={`mt-4 inline-block rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide ${
-                    product.maturity === "live"
-                      ? "border-accent/35 bg-accent-dim text-accent"
-                      : product.maturity === "preview" || product.maturity === "prototype"
-                        ? "border-warning/35 bg-warning-dim text-warning"
-                        : "border-white/[0.12] text-muted"
-                  }`}
-                >
-                  {maturityLabel(product.maturity)}
-                </span>
+                <div className="mt-4">
+                  <MaturityBadge maturity={product.maturity} size="md" />
+                </div>
                 {legacy && product.maturity === "coming-soon" ? (
                   <p className={`mt-3 text-sm ${mBody} text-muted`}>{legacy.description}</p>
                 ) : null}
