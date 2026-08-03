@@ -284,23 +284,23 @@ export const PRODUCT_PAGES: readonly ProductPageContent[] = [
     solution:
       "Zentro AI routes Copilot through same-origin APIs to OpenAI or your reasoning backend, grounded in workspace context and guardrails.",
     howItWorks: [
-      "Browser calls /api/copilot/chat — keys stay server-side.",
-      "Optional reasoning backend via REACT_APP_SH_BACKEND_API.",
-      "Incident-aware threads when signed in with Supabase.",
-      "Falls back to guided offline replies when no model is configured.",
+      "Open the flagship workspace at ai.zentro.run.",
+      "Console Copilot uses server-side routes — keys stay off the client.",
+      "Incident-aware threads when signed in to Platform.",
+      "Guided offline replies when no model is configured for your environment.",
     ],
     benefits: [
-      "No API keys exposed in the browser",
-      "Works alongside approvals and audit — not instead of them",
-      "Connector health visible in the Copilot module",
+      "Flagship AI workspace separate from marketing pages",
+      "Works alongside approvals and audit in Platform",
+      "Multi-model intelligence without exposing routing in public copy",
     ],
     roadmap: [
-      "Richer agent handoff from Copilot threads",
-      "Memory Pendant context when available",
+      "Richer agent handoff from AI threads",
+      "Knowledge grounding when Knowledge product matures",
     ],
     uses: [rel("platform"), rel("api")],
     worksWith: [rel("agents"), rel("memory"), rel("knowledge"), rel("analytics")],
-    integratesWith: ["OpenAI", "SH backend / reasoning service", "Supabase sessions"],
+    integratesWith: ["Zentro Platform", "Zentro identity", "Developer APIs"],
     relatedProducts: [
       { slug: "zentro-platform", name: "Zentro Platform" },
       { slug: "agents", name: "Agents" },
@@ -365,27 +365,27 @@ export const PRODUCT_PAGES: readonly ProductPageContent[] = [
     id: "memory-pendant",
     slug: "memory-pendant",
     name: "Memory Pendant",
-    tagline: "Persistent memory for agents and long-running workflows.",
-    maturity: "coming-soon",
+    tagline: "Connected caregiver software — patient memory support under active development.",
+    maturity: "prototype",
     nodeId: "memory",
     problem:
-      "Agents lose context between sessions, forcing operators to re-explain state and increasing error rates.",
+      "Caregivers and families need better continuity for patient context — without overstating product maturity.",
     solution:
-      "Memory Pendant will attach durable memory to agent runs — linked to Knowledge and AI modules inside the same platform.",
+      "Memory Pendant is a healthcare-area project: AI-assisted workflows and patient memory support, developed with honest labels about certification and hardware status.",
     howItWorks: [
-      "Memory scopes bind to workspace and agent identity (planned).",
-      "Reads/writes flow through Platform guardrails (planned).",
-      "Backend service separate from this frontend repo (not modified here).",
+      "Positioned within Healthcare solutions — not a flagship homepage product.",
+      "Software workflows under active development.",
+      "Hardware integration pending.",
     ],
     benefits: [
-      "Continuity across incident and automation lifecycles",
-      "Shared context with Knowledge and Copilot",
-      "Audit-friendly memory lineage (planned)",
+      "Clear healthcare context without medical device claims",
+      "Part of the Zentro ecosystem roadmap",
+      "Pilot intake available for scoped engagements",
     ],
     roadmap: [
-      "Private preview with select workspaces",
-      "Integration with Agents dry-run pipeline",
-      "Export and retention controls",
+      "Caregiver workflow maturation",
+      "Hardware integration when ready",
+      "Healthcare solution packaging",
     ],
     uses: [rel("ai"), rel("knowledge"), rel("agents")],
     worksWith: [rel("platform"), rel("api")],
@@ -397,8 +397,8 @@ export const PRODUCT_PAGES: readonly ProductPageContent[] = [
     ],
     developerApis: [{ href: "/docs/api", label: "Future API surfaces (TBD)" }],
     documentation: [{ href: "/architecture", label: "Architecture" }],
-    primaryCta: { href: "/contact", label: "Join preview list" },
-    secondaryCta: { href: "/products", label: "All products" },
+    primaryCta: { href: "/solutions/healthcare", label: "Healthcare solutions" },
+    secondaryCta: { href: "/contact?inquiry=healthcare", label: "Contact us" },
   },
   {
     id: "agents",
@@ -591,6 +591,113 @@ export const PRODUCT_PAGES: readonly ProductPageContent[] = [
     ],
     primaryCta: { href: "/auth/sign-in", label: "Sign in" },
   },
+  {
+    id: "zentro-assistant",
+    slug: "zentro-assistant",
+    name: "Zentro Assistant",
+    tagline: "Personal intelligent workspace for productivity — distinct from team AI chat.",
+    maturity: "live",
+    problem:
+      "Team AI chat is not built for individual focus, planning, and personal knowledge work.",
+    solution:
+      "Zentro Assistant at assistant.zentro.run is a dedicated productivity workspace within the Zentro ecosystem.",
+    howItWorks: [
+      "Sign in with Zentro identity — same company, separate workspace.",
+      "Personal workflows for planning, drafting, and daily work.",
+      "Optional linkage to organization Platform settings when enabled.",
+    ],
+    benefits: [
+      "Clear differentiation from Zentro AI team intelligence",
+      "Personal productivity focus",
+      "Ecosystem-native identity and access",
+    ],
+    roadmap: ["Calendar and task integrations", "Org-controlled Platform linkage"],
+    uses: [rel("identity"), rel("ai")],
+    worksWith: [rel("platform"), rel("developers")],
+    integratesWith: ["Zentro identity", "Zentro AI (optional)"],
+    relatedProducts: [
+      { slug: "zentro-ai", name: "Zentro AI" },
+      { slug: "zentro-platform", name: "Zentro Platform" },
+      { slug: "private-ai", name: "Private AI" },
+    ],
+    developerApis: [{ href: "/docs/api", label: "API catalog" }],
+    documentation: [
+      { href: "/developers", label: "Developers" },
+      { href: "/docs", label: "Documentation" },
+    ],
+    primaryCta: { href: "https://assistant.zentro.run", label: "Open Assistant" },
+    secondaryCta: { href: "/products", label: "All products" },
+  },
+  {
+    id: "private-ai",
+    slug: "private-ai",
+    name: "Private AI",
+    tagline: "Private AI workspace for organizations that need greater control.",
+    maturity: "live",
+    problem:
+      "Security-sensitive teams need AI without giving up deployment control or data boundaries.",
+    solution:
+      "Private AI at pri.zentro.run provides a controlled workspace for private deployment and organization-scoped access.",
+    howItWorks: [
+      "Dedicated workspace within the Zentro ecosystem.",
+      "Organization-controlled access patterns.",
+      "Complements flagship Zentro AI — not a universal replacement.",
+    ],
+    benefits: [
+      "Privacy and security-first positioning",
+      "Enterprise deployment conversations",
+      "Shared identity with other workspaces",
+    ],
+    roadmap: ["Enterprise deployment guides", "Platform governance integration"],
+    uses: [rel("identity"), rel("ai")],
+    worksWith: [rel("platform"), rel("developers")],
+    integratesWith: ["Zentro identity", "Enterprise governance (beta)"],
+    relatedProducts: [
+      { slug: "zentro-ai", name: "Zentro AI" },
+      { slug: "zentro-platform", name: "Zentro Platform" },
+      { slug: "identity", name: "Identity" },
+    ],
+    developerApis: [{ href: "/docs/api", label: "API catalog" }],
+    documentation: [
+      { href: "/enterprise", label: "Enterprise" },
+      { href: "/trust", label: "Trust center" },
+    ],
+    primaryCta: { href: "https://pri.zentro.run", label: "Open Private AI" },
+    secondaryCta: { href: "/contact?inquiry=enterprise", label: "Contact sales" },
+  },
+  {
+    id: "zentro-log",
+    slug: "zentro-log",
+    name: "Zentro Log",
+    tagline: "Operational workspace for administrators — not a consumer product.",
+    maturity: "live",
+    problem:
+      "Administrators need operational visibility without mixing consumer product surfaces.",
+    solution:
+      "Zentro Log at log.zentro.run is an administrator workspace for operational review within the ecosystem.",
+    howItWorks: [
+      "Restricted to authorized administrators.",
+      "Complements Platform audit and governance modules.",
+      "Same Zentro identity model as other workspaces.",
+    ],
+    benefits: [
+      "Administrator-focused — not marketed as consumer AI",
+      "Operational review within one ecosystem",
+      "Clear separation from flagship products",
+    ],
+    roadmap: ["Expanded export controls", "Cross-workspace operational views"],
+    uses: [rel("platform"), rel("identity")],
+    worksWith: [rel("developers")],
+    integratesWith: ["Zentro Platform audit modules"],
+    relatedProducts: [
+      { slug: "zentro-platform", name: "Zentro Platform" },
+      { slug: "identity", name: "Identity" },
+    ],
+    developerApis: [{ href: "/docs/api", label: "API catalog" }],
+    documentation: [{ href: "/security", label: "Security" }],
+    primaryCta: { href: "https://log.zentro.run", label: "Open Log workspace" },
+    secondaryCta: { href: "/contact?inquiry=enterprise", label: "Request access" },
+  },
 ] as const;
 
 export function getProductBySlug(slug: string): ProductPageContent | undefined {
@@ -609,12 +716,13 @@ export type PlatformStatusItem = {
 };
 
 export const PLATFORM_STATUS: readonly PlatformStatusItem[] = [
-  { id: "ai", label: "AI", status: "operational", href: "/products/zentro-ai" },
+  { id: "ai", label: "Zentro AI", status: "operational", href: "/products/zentro-ai" },
   { id: "platform", label: "Platform", status: "operational", href: "/products/zentro-platform" },
+  { id: "assistant", label: "Assistant", status: "operational", href: "/products/zentro-assistant" },
+  { id: "private-ai", label: "Private AI", status: "operational", href: "/products/private-ai" },
   { id: "api", label: "API", status: "operational", href: "/products/zentro-own-api" },
   { id: "docs", label: "Documentation", status: "operational", href: "/docs" },
   { id: "developers", label: "Developers", status: "operational", href: "/developers" },
-  { id: "memory", label: "Memory Pendant", status: "coming-soon", href: "/products/memory-pendant" },
   { id: "agents", label: "Agents", status: "preview", href: "/products/agents" },
   { id: "analytics", label: "Analytics", status: "preview", href: "/products/analytics" },
 ] as const;

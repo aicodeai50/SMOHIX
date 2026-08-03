@@ -21,7 +21,8 @@ export type AnalyticsEvent =
   | "documentation_link"
   | "services_cta"
   | "pilot_apply"
-  | "build_with_zentro";
+  | "build_with_zentro"
+  | "developers_hub";
 
 export type AnalyticsPayload = {
   path?: string;

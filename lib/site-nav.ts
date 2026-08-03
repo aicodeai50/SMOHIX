@@ -2,41 +2,42 @@
  * Shared marketing navigation — Header, Navbar, mobile nav, and footer.
  */
 
+import { PRIMARY_SITE_NAV } from "@/lib/ecosystem-workspaces";
+import { ZENTRO_AI_PUBLIC_URL } from "@/lib/product-registry";
+
+export const HEADER_ACTIONS = {
+  openAi: { href: ZENTRO_AI_PUBLIC_URL, label: "Open Zentro AI", external: true },
+  signIn: { href: "/auth/sign-in", label: "Sign in" },
+  search: { href: "/search", label: "Search" },
+} as const;
+
 export const FOOTER_EXPERIENCE = [
-  { href: "/products", label: "Product Access" },
-  { href: "/explore", label: "Explore Zentro" },
-  { href: "/playground", label: "API request builder" },
+  { href: "/products", label: "Products" },
+  { href: "/explore", label: "Explore" },
   { href: "/use-cases", label: "Use cases" },
   { href: "/faq", label: "FAQ" },
   { href: "/search", label: "Search" },
 ] as const;
 
+/** Mobile menu includes Home; desktop header uses HEADER_NAV. */
 export const PRIMARY_NAV = [
   { href: "/", label: "Home" },
-  { href: "/products", label: "Products" },
-  { href: "/pilot", label: "Pilot" },
-  { href: "/professional-services", label: "Professional services" },
-  { href: "/solutions", label: "Solutions" },
-  { href: "/developers", label: "Developers" },
-  { href: "/pricing", label: "Pricing" },
-  { href: "/enterprise", label: "Enterprise" },
-  { href: "/company", label: "Company" },
+  ...PRIMARY_SITE_NAV,
   { href: "/contact", label: "Contact" },
 ] as const;
 
-/** Compact nav for desktop header (hides Home on homepage context). */
-export const HEADER_NAV = PRIMARY_NAV.filter((item) => item.href !== "/");
+export const HEADER_NAV = [...PRIMARY_SITE_NAV];
 
 export const FOOTER_PRODUCTS = [
   { href: "/products", label: "All products" },
-  { href: "/products/zentro-platform", label: "Zentro Platform" },
   { href: "/products/zentro-ai", label: "Zentro AI" },
+  { href: "/products/zentro-platform", label: "Zentro Platform" },
+  { href: "/products/zentro-assistant", label: "Zentro Assistant" },
+  { href: "/products/private-ai", label: "Private AI" },
   { href: "/products/zentro-own-api", label: "Zentro Own API" },
   { href: "/pilot", label: "Pilot program" },
-  { href: "/professional-services", label: "Professional services" },
   { href: "/architecture", label: "Architecture" },
   { href: "/technology", label: "Technology" },
-  { href: "/hub", label: "Console" },
   { href: "/pricing", label: "Pricing" },
 ] as const;
 
@@ -44,8 +45,7 @@ export const FOOTER_DEVELOPERS = [
   { href: "/developers", label: "Developers" },
   { href: "/docs", label: "Documentation" },
   { href: "/docs/api", label: "API reference" },
-  { href: "/architecture", label: "Architecture" },
-  { href: "/technology", label: "Technology" },
+  { href: "/playground", label: "API request builder" },
   { href: "/changelog", label: "Changelog" },
   { href: "https://github.com/aicodeai50/ZENTRO", label: "GitHub", external: true },
 ] as const;
@@ -56,8 +56,7 @@ export const FOOTER_COMPANY = [
   { href: "/trust", label: "Trust center" },
   { href: "/careers", label: "Careers" },
   { href: "/contact", label: "Contact" },
-  { href: "/changelog", label: "Changelog" },
-  { href: "/next", label: "What's next" },
+  { href: "/next", label: "Roadmap" },
 ] as const;
 
 export const FOOTER_LEGAL = [
@@ -74,4 +73,12 @@ export const FOOTER_SUPPORT = [
   { href: "/trust", label: "Trust" },
   { href: "/docs", label: "Docs" },
   { href: "/contact", label: "Contact" },
+] as const;
+
+export const FOOTER_SOLUTIONS = [
+  { href: "/solutions/business-automation", label: "Business Automation" },
+  { href: "/solutions/enterprise-ai", label: "Enterprise AI" },
+  { href: "/solutions/healthcare", label: "Healthcare" },
+  { href: "/solutions/education", label: "Education" },
+  { href: "/solutions/government", label: "Government" },
 ] as const;

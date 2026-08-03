@@ -1,6 +1,5 @@
 import { AppIcon } from "@/components/icons/AppIcon";
 import { FutureCommandCore } from "@/components/landing/FutureCommandCore";
-import { CommercialPaths } from "@/components/marketing/CommercialPaths";
 import { MarketingReveal } from "@/components/marketing/MarketingReveal";
 import { TrackableLink } from "@/components/marketing/TrackableLink";
 import { Button } from "@/components/ui/Button";
@@ -27,22 +26,23 @@ export function Hero() {
             </h1>
             <p className={`${mHeroLede} mt-5 max-w-xl`}>{COMPANY_HERO_SUBHEADING}</p>
             <p className={`mt-4 max-w-xl ${mBody}`}>
-              One ecosystem — live products, honest previews, and pilot programs for teams
-              who need speed without sacrificing control.
+              One headquarters at zentro.run — flagship AI, platform operations, assistant
+              productivity, and private deployment workspaces for teams that need clarity without
+              leaving the ecosystem.
             </p>
 
             <div className={`mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap ${mStaggerGrid}`}>
               <TrackableLink href="/products" event="explore_products">
-                <Button size="lg">Try Zentro</Button>
+                <Button size="lg">Explore products</Button>
               </TrackableLink>
-              <TrackableLink href="/pilot" event="start_pilot">
+              <TrackableLink href="/developers" event="developers_hub">
                 <Button size="lg" variant="secondary">
-                  Start a pilot
+                  Developer hub
                 </Button>
               </TrackableLink>
               <TrackableLink href="/auth/sign-in?next=/hub" event="open_console">
                 <Button size="lg" variant="secondary">
-                  Open console
+                  Sign in
                 </Button>
               </TrackableLink>
             </div>
@@ -50,19 +50,17 @@ export function Hero() {
             <ul className={`mt-8 flex flex-wrap gap-x-6 gap-y-2 ${mBody} text-muted`}>
               <li className="flex items-center gap-2">
                 <AppIcon name="check" size={16} className="text-accent" aria-hidden />
-                Unified AI platform
+                AI products
               </li>
               <li className="flex items-center gap-2">
                 <AppIcon name="check" size={16} className="text-accent" aria-hidden />
-                Pilot &amp; services
+                Developer platforms
               </li>
               <li className="flex items-center gap-2">
                 <AppIcon name="check" size={16} className="text-accent" aria-hidden />
-                Developer APIs
+                Enterprise solutions
               </li>
             </ul>
-
-            <CommercialPaths className="mt-10" compact />
           </div>
 
           <div id="preview" className="lg:justify-self-end" aria-hidden={false}>

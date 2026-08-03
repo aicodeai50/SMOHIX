@@ -48,10 +48,10 @@ export const ZENTRO_SERVICES: readonly ZentroService[] = [
   {
     id: "cloud-deployment",
     title: "Cloud deployment",
-    problem: "Frontend and private backends must communicate without exposing internal Railway URLs.",
-    outcome: "Railway deployment with env-configured proxies and health checks.",
-    audience: "DevOps teams deploying zentro.run and connected services.",
-    relatedProducts: ["Cloud", "Zentro Platform"],
+    problem: "Frontend and private backends must communicate without exposing internal service URLs.",
+    outcome: "Cloud deployment with secure networking and health visibility.",
+    audience: "DevOps teams deploying zentro.run and connected workspaces.",
+    relatedProducts: ["Zentro Platform", "Zentro Own API"],
   },
   {
     id: "dashboards",
@@ -75,7 +75,7 @@ export const ZENTRO_SERVICES: readonly ZentroService[] = [
     problem: "Ideas need a fast path to a working prototype with honest maturity labels.",
     outcome: "Preview or prototype modules on zentro.run with a clear roadmap to production.",
     audience: "Founders and innovation teams.",
-    relatedProducts: ["Agents", "Memory Pendant"],
+    relatedProducts: ["Agents", "Zentro Platform"],
   },
   {
     id: "healthcare-prototypes",

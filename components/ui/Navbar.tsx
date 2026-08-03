@@ -6,18 +6,14 @@ import { type ReactNode } from "react";
 
 import { Logo } from "@/components/site/Logo";
 import { MarketingMobileNav } from "@/components/site/MarketingMobileNav";
-import { Button } from "@/components/ui/Button";
+import { SiteHeaderActions } from "@/components/site/SiteHeaderActions";
 import { mFocusRing } from "@/lib/marketing-layout";
 import { HEADER_NAV } from "@/lib/site-nav";
 
 export function Navbar({
   userEmail,
-  ctaHref = "/auth/sign-in?next=/hub",
-  ctaLabel = "Get started",
 }: {
   userEmail?: string | null;
-  ctaHref?: string;
-  ctaLabel?: string;
 }) {
   const pathname = usePathname();
 
@@ -48,30 +44,15 @@ export function Navbar({
 
         <div className="flex items-center gap-2">
           <MarketingMobileNav />
-          <Link
-            href="/pilot"
-            className="hidden text-[13px] font-medium text-muted hover:text-foreground md:inline"
-          >
-            Pilot
-          </Link>
           {userEmail ? (
             <Link
               href="/hub"
-              className="hidden text-[13px] font-medium text-muted hover:text-foreground sm:inline"
+              className={`hidden text-[13px] font-medium text-muted hover:text-foreground sm:inline ${mFocusRing}`}
             >
               Console
             </Link>
-          ) : (
-            <Link
-              href="/auth/sign-in"
-              className="hidden text-[13px] font-medium text-muted hover:text-foreground sm:inline"
-            >
-              Sign in
-            </Link>
-          )}
-          <Link href={ctaHref} className="hidden sm:inline-flex">
-            <Button size="sm">{ctaLabel}</Button>
-          </Link>
+          ) : null}
+          <SiteHeaderActions compact />
         </div>
       </div>
     </header>

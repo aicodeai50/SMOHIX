@@ -55,8 +55,8 @@ export default function DevelopersPage() {
               Developer hub
             </h1>
             <p className={`mt-4 max-w-2xl ${mBody}`}>
-              Same-origin APIs, documented routes, and API keys — integrate without exposing
-              private Railway URLs in the browser.
+              Same-origin APIs, documented routes, and API keys — integrate with Zentro without
+              exposing private backend URLs in the browser.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <TrackableLink href="/docs/api" event="developer_quick_start">

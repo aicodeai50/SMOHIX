@@ -4,6 +4,7 @@
  */
 
 import { getSiteUrl } from "@/lib/site";
+import { ECOSYSTEM_PUBLIC_HOSTS } from "@/lib/ecosystem-workspaces";
 
 export type RegistryMaturity = "live" | "preview" | "prototype" | "internal" | "planned";
 
@@ -100,12 +101,75 @@ export const PRODUCT_REGISTRY: readonly ProductRegistryEntry[] = [
       "Optional reasoning backend proxy",
     ],
     limitations: [
-      "Model provider depends on deployment configuration",
-      "Not embedded in iframe on zentro.run — open the real product",
+      "Model capabilities depend on your deployment configuration",
+      "Console Copilot requires a signed-in workspace",
     ],
-    dependencies: ["OpenAI or configured reasoning backend", "Supabase session for console Copilot"],
+    dependencies: ["Configured intelligence backend", "Supabase session for console Copilot"],
     pilotAvailable: true,
-    lastVerifiedAt: "2026-08-01",
+    lastVerifiedAt: "2026-08-03",
+  },
+  {
+    id: "zentro-assistant",
+    name: "Zentro Assistant",
+    publicName: "Zentro Assistant",
+    description: "Personal intelligent workspace for productivity — distinct from team AI chat.",
+    maturity: "live",
+    repository: "Zentro Assistant workspace (separate deployment)",
+    productPagePath: "/products/zentro-assistant",
+    productUrl: "https://assistant.zentro.run",
+    docsUrl: `${SITE()}/developers`,
+    availableActions: [
+      { kind: "open_product", label: "Open Assistant", href: "https://assistant.zentro.run", external: true },
+      { kind: "product_page", label: "Product overview", href: "/products/zentro-assistant" },
+      { kind: "read_docs", label: "Developers", href: "/developers" },
+    ],
+    capabilities: ["Personal productivity workspace", "Zentro identity sign-in", "Ecosystem integration"],
+    limitations: ["Separate workspace from Zentro AI team chat"],
+    dependencies: ["Zentro identity"],
+    pilotAvailable: false,
+    lastVerifiedAt: "2026-08-03",
+  },
+  {
+    id: "private-ai",
+    name: "Private AI",
+    publicName: "Private AI",
+    description: "Private AI workspace for organizations needing greater control and deployment options.",
+    maturity: "live",
+    repository: "Private AI workspace (separate deployment)",
+    productPagePath: "/products/private-ai",
+    productUrl: "https://pri.zentro.run",
+    docsUrl: `${SITE()}/enterprise`,
+    availableActions: [
+      { kind: "open_product", label: "Open Private AI", href: "https://pri.zentro.run", external: true },
+      { kind: "product_page", label: "Product overview", href: "/products/private-ai" },
+      { kind: "contact", label: "Enterprise contact", href: "/contact?inquiry=enterprise" },
+    ],
+    capabilities: ["Organization-scoped private AI workspace", "Enterprise deployment discussions"],
+    limitations: ["Not a replacement for all Zentro AI use cases", "Deployment options vary by engagement"],
+    dependencies: ["Zentro identity", "Enterprise governance (where enabled)"],
+    pilotAvailable: true,
+    lastVerifiedAt: "2026-08-03",
+  },
+  {
+    id: "zentro-log",
+    name: "Zentro Log",
+    publicName: "Zentro Log",
+    description: "Administrator operational workspace — not a consumer-facing product.",
+    maturity: "live",
+    repository: "Zentro Log workspace (separate deployment)",
+    productPagePath: "/products/zentro-log",
+    productUrl: "https://log.zentro.run",
+    docsUrl: `${SITE()}/security`,
+    availableActions: [
+      { kind: "open_product", label: "Open Log", href: "https://log.zentro.run", external: true },
+      { kind: "product_page", label: "Product overview", href: "/products/zentro-log" },
+      { kind: "read_docs", label: "Security", href: "/security" },
+    ],
+    capabilities: ["Administrator operational review workspace"],
+    limitations: ["Restricted to authorized administrators", "Not marketed as a consumer product"],
+    dependencies: ["Zentro Platform audit modules", "Zentro identity"],
+    pilotAvailable: false,
+    lastVerifiedAt: "2026-08-03",
   },
   {
     id: "zentro-own-api",
@@ -199,7 +263,7 @@ export const PRODUCT_REGISTRY: readonly ProductRegistryEntry[] = [
     id: "memory-pendant",
     name: "Memory Pendant",
     publicName: "Memory Pendant",
-    description: "Persistent memory for agents — real prototype, separate backend.",
+    description: "Connected caregiver software — AI-assisted workflows under active development.",
     maturity: "prototype",
     repository: "Memory Pendant backend (separate repository — not modified here)",
     productPagePath: "/products/memory-pendant",
@@ -212,8 +276,9 @@ export const PRODUCT_REGISTRY: readonly ProductRegistryEntry[] = [
     capabilities: ["Product definition and architecture documented", "Pilot intake via contact form"],
     limitations: [
       "Not a certified medical device",
-      "Backend not connected to this marketing site",
-      "No public patient or user data on zentro.run",
+      "Under active development — hardware integration pending",
+      "Featured in Healthcare solutions, not a flagship product",
+      "No public patient data on zentro.run",
     ],
     dependencies: ["Zentro AI", "Agents (planned integration)"],
     pilotAvailable: true,
@@ -262,13 +327,7 @@ export const PRODUCT_REGISTRY: readonly ProductRegistryEntry[] = [
   },
 ] as const;
 
-export const ALLOWLISTED_PUBLIC_HOSTS = [
-  "zentro.run",
-  "www.zentro.run",
-  "ai.zentro.run",
-  "localhost",
-  "127.0.0.1",
-] as const;
+export const ALLOWLISTED_PUBLIC_HOSTS = ECOSYSTEM_PUBLIC_HOSTS;
 
 export function getRegistryProduct(id: string): ProductRegistryEntry | undefined {
   return PRODUCT_REGISTRY.find((p) => p.id === id);

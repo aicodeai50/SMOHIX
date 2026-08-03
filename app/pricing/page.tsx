@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Footer } from "@/components/site/Footer";
 import { HomepagePricingSection } from "@/components/landing/HomepagePricingSection";
 import { PricingFeatureMatrix } from "@/components/pricing/PricingFeatureMatrix";
-import { Navbar } from "@/components/ui/Navbar";
+import { Header } from "@/components/site/Header";
 import { getMailtoHref } from "@/lib/billing";
 import { isBillingConfigured } from "@/lib/billing";
 
@@ -18,7 +18,7 @@ export default function PricingPage() {
 
   return (
     <>
-      <Navbar ctaHref="/auth/sign-in?next=/hub" ctaLabel="Get started" />
+      <Header />
       <main className="flex-1 border-b border-white/[0.06]">
         <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
           <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">

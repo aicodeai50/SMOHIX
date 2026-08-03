@@ -5,24 +5,30 @@
 
 export const COMPANY_NAME = "Zentro Technologies" as const;
 
+export const COMPANY_ORIGIN =
+  "Founded with Norwegian engineering roots — building for clarity, privacy, and long-term product quality." as const;
+
 export const COMPANY_MISSION =
-  "Build AI infrastructure that helps teams operate production systems with clarity, accountability, and trust." as const;
+  "Build intelligent software, AI products, developer platforms, and technology solutions that help people and organizations work smarter." as const;
 
 export const COMPANY_VISION =
-  "A unified Zentro ecosystem where developers, operators, and organizations run AI-assisted workflows without sacrificing control or evidence." as const;
+  "One Zentro ecosystem where public headquarters, authenticated workspaces, and developer surfaces feel like rooms in the same digital company — never disconnected microsites." as const;
+
+export const COMPANY_TECHNOLOGY_PHILOSOPHY =
+  "AI-native products with human oversight, open developer standards, privacy by design, and honest maturity labels on everything we ship." as const;
 
 export const COMPANY_LONG_TERM_GOALS = [
-  "Unify product experiences under one coherent platform architecture",
-  "Ship AI capabilities with human-in-the-loop guardrails by default",
+  "Unify flagship workspaces under one coherent Zentro identity",
+  "Ship AI capabilities with guardrails and accountable operations by default",
   "Support regulated and high-stakes environments with audit-ready evidence",
-  "Open developer surfaces that integrate with existing tools and backends",
+  "Open developer surfaces — APIs, documentation, and SDKs — that integrators can trust",
 ] as const;
 
 export const COMPANY_HERO_HEADLINE =
-  "The AI technology company for accountable operations" as const;
+  "Intelligent software for organizations that need to move fast — with control" as const;
 
 export const COMPANY_HERO_SUBHEADING =
-  "Zentro Technologies builds unified AI platforms, APIs, and agent infrastructure — so teams can move fast in production without losing control, privacy, or proof." as const;
+  "Zentro Technologies builds AI products, developer platforms, APIs, and enterprise solutions — one ecosystem at zentro.run, with workspaces for AI, platform operations, assistant productivity, and private deployment." as const;
 
 export type EcosystemProduct = {
   id: string;
@@ -41,29 +47,51 @@ export type EcosystemProduct = {
     | "plug2"
     | "gauge"
     | "shieldCheck";
+  flagship?: boolean;
 };
 
+/** Homepage and JSON-LD ecosystem list — Memory Pendant is not a flagship entry. */
 export const ECOSYSTEM_PRODUCTS: readonly EcosystemProduct[] = [
-  {
-    id: "zentro-platform",
-    name: "Zentro Platform",
-    description: "Incident command, guarded automation, approvals, and audit evidence in one workspace.",
-    href: "/products/zentro-platform",
-    status: "live",
-    icon: "layoutDashboard",
-  },
   {
     id: "zentro-ai",
     name: "Zentro AI",
-    description: "AI-assisted triage, Copilot, and reasoning integrated into the operations console.",
+    description: "Flagship AI workspace for multi-model intelligence, reasoning, and coding assistance.",
     href: "/products/zentro-ai",
     status: "live",
     icon: "bot",
+    flagship: true,
+  },
+  {
+    id: "zentro-platform",
+    name: "Zentro Platform",
+    description: "Operational workspace — incidents, automation, organizations, and administration.",
+    href: "/products/zentro-platform",
+    status: "live",
+    icon: "layoutDashboard",
+    flagship: true,
+  },
+  {
+    id: "zentro-assistant",
+    name: "Zentro Assistant",
+    description: "Personal intelligent workspace for productivity — separate from team AI chat.",
+    href: "/products/zentro-assistant",
+    status: "live",
+    icon: "bot",
+    flagship: true,
+  },
+  {
+    id: "private-ai",
+    name: "Private AI",
+    description: "Private AI workspace for organizations needing greater control and deployment options.",
+    href: "/products/private-ai",
+    status: "live",
+    icon: "shieldCheck",
+    flagship: true,
   },
   {
     id: "zentro-own-api",
     name: "Zentro Own API",
-    description: "Centralized API surface for billing, integrations, and ecosystem services.",
+    description: "Developer APIs, authentication, webhooks, and ecosystem integrations.",
     href: "/products/zentro-own-api",
     status: "live",
     icon: "server",
@@ -71,7 +99,7 @@ export const ECOSYSTEM_PRODUCTS: readonly EcosystemProduct[] = [
   {
     id: "identity",
     name: "Identity",
-    description: "Supabase auth, org RBAC, and API keys shared across the ecosystem.",
+    description: "Authentication, organization roles, and API keys across workspaces.",
     href: "/products/identity",
     status: "live",
     icon: "shieldCheck",
@@ -79,7 +107,7 @@ export const ECOSYSTEM_PRODUCTS: readonly EcosystemProduct[] = [
   {
     id: "agents",
     name: "Agents",
-    description: "Composable agents with approvals, dry-runs, and execution guardrails.",
+    description: "Guarded automation playbooks with dry-runs and human approval gates.",
     href: "/products/agents",
     status: "prototype",
     icon: "workflow",
@@ -87,23 +115,15 @@ export const ECOSYSTEM_PRODUCTS: readonly EcosystemProduct[] = [
   {
     id: "analytics",
     name: "Analytics",
-    description: "Command center metrics, SLO views, and operational signals.",
+    description: "Operational metrics, SLO views, and command-center signals.",
     href: "/products/analytics",
     status: "preview",
     icon: "gauge",
   },
   {
-    id: "memory-pendant",
-    name: "Memory Pendant",
-    description: "Persistent memory layer for agents and long-running workflows.",
-    href: "/products/memory-pendant",
-    status: "coming-soon",
-    icon: "telescope",
-  },
-  {
     id: "projects",
     name: "Projects",
-    description: "Organize work across teams, environments, and product lines.",
+    description: "Collaboration workspaces and scoped environments.",
     href: "/products/projects",
     status: "coming-soon",
     icon: "layoutDashboard",
@@ -111,7 +131,7 @@ export const ECOSYSTEM_PRODUCTS: readonly EcosystemProduct[] = [
   {
     id: "knowledge",
     name: "Knowledge",
-    description: "Shared knowledge bases connected to incidents, runbooks, and compliance.",
+    description: "Secure knowledge retrieval and organization memory.",
     href: "/products/knowledge",
     status: "coming-soon",
     icon: "bookOpen",
@@ -119,7 +139,7 @@ export const ECOSYSTEM_PRODUCTS: readonly EcosystemProduct[] = [
   {
     id: "developers",
     name: "Developers",
-    description: "Documentation, API reference, and integration guides for building on Zentro.",
+    description: "API catalog, SDK overview, documentation, and integration guides.",
     href: "/developers",
     status: "live",
     icon: "keyRound",
@@ -137,69 +157,69 @@ export const AUDIENCE_SEGMENTS: readonly AudienceSegment[] = [
   {
     id: "developers",
     title: "Developers",
-    description: "APIs, webhooks, and automation hooks designed for builders shipping on Zentro.",
+    description: "APIs, SDKs, streaming, authentication, and documentation for builders.",
     href: "/developers",
   },
   {
-    id: "businesses",
-    title: "Businesses",
-    description: "Operational visibility and guarded automation for growing product teams.",
-    href: "/enterprise",
+    id: "business-automation",
+    title: "Business Automation",
+    description: "Guarded workflows and operational visibility for product teams.",
+    href: "/solutions/business-automation",
+  },
+  {
+    id: "enterprise-ai",
+    title: "Enterprise AI",
+    description: "AI programs with governance, access control, and procurement-ready surfaces.",
+    href: "/solutions/enterprise-ai",
   },
   {
     id: "healthcare",
     title: "Healthcare",
-    description: "Compliance-oriented workflows with evidence trails for regulated environments.",
+    description: "Compliance-oriented workflows and caregiver technology projects.",
     href: "/solutions/healthcare",
-  },
-  {
-    id: "enterprise",
-    title: "Enterprise",
-    description: "RBAC, residency controls, and procurement-ready governance surfaces.",
-    href: "/enterprise",
   },
   {
     id: "government",
     title: "Government",
-    description: "Accountability-first architecture for public-sector and regulated deployments.",
+    description: "Accountability-first architecture for public-sector deployments.",
     href: "/solutions/government",
   },
   {
     id: "education",
     title: "Education",
-    description: "Safe sandboxes and clear audit paths for research and institutional use.",
+    description: "Institutional sandboxes with clear audit paths.",
     href: "/solutions/education",
   },
 ] as const;
 
 export const WHY_CHOOSE_ZENTRO = [
   {
-    title: "Unified platform",
-    description: "Incidents, automation, approvals, and evidence share one console — not a patchwork of tools.",
+    title: "One ecosystem",
+    description: "Headquarters at zentro.run and authenticated workspaces — same company, same identity.",
   },
   {
-    title: "AI-first",
-    description: "Copilot and reasoning backends integrate with human gates instead of bypassing them.",
+    title: "AI products",
+    description: "Flagship AI, assistant productivity, and private deployment options — not a single chat widget.",
   },
   {
     title: "Privacy by design",
-    description: "Server-side integrations and configurable data boundaries; no fabricated compliance claims.",
+    description: "Configurable data boundaries and server-side integrations — no fabricated compliance claims.",
   },
   {
-    title: "Developer friendly",
-    description: "Open API catalog, ingest tokens, and same-origin proxies for backend services.",
+    title: "Developer first",
+    description: "API catalog, documentation, SDK roadmap, and honest status for integrators.",
   },
   {
     title: "Enterprise ready",
-    description: "Org RBAC, deployment profiles, and governance modules for serious rollouts.",
+    description: "Organization roles, governance modules, and procurement-oriented trust documentation.",
   },
   {
     title: "Scalable architecture",
-    description: "Modular services on Railway with private networking between frontend and backends.",
+    description: "Modular products that grow from individual builders to enterprise organizations.",
   },
   {
-    title: "Modern stack",
-    description: "Next.js, Supabase, and typed APIs — maintained in the open on GitHub.",
+    title: "Honest maturity",
+    description: "Live, preview, planned, and in-development labels — no pretense that roadmap items are GA.",
   },
 ] as const;
 
@@ -214,10 +234,9 @@ export const COMPANY_ROADMAP: readonly RoadmapPhase[] = [
     phase: "now",
     label: "Now",
     items: [
-      "Zentro Platform console — incidents, automations, approvals, audit",
-      "PayPal billing and workspace settings",
-      "Copilot with OpenAI and reasoning backend integration",
-      "Compliance and governance modules (beta)",
+      "Zentro AI, Platform, Assistant, and Private AI workspaces",
+      "Developer hub, API catalog, and documentation",
+      "Operational console — incidents, automations, approvals, audit",
     ],
   },
   {
@@ -225,18 +244,17 @@ export const COMPANY_ROADMAP: readonly RoadmapPhase[] = [
     label: "Next",
     items: [
       "Expanded agent workflows with stronger guardrails",
-      "Memory Pendant private preview",
-      "Deeper developer SDK documentation",
-      "Solutions pages for vertical use cases",
+      "Knowledge and analytics product layers",
+      "Deeper SDK and streaming documentation",
     ],
   },
   {
     phase: "future",
     label: "Future",
     items: [
-      "Knowledge graph across projects and incidents",
-      "Cross-product identity and billing via Zentro Own API",
-      "Broader ecosystem integrations",
+      "Industry solutions and healthcare caregiver technology maturation",
+      "Cross-workspace identity and billing unification",
+      "Broader enterprise automation and integrations",
     ],
   },
 ] as const;
@@ -249,27 +267,27 @@ export function getComingSoonProduct(slug: string): EcosystemProduct | undefined
   return COMING_SOON_PRODUCTS.find((p) => p.id === slug);
 }
 
+/** @deprecated Use lib/solutions-content.ts — kept for static param compatibility during migration. */
 export const COMING_SOON_SOLUTIONS = [
   {
     slug: "healthcare",
     title: "Healthcare",
-    description:
-      "Purpose-built workflows for healthcare teams that need audit trails and controlled automation.",
+    description: "Compliance-oriented workflows and caregiver technology projects.",
   },
   {
     slug: "government",
     title: "Government",
-    description:
-      "Accountability-first deployment patterns for public-sector and regulated environments.",
+    description: "Accountability-first deployment patterns for public-sector teams.",
   },
   {
     slug: "education",
     title: "Education",
-    description:
-      "Institutional sandboxes with clear evidence paths for research and teaching.",
+    description: "Institutional sandboxes with clear evidence paths.",
   },
 ] as const;
 
 export function getComingSoonSolution(slug: string) {
   return COMING_SOON_SOLUTIONS.find((s) => s.slug === slug);
 }
+
+export const FLAGSHIP_ECOSYSTEM_PRODUCTS = ECOSYSTEM_PRODUCTS.filter((p) => p.flagship);

@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { Logo } from "./Logo";
 import { MarketingMobileNav } from "./MarketingMobileNav";
-import { Button } from "@/components/ui/Button";
+import { SiteHeaderActions } from "./SiteHeaderActions";
 import { mFocusRing } from "@/lib/marketing-layout";
 import { HEADER_NAV } from "@/lib/site-nav";
 
@@ -26,32 +26,9 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-2">
           <MarketingMobileNav />
-          <Link
-            href="/pilot"
-            className="hidden text-[13px] font-medium text-muted transition-colors hover:text-foreground md:inline"
-          >
-            Pilot
-          </Link>
-          <Link href="/explore" className="hidden text-[13px] font-medium text-muted transition-colors hover:text-foreground lg:inline">
-            Explore
-          </Link>
-          <Link href="/developers" className="hidden text-[13px] font-medium text-muted transition-colors hover:text-foreground lg:inline">
-            Developers
-          </Link>
-          <Link href="/search" className="hidden text-[13px] font-medium text-muted transition-colors hover:text-foreground md:inline">
-            Search
-          </Link>
-          <Link
-            href="/auth/sign-in"
-            className="hidden text-[13px] font-medium text-muted transition-colors hover:text-foreground sm:inline"
-          >
-            Sign in
-          </Link>
-          <Link href="/products" className="inline-flex">
-            <Button size="sm">Try Zentro</Button>
-          </Link>
+          <SiteHeaderActions />
         </div>
       </div>
     </header>

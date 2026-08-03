@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 
 import { getAllProductSlugs } from "@/lib/ecosystem-graph";
 import { getSiteUrl } from "@/lib/site";
+import { getAllSolutionSlugs } from "@/lib/solutions-content";
 
 /** Public marketing and policy routes only (console routes may require auth). */
 const PATHS: { path: string; changeFrequency: MetadataRoute.Sitemap[0]["changeFrequency"]; priority: number }[] = [
@@ -49,8 +50,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency: "weekly" as const,
     priority: 0.8,
   }));
+  const solutionPaths = getAllSolutionSlugs().map((slug) => ({
+    path: `/solutions/${slug}`,
+    changeFrequency: "monthly" as const,
+    priority: 0.76,
+  }));
 
-  return [...PATHS, ...productPaths].map(({ path, changeFrequency, priority }) => ({
+  return [...PATHS, ...productPaths, ...solutionPaths].map(({ path, changeFrequency, priority }) => ({
     url: `${base}${path === "" ? "" : path}`,
     lastModified,
     changeFrequency,

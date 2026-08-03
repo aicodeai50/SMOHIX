@@ -33,7 +33,7 @@ export function EcosystemSection() {
         </h2>
         <p className={`${mLede} mt-3 max-w-2xl`}>
           Every product is a capability inside the same platform — not a separate silo.
-          Explore how AI, API, memory, and identity connect through{" "}
+          Explore how AI, Platform, Assistant, and developer surfaces connect inside{" "}
           <Link href="/products/zentro-platform" className="text-accent hover:underline">
             Zentro Platform
           </Link>

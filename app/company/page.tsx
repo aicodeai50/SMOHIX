@@ -6,24 +6,38 @@ import { Header } from "@/components/site/Header";
 import {
   COMPANY_MISSION,
   COMPANY_NAME,
+  COMPANY_ORIGIN,
+  COMPANY_TECHNOLOGY_PHILOSOPHY,
   COMPANY_VISION,
+  ECOSYSTEM_PRODUCTS,
 } from "@/lib/company-identity";
+import { ZENTRO_WORKSPACE_URLS } from "@/lib/ecosystem-workspaces";
 import { buildMarketingMetadata } from "@/lib/metadata";
-import { mBody, mContainer, mEyebrow, mSection } from "@/lib/marketing-layout";
+import { mBody, mContainer, mEyebrow, mH3, mSection } from "@/lib/marketing-layout";
 import { SITE_COMPANY_NAME, SITE_LEGAL_NAME, SITE_TAGLINE } from "@/lib/site-brand";
 
 export const metadata: Metadata = buildMarketingMetadata({
   title: "Company",
-  description: `${SITE_COMPANY_NAME} — mission, vision, and links to about, careers, and contact.`,
+  description: `${SITE_COMPANY_NAME} — mission, vision, Norwegian engineering roots, and the Zentro product ecosystem.`,
   path: "/company",
 });
 
 const COMPANY_LINKS = [
   { href: "/about", label: "About", detail: "Values, story, and product direction." },
   { href: "/careers", label: "Careers", detail: "Join the team building the Zentro ecosystem." },
-  { href: "/contact", label: "Contact", detail: "Reach product, support, and partnerships." },
-  { href: "/trust", label: "Trust", detail: "Governance and security posture." },
+  { href: "/contact", label: "Contact", detail: "Product, partnerships, and support." },
+  { href: "/trust", label: "Trust", detail: "Security, privacy, and maturity disclosure." },
+  { href: "/technology", label: "Technology", detail: "How we build — executive overview." },
   { href: "/changelog", label: "Changelog", detail: "Shipped improvements and fixes." },
+] as const;
+
+const WORKSPACES = [
+  { label: "Headquarters", url: ZENTRO_WORKSPACE_URLS.headquarters },
+  { label: "Zentro Platform", url: ZENTRO_WORKSPACE_URLS.platform },
+  { label: "Zentro AI", url: ZENTRO_WORKSPACE_URLS.ai },
+  { label: "Zentro Assistant", url: ZENTRO_WORKSPACE_URLS.assistant },
+  { label: "Private AI", url: ZENTRO_WORKSPACE_URLS.privateAi },
+  { label: "Zentro Log", url: ZENTRO_WORKSPACE_URLS.log },
 ] as const;
 
 export default function CompanyPage() {
@@ -40,6 +54,8 @@ export default function CompanyPage() {
             <p className={`mt-4 max-w-2xl ${mBody}`}>
               {SITE_LEGAL_NAME} operates {SITE_COMPANY_NAME} at zentro.run — {SITE_TAGLINE}
             </p>
+            <p className={`mt-3 max-w-2xl ${mBody}`}>{COMPANY_ORIGIN}</p>
+
             <div className="mt-10 grid gap-6 lg:grid-cols-2">
               <article className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6">
                 <h2 className="text-sm font-semibold uppercase tracking-wide text-primary-muted">
@@ -54,9 +70,61 @@ export default function CompanyPage() {
                 <p className={`mt-3 ${mBody} text-foreground/90`}>{COMPANY_VISION}</p>
               </article>
             </div>
+
+            <article className="mt-6 rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6">
+              <h2 className="text-sm font-semibold uppercase tracking-wide text-primary-muted">
+                Technology philosophy
+              </h2>
+              <p className={`mt-3 ${mBody} text-foreground/90`}>{COMPANY_TECHNOLOGY_PHILOSOPHY}</p>
+            </article>
           </div>
         </section>
-        <section className={mSection}>
+
+        <section className={`${mSection} border-b border-white/[0.06] bg-white/[0.01]`}>
+          <div className={mContainer}>
+            <h2 className={mH3}>Ecosystem workspaces</h2>
+            <p className={`mt-2 max-w-2xl ${mBody}`}>
+              Public domains are workspaces inside one company — not independent products or
+              separate companies.
+            </p>
+            <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {WORKSPACES.map((ws) => (
+                <li
+                  key={ws.url}
+                  className="rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3"
+                >
+                  <p className="text-sm font-semibold text-foreground">{ws.label}</p>
+                  <a
+                    href={ws.url}
+                    className="mt-1 block font-mono text-xs text-accent hover:underline"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {ws.url.replace("https://", "")}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        <section className={`${mSection} border-b border-white/[0.06]`}>
+          <div className={mContainer}>
+            <h2 className={mH3}>Product ecosystem</h2>
+            <ul className={`mt-6 grid gap-3 sm:grid-cols-2 ${mBody}`}>
+              {ECOSYSTEM_PRODUCTS.map((product) => (
+                <li key={product.id}>
+                  <Link href={product.href} className="font-medium text-accent hover:underline">
+                    {product.name}
+                  </Link>
+                  <span className="text-muted"> — {product.description}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        <section className={`${mSection} pb-16`}>
           <div className={`${mContainer} grid gap-4 sm:grid-cols-2 lg:grid-cols-3`}>
             {COMPANY_LINKS.map((item) => (
               <Link

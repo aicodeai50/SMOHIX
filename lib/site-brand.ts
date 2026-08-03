@@ -13,16 +13,16 @@ export const SITE_COMPANY_NAME = "Zentro Technologies" as const;
 export const SITE_BRAND_BYLINE = `${SITE_PUBLIC_BRAND} by ${SITE_COMPANY_NAME}` as const;
 
 export const SITE_MARKETING_TITLE =
-  "Zentro Technologies — AI Platform for Accountable Operations" as const;
+  "Zentro Technologies — Intelligent Software, AI Products & Developer Platforms" as const;
 
 export const SITE_MARKETING_DESCRIPTION =
-  "Zentro Technologies builds unified AI platforms, APIs, and agent infrastructure for developers, enterprises, and regulated teams — incident command, guarded automation, and audit-ready evidence at zentro.run." as const;
+  "Zentro Technologies builds AI products, developer platforms, APIs, and enterprise solutions — one ecosystem at zentro.run with workspaces for AI, platform operations, assistant productivity, and private deployment." as const;
 
 export const SITE_MARKETING_TWITTER_DESCRIPTION =
-  "Official home of Zentro Technologies — AI-first platform, APIs, and developer tools for accountable operations." as const;
+  "Official headquarters of Zentro Technologies — AI products, platform workspaces, APIs, and developer tools in one ecosystem." as const;
 
 export const SITE_TAGLINE =
-  "AI infrastructure with accountability built in." as const;
+  "Intelligent software for organizations that need to move fast — with control." as const;
 
 /** 8px base spacing scale (multiples of 0.5rem) */
 export const SPACING_UNIT_PX = 8 as const;

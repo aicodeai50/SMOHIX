@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { MaturityBadge } from "@/components/marketing/MaturityBadge";
 import { Button } from "@/components/ui/Button";
+import { isFlagshipProduct } from "@/lib/ecosystem-workspaces";
 import {
   getAllRegistryProducts,
   registryMaturityLabel,
@@ -81,7 +82,14 @@ function ProductAccessCard({ product }: { product: ProductRegistryEntry }) {
 }
 
 export function ProductAccessHub() {
-  const products = getAllRegistryProducts();
+  const products = [...getAllRegistryProducts()].sort((a, b) => {
+    const aFlag = isFlagshipProduct(a.id) ? 0 : 1;
+    const bFlag = isFlagshipProduct(b.id) ? 0 : 1;
+    if (aFlag !== bFlag) return aFlag - bFlag;
+    if (a.id === "memory-pendant") return 1;
+    if (b.id === "memory-pendant") return -1;
+    return a.publicName.localeCompare(b.publicName);
+  });
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       {products.map((product) => (

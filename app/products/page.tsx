@@ -17,8 +17,8 @@ import {
 import { SITE_COMPANY_NAME } from "@/lib/site-brand";
 
 export const metadata: Metadata = buildMarketingMetadata({
-  title: "Product Access",
-  description: `${SITE_COMPANY_NAME} — open live products, documentation, and pilots. Real destinations only.`,
+  title: "Products",
+  description: `${SITE_COMPANY_NAME} — Zentro AI, Platform, Assistant, Private AI, APIs, and honest maturity labels for every workspace.`,
   path: "/products",
 });
 
@@ -29,11 +29,11 @@ export default function ProductsPage() {
       <main id="main-content" className="flex-1">
         <MarketingReveal className={mSection}>
           <div className={mContainer}>
-            <p className={`${mEyebrow} text-primary-muted`}>Product Access</p>
+            <p className={`${mEyebrow} text-primary-muted`}>Products</p>
             <h1 className={`mt-2 ${mH1}`}>Zentro Technologies products</h1>
             <p className={mLede}>
-              The real front door to {SITE_COMPANY_NAME} products. Each card links to live routes,
-              documentation, or pilot intake — never simulated dashboards.
+              Flagship workspaces and platform capabilities — each card links to a real destination
+              with honest maturity labels.
             </p>
             <div className="mt-6 flex flex-wrap gap-4 text-sm">
               <Link href="/explore" className={mLinkInline}>

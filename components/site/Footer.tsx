@@ -10,6 +10,7 @@ import {
   FOOTER_EXPERIENCE,
   FOOTER_LEGAL,
   FOOTER_PRODUCTS,
+  FOOTER_SOLUTIONS,
   FOOTER_SUPPORT,
 } from "@/lib/site-nav";
 import { SITE_COMPANY_NAME, SITE_PRIMARY_DOMAIN } from "@/lib/site-brand";
@@ -52,15 +53,15 @@ export function Footer() {
           <div className="max-w-sm space-y-3">
             <Logo />
             <p className={mBody}>
-              {SITE_COMPANY_NAME} builds AI platforms, APIs, and developer tools for accountable
-              operations — the official home of the Zentro ecosystem at {SITE_PRIMARY_DOMAIN}.
+              {SITE_COMPANY_NAME} builds AI products, developer platforms, APIs, and enterprise
+              solutions — the official headquarters of the Zentro ecosystem at {SITE_PRIMARY_DOMAIN}.
             </p>
             <p className="text-xs text-muted">
               {COMPANY_NAME} <span aria-hidden>·</span> {SITE_PRIMARY_DOMAIN}
             </p>
           </div>
 
-          <div className="grid flex-1 gap-8 sm:grid-cols-2 lg:grid-cols-6 lg:gap-8 md:text-right">
+          <div className="grid flex-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 lg:gap-8 md:text-right">
             <div className="space-y-3">
               <FooterHeading>Experience</FooterHeading>
               <nav className="flex flex-col gap-2" aria-label="Experience">
@@ -74,6 +75,15 @@ export function Footer() {
               <FooterHeading>Products</FooterHeading>
               <nav className="flex flex-col gap-2" aria-label="Products">
                 {FOOTER_PRODUCTS.map((item) => (
+                  <FooterLink key={item.href} href={item.href} label={item.label} />
+                ))}
+              </nav>
+            </div>
+
+            <div className="space-y-3">
+              <FooterHeading>Solutions</FooterHeading>
+              <nav className="flex flex-col gap-2" aria-label="Solutions">
+                {FOOTER_SOLUTIONS.map((item) => (
                   <FooterLink key={item.href} href={item.href} label={item.label} />
                 ))}
               </nav>
