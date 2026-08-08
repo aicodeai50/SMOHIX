@@ -58,8 +58,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.76,
   }));
 
+  const origin = base.replace(/\/$/, "");
   return [...PATHS, ...productPaths, ...solutionPaths].map(({ path, changeFrequency, priority }) => ({
-    url: `${base}${path === "" ? "" : path}`,
+    // Homepage uses trailing slash to match <link rel="canonical">.
+    url: path === "" ? `${origin}/` : `${origin}${path}`,
     lastModified,
     changeFrequency,
     priority,

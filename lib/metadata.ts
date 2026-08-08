@@ -8,7 +8,7 @@ import {
   SITE_MARKETING_TWITTER_DESCRIPTION,
   SITE_SEO_KEYWORDS,
 } from "@/lib/site-brand";
-import { getSiteUrl } from "@/lib/site";
+import { getCanonicalUrl, getSiteUrl } from "@/lib/site";
 
 export const NOINDEX_ROBOTS: Metadata["robots"] = {
   index: false,
@@ -44,7 +44,7 @@ export function buildMarketingMetadata(input: {
   twitterDescription?: string;
 }): Metadata {
   const siteUrl = getSiteUrl();
-  const canonical = `${siteUrl}${input.path === "/" ? "" : input.path}`;
+  const canonical = getCanonicalUrl(input.path);
   const fullTitle = input.title.includes(SITE_BRAND_NAME)
     ? input.title
     : `${input.title} · ${SITE_BRAND_NAME}`;

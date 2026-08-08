@@ -130,8 +130,15 @@ async function main() {
     "site domain should derive from primary domain constant",
   );
   assert(
-    rootLayout.includes("alternates:") && rootLayout.includes("canonical: siteUrl"),
+    rootLayout.includes("alternates:") &&
+      (rootLayout.includes("canonical: siteUrl") ||
+        rootLayout.includes("canonical: homepageCanonical") ||
+        rootLayout.includes("getCanonicalUrl(\"/\")")),
     "root metadata missing canonical alternates wiring",
+  );
+  assert(
+    siteLib.includes("zentro.run") && siteLib.includes("PRODUCTION_SITE_URL"),
+    "getSiteUrl must remap legacy zentro.run SEO hosts to smohix.run",
   );
   assert(
     rootProxyOrMiddleware.includes("host.startsWith(\"www.\")"),

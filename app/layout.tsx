@@ -11,7 +11,7 @@ import {
 } from "@/lib/site-brand";
 import { SiteJsonLd } from "@/components/site/SiteJsonLd";
 import { AnalyticsConsentBanner } from "@/components/consent/AnalyticsConsentBanner";
-import { getSiteUrl } from "@/lib/site";
+import { getCanonicalUrl, PRODUCTION_SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 const inter = Inter({
@@ -26,8 +26,9 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
-/** Production canonical origin for Search Console / social previews. */
-const siteUrl = getSiteUrl();
+/** Always bake production apex into root SEO metadata (legacy domain env remapped in getSiteUrl). */
+const siteUrl = PRODUCTION_SITE_URL;
+const homepageCanonical = getCanonicalUrl("/");
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -46,12 +47,12 @@ export const metadata: Metadata = {
     statusBarStyle: "black-translucent",
   },
   alternates: {
-    canonical: siteUrl,
+    canonical: homepageCanonical,
   },
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: siteUrl,
+    url: homepageCanonical,
     siteName: SITE_BRAND_NAME,
     title: SITE_MARKETING_TITLE,
     description: SITE_MARKETING_DESCRIPTION,

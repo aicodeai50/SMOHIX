@@ -21,7 +21,7 @@ import {
   SITE_MARKETING_TITLE,
   SITE_PRIMARY_DOMAIN,
 } from "../lib/site-brand";
-import { getSiteUrl } from "../lib/site";
+import { getCanonicalUrl, getSiteUrl } from "../lib/site";
 import { SITE_EMAIL_CONTACT } from "../lib/billing";
 import { getShBackendApiUrl, getSmohixOwnApiUrl } from "../lib/backend-urls";
 
@@ -92,10 +92,29 @@ for (const host of [
 
 // 4) Canonical / SEO
 assert(getSiteUrl() === "https://smohix.run", "canonical site URL default");
+assert(getCanonicalUrl("/") === "https://smohix.run/", "homepage canonical must use trailing slash");
+assert(getCanonicalUrl("/about") === "https://smohix.run/about", "about canonical");
+assert(getCanonicalUrl("/products") === "https://smohix.run/products", "products canonical");
+
+const prevSite = process.env.NEXT_PUBLIC_SITE_URL;
+process.env.NEXT_PUBLIC_SITE_URL = "https://zentro.run";
+assert(getSiteUrl() === "https://smohix.run", "stale zentro.run env must not leak into SEO origin");
+assert(getCanonicalUrl("/") === "https://smohix.run/", "stale zentro.run env must not leak into homepage canonical");
+process.env.NEXT_PUBLIC_SITE_URL = "https://www.zentro.run/";
+assert(getSiteUrl() === "https://smohix.run", "www.zentro.run env must remap to smohix.run");
+if (prevSite !== undefined) process.env.NEXT_PUBLIC_SITE_URL = prevSite;
+else delete process.env.NEXT_PUBLIC_SITE_URL;
+
 const sitemap = read("app/sitemap.ts");
 assert(sitemap.includes("getSiteUrl"), "sitemap uses getSiteUrl");
 assert(!sitemap.includes("zentro.run"), "sitemap must not hardcode zentro.run");
 
+const rootLayout = read("app/layout.tsx");
+assert(rootLayout.includes("PRODUCTION_SITE_URL") || rootLayout.includes("getCanonicalUrl"), "root layout must pin production SEO origin");
+assert(
+  !/https?:\/\/zentro\.run/.test(rootLayout),
+  "root layout must not hardcode zentro.run URLs",
+);
 const homeJsonLd = read("components/site/HomePageJsonLd.tsx");
 assert(homeJsonLd.includes("SITE_COMPANY_NAME"), "JSON-LD uses SITE_COMPANY_NAME");
 assert(homeJsonLd.includes("Smohix ecosystem products"), "JSON-LD product list name");
