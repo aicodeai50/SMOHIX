@@ -1,8 +1,8 @@
-# Zentro Product Identity
+# Smohix Product Identity
 
-Zentro (`zentro.run`) is the accountable operations platform within the ZENTRO ecosystem. It replaces the legacy **shynvo** branding and domain.
+Smohix (`smohix.run`) is the accountable operations platform within the SMOHIX ecosystem. It replaces the legacy **shynvo** branding and domain.
 
-## What is Zentro?
+## What is Smohix?
 
 **AI-assisted incident command and guarded automation** for production operations teams.
 
@@ -50,7 +50,7 @@ PayPal replaces Lemon Squeezy:
 
 Webhook: `POST /api/webhooks/paypal`
 
-Optional centralized billing: `ZENTRO_OWN_API_URL`
+Optional centralized billing: `SMOHIX_OWN_API_URL`
 
 ## Architecture
 
@@ -60,4 +60,4 @@ Optional centralized billing: `ZENTRO_OWN_API_URL`
 | Automation | Robot backend (Railway internal) |
 | SH API | sh-backend-api (Railway internal) |
 | Auth & DB | Supabase |
-| Billing | PayPal + optional ZENTRO-OWN-API |
+| Billing | PayPal + optional SMOHIX-OWN-API |

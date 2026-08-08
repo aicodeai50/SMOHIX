@@ -14,7 +14,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { listThirdPartyVendors } from "@/lib/third-party-risk/data";
 import type { ThirdPartyVendorRow, VendorCategory, VendorRiskTier } from "@/lib/third-party-risk/types";
 
-export const COMPLIANCE_RISK_HEATMAP_VERSION = "zentro-compliance-risk-heatmap/1";
+export const COMPLIANCE_RISK_HEATMAP_VERSION = "smohix-compliance-risk-heatmap/1";
 
 export type RiskHeatLevel = "low" | "moderate" | "elevated" | "critical";
 

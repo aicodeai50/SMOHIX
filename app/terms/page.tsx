@@ -4,14 +4,14 @@ import { LegalContactSection } from "@/components/legal/LegalContactSection";
 
 export const metadata: Metadata = {
   title: "Terms of Service",
-  description: "Terms of Service for the Zentro platform.",
+  description: "Terms of Service for the Smohix platform.",
 };
 
 export default function TermsPage() {
   return (
     <LegalLayout title="Terms of Service" lastUpdated="April 2026">
       <div className="legal-callout">
-        <strong>Scope.</strong> These Terms apply to your use of Zentro websites,
+        <strong>Scope.</strong> These Terms apply to your use of Smohix websites,
         applications, APIs, and related services. Enterprise orders may include
         additional negotiated terms that supersede conflicting sections here.
       </div>
@@ -19,8 +19,8 @@ export default function TermsPage() {
       <h2>1. Agreement to these Terms</h2>
       <p>
         These Terms of Service (“<strong>Terms</strong>”) form a binding agreement
-        between you and Zentro (“<strong>Zentro</strong>,” “<strong>we</strong>,” “
-        <strong>us</strong>”) governing access to and use of the Zentro websites,
+        between you and Smohix (“<strong>Smohix</strong>,” “<strong>we</strong>,” “
+        <strong>us</strong>”) governing access to and use of the Smohix websites,
         applications, APIs, documentation, and related services (collectively, the “
         <strong>Services</strong>”).
       </p>
@@ -42,7 +42,7 @@ export default function TermsPage() {
         <li>
           <strong>“Customer Data”</strong> means data, content, configurations, logs,
           credentials metadata, and other materials that you or your users submit to
-          or generate through the Services, excluding Zentro’s own systems telemetry
+          or generate through the Services, excluding Smohix’s own systems telemetry
           described in the Privacy Policy.
         </li>
         <li>
@@ -65,13 +65,13 @@ export default function TermsPage() {
       <p>
         You are responsible for maintaining the confidentiality of credentials,
         configuring roles and permissions appropriately, and for all activity under
-        your accounts except where caused solely by Zentro’s gross negligence or
+        your accounts except where caused solely by Smohix’s gross negligence or
         willful misconduct.
       </p>
 
       <h2>4. Description of Services</h2>
       <p>
-        Zentro provides a software platform oriented toward IT operations, including
+        Smohix provides a software platform oriented toward IT operations, including
         capabilities such as incident workflows, AI-assisted guidance, automation with
         approvals, audit-oriented logging patterns, and integrations with systems you
         connect. Features may vary by plan, region, or beta program. We may modify,
@@ -82,8 +82,8 @@ export default function TermsPage() {
 
       <h2>5. Customer Data and processing</h2>
       <p>
-        As between you and Zentro, you retain ownership of Customer Data. You grant
-        Zentro a worldwide, non-exclusive license to host, process, transmit, display,
+        As between you and Smohix, you retain ownership of Customer Data. You grant
+        Smohix a worldwide, non-exclusive license to host, process, transmit, display,
         and otherwise use Customer Data solely to provide, secure, improve, and
         support the Services and as required by law. You represent that you have all
         rights and consents necessary to submit Customer Data and that its processing
@@ -107,7 +107,7 @@ export default function TermsPage() {
       <p>
         The Services may interoperate with third-party APIs, identity providers,
         ticketing systems, cloud providers, and payment processors. Those services
-        are governed by their own terms. Zentro is not responsible for third-party
+        are governed by their own terms. Smohix is not responsible for third-party
         outages, pricing, or conduct except as expressly stated in an Order.
       </p>
 
@@ -117,7 +117,7 @@ export default function TermsPage() {
         your Order, or in an enterprise agreement. Fees are non-refundable except as
         stated in our <a href="/refund">Refunds &amp; billing</a> page or required by
         law. You are responsible for applicable taxes, duties, and government
-        charges, excluding taxes on Zentro’s net income.
+        charges, excluding taxes on Smohix’s net income.
       </p>
       <p>
         Trials convert to paid subscriptions according to the terms presented at
@@ -128,7 +128,7 @@ export default function TermsPage() {
 
       <h2>9. Intellectual property</h2>
       <p>
-        Zentro and its licensors own the Services, software, branding, and
+        Smohix and its licensors own the Services, software, branding, and
         Documentation, including all associated intellectual property rights. Except
         for the limited rights expressly granted in these Terms, no rights are
         transferred to you. Feedback you provide may be used without obligation or
@@ -148,9 +148,9 @@ export default function TermsPage() {
       <h2>11. Warranties disclaimer</h2>
       <p>
         THE SERVICES AND DOCUMENTATION ARE PROVIDED “AS IS” AND “AS AVAILABLE.” TO
-        THE MAXIMUM EXTENT PERMITTED BY LAW, ZENTRO DISCLAIMS ALL IMPLIED WARRANTIES,
+        THE MAXIMUM EXTENT PERMITTED BY LAW, SMOHIX DISCLAIMS ALL IMPLIED WARRANTIES,
         INCLUDING MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND
-        NON-INFRINGEMENT. ZENTRO DOES NOT WARRANT THAT THE SERVICES WILL BE
+        NON-INFRINGEMENT. SMOHIX DOES NOT WARRANT THAT THE SERVICES WILL BE
         UNINTERRUPTED, ERROR-FREE, OR THAT AI-GENERATED OUTPUTS WILL BE ACCURATE OR
         SUITABLE FOR ANY DECISION WITHOUT HUMAN REVIEW.
       </p>
@@ -160,9 +160,9 @@ export default function TermsPage() {
         TO THE MAXIMUM EXTENT PERMITTED BY LAW, NEITHER PARTY WILL BE LIABLE FOR ANY
         INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, EXEMPLARY, OR PUNITIVE DAMAGES,
         OR FOR LOSS OF PROFITS, REVENUE, GOODWILL, OR DATA, EVEN IF ADVISED OF THE
-        POSSIBILITY. ZENTRO’S AGGREGATE LIABILITY ARISING OUT OF OR RELATED TO THE
+        POSSIBILITY. SMOHIX’S AGGREGATE LIABILITY ARISING OUT OF OR RELATED TO THE
         SERVICES OR THESE TERMS WILL NOT EXCEED THE GREATER OF (A) THE AMOUNTS YOU
-        PAID ZENTRO FOR THE SERVICES IN THE TWELVE (12) MONTHS BEFORE THE CLAIM OR (B)
+        PAID SMOHIX FOR THE SERVICES IN THE TWELVE (12) MONTHS BEFORE THE CLAIM OR (B)
         ONE HUNDRED U.S. DOLLARS (US$100) IF YOU HAVE NOT HAD FEES APPLICABLE IN THAT
         PERIOD.
       </p>
@@ -173,12 +173,12 @@ export default function TermsPage() {
 
       <h2>13. Indemnification</h2>
       <p>
-        You will defend, indemnify, and hold harmless Zentro and its affiliates,
+        You will defend, indemnify, and hold harmless Smohix and its affiliates,
         officers, directors, employees, and agents from and against any claims,
         damages, losses, liabilities, costs, and expenses (including reasonable
         attorneys’ fees) arising out of or related to Customer Data, your use of the
         Services in violation of these Terms or law, or a dispute between you and
-        your users or third parties—except to the extent caused by Zentro’s breach of
+        your users or third parties—except to the extent caused by Smohix’s breach of
         these Terms or gross negligence.
       </p>
 

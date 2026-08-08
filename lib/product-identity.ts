@@ -1,6 +1,6 @@
 /**
- * Zentro product identity — single source for marketing copy, features, and positioning.
- * Zentro is the accountable operations platform at zentro.run (formerly shynvo).
+ * Smohix product identity — single source for marketing copy, features, and positioning.
+ * Smohix is the accountable operations platform at smohix.run (formerly shynvo).
  */
 
 export const PRODUCT_TAGLINE =
@@ -10,7 +10,7 @@ export const PRODUCT_HEADLINE =
   "Run incidents and automation with full accountability" as const;
 
 export const PRODUCT_VALUE_PROPOSITION =
-  "Zentro unifies incident response, service context, human approvals, and audit evidence in one workspace — so platform, SRE, and security teams can move fast without losing control." as const;
+  "Smohix unifies incident response, service context, human approvals, and audit evidence in one workspace — so platform, SRE, and security teams can move fast without losing control." as const;
 
 export const PRODUCT_AUDIENCE = [
   "Platform & SRE teams managing production incidents",

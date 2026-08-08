@@ -32,27 +32,39 @@ export type AnalyticsPayload = {
   label?: string;
 };
 
-const ANALYTICS_CONSENT_KEY = "zentro_analytics_consent";
+const ANALYTICS_CONSENT_KEY = "smohix_analytics_consent";
+const LEGACY_ANALYTICS_CONSENT_KEY = "zentro_analytics_consent";
 
 declare global {
   interface Window {
-    __zentroAnalyticsQueue?: { event: AnalyticsEvent; payload?: AnalyticsPayload; at: number }[];
+    __smohixAnalyticsQueue?: { event: AnalyticsEvent; payload?: AnalyticsPayload; at: number }[];
+  }
+}
+
+function readAnalyticsConsentRaw(): string | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const current = localStorage.getItem(ANALYTICS_CONSENT_KEY);
+    if (current !== null) return current;
+    const legacy = localStorage.getItem(LEGACY_ANALYTICS_CONSENT_KEY);
+    if (legacy === null) return null;
+    localStorage.setItem(ANALYTICS_CONSENT_KEY, legacy);
+    localStorage.removeItem(LEGACY_ANALYTICS_CONSENT_KEY);
+    return legacy;
+  } catch {
+    return null;
   }
 }
 
 export function hasAnalyticsConsent(): boolean {
-  if (typeof window === "undefined") return false;
-  try {
-    return localStorage.getItem(ANALYTICS_CONSENT_KEY) === "granted";
-  } catch {
-    return false;
-  }
+  return readAnalyticsConsentRaw() === "granted";
 }
 
 export function setAnalyticsConsent(granted: boolean): void {
   if (typeof window === "undefined") return;
   try {
     localStorage.setItem(ANALYTICS_CONSENT_KEY, granted ? "granted" : "denied");
+    localStorage.removeItem(LEGACY_ANALYTICS_CONSENT_KEY);
   } catch {
     /* ignore */
   }
@@ -74,7 +86,7 @@ function dispatchToProvider(event: AnalyticsEvent, payload?: AnalyticsPayload): 
     return;
   }
   if (provider === "console") {
-    console.info("[zentro analytics]", event, payload ?? {});
+    console.info("[smohix analytics]", event, payload ?? {});
   }
 }
 
@@ -83,10 +95,10 @@ export function trackEvent(event: AnalyticsEvent, payload?: AnalyticsPayload): v
   if (typeof window === "undefined") return;
 
   const entry = { event, payload, at: Date.now() };
-  window.__zentroAnalyticsQueue = [...(window.__zentroAnalyticsQueue ?? []), entry];
+  window.__smohixAnalyticsQueue = [...(window.__smohixAnalyticsQueue ?? []), entry];
 
   if (process.env.NODE_ENV === "development") {
-    console.debug("[zentro analytics]", event, payload ?? {});
+    console.debug("[smohix analytics]", event, payload ?? {});
   }
 
   if (!providerConfigured()) return;
@@ -96,6 +108,6 @@ export function trackEvent(event: AnalyticsEvent, payload?: AnalyticsPayload): v
 }
 
 /** Returns queue entries for tests — strips any accidental PII keys. */
-export function getAnalyticsQueueForTests(): typeof window.__zentroAnalyticsQueue {
-  return typeof window !== "undefined" ? window.__zentroAnalyticsQueue : undefined;
+export function getAnalyticsQueueForTests(): typeof window.__smohixAnalyticsQueue {
+  return typeof window !== "undefined" ? window.__smohixAnalyticsQueue : undefined;
 }

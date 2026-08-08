@@ -1,6 +1,6 @@
 # Contact lead intake — architecture and operations
 
-Operational pipeline for zentro.run marketing enquiries: validate → store → notify → admin review.
+Operational pipeline for smohix.run marketing enquiries: validate → store → notify → admin review.
 
 ## Flow
 
@@ -21,11 +21,11 @@ Admin review: `/admin/leads` (platform admin email allowlist).
 |----------|----------|-------|
 | `NEXT_PUBLIC_SUPABASE_URL` | Production | Auth + DB |
 | `SUPABASE_SERVICE_ROLE_KEY` | Production | **Server only** — never `NEXT_PUBLIC_*` |
-| `ZENTRO_PLATFORM_ADMIN_EMAILS` | Admin UI | Comma-separated allowlist |
-| `ZENTRO_CONTACT_WEBHOOK_URL` | Optional | Generic JSON webhook for new leads |
-| `ZENTRO_SLACK_WEBHOOK_URL` | Optional | Reuses existing Slack integration |
-| `ZENTRO_CONTACT_HASH_SALT` | Recommended | Rate-limit key hashing |
-| `ZENTRO_CONTACT_DEV_STORE` | Local dev | Set `1` with `NODE_ENV=development` for in-memory fallback |
+| `SMOHIX_PLATFORM_ADMIN_EMAILS` | Admin UI | Comma-separated allowlist |
+| `SMOHIX_CONTACT_WEBHOOK_URL` | Optional | Generic JSON webhook for new leads |
+| `SMOHIX_SLACK_WEBHOOK_URL` | Optional | Reuses existing Slack integration |
+| `SMOHIX_CONTACT_HASH_SALT` | Recommended | Rate-limit key hashing |
+| `SMOHIX_CONTACT_DEV_STORE` | Local dev | Set `1` with `NODE_ENV=development` for in-memory fallback |
 | `NEXT_PUBLIC_ANALYTICS_REQUIRES_CONSENT` | Optional | Enables consent banner |
 | `NEXT_PUBLIC_ANALYTICS_PROVIDER` | Optional | `plausible` or `console` |
 
@@ -73,7 +73,7 @@ Rate limit (`429`):
 
 ### `GET/PATCH /api/admin/leads`
 
-Requires signed-in user whose email is in `ZENTRO_PLATFORM_ADMIN_EMAILS`.
+Requires signed-in user whose email is in `SMOHIX_PLATFORM_ADMIN_EMAILS`.
 
 ## Security controls
 
@@ -103,7 +103,7 @@ When `inquiry_type = pilot`:
 ## Admin access
 
 1. User signs in via Supabase auth
-2. Server checks email against `ZENTRO_PLATFORM_ADMIN_EMAILS`
+2. Server checks email against `SMOHIX_PLATFORM_ADMIN_EMAILS`
 3. Non-admin signed-in users see **Access denied** (403 UX)
 4. Unauthenticated users redirect to sign-in
 
@@ -111,19 +111,19 @@ When `inquiry_type = pilot`:
 
 ```bash
 # .env.local
-ZENTRO_CONTACT_DEV_STORE=1
-ZENTRO_PLATFORM_ADMIN_EMAILS=you@yourcompany.com
+SMOHIX_CONTACT_DEV_STORE=1
+SMOHIX_PLATFORM_ADMIN_EMAILS=you@yourcompany.com
 ```
 
-Without service role, set `ZENTRO_CONTACT_DEV_STORE=1` for in-memory leads.
+Without service role, set `SMOHIX_CONTACT_DEV_STORE=1` for in-memory leads.
 
 ## Deployment checklist
 
 - [ ] Run migration on production Supabase
 - [ ] Set `SUPABASE_SERVICE_ROLE_KEY` on Railway (server-only)
-- [ ] Set `ZENTRO_PLATFORM_ADMIN_EMAILS`
-- [ ] Configure `ZENTRO_CONTACT_WEBHOOK_URL` or `ZENTRO_SLACK_WEBHOOK_URL`
-- [ ] Set `ZENTRO_CONTACT_HASH_SALT` (unique per environment)
+- [ ] Set `SMOHIX_PLATFORM_ADMIN_EMAILS`
+- [ ] Configure `SMOHIX_CONTACT_WEBHOOK_URL` or `SMOHIX_SLACK_WEBHOOK_URL`
+- [ ] Set `SMOHIX_CONTACT_HASH_SALT` (unique per environment)
 - [ ] Verify `POST /api/contact` returns reference ID
 - [ ] Verify `/admin/leads` for allowlisted admin
 - [ ] Confirm service role key absent from client bundle

@@ -172,7 +172,7 @@ export default async function SettingsMembersPage({
                 <form action={addOrganizationMemberAction} className="space-y-3">
                   <div>
                     <label htmlFor="member-email" className={`mb-1 block ${appLabel}`}>
-                      Email (must already have a Zentro account)
+                      Email (must already have a Smohix account)
                     </label>
                     <input
                       id="member-email"

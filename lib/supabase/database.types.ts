@@ -1,5 +1,5 @@
 /**
- * Supabase / Postgres schema types for Zentro.
+ * Supabase / Postgres schema types for Smohix.
  *
  * Regenerate after schema changes (requires linked Supabase CLI project):
  *   supabase gen types typescript --linked > lib/supabase/database.types.ts

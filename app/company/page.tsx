@@ -11,20 +11,20 @@ import {
   COMPANY_VISION,
   ECOSYSTEM_PRODUCTS,
 } from "@/lib/company-identity";
-import { ZENTRO_WORKSPACE_URLS } from "@/lib/ecosystem-workspaces";
+import { SMOHIX_WORKSPACE_URLS } from "@/lib/ecosystem-workspaces";
 import { buildMarketingMetadata } from "@/lib/metadata";
 import { mBody, mContainer, mEyebrow, mH3, mSection } from "@/lib/marketing-layout";
 import { SITE_COMPANY_NAME, SITE_LEGAL_NAME, SITE_TAGLINE } from "@/lib/site-brand";
 
 export const metadata: Metadata = buildMarketingMetadata({
   title: "Company",
-  description: `${SITE_COMPANY_NAME} — mission, vision, Norwegian engineering roots, and the Zentro product ecosystem.`,
+  description: `${SITE_COMPANY_NAME} — mission, vision, Norwegian engineering roots, and the Smohix product ecosystem.`,
   path: "/company",
 });
 
 const COMPANY_LINKS = [
   { href: "/about", label: "About", detail: "Values, story, and product direction." },
-  { href: "/careers", label: "Careers", detail: "Join the team building the Zentro ecosystem." },
+  { href: "/careers", label: "Careers", detail: "Join the team building the Smohix ecosystem." },
   { href: "/contact", label: "Contact", detail: "Product, partnerships, and support." },
   { href: "/trust", label: "Trust", detail: "Security, privacy, and maturity disclosure." },
   { href: "/technology", label: "Technology", detail: "How we build — executive overview." },
@@ -32,12 +32,12 @@ const COMPANY_LINKS = [
 ] as const;
 
 const WORKSPACES = [
-  { label: "Headquarters", url: ZENTRO_WORKSPACE_URLS.headquarters },
-  { label: "Zentro Platform", url: ZENTRO_WORKSPACE_URLS.platform },
-  { label: "Zentro AI", url: ZENTRO_WORKSPACE_URLS.ai },
-  { label: "Zentro Assistant", url: ZENTRO_WORKSPACE_URLS.assistant },
-  { label: "Private AI", url: ZENTRO_WORKSPACE_URLS.privateAi },
-  { label: "Zentro Log", url: ZENTRO_WORKSPACE_URLS.log },
+  { label: "Headquarters", url: SMOHIX_WORKSPACE_URLS.headquarters },
+  { label: "Smohix Platform", url: SMOHIX_WORKSPACE_URLS.platform },
+  { label: "Smohix AI", url: SMOHIX_WORKSPACE_URLS.ai },
+  { label: "Smohix Assistant", url: SMOHIX_WORKSPACE_URLS.assistant },
+  { label: "Private AI", url: SMOHIX_WORKSPACE_URLS.privateAi },
+  { label: "Smohix Log", url: SMOHIX_WORKSPACE_URLS.log },
 ] as const;
 
 export default function CompanyPage() {
@@ -52,7 +52,7 @@ export default function CompanyPage() {
               {COMPANY_NAME}
             </h1>
             <p className={`mt-4 max-w-2xl ${mBody}`}>
-              {SITE_LEGAL_NAME} operates {SITE_COMPANY_NAME} at zentro.run — {SITE_TAGLINE}
+              {SITE_LEGAL_NAME} operates {SITE_COMPANY_NAME} at smohix.run — {SITE_TAGLINE}
             </p>
             <p className={`mt-3 max-w-2xl ${mBody}`}>{COMPANY_ORIGIN}</p>
 

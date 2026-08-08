@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!solution) {
     return buildMarketingMetadata({
       title: "Solutions",
-      description: "Zentro Technologies industry solutions.",
+      description: "Smohix Technologies industry solutions.",
       path: `/solutions/${slug}`,
     });
   }

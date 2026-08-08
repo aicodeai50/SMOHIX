@@ -30,7 +30,7 @@ export function generatePilotProposal(
     "Pilot review summary with recommendations",
   ];
   const responsibilities = [
-    "**Zentro:** technical guidance, scoped configuration support, and pilot review.",
+    "**Smohix:** technical guidance, scoped configuration support, and pilot review.",
     "**Customer:** timely access to stakeholders, test data where needed, and feedback on milestones.",
   ];
   const assumptions = [
@@ -39,7 +39,7 @@ export function generatePilotProposal(
     "Third-party systems require customer-provided credentials and approvals.",
   ];
   const securityNotes = [
-    "Data handling follows Zentro privacy commitments at zentro.run/privacy.",
+    "Data handling follows Smohix privacy commitments at smohix.run/privacy.",
     "Connector URLs and credentials remain customer-controlled.",
     "This document is not a legal agreement or compliance attestation.",
   ];
@@ -79,7 +79,7 @@ export function generatePilotProposal(
     "",
     "---",
     "",
-    "*Draft generated from Zentro RevOps data. Review and edit before sharing. Not a binding contract.*",
+    "*Draft generated from Smohix RevOps data. Review and edit before sharing. Not a binding contract.*",
   ]
     .filter(Boolean)
     .join("\n");
@@ -100,7 +100,7 @@ export function generatePilotProposal(
 </head>
 <body>
 ${markdownToSimpleHtml(md)}
-<p class="footer">Draft generated from Zentro RevOps. Review before sharing. Not a binding contract.</p>
+<p class="footer">Draft generated from Smohix RevOps. Review before sharing. Not a binding contract.</p>
 </body>
 </html>`;
 

@@ -1,7 +1,7 @@
 {
-  "name": "Zentro",
-  "short_name": "Zentro",
-  "description": "Zentro — enterprise AI operations and cybersecurity platform for incident response, guarded automation, and compliance evidence.",
+  "name": "Smohix",
+  "short_name": "Smohix",
+  "description": "Smohix — enterprise AI operations and cybersecurity platform for incident response, guarded automation, and compliance evidence.",
   "icons": [
     {
       "src": "/icon.svg",

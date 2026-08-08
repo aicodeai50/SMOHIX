@@ -11,7 +11,7 @@ import { getSiteUrl } from "@/lib/site";
 
 export const metadata: Metadata = buildMarketingMetadata({
   title: "Status",
-  description: "Real-time product and service status for Zentro Technologies — server-side health probes only.",
+  description: "Real-time product and service status for Smohix Technologies — server-side health probes only.",
   path: "/status",
 });
 
@@ -43,7 +43,7 @@ export default async function StatusPage() {
             }`}
           >
             <p className="text-sm font-semibold text-foreground">
-              {ok ? "zentro.run health endpoint operational" : "Health check failed or unreachable"}
+              {ok ? "smohix.run health endpoint operational" : "Health check failed or unreachable"}
             </p>
             <p className={`mt-2 ${mBody}`}>
               Canonical host: <span className="font-mono text-xs">{getSiteUrl()}</span>

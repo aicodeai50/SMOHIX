@@ -32,7 +32,7 @@ export async function GET() {
   return new Response(JSON.stringify(exportData, null, 2), {
     headers: {
       "Content-Type": "application/json",
-      "Content-Disposition": `attachment; filename="zentro-export-${user.id.slice(0, 8)}.json"`,
+      "Content-Disposition": `attachment; filename="smohix-export-${user.id.slice(0, 8)}.json"`,
     },
   });
 }

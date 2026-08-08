@@ -110,7 +110,7 @@ export default async function StaffingDigestAutoChainPage({
             <p className={`mt-3 ${appBody}`}>
               Version {STAFFING_DIGEST_AUTO_CHAIN_VERSION}. Cron:{" "}
               <code className="text-xs">POST /api/governance/compliance/staffing-digest-auto-chain/scheduled</code>{" "}
-              with Bearer <code className="text-xs">ZENTRO_STAFFING_DIGEST_AUTO_CHAIN_CRON_SECRET</code>.
+              with Bearer <code className="text-xs">SMOHIX_STAFFING_DIGEST_AUTO_CHAIN_CRON_SECRET</code>.
             </p>
             <div className={`mt-4 flex flex-wrap gap-3 text-sm ${appBody}`}>
               <Link href="/governance/compliance/staffing-completion-rollup" className="text-accent hover:underline">

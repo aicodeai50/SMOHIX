@@ -27,7 +27,7 @@ export function FlagshipProductsSection() {
           Workspaces in one ecosystem
         </h2>
         <p className={`${mLede} mt-3 max-w-2xl`}>
-          Zentro.run is headquarters. Each product opens a workspace — same company, same identity,
+          Smohix.run is headquarters. Each product opens a workspace — same company, same identity,
           never a disconnected microsite.
         </p>
         <div className={`mt-10 ${mProductGrid} ${mStaggerGrid}`}>

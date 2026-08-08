@@ -23,7 +23,7 @@ import type { ComplianceFramework } from "@/lib/compliance/types";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-export const OBLIGATION_CROSSOVER_REPORT_VERSION = "zentro-obligation-crossover-report/1";
+export const OBLIGATION_CROSSOVER_REPORT_VERSION = "smohix-obligation-crossover-report/1";
 
 export const CROSSOVER_DUE_WINDOW_DAYS = 7;
 

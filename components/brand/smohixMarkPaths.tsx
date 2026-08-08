@@ -4,8 +4,8 @@ type MarkSvgProps = {
   gradientId?: string;
 };
 
-/** Official Zentro mark paths — mirrors `app/icon.svg` exactly. */
-export function ZentroMarkSvgPaths({ gradientId = "zentro-official-bg" }: MarkSvgProps) {
+/** Official Smohix mark paths — mirrors `app/icon.svg` exactly. */
+export function SmohixMarkSvgPaths({ gradientId = "smohix-official-bg" }: MarkSvgProps) {
   return (
     <>
       <defs>
@@ -36,7 +36,7 @@ export function ZentroMarkSvgPaths({ gradientId = "zentro-official-bg" }: MarkSv
 }
 
 /** JSX for `next/og` ImageResponse — fixed gradient id (no hooks). */
-export function ZentroMarkOgContent({ size }: { size: number }) {
+export function SmohixMarkOgContent({ size }: { size: number }) {
   return (
     <div
       style={{
@@ -54,7 +54,7 @@ export function ZentroMarkOgContent({ size }: { size: number }) {
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <ZentroMarkSvgPaths gradientId="zentro-official-bg" />
+        <SmohixMarkSvgPaths gradientId="smohix-official-bg" />
       </svg>
     </div>
   );

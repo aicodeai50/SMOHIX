@@ -15,7 +15,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 const PATH = "/governance/compliance/peak-week-staffing-digest";
 
 function siteOriginFromEnv(): string {
-  return (process.env.ZENTRO_SITE_URL ?? "https://zentro.run").replace(/\/$/, "");
+  return ((process.env.SMOHIX_SITE_URL ?? process.env.ZENTRO_SITE_URL) ?? "https://smohix.run").replace(/\/$/, "");
 }
 
 export async function deliverPeakWeekStaffingDigestAction(formData: FormData) {

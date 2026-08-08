@@ -133,7 +133,7 @@ export async function POST(req: NextRequest) {
     void import("@/lib/revops/activity").then(({ recordLeadActivity }) =>
       recordLeadActivity({
         leadId: stored.id,
-        actorEmail: "system@zentro.run",
+        actorEmail: "system@smohix.run",
         eventType: "lead_created",
         summary: `Lead ${stored.publicReference} created`,
         metadata: { inquiryType: normalized.inquiryType },

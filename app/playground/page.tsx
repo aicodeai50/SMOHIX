@@ -11,7 +11,7 @@ import { mContainer, mEyebrow, mH1, mLede, mLinkInline, mSection } from "@/lib/m
 export const metadata: Metadata = buildMarketingMetadata({
   title: "API request builder",
   description:
-    "Generate copyable curl, JavaScript, and TypeScript examples for documented Zentro API routes — examples are not executed from the browser.",
+    "Generate copyable curl, JavaScript, and TypeScript examples for documented Smohix API routes — examples are not executed from the browser.",
   path: "/playground",
 });
 

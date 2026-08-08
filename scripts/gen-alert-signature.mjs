@@ -7,7 +7,7 @@
  *   node scripts/gen-alert-signature.mjs --secret "my-secret" --body-file payload.json --timestamp 1715000000
  *
  * Env fallback:
- *   ZENTRO_ALERT_WEBHOOK_SIGNING_SECRET
+ *   SMOHIX_ALERT_WEBHOOK_SIGNING_SECRET
  */
 import fs from "node:fs";
 import { createHmac } from "node:crypto";
@@ -39,7 +39,7 @@ function usageAndExit(message) {
   node scripts/gen-alert-signature.mjs --secret "<secret>" --body-file payload.json --timestamp 1715000000
 
 Options:
-  --secret       HMAC secret (fallback: ZENTRO_ALERT_WEBHOOK_SIGNING_SECRET)
+  --secret       HMAC secret (fallback: SMOHIX_ALERT_WEBHOOK_SIGNING_SECRET)
   --body         Raw JSON/body string
   --body-file    File path to raw body payload
   --timestamp    Optional timestamp for timestamped mode
@@ -56,9 +56,9 @@ if (args.help === "true") {
   usageAndExit();
 }
 
-const secret = (args.secret || process.env.ZENTRO_ALERT_WEBHOOK_SIGNING_SECRET || "").trim();
+const secret = (args.secret || (process.env.SMOHIX_ALERT_WEBHOOK_SIGNING_SECRET ?? process.env.ZENTRO_ALERT_WEBHOOK_SIGNING_SECRET) || "").trim();
 if (!secret) {
-  usageAndExit("missing --secret (or ZENTRO_ALERT_WEBHOOK_SIGNING_SECRET)");
+  usageAndExit("missing --secret (or SMOHIX_ALERT_WEBHOOK_SIGNING_SECRET)");
 }
 
 let body = "";

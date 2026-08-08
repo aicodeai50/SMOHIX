@@ -1,6 +1,6 @@
 /**
  * Backend base URLs for Railway private networking.
- * Prefer REACT_APP_* vars (set on the SHYNVO/Zentro service); ZENTRO_* names are legacy fallbacks.
+ * Prefer REACT_APP_* / SMOHIX_* vars; ZENTRO_* and REACT_APP_ZENTRO_* remain temporary fallbacks.
  */
 
 function firstEnv(...keys: string[]): string | undefined {
@@ -20,26 +20,26 @@ export function normalizeBackendBase(url: string | undefined | null): string | n
 /** SH / reasoning API — e.g. http://sh-backend-api.railway.internal */
 export function getShBackendApiUrl(): string | null {
   return normalizeBackendBase(
-    firstEnv("REACT_APP_SH_BACKEND_API", "ZENTRO_REASONING_API_URL"),
+    firstEnv("REACT_APP_SH_BACKEND_API", "SMOHIX_REASONING_API_URL", "ZENTRO_REASONING_API_URL"),
   );
 }
 
 /** Robot automation backend — e.g. http://robot_backend.railway.internal */
 export function getRobotBackendUrl(): string | null {
   return normalizeBackendBase(
-    firstEnv("REACT_APP_ROBOT_BACKEND", "ZENTRO_ROBOT_API_URL"),
+    firstEnv("REACT_APP_ROBOT_BACKEND", "SMOHIX_ROBOT_API_URL", "ZENTRO_ROBOT_API_URL"),
   );
 }
 
-/** Zentro hub service — e.g. http://zentro-hub.railway.internal */
-export function getZentroHubUrl(): string | null {
-  return normalizeBackendBase(firstEnv("REACT_APP_ZENTRO_HUB", "ZENTRO_HUB_URL"));
+/** Smohix hub service — e.g. http://smohix-hub.railway.internal */
+export function getSmohixHubUrl(): string | null {
+  return normalizeBackendBase(firstEnv("REACT_APP_SMOHIX_HUB", "REACT_APP_ZENTRO_HUB", "SMOHIX_HUB_URL", "ZENTRO_HUB_URL"));
 }
 
-/** Centralized own-API — e.g. http://zentro-own-api.railway.internal */
-export function getZentroOwnApiUrl(): string | null {
+/** Centralized own-API — e.g. http://smohix-own-api.railway.internal */
+export function getSmohixOwnApiUrl(): string | null {
   return normalizeBackendBase(
-    firstEnv("REACT_APP_ZENTRO_OWN_API", "ZENTRO_OWN_API_URL"),
+    firstEnv("REACT_APP_SMOHIX_OWN_API", "REACT_APP_ZENTRO_OWN_API", "SMOHIX_OWN_API_URL", "ZENTRO_OWN_API_URL"),
   );
 }
 

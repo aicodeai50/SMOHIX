@@ -17,7 +17,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { listThirdPartyVendors } from "@/lib/third-party-risk/data";
 
 export const COMPLIANCE_CONTROL_HEALTH_SCORECARD_VERSION =
-  "zentro-compliance-control-health-scorecard/1";
+  "smohix-compliance-control-health-scorecard/1";
 
 export const HEALTH_SCORE_WEIGHTS = {
   posture: 0.45,

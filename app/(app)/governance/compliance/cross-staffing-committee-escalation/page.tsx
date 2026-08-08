@@ -210,11 +210,11 @@ export default async function CrossStaffingCommitteeEscalationPage({
               </div>
               <p className={`mt-3 ${appMeta} text-muted`}>
                 Slack:{" "}
-                <code className="text-foreground/80">ZENTRO_SLACK_NOTIFY_CROSS_STAFFING_ESCALATION</code>
+                <code className="text-foreground/80">SMOHIX_SLACK_NOTIFY_CROSS_STAFFING_ESCALATION</code>
                 {" · "}
                 Cron:{" "}
                 <code className="text-foreground/80">
-                  ZENTRO_CROSS_STAFFING_COMMITTEE_ESCALATION_CRON_SECRET
+                  SMOHIX_CROSS_STAFFING_COMMITTEE_ESCALATION_CRON_SECRET
                 </code>
               </p>
             </ConsolePanel>

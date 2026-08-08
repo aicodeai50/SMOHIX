@@ -3,10 +3,10 @@
  */
 
 import { PRIMARY_SITE_NAV } from "@/lib/ecosystem-workspaces";
-import { ZENTRO_AI_PUBLIC_URL } from "@/lib/product-registry";
+import { SMOHIX_AI_PUBLIC_URL } from "@/lib/product-registry";
 
 export const HEADER_ACTIONS = {
-  openAi: { href: ZENTRO_AI_PUBLIC_URL, label: "Open Zentro AI", external: true },
+  openAi: { href: SMOHIX_AI_PUBLIC_URL, label: "Open Smohix AI", external: true },
   signIn: { href: "/auth/sign-in", label: "Sign in" },
   search: { href: "/search", label: "Search" },
 } as const;
@@ -30,11 +30,11 @@ export const HEADER_NAV = [...PRIMARY_SITE_NAV];
 
 export const FOOTER_PRODUCTS = [
   { href: "/products", label: "All products" },
-  { href: "/products/zentro-ai", label: "Zentro AI" },
-  { href: "/products/zentro-platform", label: "Zentro Platform" },
-  { href: "/products/zentro-assistant", label: "Zentro Assistant" },
+  { href: "/products/smohix-ai", label: "Smohix AI" },
+  { href: "/products/smohix-platform", label: "Smohix Platform" },
+  { href: "/products/smohix-assistant", label: "Smohix Assistant" },
   { href: "/products/private-ai", label: "Private AI" },
-  { href: "/products/zentro-own-api", label: "Zentro Own API" },
+  { href: "/products/smohix-own-api", label: "Smohix Own API" },
   { href: "/pilot", label: "Pilot program" },
   { href: "/architecture", label: "Architecture" },
   { href: "/technology", label: "Technology" },
@@ -47,7 +47,7 @@ export const FOOTER_DEVELOPERS = [
   { href: "/docs/api", label: "API reference" },
   { href: "/playground", label: "API request builder" },
   { href: "/changelog", label: "Changelog" },
-  { href: "https://github.com/aicodeai50/ZENTRO", label: "GitHub", external: true },
+  { href: "https://github.com/aicodeai50/SMOHIX", label: "GitHub", external: true },
 ] as const;
 
 export const FOOTER_COMPANY = [

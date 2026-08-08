@@ -17,7 +17,7 @@ function assert(condition: boolean, message: string) {
 const services: ServiceRow[] = [
   {
     id: "svc-prod",
-    name: "api.zentro.run",
+    name: "api.smohix.run",
     description: "Production API",
     environment: "production",
     ownerHint: "platform",
@@ -39,7 +39,7 @@ const serviceSystems = buildScopeSystemsFromServices(
   new Set(["svc-prod"]),
 );
 
-const prod = serviceSystems.find((s) => s.name === "api.zentro.run");
+const prod = serviceSystems.find((s) => s.name === "api.smohix.run");
 const dev = serviceSystems.find((s) => s.name === "dev-api");
 assert(prod?.inScope === true, "production in scope");
 assert(dev?.inScope === false, "development out of scope");
@@ -48,7 +48,7 @@ assert((prod?.controlIds.length ?? 0) > 0, "prod has controls");
 const edges: ServiceDependencyEdge[] = [
   {
     fromServiceId: "svc-prod",
-    fromServiceName: "api.zentro.run",
+    fromServiceName: "api.smohix.run",
     toServiceId: "svc-db",
     toServiceName: "postgres",
     relationship: "data",

@@ -213,10 +213,10 @@ export default async function StaffingActionRemindersPage({
               </div>
               <p className={`mt-3 ${appMeta} text-muted`}>
                 Slack:{" "}
-                <code className="text-foreground/80">ZENTRO_SLACK_NOTIFY_STAFFING_OVERDUE</code>
+                <code className="text-foreground/80">SMOHIX_SLACK_NOTIFY_STAFFING_OVERDUE</code>
                 {" · "}
                 Cron:{" "}
-                <code className="text-foreground/80">ZENTRO_STAFFING_OVERDUE_REMINDER_CRON_SECRET</code>
+                <code className="text-foreground/80">SMOHIX_STAFFING_OVERDUE_REMINDER_CRON_SECRET</code>
               </p>
             </ConsolePanel>
           ) : null}

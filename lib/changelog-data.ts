@@ -4,10 +4,10 @@
  */
 
 export type ChangelogCategory =
-  | "zentro-run"
-  | "zentro-ai"
-  | "zentro-platform"
-  | "zentro-own-api"
+  | "smohix-run"
+  | "smohix-ai"
+  | "smohix-platform"
+  | "smohix-own-api"
   | "sdk"
   | "memory-pendant"
   | "infrastructure";
@@ -28,10 +28,10 @@ export type ChangelogEntry = {
 };
 
 export const CHANGELOG_CATEGORY_LABELS: Record<ChangelogCategory, string> = {
-  "zentro-run": "Zentro.run",
-  "zentro-ai": "Zentro AI",
-  "zentro-platform": "Zentro Platform",
-  "zentro-own-api": "Zentro Own API",
+  "smohix-run": "Smohix.run",
+  "smohix-ai": "Smohix AI",
+  "smohix-platform": "Smohix Platform",
+  "smohix-own-api": "Smohix Own API",
   sdk: "SDK",
   "memory-pendant": "Memory Pendant",
   infrastructure: "Infrastructure",
@@ -50,7 +50,7 @@ export const CHANGELOG_ENTRIES: readonly ChangelogEntry[] = [
   {
     date: "Jun 2026",
     title: "Professional product cleanup",
-    categories: ["zentro-run", "zentro-platform"],
+    categories: ["smohix-run", "smohix-platform"],
     changeTypes: ["improved"],
     bullets: [
       "Public homepage simplified around incident command, guarded automation, evidence, pricing, and CTA",
@@ -61,7 +61,7 @@ export const CHANGELOG_ENTRIES: readonly ChangelogEntry[] = [
   {
     date: "Jun 2026",
     title: "Incident command and enterprise foundations",
-    categories: ["zentro-platform", "zentro-ai", "zentro-own-api"],
+    categories: ["smohix-platform", "smohix-ai", "smohix-own-api"],
     changeTypes: ["released", "improved"],
     bullets: [
       "Incident assignees, command events, handoffs, notifications, and incident-scoped Copilot context",
@@ -72,7 +72,7 @@ export const CHANGELOG_ENTRIES: readonly ChangelogEntry[] = [
   {
     date: "May 2026",
     title: "Governance and audit evidence expansion",
-    categories: ["zentro-platform"],
+    categories: ["smohix-platform"],
     changeTypes: ["released", "preview"],
     bullets: [
       "Compliance evidence bundles, assessor exports, framework mappings, retention controls, and legal hold support",
@@ -83,7 +83,7 @@ export const CHANGELOG_ENTRIES: readonly ChangelogEntry[] = [
   {
     date: "May 2026",
     title: "Security operations depth",
-    categories: ["zentro-platform", "infrastructure"],
+    categories: ["smohix-platform", "infrastructure"],
     changeTypes: ["released", "improved"],
     bullets: [
       "Service catalog, SLO context, vulnerability ingest, exposure priority, pen-test rollups, and attack-path simulation from catalog data",
@@ -94,7 +94,7 @@ export const CHANGELOG_ENTRIES: readonly ChangelogEntry[] = [
   {
     date: "May 2026",
     title: "Production hardening",
-    categories: ["infrastructure", "zentro-ai"],
+    categories: ["infrastructure", "smohix-ai"],
     changeTypes: ["improved", "fixed"],
     bullets: [
       "Distributed rate limiting with Upstash fallback, structured logs, optional Sentry capture, and release verification scripts",
@@ -105,7 +105,7 @@ export const CHANGELOG_ENTRIES: readonly ChangelogEntry[] = [
   {
     date: "April 2026",
     title: "Core console, API docs, and positioning",
-    categories: ["zentro-run", "zentro-platform", "zentro-own-api"],
+    categories: ["smohix-run", "smohix-platform", "smohix-own-api"],
     changeTypes: ["released"],
     bullets: [
       "Incident, overview, automations, audit, approvals, services, Copilot, runbooks, and hub console pages",

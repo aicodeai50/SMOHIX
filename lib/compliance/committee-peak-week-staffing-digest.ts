@@ -21,7 +21,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { SITE_BRAND_NAME } from "@/lib/site-brand";
 
 export const PEAK_WEEK_STAFFING_DIGEST_VERSION =
-  "zentro-peak-week-staffing-digest/1";
+  "smohix-peak-week-staffing-digest/1";
 
 export const STAFFING_DIGEST_HORIZON_DAYS = 90;
 
@@ -72,7 +72,7 @@ export type PeakWeekStaffingDigestPack = {
 };
 
 export type PeakWeekStaffingDigestPayload = {
-  type: "zentro.peak_week_staffing_digest";
+  type: "smohix.peak_week_staffing_digest";
   version: typeof PEAK_WEEK_STAFFING_DIGEST_VERSION;
   orgId: string;
   generatedAt: string;
@@ -189,7 +189,7 @@ export function buildPeakWeekStaffingDigestPayload(
 ): PeakWeekStaffingDigestPayload {
   const origin = siteOrigin.replace(/\/$/, "");
   return {
-    type: "zentro.peak_week_staffing_digest",
+    type: "smohix.peak_week_staffing_digest",
     version: PEAK_WEEK_STAFFING_DIGEST_VERSION,
     orgId: input.orgId,
     generatedAt: input.generatedAt,
@@ -486,7 +486,7 @@ export async function deliverPeakWeekStaffingDigest(
     for (const recipient of recipients) {
       const sent = await sendTransactionalEmailWithAudit({
         to: recipient.email!.trim(),
-        subject: `[Zentro] Peak-week staffing digest — ${orgName}`,
+        subject: `[Smohix] Peak-week staffing digest — ${orgName}`,
         text: markdown,
         userId: actorUserId,
         orgId,

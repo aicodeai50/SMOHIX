@@ -94,7 +94,7 @@ export function QuantumDimension() {
   return (
     <canvas
       ref={canvasRef}
-      className="zentro-quantum-canvas pointer-events-none absolute inset-0 h-full w-full"
+      className="smohix-quantum-canvas pointer-events-none absolute inset-0 h-full w-full"
       aria-hidden
     />
   );

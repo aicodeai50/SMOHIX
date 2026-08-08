@@ -207,11 +207,11 @@ export default async function StaffingSlaBreachDigestPage({
               </div>
               <p className={`mt-3 ${appMeta} text-muted`}>
                 Slack:{" "}
-                <code className="text-foreground/80">ZENTRO_SLACK_NOTIFY_STAFFING_SLA_BREACH</code>
+                <code className="text-foreground/80">SMOHIX_SLACK_NOTIFY_STAFFING_SLA_BREACH</code>
                 {" · "}
                 Cron:{" "}
                 <code className="text-foreground/80">
-                  ZENTRO_STAFFING_SLA_BREACH_DIGEST_CRON_SECRET
+                  SMOHIX_STAFFING_SLA_BREACH_DIGEST_CRON_SECRET
                 </code>
               </p>
             </ConsolePanel>

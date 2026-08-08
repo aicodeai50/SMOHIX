@@ -3,7 +3,7 @@ import Link from "next/link";
 import { MaturityBadge } from "@/components/marketing/MaturityBadge";
 import type { ProductPageContent } from "@/lib/ecosystem-graph";
 import { getProductConversion, maturityCtaHint } from "@/lib/product-conversion";
-import { getRegistryProduct, registryMaturityLabel, ZENTRO_AI_PUBLIC_URL } from "@/lib/product-registry";
+import { getRegistryProduct, registryMaturityLabel, SMOHIX_AI_PUBLIC_URL } from "@/lib/product-registry";
 import { mBody, mH3, mLinkInline } from "@/lib/marketing-layout";
 
 export function ProductExperienceSections({ product }: { product: ProductPageContent }) {
@@ -28,15 +28,15 @@ export function ProductExperienceSections({ product }: { product: ProductPageCon
         </p>
       </section>
 
-      {product.slug === "zentro-ai" ? (
+      {product.slug === "smohix-ai" ? (
         <section aria-labelledby="ai-product-heading">
           <h2 id="ai-product-heading" className={mH3}>
-            Open Zentro AI
+            Open Smohix AI
           </h2>
           <p className={`mt-3 ${mBody}`}>
-            Zentro AI is a standalone product at{" "}
-            <a href={ZENTRO_AI_PUBLIC_URL} className={mLinkInline} target="_blank" rel="noopener noreferrer">
-              {ZENTRO_AI_PUBLIC_URL}
+            Smohix AI is a standalone product at{" "}
+            <a href={SMOHIX_AI_PUBLIC_URL} className={mLinkInline} target="_blank" rel="noopener noreferrer">
+              {SMOHIX_AI_PUBLIC_URL}
             </a>
             . Console Copilot at{" "}
             <Link href="/auth/sign-in?next=/copilot" className={mLinkInline}>
@@ -67,7 +67,7 @@ export function ProductExperienceSections({ product }: { product: ProductPageCon
           </h2>
           <p className={`mt-3 ${mBody}`}>
             Memory Pendant is a real prototype with a separate backend — not simulated on this marketing
-            site. We do not publish patient or user records on zentro.run.
+            site. We do not publish patient or user records on smohix.run.
           </p>
           <ul className={`mt-4 space-y-2 ${mBody}`}>
             {registry.limitations.map((l) => (

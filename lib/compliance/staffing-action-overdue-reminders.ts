@@ -21,7 +21,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { SITE_BRAND_NAME } from "@/lib/site-brand";
 
 export const STAFFING_ACTION_OVERDUE_REMINDERS_VERSION =
-  "zentro-staffing-action-overdue-reminders/1";
+  "smohix-staffing-action-overdue-reminders/1";
 
 const OPEN_STATUSES: StaffingActionStatus[] = ["accepted", "in_progress"];
 
@@ -218,7 +218,7 @@ function buildAssigneeOverdueEmail(input: {
     `Load balancing: ${origin}/governance/compliance/obligation-load-balancing`,
   );
   return {
-    subject: `[Zentro] Overdue staffing actions — ${input.orgName}`,
+    subject: `[Smohix] Overdue staffing actions — ${input.orgName}`,
     text: lines.join("\n"),
   };
 }

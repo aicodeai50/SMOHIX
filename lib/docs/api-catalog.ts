@@ -85,7 +85,7 @@ export const API_GROUPS: ApiGroup[] = [
         summary: "Create or dedupe incident from monitoring (Bearer alert ingest token).",
         auth: "Bearer ingest token",
         notes:
-          "Paid-gated per deployment; validates token server-side. Supports normalized Zentro payload, Datadog, Prometheus/Grafana Alertmanager, PagerDuty, and New Relic payloads (vendor-specific dedupe keys). Optional HMAC signature check via ZENTRO_ALERT_WEBHOOK_SIGNING_SECRET.",
+          "Paid-gated per deployment; validates token server-side. Supports normalized Smohix payload, Datadog, Prometheus/Grafana Alertmanager, PagerDuty, and New Relic payloads (vendor-specific dedupe keys). Optional HMAC signature check via SMOHIX_ALERT_WEBHOOK_SIGNING_SECRET.",
       },
       {
         method: "POST",
@@ -303,7 +303,7 @@ export const API_GROUPS: ApiGroup[] = [
       {
         method: "POST",
         path: "/api/governance/compliance/evidence-request-sla/scheduled",
-        summary: "Cron SLA digest delivery (Bearer ZENTRO_EVIDENCE_REQUEST_SLA_CRON_SECRET).",
+        summary: "Cron SLA digest delivery (Bearer SMOHIX_EVIDENCE_REQUEST_SLA_CRON_SECRET).",
         auth: "Bearer cron secret",
       },
       {
@@ -328,7 +328,7 @@ export const API_GROUPS: ApiGroup[] = [
       {
         method: "POST",
         path: "/api/governance/compliance/mapping-digest/scheduled",
-        summary: "Cron mapping digest (Bearer ZENTRO_MAPPING_DIGEST_CRON_SECRET).",
+        summary: "Cron mapping digest (Bearer SMOHIX_MAPPING_DIGEST_CRON_SECRET).",
         auth: "Bearer cron secret",
       },
       {
@@ -411,7 +411,7 @@ export const API_GROUPS: ApiGroup[] = [
         method: "POST",
         path: "/api/governance/compliance/peak-week-staffing-digest/scheduled",
         summary:
-          "Cron peak-week staffing digest (Bearer ZENTRO_PEAK_WEEK_STAFFING_DIGEST_CRON_SECRET).",
+          "Cron peak-week staffing digest (Bearer SMOHIX_PEAK_WEEK_STAFFING_DIGEST_CRON_SECRET).",
         auth: "Bearer cron secret",
       },
       {
@@ -438,7 +438,7 @@ export const API_GROUPS: ApiGroup[] = [
         method: "POST",
         path: "/api/governance/compliance/staffing-action-reminders/scheduled",
         summary:
-          "Cron staffing overdue reminders (Bearer ZENTRO_STAFFING_OVERDUE_REMINDER_CRON_SECRET).",
+          "Cron staffing overdue reminders (Bearer SMOHIX_STAFFING_OVERDUE_REMINDER_CRON_SECRET).",
         auth: "Bearer cron secret",
       },
       {
@@ -458,7 +458,7 @@ export const API_GROUPS: ApiGroup[] = [
         method: "POST",
         path: "/api/governance/compliance/staffing-completion-rollup/scheduled",
         summary:
-          "Cron staffing completion rollup (Bearer ZENTRO_STAFFING_COMPLETION_ROLLUP_CRON_SECRET).",
+          "Cron staffing completion rollup (Bearer SMOHIX_STAFFING_COMPLETION_ROLLUP_CRON_SECRET).",
         auth: "Bearer cron secret",
       },
       {
@@ -478,7 +478,7 @@ export const API_GROUPS: ApiGroup[] = [
         method: "POST",
         path: "/api/governance/compliance/staffing-sla-breach-digest/scheduled",
         summary:
-          "Cron staffing SLA breach digest (Bearer ZENTRO_STAFFING_SLA_BREACH_DIGEST_CRON_SECRET).",
+          "Cron staffing SLA breach digest (Bearer SMOHIX_STAFFING_SLA_BREACH_DIGEST_CRON_SECRET).",
         auth: "Bearer cron secret",
       },
       {
@@ -498,14 +498,14 @@ export const API_GROUPS: ApiGroup[] = [
         method: "POST",
         path: "/api/governance/compliance/cross-staffing-committee-escalation/scheduled",
         summary:
-          "Cron cross-staffing committee escalation (Bearer ZENTRO_CROSS_STAFFING_COMMITTEE_ESCALATION_CRON_SECRET).",
+          "Cron cross-staffing committee escalation (Bearer SMOHIX_CROSS_STAFFING_COMMITTEE_ESCALATION_CRON_SECRET).",
         auth: "Bearer cron secret",
       },
       {
         method: "POST",
         path: "/api/governance/compliance/staffing-digest-auto-chain/scheduled",
         summary:
-          "Cron staffing digest auto-chain — rollup, SLA digest, escalation in one run (Bearer ZENTRO_STAFFING_DIGEST_AUTO_CHAIN_CRON_SECRET).",
+          "Cron staffing digest auto-chain — rollup, SLA digest, escalation in one run (Bearer SMOHIX_STAFFING_DIGEST_AUTO_CHAIN_CRON_SECRET).",
         auth: "Bearer cron secret",
       },
       {
@@ -525,7 +525,7 @@ export const API_GROUPS: ApiGroup[] = [
         method: "POST",
         path: "/api/governance/compliance/committee-digest/scheduled",
         summary:
-          "Cron quarterly digest delivery (Bearer ZENTRO_OBLIGATION_COMMITTEE_DIGEST_CRON_SECRET).",
+          "Cron quarterly digest delivery (Bearer SMOHIX_OBLIGATION_COMMITTEE_DIGEST_CRON_SECRET).",
         auth: "Bearer cron secret",
       },
       {
@@ -552,7 +552,7 @@ export const API_GROUPS: ApiGroup[] = [
         method: "POST",
         path: "/api/governance/compliance/obligation-density-alerts/scheduled",
         summary:
-          "Cron obligation density alerts (Bearer ZENTRO_OBLIGATION_DENSITY_ALERT_CRON_SECRET).",
+          "Cron obligation density alerts (Bearer SMOHIX_OBLIGATION_DENSITY_ALERT_CRON_SECRET).",
         auth: "Bearer cron secret",
       },
       {
@@ -585,7 +585,7 @@ export const API_GROUPS: ApiGroup[] = [
       {
         method: "POST",
         path: "/api/governance/compliance/attestation-renewal/scheduled",
-        summary: "Cron owner renewal nudges (Bearer ZENTRO_ATTESTATION_RENEWAL_CRON_SECRET).",
+        summary: "Cron owner renewal nudges (Bearer SMOHIX_ATTESTATION_RENEWAL_CRON_SECRET).",
         auth: "Bearer cron secret",
       },
       {
@@ -609,7 +609,7 @@ export const API_GROUPS: ApiGroup[] = [
       {
         method: "POST",
         path: "/api/governance/compliance/bundles/scheduled",
-        summary: "Cron entrypoint to generate bundle (Bearer ZENTRO_BUNDLE_CRON_SECRET, body: orgId, window).",
+        summary: "Cron entrypoint to generate bundle (Bearer SMOHIX_BUNDLE_CRON_SECRET, body: orgId, window).",
         auth: "Bearer cron secret",
       },
       {
@@ -649,8 +649,8 @@ export const API_GROUPS: ApiGroup[] = [
         method: "POST",
         path: "/api/governance/compliance/digest/scheduled",
         summary:
-          "Cron digest delivery — Bearer ZENTRO_DIGEST_CRON_SECRET; body { orgId, periodDays? }.",
-        auth: "Bearer ZENTRO_DIGEST_CRON_SECRET",
+          "Cron digest delivery — Bearer SMOHIX_DIGEST_CRON_SECRET; body { orgId, periodDays? }.",
+        auth: "Bearer SMOHIX_DIGEST_CRON_SECRET",
       },
       {
         method: "GET",
@@ -667,8 +667,8 @@ export const API_GROUPS: ApiGroup[] = [
       {
         method: "POST",
         path: "/api/governance/compliance/sla-reminders/scheduled",
-        summary: "Cron SLA reminders — Bearer ZENTRO_SLA_CRON_SECRET; body { orgId }.",
-        auth: "Bearer ZENTRO_SLA_CRON_SECRET",
+        summary: "Cron SLA reminders — Bearer SMOHIX_SLA_CRON_SECRET; body { orgId }.",
+        auth: "Bearer SMOHIX_SLA_CRON_SECRET",
       },
       {
         method: "GET",
@@ -993,7 +993,7 @@ export const API_GROUPS: ApiGroup[] = [
   {
     id: "marketing",
     title: "Marketing & leads",
-    description: "Public contact intake and platform-admin lead review on zentro.run.",
+    description: "Public contact intake and platform-admin lead review on smohix.run.",
     operations: [
       {
         method: "POST",
@@ -1007,91 +1007,91 @@ export const API_GROUPS: ApiGroup[] = [
         method: "GET",
         path: "/api/admin/leads",
         summary: "List contact leads with pagination and filters (platform admin email allowlist).",
-        auth: "Session cookie + ZENTRO_PLATFORM_ADMIN_EMAILS",
+        auth: "Session cookie + SMOHIX_PLATFORM_ADMIN_EMAILS",
       },
       {
         method: "PATCH",
         path: "/api/admin/leads",
         summary: "Update lead status, internal notes, or assignment.",
-        auth: "Session cookie + ZENTRO_PLATFORM_ADMIN_EMAILS",
+        auth: "Session cookie + SMOHIX_PLATFORM_ADMIN_EMAILS",
       },
       {
         method: "GET",
         path: "/api/admin/leads/{id}",
         summary: "Lead detail with append-only activity history.",
-        auth: "Session cookie + ZENTRO_PLATFORM_ADMIN_EMAILS",
+        auth: "Session cookie + SMOHIX_PLATFORM_ADMIN_EMAILS",
       },
       {
         method: "PATCH",
         path: "/api/admin/leads/{id}",
         summary: "Update lead pipeline fields (stage, owner, follow-up, priority).",
-        auth: "Session cookie + ZENTRO_PLATFORM_ADMIN_EMAILS",
+        auth: "Session cookie + SMOHIX_PLATFORM_ADMIN_EMAILS",
       },
       {
         method: "POST",
         path: "/api/admin/leads/{id}/convert-pilot",
         summary: "Create pilot project from lead (admin action only).",
-        auth: "Session cookie + ZENTRO_PLATFORM_ADMIN_EMAILS",
+        auth: "Session cookie + SMOHIX_PLATFORM_ADMIN_EMAILS",
       },
       {
         method: "POST",
         path: "/api/admin/leads/{id}/email",
         summary: "Prepare or send follow-up email template (Resend if configured).",
-        auth: "Session cookie + ZENTRO_PLATFORM_ADMIN_EMAILS",
+        auth: "Session cookie + SMOHIX_PLATFORM_ADMIN_EMAILS",
       },
       {
         method: "GET",
         path: "/api/admin/leads/export",
         summary: "CSV export of filtered leads (formula-safe).",
-        auth: "Session cookie + ZENTRO_PLATFORM_ADMIN_EMAILS",
+        auth: "Session cookie + SMOHIX_PLATFORM_ADMIN_EMAILS",
       },
       {
         method: "GET",
         path: "/api/admin/dashboard",
         summary: "RevOps dashboard metrics from live lead/pilot data.",
-        auth: "Session cookie + ZENTRO_PLATFORM_ADMIN_EMAILS",
+        auth: "Session cookie + SMOHIX_PLATFORM_ADMIN_EMAILS",
       },
       {
         method: "GET",
         path: "/api/admin/pilots",
         summary: "List pilot projects.",
-        auth: "Session cookie + ZENTRO_PLATFORM_ADMIN_EMAILS",
+        auth: "Session cookie + SMOHIX_PLATFORM_ADMIN_EMAILS",
       },
       {
         method: "POST",
         path: "/api/admin/pilots",
         summary: "Create pilot from lead ID.",
-        auth: "Session cookie + ZENTRO_PLATFORM_ADMIN_EMAILS",
+        auth: "Session cookie + SMOHIX_PLATFORM_ADMIN_EMAILS",
       },
       {
         method: "GET",
         path: "/api/admin/pilots/{id}",
         summary: "Pilot detail with activity history.",
-        auth: "Session cookie + ZENTRO_PLATFORM_ADMIN_EMAILS",
+        auth: "Session cookie + SMOHIX_PLATFORM_ADMIN_EMAILS",
       },
       {
         method: "PATCH",
         path: "/api/admin/pilots/{id}",
         summary: "Update pilot fields and status.",
-        auth: "Session cookie + ZENTRO_PLATFORM_ADMIN_EMAILS",
+        auth: "Session cookie + SMOHIX_PLATFORM_ADMIN_EMAILS",
       },
       {
         method: "GET",
         path: "/api/admin/pilots/{id}/proposal",
         summary: "Deterministic pilot proposal (JSON, HTML, or Markdown).",
-        auth: "Session cookie + ZENTRO_PLATFORM_ADMIN_EMAILS",
+        auth: "Session cookie + SMOHIX_PLATFORM_ADMIN_EMAILS",
       },
       {
         method: "GET",
         path: "/api/admin/pilots/{id}/calendar",
         summary: "Download .ics for discovery, kickoff, or review dates.",
-        auth: "Session cookie + ZENTRO_PLATFORM_ADMIN_EMAILS",
+        auth: "Session cookie + SMOHIX_PLATFORM_ADMIN_EMAILS",
       },
       {
         method: "GET",
         path: "/api/admin/pilots/export",
         summary: "CSV export of pilot projects.",
-        auth: "Session cookie + ZENTRO_PLATFORM_ADMIN_EMAILS",
+        auth: "Session cookie + SMOHIX_PLATFORM_ADMIN_EMAILS",
       },
     ],
   },

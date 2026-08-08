@@ -59,10 +59,10 @@ const CAPABILITIES = [
 
 export function CapabilityOrbit() {
   return (
-    <MarketingReveal id="modules" className={`${mSection} zentro-quantum-section`} aria-labelledby="modules-heading">
+    <MarketingReveal id="modules" className={`${mSection} smohix-quantum-section`} aria-labelledby="modules-heading">
       <div className={mContainer}>
-        <p className={`${mEyebrow} zentro-eyebrow-cyber`}>⟡ Platform modules</p>
-        <h2 id="modules-heading" className={`zentro-living-headline mt-2 ${mH2}`}>
+        <p className={`${mEyebrow} smohix-eyebrow-cyber`}>⟡ Platform modules</p>
+        <h2 id="modules-heading" className={`smohix-living-headline mt-2 ${mH2}`}>
           Modules on one incident spine
         </h2>
         <p className={mLede}>
@@ -70,12 +70,12 @@ export function CapabilityOrbit() {
           events instead of copy-pasted workflows.
         </p>
 
-        <div className="zentro-capability-orbit mt-10">
+        <div className="smohix-capability-orbit mt-10">
           {CAPABILITIES.map((mod) => (
             <Link
               key={mod.title}
               href={mod.href}
-              className={`group zentro-bento-cell flex flex-col rounded-2xl p-5 transition-transform duration-200 hover:-translate-y-0.5 ${
+              className={`group smohix-bento-cell flex flex-col rounded-2xl p-5 transition-transform duration-200 hover:-translate-y-0.5 ${
                 mod.wide ? "min-h-[9rem]" : ""
               }`}
             >

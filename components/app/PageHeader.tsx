@@ -18,7 +18,7 @@ export function PageHeader({
         </p>
       ) : null}
       <h1
-        className={`zentro-headline max-w-4xl text-2xl font-semibold tracking-tight md:text-[1.85rem] md:leading-snug ${eyebrow ? "mt-2" : ""}`}
+        className={`smohix-headline max-w-4xl text-2xl font-semibold tracking-tight md:text-[1.85rem] md:leading-snug ${eyebrow ? "mt-2" : ""}`}
       >
         {title}
       </h1>

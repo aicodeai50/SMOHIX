@@ -27,7 +27,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { SITE_BRAND_NAME } from "@/lib/site-brand";
 
 export const STAFFING_ACTION_SLA_BREACH_DIGEST_VERSION =
-  "zentro-staffing-action-sla-breach-digest/1";
+  "smohix-staffing-action-sla-breach-digest/1";
 
 export const DEFAULT_STAFFING_SLA_DAYS_AFTER_PEAK_WEEK = 7;
 
@@ -377,7 +377,7 @@ export async function deliverStaffingSlaBreachDigest(
     for (const admin of recipients) {
       const sent = await sendTransactionalEmailWithAudit({
         to: admin.email!.trim(),
-        subject: `[Zentro] Staffing SLA breach digest — ${orgName} (${pack.breachItems.length} action(s))`,
+        subject: `[Smohix] Staffing SLA breach digest — ${orgName} (${pack.breachItems.length} action(s))`,
         text: lines.join("\n"),
         userId: actorUserId,
         orgId,

@@ -47,10 +47,10 @@ export default function AboutPage() {
       <Header />
       <main id="main-content" className="flex-1">
         <MarketingQuantumShell>
-          <section className={`zentro-hero-future border-b border-white/[0.06] ${mSection}`}>
+          <section className={`smohix-hero-future border-b border-white/[0.06] ${mSection}`}>
             <article className={`${mArticle} ${mContainer}`}>
-              <p className={`${mEyebrow} zentro-eyebrow-cyber`}>Company</p>
-              <h1 className={`mt-2 zentro-headline zentro-living-headline ${mH1}`}>
+              <p className={`${mEyebrow} smohix-eyebrow-cyber`}>Company</p>
+              <h1 className={`mt-2 smohix-headline smohix-living-headline ${mH1}`}>
                 About {SITE_BRAND_NAME}
               </h1>
               <p className={`mt-4 max-w-3xl text-base sm:text-lg ${mBody}`}>
@@ -66,7 +66,7 @@ export default function AboutPage() {
                 {VALUES.map((value) => (
                   <li
                     key={value.title}
-                    className="zentro-bento-cell rounded-2xl p-6"
+                    className="smohix-bento-cell rounded-2xl p-6"
                   >
                     <h3 className="text-sm font-semibold text-foreground">{value.title}</h3>
                     <p className={`mt-2 ${mBody}`}>{value.body}</p>

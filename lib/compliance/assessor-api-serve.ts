@@ -388,7 +388,7 @@ export async function serveAssessorComplianceGet(
       headers: {
         ...OPERATIONAL_RESPONSE_HEADERS,
         "Content-Type": "text/calendar; charset=utf-8",
-        "Content-Disposition": `attachment; filename="zentro-grc-obligations-${stamp}.ics"`,
+        "Content-Disposition": `attachment; filename="smohix-grc-obligations-${stamp}.ics"`,
       },
     });
   }

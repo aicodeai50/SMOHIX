@@ -17,7 +17,7 @@ export function WhoWeBuildForSection() {
           Built for teams with real stakes
         </h2>
         <p className={`${mLede} mt-3 max-w-2xl`}>
-          From individual developers to enterprise and regulated environments — Zentro
+          From individual developers to enterprise and regulated environments — Smohix
           adapts to how you operate, not the other way around.
         </p>
 

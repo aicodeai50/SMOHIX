@@ -45,19 +45,19 @@ export function HowItWorksSection() {
   return (
     <MarketingReveal
       id="incident-flow"
-      className={`${mSection} zentro-quantum-section`}
+      className={`${mSection} smohix-quantum-section`}
       aria-labelledby="how-heading"
     >
       <div className={mContainer}>
-        <p className={`${mEyebrow} zentro-eyebrow-cyber`}>Full incident flow</p>
-        <h2 id="how-heading" className={`zentro-living-headline mt-2 ${mH2}`}>
+        <p className={`${mEyebrow} smohix-eyebrow-cyber`}>Full incident flow</p>
+        <h2 id="how-heading" className={`smohix-living-headline mt-2 ${mH2}`}>
           How {SITE_BRAND_NAME} runs an incident
         </h2>
         <p className={mLede}>
           From alert to audit trail — six checkpoints, zero silent automation.
         </p>
 
-        <ol className="zentro-timeline-rail mt-10 space-y-0">
+        <ol className="smohix-timeline-rail mt-10 space-y-0">
           {STEPS.map((step, i) => (
             <li
               key={step.n}

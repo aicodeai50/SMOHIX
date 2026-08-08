@@ -15,9 +15,9 @@ import { MEMBER_ADMIN_ROLES } from "@/lib/org/roles";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-export const REGULATORY_MAPPING_DIGEST_VERSION = "zentro-regulatory-mapping-digest/1";
+export const REGULATORY_MAPPING_DIGEST_VERSION = "smohix-regulatory-mapping-digest/1";
 
-export const COMPLIANCE_CATALOG_RELEASE = "zentro-compliance-catalog/2026.05";
+export const COMPLIANCE_CATALOG_RELEASE = "smohix-compliance-catalog/2026.05";
 
 export type MappingSnapshot = {
   catalogRelease: string;
@@ -48,7 +48,7 @@ export type MappingChangeDigestDeltas = {
 };
 
 export type RegulatoryMappingDigestPayload = {
-  type: "zentro.regulatory_mapping_digest";
+  type: "smohix.regulatory_mapping_digest";
   version: typeof REGULATORY_MAPPING_DIGEST_VERSION;
   orgId: string;
   generatedAt: string;
@@ -161,7 +161,7 @@ export function computeMappingChanges(
         kind: "control_removed",
         id,
         label: id,
-        detail: "Control removed from Zentro catalog",
+        detail: "Control removed from Smohix catalog",
       });
     }
   }
@@ -207,7 +207,7 @@ export function buildRegulatoryMappingDigestPayload(
 ): RegulatoryMappingDigestPayload {
   const origin = siteOrigin.replace(/\/$/, "");
   return {
-    type: "zentro.regulatory_mapping_digest",
+    type: "smohix.regulatory_mapping_digest",
     version: REGULATORY_MAPPING_DIGEST_VERSION,
     orgId,
     generatedAt: new Date().toISOString(),
@@ -282,7 +282,7 @@ export async function listMappingDigestDeliveries(
 
 function mappingDigestEmailBody(payload: RegulatoryMappingDigestPayload): string {
   const lines = [
-    "Zentro regulatory mapping change digest",
+    "Smohix regulatory mapping change digest",
     "",
     `Changes detected: ${payload.summary.changeCount}`,
     `Catalog controls: ${payload.summary.controlCount}`,
@@ -324,8 +324,8 @@ export async function sendMappingDigestEmails(
   let skipped = 0;
   const subject =
     payload.deltas.changeCount > 0
-      ? `[Zentro] ${payload.deltas.changeCount} compliance mapping change(s)`
-      : "[Zentro] Compliance mapping baseline recorded";
+      ? `[Smohix] ${payload.deltas.changeCount} compliance mapping change(s)`
+      : "[Smohix] Compliance mapping baseline recorded";
 
   const body = mappingDigestEmailBody(payload);
 
@@ -420,7 +420,7 @@ export async function runRegulatoryMappingDigestForOrg(
           .join(" ");
       } else if (emailEnabled && emailsSent === 0 && !webhookDelivered) {
         deliveryStatus = "email_failed";
-        deliveryNote = "Email enabled but no messages sent (check ZENTRO_RESEND_API_KEY).";
+        deliveryNote = "Email enabled but no messages sent (check SMOHIX_RESEND_API_KEY).";
       }
     }
   } else {

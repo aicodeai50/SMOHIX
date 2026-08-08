@@ -10,7 +10,7 @@ import { isBillingConfigured } from "@/lib/billing";
 
 export const metadata: Metadata = {
   title: "Pricing",
-  description: "Zentro plans — Free, Pro, Team, and Enterprise. Billed securely via PayPal.",
+  description: "Smohix plans — Free, Pro, Team, and Enterprise. Billed securely via PayPal.",
 };
 
 export default function PricingPage() {

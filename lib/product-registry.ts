@@ -1,5 +1,5 @@
 /**
- * Single source of truth for Zentro Technologies public products.
+ * Single source of truth for Smohix Technologies public products.
  * URLs and maturity are configured here — not inferred from marketing copy.
  */
 
@@ -37,7 +37,7 @@ export type ProductRegistryEntry = {
   productUrl?: string;
   docsUrl?: string;
   /** Same-origin path or allowlisted external health probe path. */
-  healthCheck?: { host: "zentro.run" | "ai.zentro.run"; path: string };
+  healthCheck?: { host: "smohix.run" | "ai.smohix.run"; path: string };
   availableActions: readonly ProductAction[];
   capabilities: readonly string[];
   limitations: readonly string[];
@@ -47,26 +47,26 @@ export type ProductRegistryEntry = {
 };
 
 const SITE = () => getSiteUrl().replace(/\/$/, "");
-const AI_PUBLIC = process.env.ZENTRO_AI_PUBLIC_URL?.trim() || "https://ai.zentro.run";
+const AI_PUBLIC = (process.env.SMOHIX_AI_PUBLIC_URL ?? process.env.ZENTRO_AI_PUBLIC_URL)?.trim() || "https://ai.smohix.run";
 
-export const ZENTRO_AI_PUBLIC_URL = AI_PUBLIC;
+export const SMOHIX_AI_PUBLIC_URL = AI_PUBLIC;
 
 export const PRODUCT_REGISTRY: readonly ProductRegistryEntry[] = [
   {
-    id: "zentro-platform",
-    name: "Zentro Platform",
-    publicName: "Zentro Platform",
+    id: "smohix-platform",
+    name: "Smohix Platform",
+    publicName: "Smohix Platform",
     description: "Operational command layer — incidents, automation, approvals, and audit.",
     maturity: "live",
-    repository: "github.com/aicodeai50/ZENTRO (this repo)",
-    productPagePath: "/products/zentro-platform",
+    repository: "github.com/aicodeai50/SMOHIX (this repo)",
+    productPagePath: "/products/smohix-platform",
     productUrl: `${SITE()}/auth/sign-in?next=/hub`,
     docsUrl: `${SITE()}/docs`,
-    healthCheck: { host: "zentro.run", path: "/api/health" },
+    healthCheck: { host: "smohix.run", path: "/api/health" },
     availableActions: [
       { kind: "sign_in", label: "Open console", href: "/auth/sign-in?next=/hub" },
       { kind: "read_docs", label: "Documentation", href: "/docs" },
-      { kind: "product_page", label: "Product overview", href: "/products/zentro-platform" },
+      { kind: "product_page", label: "Product overview", href: "/products/smohix-platform" },
     ],
     capabilities: [
       "Incidents, automations, approvals, audit console",
@@ -79,24 +79,24 @@ export const PRODUCT_REGISTRY: readonly ProductRegistryEntry[] = [
     lastVerifiedAt: "2026-08-01",
   },
   {
-    id: "zentro-ai",
-    name: "Zentro AI",
-    publicName: "Zentro AI",
+    id: "smohix-ai",
+    name: "Smohix AI",
+    publicName: "Smohix AI",
     description: "Copilot and reasoning — standalone product and console integration.",
     maturity: "live",
-    repository: "Zentro AI backend (separate repository — not modified here)",
-    productPagePath: "/products/zentro-ai",
+    repository: "Smohix AI backend (separate repository — not modified here)",
+    productPagePath: "/products/smohix-ai",
     productUrl: AI_PUBLIC,
     docsUrl: `${SITE()}/docs/api`,
-    healthCheck: { host: "ai.zentro.run", path: "/" },
+    healthCheck: { host: "ai.smohix.run", path: "/" },
     availableActions: [
-      { kind: "open_product", label: "Open Zentro AI", href: AI_PUBLIC, external: true },
+      { kind: "open_product", label: "Open Smohix AI", href: AI_PUBLIC, external: true },
       { kind: "sign_in", label: "Copilot in console", href: "/auth/sign-in?next=/copilot" },
       { kind: "read_docs", label: "Copilot API routes", href: "/docs/api" },
-      { kind: "product_page", label: "Product overview", href: "/products/zentro-ai" },
+      { kind: "product_page", label: "Product overview", href: "/products/smohix-ai" },
     ],
     capabilities: [
-      "Standalone app at ai.zentro.run",
+      "Standalone app at ai.smohix.run",
       "Console Copilot via /api/copilot/chat (server-side keys)",
       "Optional reasoning backend proxy",
     ],
@@ -109,23 +109,23 @@ export const PRODUCT_REGISTRY: readonly ProductRegistryEntry[] = [
     lastVerifiedAt: "2026-08-03",
   },
   {
-    id: "zentro-assistant",
-    name: "Zentro Assistant",
-    publicName: "Zentro Assistant",
+    id: "smohix-assistant",
+    name: "Smohix Assistant",
+    publicName: "Smohix Assistant",
     description: "Personal intelligent workspace for productivity — distinct from team AI chat.",
     maturity: "live",
-    repository: "Zentro Assistant workspace (separate deployment)",
-    productPagePath: "/products/zentro-assistant",
-    productUrl: "https://assistant.zentro.run",
+    repository: "Smohix Assistant workspace (separate deployment)",
+    productPagePath: "/products/smohix-assistant",
+    productUrl: "https://assistant.smohix.run",
     docsUrl: `${SITE()}/developers`,
     availableActions: [
-      { kind: "open_product", label: "Open Assistant", href: "https://assistant.zentro.run", external: true },
-      { kind: "product_page", label: "Product overview", href: "/products/zentro-assistant" },
+      { kind: "open_product", label: "Open Assistant", href: "https://assistant.smohix.run", external: true },
+      { kind: "product_page", label: "Product overview", href: "/products/smohix-assistant" },
       { kind: "read_docs", label: "Developers", href: "/developers" },
     ],
-    capabilities: ["Personal productivity workspace", "Zentro identity sign-in", "Ecosystem integration"],
-    limitations: ["Separate workspace from Zentro AI team chat"],
-    dependencies: ["Zentro identity"],
+    capabilities: ["Personal productivity workspace", "Smohix identity sign-in", "Ecosystem integration"],
+    limitations: ["Separate workspace from Smohix AI team chat"],
+    dependencies: ["Smohix identity"],
     pilotAvailable: false,
     lastVerifiedAt: "2026-08-03",
   },
@@ -137,69 +137,69 @@ export const PRODUCT_REGISTRY: readonly ProductRegistryEntry[] = [
     maturity: "live",
     repository: "Private AI workspace (separate deployment)",
     productPagePath: "/products/private-ai",
-    productUrl: "https://pri.zentro.run",
+    productUrl: "https://pri.smohix.run",
     docsUrl: `${SITE()}/enterprise`,
     availableActions: [
-      { kind: "open_product", label: "Open Private AI", href: "https://pri.zentro.run", external: true },
+      { kind: "open_product", label: "Open Private AI", href: "https://pri.smohix.run", external: true },
       { kind: "product_page", label: "Product overview", href: "/products/private-ai" },
       { kind: "contact", label: "Enterprise contact", href: "/contact?inquiry=enterprise" },
     ],
     capabilities: ["Organization-scoped private AI workspace", "Enterprise deployment discussions"],
-    limitations: ["Not a replacement for all Zentro AI use cases", "Deployment options vary by engagement"],
-    dependencies: ["Zentro identity", "Enterprise governance (where enabled)"],
+    limitations: ["Not a replacement for all Smohix AI use cases", "Deployment options vary by engagement"],
+    dependencies: ["Smohix identity", "Enterprise governance (where enabled)"],
     pilotAvailable: true,
     lastVerifiedAt: "2026-08-03",
   },
   {
-    id: "zentro-log",
-    name: "Zentro Log",
-    publicName: "Zentro Log",
+    id: "smohix-log",
+    name: "Smohix Log",
+    publicName: "Smohix Log",
     description: "Administrator operational workspace — not a consumer-facing product.",
     maturity: "live",
-    repository: "Zentro Log workspace (separate deployment)",
-    productPagePath: "/products/zentro-log",
-    productUrl: "https://log.zentro.run",
+    repository: "Smohix Log workspace (separate deployment)",
+    productPagePath: "/products/smohix-log",
+    productUrl: "https://log.smohix.run",
     docsUrl: `${SITE()}/security`,
     availableActions: [
-      { kind: "open_product", label: "Open Log", href: "https://log.zentro.run", external: true },
-      { kind: "product_page", label: "Product overview", href: "/products/zentro-log" },
+      { kind: "open_product", label: "Open Log", href: "https://log.smohix.run", external: true },
+      { kind: "product_page", label: "Product overview", href: "/products/smohix-log" },
       { kind: "read_docs", label: "Security", href: "/security" },
     ],
     capabilities: ["Administrator operational review workspace"],
     limitations: ["Restricted to authorized administrators", "Not marketed as a consumer product"],
-    dependencies: ["Zentro Platform audit modules", "Zentro identity"],
+    dependencies: ["Smohix Platform audit modules", "Smohix identity"],
     pilotAvailable: false,
     lastVerifiedAt: "2026-08-03",
   },
   {
-    id: "zentro-own-api",
-    name: "Zentro Own API",
-    publicName: "Zentro Own API",
-    description: "Documented HTTP API surface on zentro.run and optional Own API service.",
+    id: "smohix-own-api",
+    name: "Smohix Own API",
+    publicName: "Smohix Own API",
+    description: "Documented HTTP API surface on smohix.run and optional Own API service.",
     maturity: "live",
-    repository: "github.com/aicodeai50/ZENTRO (this repo) + ZENTRO-OWN-API-V2",
-    productPagePath: "/products/zentro-own-api",
+    repository: "github.com/aicodeai50/SMOHIX (this repo) + SMOHIX-OWN-API-V2",
+    productPagePath: "/products/smohix-own-api",
     docsUrl: `${SITE()}/docs/api`,
-    healthCheck: { host: "zentro.run", path: "/api/health" },
+    healthCheck: { host: "smohix.run", path: "/api/health" },
     availableActions: [
       { kind: "read_docs", label: "API reference", href: "/docs/api" },
       { kind: "view_health", label: "View health", href: "/api/health" },
       { kind: "sign_in", label: "Create API key", href: "/auth/sign-in?next=/settings/api-keys" },
-      { kind: "product_page", label: "Product overview", href: "/products/zentro-own-api" },
+      { kind: "product_page", label: "Product overview", href: "/products/smohix-own-api" },
     ],
     capabilities: ["Public API catalog", "API keys (zentro_sk_)", "Alert ingest tokens", "Webhooks"],
     limitations: ["Private Railway URLs proxied server-side only"],
-    dependencies: ["Supabase", "Optional ZENTRO-OWN-API service"],
+    dependencies: ["Supabase", "Optional SMOHIX-OWN-API service"],
     pilotAvailable: false,
     lastVerifiedAt: "2026-08-01",
   },
   {
     id: "identity",
-    name: "Identity",
-    publicName: "Identity",
+    name: "Smohix Identity",
+    publicName: "Smohix Identity",
     description: "Authentication, org RBAC, and API keys for the ecosystem.",
     maturity: "live",
-    repository: "github.com/aicodeai50/ZENTRO (this repo)",
+    repository: "github.com/aicodeai50/SMOHIX (this repo)",
     productPagePath: "/products/identity",
     productUrl: `${SITE()}/auth/sign-in`,
     docsUrl: `${SITE()}/security`,
@@ -221,7 +221,7 @@ export const PRODUCT_REGISTRY: readonly ProductRegistryEntry[] = [
     publicName: "Agents",
     description: "Guarded automation playbooks with dry-runs and approvals.",
     maturity: "prototype",
-    repository: "github.com/aicodeai50/ZENTRO (this repo)",
+    repository: "github.com/aicodeai50/SMOHIX (this repo)",
     productPagePath: "/products/agents",
     productUrl: `${SITE()}/auth/sign-in?next=/automations`,
     docsUrl: `${SITE()}/docs/api`,
@@ -233,7 +233,7 @@ export const PRODUCT_REGISTRY: readonly ProductRegistryEntry[] = [
     ],
     capabilities: ["Dry-run API", "Robot backend proxy when configured", "Approval linkage"],
     limitations: ["Prototype — dedicated agent registry planned", "Live execution requires plan and connectors"],
-    dependencies: ["Zentro Platform", "Optional robot backend"],
+    dependencies: ["Smohix Platform", "Optional robot backend"],
     pilotAvailable: true,
     lastVerifiedAt: "2026-08-01",
   },
@@ -243,7 +243,7 @@ export const PRODUCT_REGISTRY: readonly ProductRegistryEntry[] = [
     publicName: "Analytics",
     description: "Operational metrics via Overview and hub dashboards.",
     maturity: "preview",
-    repository: "github.com/aicodeai50/ZENTRO (this repo)",
+    repository: "github.com/aicodeai50/SMOHIX (this repo)",
     productPagePath: "/products/analytics",
     productUrl: `${SITE()}/auth/sign-in?next=/overview`,
     docsUrl: `${SITE()}/docs/api`,
@@ -255,7 +255,7 @@ export const PRODUCT_REGISTRY: readonly ProductRegistryEntry[] = [
     ],
     capabilities: ["Overview command center", "SLO / error budget APIs when configured"],
     limitations: ["Dedicated analytics module route planned", "Requires signed-in workspace"],
-    dependencies: ["Zentro Platform"],
+    dependencies: ["Smohix Platform"],
     pilotAvailable: true,
     lastVerifiedAt: "2026-08-01",
   },
@@ -271,16 +271,16 @@ export const PRODUCT_REGISTRY: readonly ProductRegistryEntry[] = [
     availableActions: [
       { kind: "product_page", label: "Product overview", href: "/products/memory-pendant" },
       { kind: "join_pilot", label: "Apply for pilot", href: "/contact?inquiry=pilot&product=memory-pendant" },
-      { kind: "contact", label: "Contact Zentro", href: "/contact?inquiry=product&product=memory-pendant" },
+      { kind: "contact", label: "Contact Smohix", href: "/contact?inquiry=product&product=memory-pendant" },
     ],
     capabilities: ["Product definition and architecture documented", "Pilot intake via contact form"],
     limitations: [
       "Not a certified medical device",
       "Under active development — hardware integration pending",
       "Featured in Healthcare solutions, not a flagship product",
-      "No public patient data on zentro.run",
+      "No public patient data on smohix.run",
     ],
-    dependencies: ["Zentro AI", "Agents (planned integration)"],
+    dependencies: ["Smohix AI", "Agents (planned integration)"],
     pilotAvailable: true,
     lastVerifiedAt: "2026-08-01",
   },
@@ -290,7 +290,7 @@ export const PRODUCT_REGISTRY: readonly ProductRegistryEntry[] = [
     publicName: "Projects",
     description: "Team and environment organization — building on live org RBAC.",
     maturity: "planned",
-    repository: "github.com/aicodeai50/ZENTRO (this repo)",
+    repository: "github.com/aicodeai50/SMOHIX (this repo)",
     productPagePath: "/products/projects",
     docsUrl: `${SITE()}/docs`,
     availableActions: [
@@ -300,7 +300,7 @@ export const PRODUCT_REGISTRY: readonly ProductRegistryEntry[] = [
     ],
     capabilities: ["Org members and roles live today"],
     limitations: ["Project scopes and pinning not yet available"],
-    dependencies: ["Identity", "Zentro Platform"],
+    dependencies: ["Identity", "Smohix Platform"],
     pilotAvailable: true,
     lastVerifiedAt: "2026-08-01",
   },
@@ -310,7 +310,7 @@ export const PRODUCT_REGISTRY: readonly ProductRegistryEntry[] = [
     publicName: "Knowledge",
     description: "Operational knowledge — runbooks live; unified product layer planned.",
     maturity: "planned",
-    repository: "github.com/aicodeai50/ZENTRO (this repo)",
+    repository: "github.com/aicodeai50/SMOHIX (this repo)",
     productPagePath: "/products/knowledge",
     productUrl: `${SITE()}/auth/sign-in?next=/runbooks`,
     docsUrl: `${SITE()}/docs`,
@@ -321,7 +321,7 @@ export const PRODUCT_REGISTRY: readonly ProductRegistryEntry[] = [
     ],
     capabilities: ["Runbooks module in Platform", "Compliance evidence mapping (beta)"],
     limitations: ["Unified knowledge search planned"],
-    dependencies: ["Zentro Platform", "Zentro AI (grounding planned)"],
+    dependencies: ["Smohix Platform", "Smohix AI (grounding planned)"],
     pilotAvailable: true,
     lastVerifiedAt: "2026-08-01",
   },
@@ -377,9 +377,9 @@ export function validateProductRegistry(): string[] {
           !ALLOWLISTED_PUBLIC_HOSTS.some(
             (h) => u.hostname === h || u.hostname.endsWith(`.${h}`) || u.hostname === "localhost",
           ) &&
-          !u.hostname.endsWith("zentro.run")
+          !u.hostname.endsWith("smohix.run")
         ) {
-          if (u.hostname !== "ai.zentro.run" && u.hostname !== "localhost" && u.hostname !== "127.0.0.1") {
+          if (u.hostname !== "ai.smohix.run" && u.hostname !== "localhost" && u.hostname !== "127.0.0.1") {
             errors.push(`${p.id}: productUrl host not allowlisted: ${u.hostname}`);
           }
         }
@@ -388,9 +388,9 @@ export function validateProductRegistry(): string[] {
       }
     }
   }
-  const ai = PRODUCT_REGISTRY.find((p) => p.id === "zentro-ai");
-  if (!ai?.productUrl?.startsWith("https://ai.zentro.run")) {
-    errors.push("zentro-ai must use https://ai.zentro.run as public product URL");
+  const ai = PRODUCT_REGISTRY.find((p) => p.id === "smohix-ai");
+  if (!ai?.productUrl?.startsWith("https://ai.smohix.run")) {
+    errors.push("smohix-ai must use https://ai.smohix.run as public product URL");
   }
   return errors;
 }

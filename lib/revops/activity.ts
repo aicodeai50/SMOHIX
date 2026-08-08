@@ -26,7 +26,7 @@ const devLeadActivity: LeadActivityRow[] = [];
 const devPilotActivity: PilotActivityRow[] = [];
 
 function isDevFallback(): boolean {
-  return process.env.NODE_ENV === "development" && process.env.ZENTRO_CONTACT_DEV_STORE === "1";
+  return process.env.NODE_ENV === "development" && (process.env.SMOHIX_CONTACT_DEV_STORE ?? process.env.ZENTRO_CONTACT_DEV_STORE) === "1";
 }
 
 async function getSupabase() {

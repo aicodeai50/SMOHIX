@@ -77,10 +77,10 @@ const PILLARS = [
 
 export function CommandExperience() {
   return (
-    <MarketingReveal id="command" className={`${mSection} zentro-quantum-section`} aria-labelledby="command-heading">
+    <MarketingReveal id="command" className={`${mSection} smohix-quantum-section`} aria-labelledby="command-heading">
       <div className={mContainer}>
-        <p className={`${mEyebrow} zentro-eyebrow-cyber`}>⟡ Command surface</p>
-        <h2 id="command-heading" className={`zentro-living-headline mt-2 ${mH2}`}>
+        <p className={`${mEyebrow} smohix-eyebrow-cyber`}>⟡ Command surface</p>
+        <h2 id="command-heading" className={`smohix-living-headline mt-2 ${mH2}`}>
           One console — not six disconnected dashboards
         </h2>
         <p className={mLede}>
@@ -94,7 +94,7 @@ export function CommandExperience() {
             <Link
               key={cell.id}
               href={cell.href}
-              className={`group zentro-bento-cell relative overflow-hidden rounded-2xl p-5 transition-transform duration-200 hover:-translate-y-0.5 ${cell.span}`}
+              className={`group smohix-bento-cell relative overflow-hidden rounded-2xl p-5 transition-transform duration-200 hover:-translate-y-0.5 ${cell.span}`}
             >
               <div
                 className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${cell.accent} opacity-80`}

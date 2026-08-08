@@ -23,7 +23,7 @@ export const metadata = buildMarketingMetadata({
 const PRINCIPLES = [
   {
     title: "Coordination over noise",
-    body: "Most failures are not unknown — they are unmanaged. Zentro gives responders one queue, one timeline, and one record of who decided what.",
+    body: "Most failures are not unknown — they are unmanaged. Smohix gives responders one queue, one timeline, and one record of who decided what.",
   },
   {
     title: "Assistance with accountability",
@@ -43,7 +43,7 @@ const PRINCIPLES = [
   },
   {
     title: "One surface, fewer handoffs",
-    body: "Paging tools wake people up. ITSM suites span process breadth. Zentro focuses on the path from signal to verified change.",
+    body: "Paging tools wake people up. ITSM suites span process breadth. Smohix focuses on the path from signal to verified change.",
   },
 ] as const;
 
@@ -53,10 +53,10 @@ export default function WhyPage() {
       <Header />
       <main id="main-content" className="flex-1">
         <MarketingQuantumShell>
-          <section className={`zentro-hero-future border-b border-white/[0.06] ${mSection}`}>
+          <section className={`smohix-hero-future border-b border-white/[0.06] ${mSection}`}>
             <div className={mContainer}>
               <p className={mEyebrow}>Operating principles</p>
-              <h1 className={`mt-2 max-w-3xl zentro-living-headline zentro-headline ${mH1}`}>
+              <h1 className={`mt-2 max-w-3xl smohix-living-headline smohix-headline ${mH1}`}>
                 Why {SITE_BRAND_NAME}
               </h1>
               <p className={`mt-4 max-w-2xl ${mLede}`}>
@@ -72,7 +72,7 @@ export default function WhyPage() {
                 {PRINCIPLES.map((item) => (
                   <li
                     key={item.title}
-                    className="zentro-bento-cell rounded-2xl border border-white/[0.08] p-6"
+                    className="smohix-bento-cell rounded-2xl border border-white/[0.08] p-6"
                   >
                     <h2 className="text-base font-semibold text-foreground">{item.title}</h2>
                     <p className={`mt-3 ${mBody}`}>{item.body}</p>

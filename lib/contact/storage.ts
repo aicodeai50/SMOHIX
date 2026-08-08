@@ -41,7 +41,7 @@ export type ContactLeadRow = {
 const devLeads: ContactLeadRow[] = [];
 
 function isDevFallbackEnabled(): boolean {
-  return process.env.NODE_ENV === "development" && process.env.ZENTRO_CONTACT_DEV_STORE === "1";
+  return process.env.NODE_ENV === "development" && (process.env.SMOHIX_CONTACT_DEV_STORE ?? process.env.ZENTRO_CONTACT_DEV_STORE) === "1";
 }
 
 export function isContactStorageConfigured(): boolean {

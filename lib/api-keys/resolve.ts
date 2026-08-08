@@ -20,7 +20,7 @@ function extractPrefixedKey(req: { headers: Headers }, prefix: string): string |
   return null;
 }
 
-export function extractZentroApiKey(req: { headers: Headers }): string | null {
+export function extractSmohixApiKey(req: { headers: Headers }): string | null {
   return extractPrefixedKey(req, API_KEY_PREFIX);
 }
 

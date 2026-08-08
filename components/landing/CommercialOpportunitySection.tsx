@@ -8,7 +8,7 @@ import { mBody, mContainer, mEyebrow, mH2, mLede, mSection } from "@/lib/marketi
 export function CommercialOpportunitySection() {
   return (
     <MarketingReveal
-      id="work-with-zentro"
+      id="work-with-smohix"
       className={`${mSection} border-y border-white/[0.06] bg-white/[0.01]`}
       aria-labelledby="commercial-heading"
     >
@@ -18,7 +18,7 @@ export function CommercialOpportunitySection() {
           Pilots and services while the ecosystem matures
         </h2>
         <p className={`${mLede} mt-3 max-w-2xl`}>
-          Not every capability is GA yet — Zentro Technologies offers scoped pilots and
+          Not every capability is GA yet — Smohix Technologies offers scoped pilots and
           professional services so you can move forward with honest expectations.
         </p>
 

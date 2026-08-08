@@ -19,7 +19,7 @@ import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export const CONTROL_TESTING_EVIDENCE_LINKER_VERSION =
-  "zentro-control-testing-evidence-linker/1";
+  "smohix-control-testing-evidence-linker/1";
 
 /** Fallback control mapping when no accepted policy exists for a playbook. */
 export const PLAYBOOK_CONTROL_FALLBACK: Record<string, string[]> = {

@@ -32,7 +32,7 @@ export type GithubChangelogSyncOptions = {
 export async function fetchGithubReleases(
   options: GithubChangelogSyncOptions = {},
 ): Promise<GithubRelease[]> {
-  const repo = options.repo ?? process.env.GITHUB_CHANGELOG_REPO ?? "aicodeai50/ZENTRO";
+  const repo = options.repo ?? process.env.GITHUB_CHANGELOG_REPO ?? "aicodeai50/SMOHIX";
   const token = options.token ?? process.env.GITHUB_TOKEN;
   if (!token) {
     throw new Error("GITHUB_TOKEN not configured");
@@ -77,7 +77,7 @@ export function mapReleaseToDraft(release: GithubRelease): ChangelogDraft {
     publishedAt: release.publishedAt,
     reviewStatus: "draft",
     title: release.name || release.tagName,
-    categories: ["zentro-run"] as ChangelogCategory[],
+    categories: ["smohix-run"] as ChangelogCategory[],
     changeTypes: ["improved"] as ChangelogChangeType[],
     bullets: bullets.length > 0 ? bullets : [`Release ${release.tagName}`],
   };

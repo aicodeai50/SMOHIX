@@ -5,14 +5,14 @@ import { ContactEmail } from "@/components/legal/ContactEmail";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "How Zentro collects, uses, and protects personal information.",
+  description: "How Smohix collects, uses, and protects personal information.",
 };
 
 export default function PrivacyPage() {
   return (
     <LegalLayout title="Privacy Policy" lastUpdated="April 2026">
       <div className="legal-callout">
-        <strong>Commitment.</strong> Zentro processes personal information only to
+        <strong>Commitment.</strong> Smohix processes personal information only to
         deliver, secure, and support the service, and to meet legal obligations. We
         design our privacy controls to support customer review and enterprise
         procurement requirements.
@@ -20,17 +20,17 @@ export default function PrivacyPage() {
 
       <h2>1. Who we are</h2>
       <p>
-        Zentro (“<strong>Zentro</strong>,” “<strong>we</strong>,” “<strong>us</strong>”)
+        Smohix (“<strong>Smohix</strong>,” “<strong>we</strong>,” “<strong>us</strong>”)
         operates the websites and services described at{" "}
-        <a href="https://zentro.run">zentro.run</a>. Depending on your region, the
-        data controller may be the Zentro entity identified in your contract or
+        <a href="https://smohix.run">smohix.run</a>. Depending on your region, the
+        data controller may be the Smohix entity identified in your contract or
         checkout flow. For privacy questions, contact <ContactEmail topic="support" />.
       </p>
 
       <h2>2. Scope</h2>
       <p>
         This Policy explains how we process information when you visit our marketing
-        sites, create an account, use the Zentro platform, communicate with support,
+        sites, create an account, use the Smohix platform, communicate with support,
         or interact with our APIs and integrations. It does not govern third-party
         sites linked from our Services; those sites have their own policies.
       </p>
@@ -44,13 +44,13 @@ export default function PrivacyPage() {
         </li>
         <li>
           <strong>Payment data:</strong> processed by our payment partners (e.g.,
-          card data is not stored on Zentro servers where the processor tokenizes
+          card data is not stored on Smohix servers where the processor tokenizes
           payments).
         </li>
         <li>
           <strong>Support and communications:</strong> messages, attachments, meeting
           notes, and feedback you send us — including contact and pilot enquiry forms
-          on zentro.run (name, work email, organization, country, inquiry type, and
+          on smohix.run (name, work email, organization, country, inquiry type, and
           problem summary). These are stored securely for follow-up and are not used
           for unrelated marketing without separate consent.
         </li>

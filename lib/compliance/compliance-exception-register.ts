@@ -20,7 +20,7 @@ import { memberDisplayLabel } from "@/lib/compliance/control-ownership-matrix";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-export const COMPLIANCE_EXCEPTION_REGISTER_VERSION = "zentro-compliance-exception-register/1";
+export const COMPLIANCE_EXCEPTION_REGISTER_VERSION = "smohix-compliance-exception-register/1";
 
 export type ExceptionEntryType = "control_gap" | "policy_drift" | "compensating";
 export type ExceptionEntryStatus = "open" | "approved" | "expired" | "remediated";

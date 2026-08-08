@@ -101,10 +101,10 @@ export default function NextPage() {
       <Header />
       <MarketingQuantumShell>
         <main className="flex-1 border-b border-white/[0.06]">
-          <div className="zentro-hero-future zentro-quantum-section border-b border-white/[0.06]">
+          <div className="smohix-hero-future smohix-quantum-section border-b border-white/[0.06]">
             <article className={`${mArticle} max-w-4xl`}>
-              <p className={`${mEyebrow} zentro-eyebrow-cyber`}>Product roadmap</p>
-              <h1 className={`mt-2 zentro-headline zentro-living-headline ${mH1}`}>
+              <p className={`${mEyebrow} smohix-eyebrow-cyber`}>Product roadmap</p>
+              <h1 className={`mt-2 smohix-headline smohix-living-headline ${mH1}`}>
                 What&apos;s next for {SITE_BRAND_NAME}
               </h1>
               <p className={`mt-4 ${mBody} text-base sm:text-lg`}>
@@ -114,14 +114,14 @@ export default function NextPage() {
             </article>
           </div>
 
-          <div className={`${mContainer} zentro-quantum-section py-12 sm:py-16`}>
+          <div className={`${mContainer} smohix-quantum-section py-12 sm:py-16`}>
             <div className="grid gap-6 lg:grid-cols-3">
               {ROADMAP.map((block) => {
                 const style = HORIZON_STYLE[block.horizon];
                 return (
                   <section
                     key={block.title}
-                    className="zentro-bento-cell relative overflow-hidden rounded-2xl p-6"
+                    className="smohix-bento-cell relative overflow-hidden rounded-2xl p-6"
                   >
                     <div
                       className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${style.glow} opacity-90`}
@@ -129,7 +129,7 @@ export default function NextPage() {
                     />
                     <div className="relative">
                       <div className="flex flex-wrap items-center justify-between gap-2">
-                        <h2 className={`zentro-living-headline ${mH2}`}>{block.title}</h2>
+                        <h2 className={`smohix-living-headline ${mH2}`}>{block.title}</h2>
                         <span
                           className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${style.badge}`}
                         >

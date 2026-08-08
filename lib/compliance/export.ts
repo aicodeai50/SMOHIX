@@ -169,7 +169,7 @@ export async function buildComplianceEvidencePack(
 
 export function complianceEvidencePackToCsv(pack: ComplianceEvidencePack): string {
   const headerLines = [
-    `# Zentro compliance evidence pack`,
+    `# Smohix compliance evidence pack`,
     `# generated_at: ${pack.generatedAt}`,
     `# window: ${pack.windowLabel}`,
     `# coverage_percent: ${pack.summary.coveragePercent}`,

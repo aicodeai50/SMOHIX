@@ -1,5 +1,5 @@
 /**
- * Three primary commercial paths for Zentro.run visitors.
+ * Three primary commercial paths for Smohix.run visitors.
  * Used consistently across homepage, nav-adjacent CTAs, product pages, and footer.
  */
 
@@ -19,7 +19,7 @@ export type CommercialPath = {
 export const COMMERCIAL_PATHS: readonly CommercialPath[] = [
   {
     id: "try",
-    title: "Try Zentro",
+    title: "Try Smohix",
     description:
       "Explore live products — Platform, AI, Own API, and Identity — or preview capabilities marked honestly.",
     href: "/products",
@@ -30,16 +30,16 @@ export const COMMERCIAL_PATHS: readonly CommercialPath[] = [
     id: "pilot",
     title: "Start a pilot",
     description:
-      "Work with Zentro Technologies on AI assistants, automation, integrations, or healthcare prototypes before full product maturity.",
+      "Work with Smohix Technologies on AI assistants, automation, integrations, or healthcare prototypes before full product maturity.",
     href: "/pilot",
     cta: "Apply for a pilot",
     analyticsEvent: "start_pilot",
   },
   {
     id: "build",
-    title: "Build with Zentro",
+    title: "Build with Smohix",
     description:
-      "Use the API catalog, API keys, documentation, and GitHub source to integrate with the Zentro platform.",
+      "Use the API catalog, API keys, documentation, and GitHub source to integrate with the Smohix platform.",
     href: "/developers",
     cta: "Developer hub",
     analyticsEvent: "build_with_zentro",

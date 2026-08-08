@@ -36,7 +36,7 @@ const bundles: EvidenceBundleRow[] = [
     sinceIso: new Date(Date.now() - 40 * 86_400_000).toISOString(),
     manifestSha256: "abc",
     manifest: {} as EvidenceBundleRow["manifest"],
-    storageUri: "zentro://b1",
+    storageUri: "smohix://b1",
     deliveryStatus: "stored",
     deliveryNote: null,
     createdAt: runAt,

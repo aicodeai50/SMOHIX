@@ -47,13 +47,13 @@ const mockPilot: PilotProjectRow = {
   contact_name: "Jane",
   contact_email: "jane@acme.com",
   category: "integration",
-  related_product: "zentro-ai",
+  related_product: "smohix-ai",
   objective: "Automate incident response",
   scope: "Single team workflow",
   status: "draft",
   start_date: "2026-08-01",
   target_review_date: "2026-09-01",
-  owner: "ops@zentro.run",
+  owner: "ops@smohix.run",
   risks: null,
   next_action: null,
   notes: null,
@@ -72,7 +72,7 @@ assert(!proposal.markdown.includes("OPENAI"), "no AI in proposal");
 // --- Calendar ICS ---
 const ics = buildIcsFile([
   {
-    uid: "test@zentro.run",
+    uid: "test@smohix.run",
     title: "Kickoff",
     start: new Date("2026-08-01T10:00:00.000Z"),
     end: new Date("2026-08-01T11:00:00.000Z"),
@@ -93,8 +93,9 @@ const mailto = buildMailtoLink({
 assert(mailto.startsWith("mailto:"), "mailto link");
 
 // --- Admin auth ---
-process.env.ZENTRO_PLATFORM_ADMIN_EMAILS = "revops@zentro.run";
-assert(isPlatformAdmin("revops@zentro.run"), "platform admin");
+process.env.SMOHIX_PLATFORM_ADMIN_EMAILS = "revops@smohix.run";
+delete process.env.ZENTRO_PLATFORM_ADMIN_EMAILS;
+assert(isPlatformAdmin("revops@smohix.run"), "platform admin");
 assert(!isPlatformAdmin("random@example.com"), "non-admin blocked");
 
 // --- Analytics PII guard (reuse) ---

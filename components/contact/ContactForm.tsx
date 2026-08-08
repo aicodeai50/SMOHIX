@@ -375,7 +375,7 @@ export function ContactForm({
             aria-invalid={Boolean(allFieldErrors.consent)}
           />
           <span className={`text-sm ${mBody}`}>
-            I agree that Zentro Technologies may contact me about this inquiry. See{" "}
+            I agree that Smohix Technologies may contact me about this inquiry. See{" "}
             <a href="/privacy" className="text-accent hover:underline">
               Privacy
             </a>

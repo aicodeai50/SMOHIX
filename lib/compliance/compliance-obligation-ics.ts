@@ -13,7 +13,7 @@ import { getSiteUrl } from "@/lib/site";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-export const COMPLIANCE_OBLIGATION_ICS_VERSION = "zentro-compliance-obligation-ics/1";
+export const COMPLIANCE_OBLIGATION_ICS_VERSION = "smohix-compliance-obligation-ics/1";
 
 export const OBLIGATION_ICS_CALENDAR_KINDS: GrcCalendarEventKind[] = [
   "attestation_due",
@@ -69,7 +69,7 @@ export function formatIcsAllDay(dayKey: string): string {
   return dayKey.replace(/-/g, "");
 }
 
-export function icsUid(orgId: string, id: string, domain = "zentro.run"): string {
+export function icsUid(orgId: string, id: string, domain = "smohix.run"): string {
   const safe = id.replace(/[^a-zA-Z0-9-_.]/g, "-");
   return `obligation-${orgId}-${safe}@${domain}`;
 }
@@ -228,7 +228,7 @@ export function buildIcsCalendarDocument(input: {
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//Zentro//Compliance Obligations//EN",
+    "PRODID:-//Smohix//Compliance Obligations//EN",
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
     `X-WR-CALNAME:${escapeIcsText(input.calendarName)}`,
@@ -249,7 +249,7 @@ export function buildComplianceObligationIcsPackFromEvents(input: {
 }): ComplianceObligationIcsPack {
   const siteUrl = input.siteUrl ?? getSiteUrl();
   const events = dedupeIcsObligationEvents(input.events);
-  const calendarName = "Zentro GRC obligations";
+  const calendarName = "Smohix GRC obligations";
 
   return {
     version: COMPLIANCE_OBLIGATION_ICS_VERSION,

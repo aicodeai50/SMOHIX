@@ -55,7 +55,7 @@ export function CompanyScaleSection() {
           {METRICS.map((metric) => (
             <div
               key={metric.label}
-              className="zentro-bento-cell rounded-2xl border border-white/[0.08] p-5 sm:p-6"
+              className="smohix-bento-cell rounded-2xl border border-white/[0.08] p-5 sm:p-6"
             >
               <dt className="font-mono text-3xl font-semibold tracking-tight text-accent sm:text-4xl">
                 {metric.value}

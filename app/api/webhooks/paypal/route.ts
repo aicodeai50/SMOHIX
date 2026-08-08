@@ -68,7 +68,7 @@ async function verifyPayPalWebhook(
 }
 
 /**
- * PayPal Webhooks → URL: https://zentro.run/api/webhooks/paypal
+ * PayPal Webhooks → URL: https://smohix.run/api/webhooks/paypal
  * Env: PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PAYPAL_WEBHOOK_ID, SUPABASE_SERVICE_ROLE_KEY
  */
 export async function POST(request: Request) {

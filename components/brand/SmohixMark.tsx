@@ -4,18 +4,18 @@ import { useId } from "react";
 
 import { BRAND_MARK_VIEWBOX } from "@/lib/brand";
 
-import { ZentroMarkSvgPaths } from "./zentroMarkPaths";
+import { SmohixMarkSvgPaths } from "./smohixMarkPaths";
 
-type ZentroMarkProps = {
+type SmohixMarkProps = {
   /** Rendered pixel size (viewBox stays 32×32). Default 32. */
   size?: number;
   className?: string;
 };
 
-/** Official Zentro icon/mark only — use everywhere a logo glyph is needed. */
-export function ZentroMark({ size = 32, className = "" }: ZentroMarkProps) {
+/** Official Smohix icon/mark only — use everywhere a logo glyph is needed. */
+export function SmohixMark({ size = 32, className = "" }: SmohixMarkProps) {
   const markId = useId().replace(/:/g, "");
-  const gradientId = `zentro-mark-${markId}`;
+  const gradientId = `smohix-mark-${markId}`;
 
   return (
     <svg
@@ -27,7 +27,7 @@ export function ZentroMark({ size = 32, className = "" }: ZentroMarkProps) {
       className={["shrink-0", className].filter(Boolean).join(" ")}
       aria-hidden
     >
-      <ZentroMarkSvgPaths gradientId={gradientId} />
+      <SmohixMarkSvgPaths gradientId={gradientId} />
     </svg>
   );
 }

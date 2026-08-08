@@ -71,7 +71,7 @@ export default async function OverviewPage() {
     userId = user.id;
     activeOrgId = (await getOrgContextForUser(user.id)).orgId;
   } else {
-    devTenantKey = (await cookies()).get("zentro_dev_tid")?.value ?? "anon";
+    devTenantKey = ((await cookies()).get("smohix_dev_tid")?.value ?? (await cookies()).get("zentro_dev_tid")?.value) ?? "anon";
   }
 
   const [{ rows: incidents }, connectors] = await Promise.all([
@@ -276,19 +276,19 @@ export default async function OverviewPage() {
       <ConsoleAmbientBanner snapshot={ambient} />
 
       <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="zentro-glass rounded-2xl p-5">
+        <div className="smohix-glass rounded-2xl p-5">
           <p className={`${appMeta} font-medium`}>Incidents</p>
           <p className="mt-1 text-2xl font-semibold text-foreground">{incidents.length}</p>
           <p className={`mt-1 ${appMeta}`}>
             {open} open · {resolved} resolved
           </p>
         </div>
-        <div className="zentro-glass rounded-2xl p-5">
+        <div className="smohix-glass rounded-2xl p-5">
           <p className={`${appMeta} font-medium`}>High / critical</p>
           <p className="mt-1 text-2xl font-semibold text-foreground">{hot}</p>
           <p className={`mt-1 ${appMeta}`}>Requires active response</p>
         </div>
-        <div className="zentro-glass rounded-2xl p-5">
+        <div className="smohix-glass rounded-2xl p-5">
           <p className={`${appMeta} font-medium`}>Connectors</p>
           <p className="mt-1 text-2xl font-semibold text-foreground">
             {connectorsUp}
@@ -303,7 +303,7 @@ export default async function OverviewPage() {
               : "Healthy endpoints of configured total"}
           </p>
         </div>
-        <div className="zentro-glass rounded-2xl p-5">
+        <div className="smohix-glass rounded-2xl p-5">
           <p className={`${appMeta} font-medium`}>Setup checklist</p>
           <p className="mt-1 text-2xl font-semibold text-foreground">
             {setupDone}
@@ -316,7 +316,7 @@ export default async function OverviewPage() {
       <OverviewDecisionSurface command={command} recentIncidents={incidents.slice(0, 8)} />
 
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
-        <section className="zentro-glass rounded-2xl p-5 md:p-6">
+        <section className="smohix-glass rounded-2xl p-5 md:p-6">
           <h2 className={appPanelTitle}>Operational trust metrics</h2>
           <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-7">
             <div className="rounded-xl border border-white/[0.08] bg-black/20 px-4 py-3">
@@ -455,7 +455,7 @@ export default async function OverviewPage() {
             ) : null}
           </div>
         </section>
-        <section className="zentro-glass rounded-2xl p-5 md:p-6">
+        <section className="smohix-glass rounded-2xl p-5 md:p-6">
           <h2 className={appPanelTitle}>Integrations</h2>
           <ul className={`mt-4 space-y-3 ${appBody} text-foreground/90`}>
             {connectors.map((c) => (
@@ -495,7 +495,7 @@ export default async function OverviewPage() {
           </Link>
         </section>
 
-        <section className="zentro-glass rounded-2xl p-5 md:p-6">
+        <section className="smohix-glass rounded-2xl p-5 md:p-6">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h2 className={appPanelTitle}>Deployment checklist</h2>
             <Link

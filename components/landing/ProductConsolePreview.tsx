@@ -17,8 +17,8 @@ export function ProductConsolePreview() {
       aria-labelledby="preview-heading"
     >
       <div className={mContainer}>
-        <p className={`${mEyebrow} zentro-eyebrow-cyber`}>Product preview</p>
-        <h2 id="preview-heading" className={`zentro-living-headline ${mH2}`}>
+        <p className={`${mEyebrow} smohix-eyebrow-cyber`}>Product preview</p>
+        <h2 id="preview-heading" className={`smohix-living-headline ${mH2}`}>
           Unified command console
         </h2>
         <p className={mLede}>
@@ -27,16 +27,16 @@ export function ProductConsolePreview() {
         </p>
 
         <div
-          className="zentro-holo-panel mt-8 overflow-hidden"
+          className="smohix-holo-panel mt-8 overflow-hidden"
           aria-label="Illustrative console layout, not live data"
         >
           <div className="flex items-center gap-2 border-b border-white/[0.06] bg-white/[0.03] px-3 py-2.5">
             <span className="flex gap-1.5" aria-hidden>
-              <span className="h-2.5 w-2.5 rounded-full bg-danger/40 zentro-pulse-dot" />
+              <span className="h-2.5 w-2.5 rounded-full bg-danger/40 smohix-pulse-dot" />
               <span className="h-2.5 w-2.5 rounded-full bg-warning/40" />
               <span className="h-2.5 w-2.5 rounded-full bg-success/40" />
             </span>
-            <span className="font-mono text-[11px] text-muted">zentro.run / command</span>
+            <span className="font-mono text-[11px] text-muted">smohix.run / command</span>
             <span className="ml-auto font-mono text-[10px] text-[#6ee7b7]">SOC · live</span>
           </div>
           <div className="grid gap-px bg-white/[0.06] sm:grid-cols-2 lg:grid-cols-3">

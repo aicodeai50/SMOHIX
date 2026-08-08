@@ -14,7 +14,7 @@ import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export const OBLIGATION_CONSOLIDATION_PLAYBOOK_VERSION =
-  "zentro-obligation-consolidation-playbook/1";
+  "smohix-obligation-consolidation-playbook/1";
 
 export const DEFAULT_CONSOLIDATION_RUNBOOK_SLUG = "grc-evidence-sprint";
 

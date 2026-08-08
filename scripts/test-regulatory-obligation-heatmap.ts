@@ -25,7 +25,7 @@ assert(
 
 const items = collectRegulatoryObligationItems({
   calendar: {
-    version: "zentro-grc-calendar/1",
+    version: "smohix-grc-calendar/1",
     generatedAt: now.toISOString(),
     orgId: "org-1",
     horizonDays: 90,
@@ -69,7 +69,7 @@ const items = collectRegulatoryObligationItems({
     ],
   },
   testing: {
-    version: "zentro-control-testing-schedules/1",
+    version: "smohix-control-testing-schedules/1",
     generatedAt: now.toISOString(),
     orgId: "org-1",
     horizonDays: 90,

@@ -18,7 +18,18 @@ import {
 } from "@/lib/console/hub-personalization";
 import { appBody, appMeta, appPanelTitle } from "@/lib/app-typography";
 
-const LOCAL_STORAGE_KEY = "zentro.hub.personalization";
+const LOCAL_STORAGE_KEY = "smohix.hub.personalization";
+const LEGACY_LOCAL_STORAGE_KEY = "zentro.hub.personalization";
+
+function readHubPrefsRaw(): string | null {
+  const current = window.localStorage.getItem(LOCAL_STORAGE_KEY);
+  if (current !== null) return current;
+  const legacy = window.localStorage.getItem(LEGACY_LOCAL_STORAGE_KEY);
+  if (legacy === null) return null;
+  window.localStorage.setItem(LOCAL_STORAGE_KEY, legacy);
+  window.localStorage.removeItem(LEGACY_LOCAL_STORAGE_KEY);
+  return legacy;
+}
 
 type StoredPrefs = {
   quickLinkHrefs: string[];
@@ -65,7 +76,7 @@ export function HubQuickLinksPanel({
   useEffect(() => {
     if (canPersistServer || localHydrated) return;
     const id = window.setTimeout(() => {
-      const raw = window.localStorage.getItem(LOCAL_STORAGE_KEY);
+      const raw = readHubPrefsRaw();
       if (!raw) {
         setLocalHydrated(true);
         return;
@@ -249,7 +260,7 @@ export function HubQuickLinksPanel({
           <div key={item.href} className="relative">
             <Link
               href={item.href}
-              className={`zentro-glass group flex h-full flex-col rounded-2xl p-5 transition-[border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-[0_0_40px_-14px_rgba(94,225,255,0.2)] ${
+              className={`smohix-glass group flex h-full flex-col rounded-2xl p-5 transition-[border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-[0_0_40px_-14px_rgba(94,225,255,0.2)] ${
                 editMode ? "pointer-events-none pr-12" : ""
               }`}
             >

@@ -48,7 +48,7 @@ export default function TechnologyPage() {
       <Header />
       <main id="main-content" className="flex-1">
         {/* Hero */}
-        <section className="zentro-hero-future border-b border-white/[0.06] py-16 sm:py-20">
+        <section className="smohix-hero-future border-b border-white/[0.06] py-16 sm:py-20">
           <div className={mContainer}>
             <p className={`${mEyebrow} text-primary-muted`}>Technology</p>
             <h1 className="mt-2 max-w-3xl text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-[2.75rem] lg:leading-tight">
@@ -108,7 +108,7 @@ export default function TechnologyPage() {
               Core platform
             </h2>
             <p className={`${mLede} mt-3 max-w-2xl`}>
-              Six pillars that compose the Zentro ecosystem — each with honest maturity on its
+              Six pillars that compose the Smohix ecosystem — each with honest maturity on its
               product page.
             </p>
             <div className={`mt-10 ${mProductGrid} ${mStaggerGrid}`}>
@@ -181,7 +181,7 @@ export default function TechnologyPage() {
               {ENGINEERING_PRINCIPLES.map((principle) => (
                 <article
                   key={principle.title}
-                  className="zentro-holo-panel rounded-2xl p-5 transition-[border-color] duration-300 hover:border-accent/25"
+                  className="smohix-holo-panel rounded-2xl p-5 transition-[border-color] duration-300 hover:border-accent/25"
                 >
                   <h3 className="text-sm font-semibold tracking-tight text-foreground">
                     {principle.title}

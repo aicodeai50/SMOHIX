@@ -22,7 +22,7 @@ import {
 
 export const metadata: Metadata = {
   title: "Connectors",
-  description: "Link reasoning and automation services to Zentro.",
+  description: "Link reasoning and automation services to Smohix.",
 };
 
 export const dynamic = "force-dynamic";
@@ -195,7 +195,7 @@ export default async function ConnectorsPage({
   const exampleToken = "zentro_ingest_xxx";
   const exampleSecret = "replace-with-signing-secret";
   const signatureModeEnabled = Boolean(
-    process.env.ZENTRO_ALERT_WEBHOOK_SIGNING_SECRET?.trim(),
+    (process.env.SMOHIX_ALERT_WEBHOOK_SIGNING_SECRET ?? process.env.ZENTRO_ALERT_WEBHOOK_SIGNING_SECRET)?.trim(),
   );
   const slackWebhookConfigured = isSlackWebhookConfigured();
   const slackNotificationConfig = getSlackNotificationConfig();
@@ -432,9 +432,9 @@ export default async function ConnectorsPage({
   ];
   const csvContent = csvRows.map((r) => r.map((cell) => csvEscape(String(cell))).join(",")).join("\n");
   const csvHref = `data:text/csv;charset=utf-8,${encodeURIComponent(csvContent)}`;
-  const csvFilename = `zentro-ingest-events-${windowFilter}-${vendorFilter || "all"}.csv`;
+  const csvFilename = `smohix-ingest-events-${windowFilter}-${vendorFilter || "all"}.csv`;
   const markdownReport = [
-    `## Zentro Ingest Diagnostics`,
+    `## Smohix Ingest Diagnostics`,
     ``,
     `- Window: \`${windowFilter}\``,
     `- Vendor: \`${vendorFilter || "all"}\``,
@@ -455,7 +455,7 @@ export default async function ConnectorsPage({
     .filter(Boolean)
     .join("\n");
   const markdownHref = `data:text/markdown;charset=utf-8,${encodeURIComponent(markdownReport)}`;
-  const markdownFilename = `zentro-ingest-events-${windowFilter}-${vendorFilter || "all"}.md`;
+  const markdownFilename = `smohix-ingest-events-${windowFilter}-${vendorFilter || "all"}.md`;
   const jsonReport = JSON.stringify(
     {
       generated_at: new Date().toISOString(),
@@ -483,7 +483,7 @@ export default async function ConnectorsPage({
     2,
   );
   const jsonHref = `data:application/json;charset=utf-8,${encodeURIComponent(jsonReport)}`;
-  const jsonFilename = `zentro-ingest-events-${windowFilter}-${vendorFilter || "all"}.json`;
+  const jsonFilename = `smohix-ingest-events-${windowFilter}-${vendorFilter || "all"}.json`;
   const wizardContextQuery = [
     returnHref ? `next=${encodeURIComponent(returnHref)}` : null,
     setupStep ? `setup_step=${encodeURIComponent(setupStep)}` : null,
@@ -984,7 +984,7 @@ export default async function ConnectorsPage({
             <span className="text-emerald-300">Configured · notifications enabled</span>
           ) : (
             <span className="text-amber-300">
-              Not configured · set <span className="font-mono text-foreground/90">ZENTRO_SLACK_WEBHOOK_URL</span>{" "}
+              Not configured · set <span className="font-mono text-foreground/90">SMOHIX_SLACK_WEBHOOK_URL</span>{" "}
               in Railway variables to enable
             </span>
           )}
@@ -1002,7 +1002,7 @@ export default async function ConnectorsPage({
             title={
               slackWebhookConfigured
                 ? "Send a test message to your configured Slack channel."
-                : "Set ZENTRO_SLACK_WEBHOOK_URL to enable Slack test messages."
+                : "Set SMOHIX_SLACK_WEBHOOK_URL to enable Slack test messages."
             }
           >
             Send Slack test message
@@ -1013,7 +1013,7 @@ export default async function ConnectorsPage({
         <div className="mb-6">
           <ConsoleEmptyState
             title="No connectors configured"
-            description="Point Zentro at your reasoning and automation backends so Copilot, dry-runs, and guarded execution can reach your stack. Set the env vars on your deployment, redeploy, then refresh this page."
+            description="Point Smohix at your reasoning and automation backends so Copilot, dry-runs, and guarded execution can reach your stack. Set the env vars on your deployment, redeploy, then refresh this page."
             ctas={[
               { href: "/docs/api", label: "API reference", variant: "secondary" },
               { href: "/docs", label: "Platform docs", variant: "secondary" },
@@ -1712,7 +1712,7 @@ curl -X POST "${siteUrl}/api/integrations/alerts" \\
         </div>
         <p className={`mt-4 ${appMeta}`}>
           Signature mode (optional): set{" "}
-          <span className="font-mono text-foreground/80">ZENTRO_ALERT_WEBHOOK_SIGNING_SECRET</span>,
+          <span className="font-mono text-foreground/80">SMOHIX_ALERT_WEBHOOK_SIGNING_SECRET</span>,
           then send{" "}
           <span className="font-mono text-foreground/80">
             X-Zentro-Signature: sha256=&lt;hmac_hex&gt;

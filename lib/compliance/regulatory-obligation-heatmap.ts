@@ -26,7 +26,7 @@ import type { VendorRiskTier } from "@/lib/third-party-risk/types";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-export const REGULATORY_OBLIGATION_HEATMAP_VERSION = "zentro-regulatory-obligation-heatmap/1";
+export const REGULATORY_OBLIGATION_HEATMAP_VERSION = "smohix-regulatory-obligation-heatmap/1";
 
 export type ObligationDimension = "framework" | "vendor" | "testing" | "attestation" | "assessor";
 

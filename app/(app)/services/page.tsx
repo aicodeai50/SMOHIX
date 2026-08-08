@@ -112,7 +112,7 @@ export default async function ServicesPage({
             {err}
           </p>
         ) : null}
-        <div className="zentro-glass rounded-2xl p-6 md:p-8">
+        <div className="smohix-glass rounded-2xl p-6 md:p-8">
           <h2 className={appPanelTitle}>Subscription required</h2>
           <p className={`mt-2 max-w-md text-muted ${appBody}`}>
             Service catalog and alert ingest are paid capabilities: they tie your observability

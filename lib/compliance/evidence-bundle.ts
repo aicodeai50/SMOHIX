@@ -54,7 +54,7 @@ function mapRow(r: Record<string, unknown>): EvidenceBundleRow {
 }
 
 export function bundleStorageUri(orgId: string, bundleId: string): string {
-  return `zentro://compliance-bundles/${orgId}/${bundleId}`;
+  return `smohix://compliance-bundles/${orgId}/${bundleId}`;
 }
 
 export async function deliverBundleWebhook(
@@ -75,7 +75,7 @@ export async function deliverBundleWebhook(
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        type: "zentro.evidence_bundle.created",
+        type: "smohix.evidence_bundle.created",
         ...payload,
       }),
       signal: AbortSignal.timeout(15_000),

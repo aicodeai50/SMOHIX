@@ -110,7 +110,7 @@ export async function loadConsoleAmbientSnapshot(options?: {
 }): Promise<ConsoleAmbientSnapshot> {
   const context = options?.context ?? "default";
   if (!hasSupabaseAuth()) {
-    const devTenantKey = (await cookies()).get("zentro_dev_tid")?.value ?? "anon";
+    const devTenantKey = ((await cookies()).get("smohix_dev_tid")?.value ?? (await cookies()).get("zentro_dev_tid")?.value) ?? "anon";
     const [{ rows: incidents }, approvals] = await Promise.all([
       listIncidentsForUser("", devTenantKey, null),
       listApprovalsForUser({

@@ -1,4 +1,4 @@
--- Zentro Postgres excellence upgrade.
+-- Smohix Postgres excellence upgrade.
 -- Extensions, integrity constraints, hot-path indexes, RLS gaps, and retention helpers.
 -- Safe to re-run: uses IF NOT EXISTS / guarded DO blocks throughout.
 -- Apply after all prior migrations in supabase/migrations/.

@@ -46,7 +46,7 @@ export function PricingFeatureMatrix() {
         Feature depth grows with plan tier. Enterprise adds procurement, retention, and org controls
         on the roadmap.
       </p>
-      <div className="zentro-holo-panel mt-6 overflow-x-auto">
+      <div className="smohix-holo-panel mt-6 overflow-x-auto">
         <table className="w-full min-w-[520px] text-left text-sm">
           <thead>
             <tr className="border-b border-white/[0.08] bg-white/[0.03]">

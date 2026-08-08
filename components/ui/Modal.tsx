@@ -37,7 +37,7 @@ export function Modal({
     <div className="fixed inset-0 z-[150] flex items-center justify-center p-4">
       <button
         type="button"
-        className="zentro-modal-backdrop absolute inset-0 bg-black/60 backdrop-blur-sm"
+        className="smohix-modal-backdrop absolute inset-0 bg-black/60 backdrop-blur-sm"
         aria-label="Close dialog"
         onClick={onClose}
       />
@@ -45,7 +45,7 @@ export function Modal({
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
-        className="zentro-modal-panel relative z-10 w-full max-w-md rounded-2xl border border-white/[0.1] bg-surface-elevated p-6 shadow-2xl"
+        className="smohix-modal-panel relative z-10 w-full max-w-md rounded-2xl border border-white/[0.1] bg-surface-elevated p-6 shadow-2xl"
       >
         <div className="flex items-start justify-between gap-3">
           <div>

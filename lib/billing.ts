@@ -7,7 +7,7 @@ import {
 import { getPayPalPlanId, isPayPalConfigured } from "@/lib/paypal/config";
 
 /** Single contact inbox for product, billing, security, and partnerships. */
-export const SITE_EMAIL_CONTACT = "hi@zentro.run";
+export const SITE_EMAIL_CONTACT = "hi@smohix.run";
 
 export type MailtoTopic =
   | "general"
@@ -18,12 +18,12 @@ export type MailtoTopic =
   | "enterprise";
 
 const MAILTO_SUBJECTS: Record<MailtoTopic, string> = {
-  general: "Zentro",
-  support: "Zentro support",
-  security: "Zentro security",
-  billing: "Zentro billing",
-  abuse: "Zentro abuse report",
-  enterprise: "Zentro enterprise",
+  general: "Smohix",
+  support: "Smohix support",
+  security: "Smohix security",
+  billing: "Smohix billing",
+  abuse: "Smohix abuse report",
+  enterprise: "Smohix enterprise",
 };
 
 export function getMailtoHref(topic: MailtoTopic = "general"): string {
@@ -68,7 +68,7 @@ export function appendCheckoutCustomData(
   checkoutUrl: string,
   entries: Record<string, string>,
 ): string {
-  const u = new URL(checkoutUrl, "https://zentro.run");
+  const u = new URL(checkoutUrl, "https://smohix.run");
   for (const [key, value] of Object.entries(entries)) {
     if (!key || !value) continue;
     u.searchParams.set(key, value);
@@ -121,7 +121,7 @@ export async function createBillingCheckout(input: {
     try {
       const order = await createPayPalOrder({
         amountCents,
-        description: "Zentro account balance top-up",
+        description: "Smohix account balance top-up",
         customId,
         returnUrl,
         cancelUrl,

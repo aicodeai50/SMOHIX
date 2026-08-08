@@ -29,7 +29,7 @@ export async function GET(req: NextRequest, context: RouteContext) {
     const start = new Date(dateStr);
     if (Number.isNaN(start.getTime())) return;
     events.push({
-      uid: `${pilot.public_reference}-${suffix}@zentro.run`,
+      uid: `${pilot.public_reference}-${suffix}@smohix.run`,
       title,
       description: `Pilot ${pilot.public_reference} — ${pilot.organization}`,
       start,

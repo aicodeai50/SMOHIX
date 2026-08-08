@@ -1,4 +1,4 @@
-export const CONSOLE_AMBIENT_STATUS_VERSION = "zentro-console-ambient-status/1";
+export const CONSOLE_AMBIENT_STATUS_VERSION = "smohix-console-ambient-status/1";
 
 export type ConsoleAmbientContext =
   | "default"

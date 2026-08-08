@@ -18,7 +18,7 @@ import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { SITE_BRAND_NAME } from "@/lib/site-brand";
 
-export const EVIDENCE_REQUEST_SLA_DASHBOARD_VERSION = "zentro-evidence-request-sla-dashboard/1";
+export const EVIDENCE_REQUEST_SLA_DASHBOARD_VERSION = "smohix-evidence-request-sla-dashboard/1";
 
 export type EvidenceRequestSlaBucket =
   | "on_track"
@@ -92,7 +92,7 @@ export type EvidenceRequestSlaOrgSettings = {
 };
 
 export type AuditorEvidenceRequestSlaDigest = {
-  type: "zentro.evidence_request_sla_digest";
+  type: "smohix.evidence_request_sla_digest";
   version: typeof EVIDENCE_REQUEST_SLA_DASHBOARD_VERSION;
   orgId: string;
   generatedAt: string;
@@ -468,7 +468,7 @@ export function buildAuditorSlaDigestPayload(
 ): AuditorEvidenceRequestSlaDigest {
   const origin = siteOrigin.replace(/\/$/, "");
   return {
-    type: "zentro.evidence_request_sla_digest",
+    type: "smohix.evidence_request_sla_digest",
     version: EVIDENCE_REQUEST_SLA_DASHBOARD_VERSION,
     orgId: pack.orgId ?? "",
     generatedAt: pack.generatedAt,
@@ -538,7 +538,7 @@ export async function deliverEvidenceRequestSlaDigest(
     for (const auditor of auditors) {
       const sent = await sendTransactionalEmailWithAudit({
         to: auditor.email!.trim(),
-        subject: `[Zentro] Evidence request SLA digest — ${orgName}`,
+        subject: `[Smohix] Evidence request SLA digest — ${orgName}`,
         text: markdown,
         userId: actorUserId,
         orgId,

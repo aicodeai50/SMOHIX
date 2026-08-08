@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 function SignInFallback() {
   return (
     <div
-      className="zentro-glass-subtle h-64 animate-pulse rounded-3xl"
+      className="smohix-glass-subtle h-64 animate-pulse rounded-3xl"
       aria-hidden
     />
   );

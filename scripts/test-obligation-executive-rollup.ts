@@ -12,7 +12,7 @@ function assert(condition: boolean, message: string) {
 }
 
 const forecast = {
-  version: "zentro-board-obligation-forecast/1" as const,
+  version: "smohix-board-obligation-forecast/1" as const,
   generatedAt: "2026-05-20T00:00:00.000Z",
   orgId: "org-1",
   horizonDays: 90,
@@ -41,7 +41,7 @@ const forecast = {
 };
 
 const crossover = {
-  version: "zentro-obligation-crossover-report/1" as const,
+  version: "smohix-obligation-crossover-report/1" as const,
   generatedAt: "2026-05-20T00:00:00.000Z",
   orgId: "org-1",
   horizonDays: 90,
@@ -57,7 +57,7 @@ const crossover = {
 };
 
 const consolidation = {
-  version: "zentro-obligation-consolidation-playbook/1" as const,
+  version: "smohix-obligation-consolidation-playbook/1" as const,
   generatedAt: "2026-05-20T00:00:00.000Z",
   orgId: "org-1",
   horizonDays: 90,
@@ -68,7 +68,7 @@ const consolidation = {
 };
 
 const sla = {
-  version: "zentro-evidence-request-sla-dashboard/1" as const,
+  version: "smohix-evidence-request-sla-dashboard/1" as const,
   generatedAt: "2026-05-20T00:00:00.000Z",
   orgId: "org-1",
   atRiskDays: 3,

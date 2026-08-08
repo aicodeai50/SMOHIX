@@ -33,7 +33,7 @@ export default function UseCasesPage() {
         <MarketingReveal className={mSection}>
           <div className={mContainer}>
             <p className={`${mEyebrow} text-primary-muted`}>Use cases</p>
-            <h1 className={mH1}>How teams use Zentro</h1>
+            <h1 className={mH1}>How teams use Smohix</h1>
             <p className={mLede}>
               Problem → solution → products → what is available now vs pilot vs planned. No invented
               customer stories or proven outcome claims.

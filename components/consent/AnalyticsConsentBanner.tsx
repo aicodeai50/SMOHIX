@@ -9,7 +9,10 @@ import { setAnalyticsConsent } from "@/lib/analytics";
 function consentBannerNeeded(): boolean {
   if (process.env.NEXT_PUBLIC_ANALYTICS_REQUIRES_CONSENT !== "true") return false;
   try {
-    return !localStorage.getItem("zentro_analytics_consent");
+    return !(
+      localStorage.getItem("smohix_analytics_consent") ??
+      localStorage.getItem("zentro_analytics_consent")
+    );
   } catch {
     return true;
   }
@@ -39,7 +42,7 @@ export function AnalyticsConsentBanner() {
             Analytics cookies
           </p>
           <p id="consent-desc" className="mt-1 text-xs text-muted">
-            Optional analytics help us understand how visitors use zentro.run. Essential forms
+            Optional analytics help us understand how visitors use smohix.run. Essential forms
             work without this.{" "}
             <Link href="/cookies" className="text-accent hover:underline">
               Cookie policy

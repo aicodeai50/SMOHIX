@@ -14,7 +14,7 @@ import {
 import {
   FLAGSHIP_PRODUCT_IDS,
   PRIMARY_SITE_NAV,
-  ZENTRO_WORKSPACE_URLS,
+  SMOHIX_WORKSPACE_URLS,
 } from "../lib/ecosystem-workspaces";
 import { PRODUCT_REGISTRY, validateProductRegistry } from "../lib/product-registry";
 import { HEADER_NAV, HEADER_ACTIONS } from "../lib/site-nav";
@@ -51,7 +51,7 @@ for (const item of PRIMARY_SITE_NAV) {
   assert(item.href.startsWith("/"), `nav href must be internal: ${item.href}`);
 }
 
-assert(HEADER_ACTIONS.openAi.href === ZENTRO_WORKSPACE_URLS.ai, "Open Zentro AI must link to ai.zentro.run");
+assert(HEADER_ACTIONS.openAi.href === SMOHIX_WORKSPACE_URLS.ai, "Open Smohix AI must link to ai.smohix.run");
 assert(HEADER_ACTIONS.signIn.href === "/auth/sign-in", "Sign in action must point to auth");
 
 // --- Company mission ---
@@ -87,7 +87,7 @@ for (const slug of getAllSolutionSlugs()) {
 }
 
 // --- SEO metadata ---
-assert(SITE_MARKETING_TITLE.includes("Zentro Technologies"), "marketing title must name the company");
+assert(SITE_MARKETING_TITLE.includes("Smohix Technologies"), "marketing title must name the company");
 assert(
   !SITE_MARKETING_DESCRIPTION.toLowerCase().includes("demo"),
   "marketing description must not use demo wording",

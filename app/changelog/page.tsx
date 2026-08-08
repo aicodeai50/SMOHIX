@@ -32,7 +32,7 @@ export default function ChangelogPage() {
             High-level shipped work — not every commit. Structured for future GitHub
             releases integration. For source history, use the{" "}
             <a
-              href="https://github.com/aicodeai50/ZENTRO"
+              href="https://github.com/aicodeai50/SMOHIX"
               className="text-accent hover:underline"
               target="_blank"
               rel="noopener noreferrer"

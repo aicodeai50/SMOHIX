@@ -31,8 +31,8 @@ assert(deltas.changeCount >= 2, "detects control and crosswalk deltas");
 const key = crosswalkKey("soc2:CC6.1", "iso:A.5.15", "primary");
 assert(key.includes("::"), "crosswalk key format");
 
-const payload = buildRegulatoryMappingDigestPayload("org-1", current, deltas, "https://zentro.run");
-assert(payload.type === "zentro.regulatory_mapping_digest", "payload type");
+const payload = buildRegulatoryMappingDigestPayload("org-1", current, deltas, "https://smohix.run");
+assert(payload.type === "smohix.regulatory_mapping_digest", "payload type");
 assert(payload.crosswalkUrl.includes("/crosswalk"), "crosswalk url");
 
 assert(isPathAllowedForAuditor("/governance/compliance/mapping-digest"), "auditor path");

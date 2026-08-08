@@ -9,7 +9,7 @@ import { mBody, mBodySm } from "@/lib/marketing-layout";
 type Format = "curl" | "javascript" | "typescript";
 
 function buildJavaScript(example: (typeof DEVELOPER_EXAMPLES)[number], base: string): string {
-  const path = example.request.match(/zentro\.run(\S+)/)?.[1] ?? "/api/health";
+  const path = example.request.match(/smohix\.run(\S+)/)?.[1] ?? "/api/health";
   return `const res = await fetch("${base}${path}", {
   headers: {
     Authorization: "Bearer zentro_sk_your_key_here",
@@ -34,7 +34,7 @@ export function ApiRequestBuilder() {
   const snippet = useMemo(() => {
     switch (format) {
       case "curl":
-        return example.request.replace(/https:\/\/zentro\.run/g, base);
+        return example.request.replace(/https:\/\/smohix\.run/g, base);
       case "javascript":
         return buildJavaScript(example, base);
       case "typescript":

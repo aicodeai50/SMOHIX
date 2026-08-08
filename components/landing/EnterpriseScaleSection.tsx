@@ -41,7 +41,7 @@ export function EnterpriseScaleSection() {
             <p className={mEyebrow}>Built for teams preparing for enterprise review</p>
             <h2 className={`mt-2 ${mH2}`}>Controls, approvals, and evidence for regulated operations</h2>
             <p className={mLede}>
-              Zentro is designed for teams that need a reviewable path from detection to response:
+              Smohix is designed for teams that need a reviewable path from detection to response:
               clear ownership, explicit approvals, retention-aware audit records, and exportable
               evidence for security and vendor review.
             </p>
@@ -61,7 +61,7 @@ export function EnterpriseScaleSection() {
             </div>
           </div>
 
-          <div className="zentro-holo-panel overflow-hidden p-6 sm:p-8">
+          <div className="smohix-holo-panel overflow-hidden p-6 sm:p-8">
             <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-accent/80">
               Enterprise control matrix
             </p>

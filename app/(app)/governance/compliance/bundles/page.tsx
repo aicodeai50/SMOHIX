@@ -164,7 +164,7 @@ export default async function ComplianceBundlesPage({
                   name="evidence_bundle_webhook_url"
                   type="url"
                   defaultValue={webhookUrl}
-                  placeholder="https://storage.example.com/zentro/bundles"
+                  placeholder="https://storage.example.com/smohix/bundles"
                   className={`h-10 w-full rounded-lg border border-border bg-background px-3 ${appBody}`}
                 />
                 <button
@@ -176,7 +176,7 @@ export default async function ComplianceBundlesPage({
                 <p className={`${appMeta} text-muted`}>
                   Scheduled jobs: POST to{" "}
                   <span className="font-mono text-foreground/80">/api/governance/compliance/bundles/scheduled</span>{" "}
-                  with <span className="font-mono">Authorization: Bearer &lt;ZENTRO_BUNDLE_CRON_SECRET&gt;</span>
+                  with <span className="font-mono">Authorization: Bearer &lt;SMOHIX_BUNDLE_CRON_SECRET&gt;</span>
                 </p>
               </form>
             ) : (

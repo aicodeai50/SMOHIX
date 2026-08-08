@@ -18,7 +18,7 @@ import { SITE_COMPANY_NAME } from "@/lib/site-brand";
 
 export const metadata: Metadata = buildMarketingMetadata({
   title: "Products",
-  description: `${SITE_COMPANY_NAME} — Zentro AI, Platform, Assistant, Private AI, APIs, and honest maturity labels for every workspace.`,
+  description: `${SITE_COMPANY_NAME} — Smohix AI, Platform, Assistant, Private AI, APIs, and honest maturity labels for every workspace.`,
   path: "/products",
 });
 
@@ -30,7 +30,7 @@ export default function ProductsPage() {
         <MarketingReveal className={mSection}>
           <div className={mContainer}>
             <p className={`${mEyebrow} text-primary-muted`}>Products</p>
-            <h1 className={`mt-2 ${mH1}`}>Zentro Technologies products</h1>
+            <h1 className={`mt-2 ${mH1}`}>Smohix Technologies products</h1>
             <p className={mLede}>
               Flagship workspaces and platform capabilities — each card links to a real destination
               with honest maturity labels.

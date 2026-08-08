@@ -122,8 +122,8 @@ async function main() {
 
   // Canonical host consistency: enforce apex canonical and www->apex redirect in edge routing.
   assert(
-    siteBrandLib.includes('SITE_PRIMARY_DOMAIN = "zentro.run"'),
-    "site primary domain should be apex zentro.run",
+    siteBrandLib.includes('SITE_PRIMARY_DOMAIN = "smohix.run"'),
+    "site primary domain should be apex smohix.run",
   );
   assert(
     siteLib.includes("SITE_DOMAIN = SITE_PRIMARY_DOMAIN"),
@@ -148,11 +148,11 @@ async function main() {
 
   const billingLib = await read("lib/billing.ts");
   assert(
-    billingLib.includes('SITE_EMAIL_CONTACT = "hi@zentro.run"'),
+    billingLib.includes('SITE_EMAIL_CONTACT = "hi@smohix.run"'),
     "billing should define single hi@ contact inbox",
   );
   assert(
-    !billingLib.includes("support@zentro.run"),
+    !billingLib.includes("support@smohix.run"),
     "legacy support@ inbox should be removed from billing",
   );
 

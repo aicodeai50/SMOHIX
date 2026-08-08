@@ -11,16 +11,16 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 function siteOrigin(req: NextRequest): string {
-  const env = process.env.ZENTRO_SITE_URL?.trim();
+  const env = (process.env.SMOHIX_SITE_URL ?? process.env.ZENTRO_SITE_URL)?.trim();
   if (env) return env.replace(/\/$/, "");
   const host = req.headers.get("x-forwarded-host") ?? req.headers.get("host");
   const proto = req.headers.get("x-forwarded-proto") ?? "https";
-  return host ? `${proto}://${host}` : "https://zentro.run";
+  return host ? `${proto}://${host}` : "https://smohix.run";
 }
 
-/** Cron: POST with Bearer ZENTRO_SLA_CRON_SECRET. Body: `{ orgId }` */
+/** Cron: POST with Bearer SMOHIX_SLA_CRON_SECRET. Body: `{ orgId }` */
 export async function POST(req: NextRequest) {
-  const secret = process.env.ZENTRO_SLA_CRON_SECRET?.trim();
+  const secret = (process.env.SMOHIX_SLA_CRON_SECRET ?? process.env.ZENTRO_SLA_CRON_SECRET)?.trim();
   if (!secret) {
     return NextResponse.json(
       { error: "Cron not configured." },

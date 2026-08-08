@@ -33,11 +33,11 @@ export default function PilotPage() {
           <div className={mContainer}>
             <p className={`${mEyebrow} text-primary-muted`}>Pilot program</p>
             <h1 className="mt-2 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-              Start a Zentro pilot
+              Start a Smohix pilot
             </h1>
             <p className={`mt-4 max-w-2xl ${mBody}`}>
               A pilot is a scoped collaboration with {SITE_COMPANY_NAME} — using live,
-              preview, and prototype capabilities on zentro.run with honest maturity labels.
+              preview, and prototype capabilities on smohix.run with honest maturity labels.
               We do not promise fixed delivery timelines; each charter defines scope and rhythm.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">

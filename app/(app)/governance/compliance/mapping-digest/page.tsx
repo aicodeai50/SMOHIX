@@ -85,7 +85,7 @@ export default async function MappingDigestPage({
       <PageHeader
         eyebrow="Governance"
         title="Regulatory mapping change digest"
-        description="Detect changes to the Zentro compliance catalog, SOC 2 ↔ ISO crosswalk, and regulatory scenario catalog — then notify GRC tools via HTTPS webhook or email owners and admins."
+        description="Detect changes to the Smohix compliance catalog, SOC 2 ↔ ISO crosswalk, and regulatory scenario catalog — then notify GRC tools via HTTPS webhook or email owners and admins."
       />
       <p className={`-mt-4 mb-6 ${appBody}`}>
         <Link href="/governance/compliance/crosswalk" className="text-accent hover:underline">
@@ -175,7 +175,7 @@ export default async function MappingDigestPage({
                       name="compliance_mapping_digest_webhook_url"
                       type="url"
                       defaultValue={webhookUrl}
-                      placeholder="https://hooks.example.com/zentro-mapping"
+                      placeholder="https://hooks.example.com/smohix-mapping"
                       className="mt-1 w-full max-w-xl rounded-lg border border-white/[0.12] bg-surface/60 px-3 py-2 text-sm"
                     />
                   </div>

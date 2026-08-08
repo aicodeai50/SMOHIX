@@ -17,7 +17,7 @@ import { auditEvidenceDeepLink } from "@/lib/compliance/attestation/evidence";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-export const EVIDENCE_FRESHNESS_VERSION = "zentro-evidence-freshness/1";
+export const EVIDENCE_FRESHNESS_VERSION = "smohix-evidence-freshness/1";
 
 export const DEFAULT_STALE_DAYS = 30;
 export const DEFAULT_AGING_DAYS = 14;

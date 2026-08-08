@@ -4,7 +4,7 @@ type LogFields = Record<string, unknown>;
 
 function shouldLog(level: LogLevel): boolean {
   if (level === "debug") {
-    return process.env.ZENTRO_LOG_LEVEL === "debug";
+    return (process.env.SMOHIX_LOG_LEVEL ?? process.env.ZENTRO_LOG_LEVEL) === "debug";
   }
   return true;
 }
@@ -29,7 +29,7 @@ export function logEvent(level: LogLevel, event: string, fields?: LogFields): vo
     ts: new Date().toISOString(),
     level,
     event,
-    service: "zentro-web",
+    service: "smohix-web",
     ...fields,
   };
 
@@ -68,7 +68,7 @@ export async function captureException(
         "Content-Type": "application/json",
         "X-Sentry-Auth": [
           "Sentry sentry_version=7",
-          `sentry_client=zentro-web/0.1`,
+          `sentry_client=smohix-web/0.1`,
           `sentry_key=${url.username}`,
         ].join(", "),
       },
@@ -76,7 +76,7 @@ export async function captureException(
         event_id: crypto.randomUUID().replace(/-/g, ""),
         timestamp: new Date().toISOString(),
         platform: "javascript",
-        logger: "zentro-web",
+        logger: "smohix-web",
         level: "error",
         message: error instanceof Error ? error.message : String(error),
         extra: fields,

@@ -12,7 +12,7 @@ import type {
 } from "@/lib/third-party-risk/types";
 
 export const INHERITED_CONTROL_COVERAGE_GAPS_VERSION =
-  "zentro-inherited-control-coverage-gaps/1";
+  "smohix-inherited-control-coverage-gaps/1";
 
 export type InheritedControlGapKind =
   | "no_audit_evidence"

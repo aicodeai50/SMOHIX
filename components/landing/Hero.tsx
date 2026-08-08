@@ -26,7 +26,7 @@ export function Hero() {
             </h1>
             <p className={`${mHeroLede} mt-5 max-w-xl`}>{COMPANY_HERO_SUBHEADING}</p>
             <p className={`mt-4 max-w-xl ${mBody}`}>
-              One headquarters at zentro.run — flagship AI, platform operations, assistant
+              One headquarters at smohix.run — flagship AI, platform operations, assistant
               productivity, and private deployment workspaces for teams that need clarity without
               leaving the ecosystem.
             </p>

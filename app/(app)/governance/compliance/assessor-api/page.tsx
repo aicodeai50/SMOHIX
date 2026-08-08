@@ -61,7 +61,7 @@ export default async function AssessorApiPage({
     : [];
 
   const err = typeof sp.error === "string" ? sp.error : undefined;
-  const siteUrl = process.env.ZENTRO_SITE_URL?.replace(/\/$/, "") ?? "https://zentro.run";
+  const siteUrl = (process.env.SMOHIX_SITE_URL ?? process.env.ZENTRO_SITE_URL)?.replace(/\/$/, "") ?? "https://smohix.run";
 
   return (
     <>

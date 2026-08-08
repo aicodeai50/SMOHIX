@@ -52,7 +52,7 @@ export function SignInForm() {
   return (
     <AuthCard
       title="Sign in"
-      subtitle="Use your Zentro account to open the console."
+      subtitle="Use your Smohix account to open the console."
     >
       {searchParams.get("error") === "auth" ? (
         <p className="mb-4 rounded-lg border border-border bg-surface px-3 py-2 text-sm text-muted">

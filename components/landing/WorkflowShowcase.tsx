@@ -60,13 +60,13 @@ export function WorkflowShowcase() {
   return (
     <MarketingReveal
       id="workflow"
-      className={`${mSectionTight} zentro-quantum-section`}
+      className={`${mSectionTight} smohix-quantum-section`}
       aria-labelledby="workflow-heading"
     >
       <div className={mContainer}>
-        <p className={`${mEyebrow} zentro-eyebrow-cyber`}>Workflow preview</p>
-        <h2 id="workflow-heading" className={`zentro-living-headline mt-2 ${mH2}`}>
-          See how a change moves through Zentro
+        <p className={`${mEyebrow} smohix-eyebrow-cyber`}>Workflow preview</p>
+        <h2 id="workflow-heading" className={`smohix-living-headline mt-2 ${mH2}`}>
+          See how a change moves through Smohix
         </h2>
         <p className={mLede}>
           Illustrative UI — not live customer data. The same flow runs in your workspace after sign-in.
@@ -74,7 +74,7 @@ export function WorkflowShowcase() {
 
         <div className="mt-8 grid gap-4 md:grid-cols-3">
           {WORKFLOWS.map((item) => (
-            <article key={item.title} className="zentro-bento-cell rounded-2xl p-5 sm:p-6">
+            <article key={item.title} className="smohix-bento-cell rounded-2xl p-5 sm:p-6">
               <p className="font-mono text-[10px] uppercase tracking-wide text-accent/80">{item.caption}</p>
               <h3 className={`mt-2 ${mCardTitle}`}>{item.title}</h3>
               <p className={`mt-2 ${mBody}`}>{item.body}</p>

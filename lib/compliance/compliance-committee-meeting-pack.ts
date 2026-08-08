@@ -38,7 +38,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { SITE_BRAND_NAME } from "@/lib/site-brand";
 
 export const COMPLIANCE_COMMITTEE_MEETING_PACK_VERSION =
-  "zentro-compliance-committee-meeting-pack/1";
+  "smohix-compliance-committee-meeting-pack/1";
 
 export type CommitteeMeetingPackFile = {
   path: string;
@@ -274,7 +274,7 @@ export function buildCommitteeMeetingPackSummaryHtml(input: {
 
 export function buildCommitteeMeetingPackReadme(manifest: CommitteeMeetingPackManifest): string {
   return [
-    "Zentro compliance committee meeting pack",
+    "Smohix compliance committee meeting pack",
     `Version: ${manifest.version}`,
     `Generated: ${manifest.generatedAt}`,
     `Organization: ${manifest.orgName ?? manifest.orgId ?? "—"}`,
@@ -496,7 +496,7 @@ export async function buildComplianceCommitteeMeetingPackZip(
 
   const zip = await committeeMeetingPackToZip(built.files, manifest);
   const stamp = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-  const filename = `zentro-committee-meeting-pack-${built.periodDays}d-${stamp}.zip`;
+  const filename = `smohix-committee-meeting-pack-${built.periodDays}d-${stamp}.zip`;
 
   return { zip, manifest, filename };
 }

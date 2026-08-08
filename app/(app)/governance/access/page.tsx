@@ -70,17 +70,17 @@ export default async function GovernanceAccessPage({
       ) : null}
 
       <div className="mb-6 grid gap-4 sm:grid-cols-3">
-        <div className="zentro-glass rounded-2xl p-5">
+        <div className="smohix-glass rounded-2xl p-5">
           <p className={`${appMeta} font-medium`}>Policy rules</p>
           <p className="mt-1 text-2xl font-semibold text-foreground">{rules.length}</p>
         </div>
-        <div className="zentro-glass rounded-2xl p-5">
+        <div className="smohix-glass rounded-2xl p-5">
           <p className={`${appMeta} font-medium`}>Latest MFA coverage</p>
           <p className="mt-1 text-2xl font-semibold text-foreground">
             {latest?.mfaCoveragePercent != null ? `${latest.mfaCoveragePercent}%` : "n/a"}
           </p>
         </div>
-        <div className="zentro-glass rounded-2xl p-5">
+        <div className="smohix-glass rounded-2xl p-5">
           <p className={`${appMeta} font-medium`}>Stale privileged accounts</p>
           <p className="mt-1 text-2xl font-semibold text-foreground">
             {latest?.stalePrivilegedAccounts ?? "n/a"}

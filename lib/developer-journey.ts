@@ -3,7 +3,7 @@
  */
 
 import { getSiteUrl } from "@/lib/site";
-import { ZENTRO_AI_PUBLIC_URL } from "@/lib/product-registry";
+import { SMOHIX_AI_PUBLIC_URL } from "@/lib/product-registry";
 
 const SITE = getSiteUrl().replace(/\/$/, "");
 
@@ -19,7 +19,7 @@ export const DEVELOPER_SDKS: readonly SdkEntry[] = [
   {
     name: "TypeScript / Next.js (this repo)",
     status: "available",
-    detail: "Open-source web app at github.com/aicodeai50/ZENTRO — primary integration surface today.",
+    detail: "Open-source web app at github.com/aicodeai50/SMOHIX — primary integration surface today.",
   },
   {
     name: "TypeScript SDK",
@@ -81,9 +81,9 @@ if (!res.ok) throw new Error(\`HTTP \${res.status}\`);
 const data = await res.json();`;
 
 export const DEVELOPER_AI_NOTE = {
-  title: "Zentro AI",
-  body: `Standalone product at ${ZENTRO_AI_PUBLIC_URL}. Console Copilot uses same-origin /api/copilot/chat with server-side keys — not embedded on marketing pages.`,
-  href: ZENTRO_AI_PUBLIC_URL,
+  title: "Smohix AI",
+  body: `Standalone product at ${SMOHIX_AI_PUBLIC_URL}. Console Copilot uses same-origin /api/copilot/chat with server-side keys — not embedded on marketing pages.`,
+  href: SMOHIX_AI_PUBLIC_URL,
 } as const;
 
 export const DEVELOPER_ERROR_HANDLING = [
@@ -115,7 +115,7 @@ export const DEVELOPER_EXAMPLES: readonly DeveloperExample[] = [
     request: `curl -s ${SITE}/api/health`,
     response: `{
   "ok": true,
-  "service": "zentro-web",
+  "service": "smohix-web",
   "uptime_s": 12345
 }`,
   },
@@ -180,9 +180,9 @@ curl -s -o /dev/null -w "%{http_code}" \\
     title: "CLI (planned)",
     description: "Future developer CLI — not published yet.",
     request: `# Planned
-zentro health
-zentro keys list
-zentro ingest test --token $INGEST_TOKEN`,
+smohix health
+smohix keys list
+smohix ingest test --token $INGEST_TOKEN`,
     response: `# CLI status: planned — see DEVELOPER_SDKS on /developers`,
     notes: "Use curl and API keys until CLI ships.",
   },
@@ -191,7 +191,7 @@ zentro ingest test --token $INGEST_TOKEN`,
 export const DEVELOPER_SDK_EXAMPLE = `# TypeScript — fetch with API key (server-side script)
 import { readFileSync } from "node:fs";
 
-const key = process.env.ZENTRO_API_KEY!;
+const key = (process.env.SMOHIX_API_KEY ?? process.env.ZENTRO_API_KEY)!;
 const res = await fetch("${SITE}/api/health");
 console.log(await res.json());`;
 

@@ -18,7 +18,7 @@ export function SecurityMetricsStrip() {
       aria-label="Illustrative security operations metrics, not live data"
     >
       <div className={mContainer}>
-        <div className="zentro-holo-panel grid gap-px overflow-hidden sm:grid-cols-2 lg:grid-cols-6">
+        <div className="smohix-holo-panel grid gap-px overflow-hidden sm:grid-cols-2 lg:grid-cols-6">
           {METRICS.map((m) => (
             <div key={m.label} className="bg-background/90 px-4 py-4 sm:px-5 sm:py-5">
               <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted">

@@ -9,7 +9,7 @@ import { mContainer, mEyebrow, mH1, mLede, mSection } from "@/lib/marketing-layo
 
 export const metadata: Metadata = buildMarketingMetadata({
   title: "Search",
-  description: "Search Zentro products, documentation, and pages.",
+  description: "Search Smohix products, documentation, and pages.",
   path: "/search",
 });
 

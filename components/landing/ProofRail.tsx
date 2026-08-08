@@ -49,21 +49,21 @@ const SAMPLE = `{
 
 export function ProofRail() {
   return (
-    <MarketingReveal id="proof" className={`${mSectionTight} zentro-quantum-section`} aria-labelledby="proof-heading">
+    <MarketingReveal id="proof" className={`${mSectionTight} smohix-quantum-section`} aria-labelledby="proof-heading">
       <div className={mContainer}>
-        <h2 id="proof-heading" className={`zentro-living-headline ${mH2}`}>
+        <h2 id="proof-heading" className={`smohix-living-headline ${mH2}`}>
           Built for production — not slide decks
         </h2>
         <p className={mLede}>
           Evidence, exports, and guarded execution are first-class — not bolted on after the demo.
         </p>
 
-        <div className="zentro-proof-rail mt-8">
+        <div className="smohix-proof-rail mt-8">
           {PROOFS.map((proof) => (
             <Link
               key={proof.title}
               href={proof.href}
-              className="zentro-bento-cell group flex flex-col rounded-2xl p-5 transition-transform hover:-translate-y-0.5"
+              className="smohix-bento-cell group flex flex-col rounded-2xl p-5 transition-transform hover:-translate-y-0.5"
             >
               <h3 className="text-sm font-semibold text-foreground">{proof.title}</h3>
               <p className={`mt-2 flex-1 ${mBody}`}>{proof.body}</p>

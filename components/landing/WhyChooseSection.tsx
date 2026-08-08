@@ -1,17 +1,17 @@
 import { AppIcon } from "@/components/icons/AppIcon";
 import { MarketingReveal } from "@/components/marketing/MarketingReveal";
-import { WHY_CHOOSE_ZENTRO } from "@/lib/company-identity";
+import { WHY_CHOOSE_SMOHIX } from "@/lib/company-identity";
 import { mBody, mCard, mContainer, mEyebrow, mH2, mLede, mSection, mStaggerGrid } from "@/lib/marketing-layout";
 
 export function WhyChooseSection() {
   return (
     <MarketingReveal
-      id="why-zentro"
+      id="why-smohix"
       className={mSection}
       aria-labelledby="why-heading"
     >
       <div className={mContainer}>
-        <p className={`${mEyebrow} text-primary-muted`}>Why choose Zentro</p>
+        <p className={`${mEyebrow} text-primary-muted`}>Why choose Smohix</p>
         <h2 id="why-heading" className={`mt-2 ${mH2}`}>
           What makes us different
         </h2>
@@ -21,7 +21,7 @@ export function WhyChooseSection() {
         </p>
 
         <ul className={`mt-12 ${mStaggerGrid} grid gap-5 sm:grid-cols-2 lg:grid-cols-3`}>
-          {WHY_CHOOSE_ZENTRO.map((item) => (
+          {WHY_CHOOSE_SMOHIX.map((item) => (
             <li key={item.title} className={mCard}>
               <div className="flex items-center gap-2">
                 <AppIcon name="check" size={18} className="text-accent" aria-hidden />

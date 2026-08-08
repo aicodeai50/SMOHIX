@@ -17,7 +17,7 @@ export function FeaturesSection() {
           Everything ops teams need in one workspace
         </h2>
         <p className={`${mLede} mt-3 max-w-2xl`}>
-          Zentro connects incidents, services, automations, and audit into a
+          Smohix connects incidents, services, automations, and audit into a
           single accountable command layer.
         </p>
 

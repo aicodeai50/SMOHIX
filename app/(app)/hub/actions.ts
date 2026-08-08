@@ -82,7 +82,7 @@ export async function launchGuidedScenarioAction() {
     redirect(`/incidents/${incident.id}?scenario=1`);
   }
 
-  const tid = (await cookies()).get("zentro_dev_tid")?.value ?? "anon";
+  const tid = ((await cookies()).get("smohix_dev_tid")?.value ?? (await cookies()).get("zentro_dev_tid")?.value) ?? "anon";
   const incidentId = recordDevIncident(tid, {
     title: scenarioTitle,
     severity: "critical",

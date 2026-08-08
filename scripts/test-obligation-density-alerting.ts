@@ -18,7 +18,7 @@ const settings = {
 };
 
 const forecast = {
-  version: "zentro-board-obligation-forecast/1" as const,
+  version: "smohix-board-obligation-forecast/1" as const,
   generatedAt: "2026-05-20T00:00:00.000Z",
   orgId: "org-1",
   horizonDays: 90,

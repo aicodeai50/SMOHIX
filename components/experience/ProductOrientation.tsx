@@ -10,8 +10,8 @@ import { mBody, mFocusRing, mH3 } from "@/lib/marketing-layout";
 const STEPS = [
   {
     id: "company",
-    title: "Zentro Technologies",
-    body: "Zentro.run is the public front door to all Zentro Technologies products — honest maturity labels, no invented metrics.",
+    title: "Smohix Technologies",
+    body: "Smohix.run is the public front door to all Smohix Technologies products — honest maturity labels, no invented metrics.",
     href: "/company",
     cta: "About the company",
   },
@@ -24,10 +24,10 @@ const STEPS = [
   },
   {
     id: "ai",
-    title: "Zentro AI",
-    body: "The standalone AI product lives at ai.zentro.run. Console Copilot uses same-origin /api/copilot/chat when signed in.",
-    href: "https://ai.zentro.run",
-    cta: "Open Zentro AI",
+    title: "Smohix AI",
+    body: "The standalone AI product lives at ai.smohix.run. Console Copilot uses same-origin /api/copilot/chat when signed in.",
+    href: "https://ai.smohix.run",
+    cta: "Open Smohix AI",
     external: true,
   },
   {
@@ -40,7 +40,7 @@ const STEPS = [
   {
     id: "architecture",
     title: "Architecture",
-    body: "How zentro.run, APIs, and optional backends connect — private URLs stay server-side.",
+    body: "How smohix.run, APIs, and optional backends connect — private URLs stay server-side.",
     href: "/architecture",
     cta: "View architecture",
   },

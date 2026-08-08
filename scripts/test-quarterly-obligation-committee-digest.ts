@@ -22,7 +22,7 @@ const pack = buildQuarterlyObligationCommitteeDigestFromParts({
   orgId: "org-1",
   horizonDays: 90,
   forecast: {
-    version: "zentro-board-obligation-forecast/1",
+    version: "smohix-board-obligation-forecast/1",
     generatedAt: "2026-05-20T00:00:00.000Z",
     orgId: "org-1",
     horizonDays: 90,
@@ -38,7 +38,7 @@ const pack = buildQuarterlyObligationCommitteeDigestFromParts({
     milestones: [],
   },
   crossover: {
-    version: "zentro-obligation-crossover-report/1",
+    version: "smohix-obligation-crossover-report/1",
     generatedAt: "2026-05-20T00:00:00.000Z",
     orgId: "org-1",
     horizonDays: 90,
@@ -68,7 +68,7 @@ const pack = buildQuarterlyObligationCommitteeDigestFromParts({
     topReuseOpportunities: [],
   },
   sla: {
-    version: "zentro-evidence-request-sla-dashboard/1",
+    version: "smohix-evidence-request-sla-dashboard/1",
     generatedAt: "2026-05-20T00:00:00.000Z",
     orgId: "org-1",
     atRiskDays: 3,
@@ -105,10 +105,10 @@ const payload = buildCommitteeDigestPayload(
     crossover: pack.crossover,
     sla: pack.sla,
   },
-  "https://zentro.run",
+  "https://smohix.run",
 );
 
-assert(payload.type === "zentro.obligation_committee_digest", "payload type");
+assert(payload.type === "smohix.obligation_committee_digest", "payload type");
 assert(payload.forecast.peakWeekCount === 8, "payload peak");
 assert(payload.crossover.clusterCount === 2, "payload crossover");
 assert(payload.sla.overdue === 1, "payload sla");

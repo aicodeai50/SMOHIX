@@ -13,7 +13,7 @@ import type { ComplianceFramework } from "@/lib/compliance/types";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-export const BOARD_OBLIGATION_FORECAST_VERSION = "zentro-board-obligation-forecast/1";
+export const BOARD_OBLIGATION_FORECAST_VERSION = "smohix-board-obligation-forecast/1";
 
 export const DEFAULT_FORECAST_HORIZON_DAYS = 90;
 

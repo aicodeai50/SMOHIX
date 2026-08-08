@@ -8,12 +8,12 @@ export type TransactionalEmailInput = {
 };
 
 function resendApiKey(): string | null {
-  const value = process.env.ZENTRO_RESEND_API_KEY?.trim();
+  const value = (process.env.SMOHIX_RESEND_API_KEY ?? process.env.ZENTRO_RESEND_API_KEY)?.trim();
   return value ? value : null;
 }
 
 function emailFrom(): string | null {
-  const value = process.env.ZENTRO_EMAIL_FROM?.trim();
+  const value = (process.env.SMOHIX_EMAIL_FROM ?? process.env.ZENTRO_EMAIL_FROM)?.trim();
   return value ? value : null;
 }
 

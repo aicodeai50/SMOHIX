@@ -4,7 +4,7 @@ import { LegalContactSection } from "@/components/legal/LegalContactSection";
 
 export const metadata: Metadata = {
   title: "Cookie Policy",
-  description: "How Zentro uses cookies and similar technologies.",
+  description: "How Smohix uses cookies and similar technologies.",
 };
 
 export default function CookiesPage() {
@@ -12,7 +12,7 @@ export default function CookiesPage() {
     <LegalLayout title="Cookie Policy" lastUpdated="April 2026">
       <div className="legal-callout">
         <strong>Transparency.</strong> This policy describes the cookie categories
-        used by Zentro across public and authenticated product surfaces.
+        used by Smohix across public and authenticated product surfaces.
       </div>
 
       <h2>1. What are cookies?</h2>
@@ -26,8 +26,8 @@ export default function CookiesPage() {
       <h2>2. Who sets cookies?</h2>
       <ul>
         <li>
-          <strong>First-party cookies</strong> are set by Zentro domains (e.g.,{" "}
-          <code className="text-accent">zentro.run</code>).
+          <strong>First-party cookies</strong> are set by Smohix domains (e.g.,{" "}
+          <code className="text-accent">smohix.run</code>).
         </li>
         <li>
           <strong>Third-party cookies</strong> are set by partners we embed (e.g.,
@@ -80,7 +80,7 @@ export default function CookiesPage() {
         </thead>
         <tbody>
           <tr>
-            <td>session_id (Zentro)</td>
+            <td>session_id (Smohix)</td>
             <td>Authentication</td>
             <td>Strictly necessary</td>
             <td>Session / rolling</td>
@@ -92,7 +92,7 @@ export default function CookiesPage() {
             <td>Session</td>
           </tr>
           <tr>
-            <td>zentro_analytics_consent (local storage)</td>
+            <td>smohix_analytics_consent (local storage)</td>
             <td>Stores analytics banner choice on marketing pages</td>
             <td>Functional / analytics gate</td>
             <td>Until cleared</td>
@@ -109,9 +109,9 @@ export default function CookiesPage() {
       <h2>5. Your choices</h2>
       <ul>
         <li>
-          <strong>Consent banner:</strong> on zentro.run marketing pages, optional
+          <strong>Consent banner:</strong> on smohix.run marketing pages, optional
           analytics load only after you accept. Decline or clear{" "}
-          <code className="text-accent">zentro_analytics_consent</code> in browser
+          <code className="text-accent">smohix_analytics_consent</code> in browser
           storage to withdraw. Contact forms work without analytics consent.
         </li>
         <li>

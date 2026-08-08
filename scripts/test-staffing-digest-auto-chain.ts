@@ -51,7 +51,7 @@ assert(
 );
 
 assert(
-  STAFFING_DIGEST_AUTO_CHAIN_VERSION === "zentro-staffing-digest-auto-chain/1",
+  STAFFING_DIGEST_AUTO_CHAIN_VERSION === "smohix-staffing-digest-auto-chain/1",
   "version",
 );
 

@@ -116,7 +116,7 @@ export function buildContactMailto(values: ContactFormValues): string {
     `Budget range: ${budgetLabel || "Not specified"}`,
     `Timeline: ${timelineLabel || "Not specified"}`,
     "",
-    "— Sent via zentro.run contact form (mailto fallback)",
+    "— Sent via smohix.run contact form (mailto fallback)",
   ].join("\n");
 
   return `mailto:${SITE_EMAIL_CONTACT}?${new URLSearchParams({ subject, body }).toString()}`;

@@ -56,10 +56,10 @@ export function CyberDefenseSection() {
   return (
     <MarketingReveal id="cyber" className={mSection}>
       <div className={mContainer}>
-        <p className={`${mEyebrow} zentro-eyebrow-cyber`}>Cybersecurity command</p>
+        <p className={`${mEyebrow} smohix-eyebrow-cyber`}>Cybersecurity command</p>
         <h2 className={`mt-2 ${mH2}`}>Detect, scan, contain — without losing the audit trail</h2>
         <p className={mLede}>
-          Zentro is built for security operations centers and platform teams at scale: correlate
+          Smohix is built for security operations centers and platform teams at scale: correlate
           intrusions, monitor exposure, run penetration exercises, and remediate through the same
           approval-gated control plane as production change.
         </p>

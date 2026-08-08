@@ -1,5 +1,5 @@
 /**
- * Parse Zentro copilot SSE (`data: {json}\\n\\n`) from a fetch body.
+ * Parse Smohix copilot SSE (`data: {json}\\n\\n`) from a fetch body.
  * Events: `{ type: "delta", text }`, `{ type: "done", source? }`, `{ type: "error", message }`.
  */
 export async function consumeCopilotSse(

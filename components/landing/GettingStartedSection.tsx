@@ -8,7 +8,7 @@ const STEPS = [
   {
     n: "1",
     title: "Connect your automations",
-    body: "Point webhooks, HTTP ingest tokens, or SIEM-shaped alerts at Zentro. Incidents dedupe into one timeline.",
+    body: "Point webhooks, HTTP ingest tokens, or SIEM-shaped alerts at Smohix. Incidents dedupe into one timeline.",
     href: "/integrations",
     cta: "Integrations",
   },
@@ -32,12 +32,12 @@ export function GettingStartedSection() {
   return (
     <MarketingReveal
       id="how-it-works"
-      className={`${mSection} zentro-quantum-section`}
+      className={`${mSection} smohix-quantum-section`}
       aria-labelledby="getting-started-heading"
     >
       <div className={mContainer}>
-        <p className={`${mEyebrow} zentro-eyebrow-cyber`}>How it works</p>
-        <h2 id="getting-started-heading" className={`zentro-living-headline mt-2 ${mH2}`}>
+        <p className={`${mEyebrow} smohix-eyebrow-cyber`}>How it works</p>
+        <h2 id="getting-started-heading" className={`smohix-living-headline mt-2 ${mH2}`}>
           Three steps to guarded operations
         </h2>
         <p className={mLede}>
@@ -47,7 +47,7 @@ export function GettingStartedSection() {
 
         <ol className="mt-10 grid gap-4 md:grid-cols-3">
           {STEPS.map((step) => (
-            <li key={step.n} className="zentro-bento-cell flex flex-col rounded-2xl p-6">
+            <li key={step.n} className="smohix-bento-cell flex flex-col rounded-2xl p-6">
               <span
                 className="flex h-9 w-9 items-center justify-center rounded-full border border-accent/40 bg-[#0a0c12] font-mono text-sm font-semibold text-accent"
                 aria-hidden

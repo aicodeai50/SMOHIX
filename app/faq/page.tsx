@@ -11,7 +11,7 @@ import { mContainer, mEyebrow, mH1, mLede, mLinkInline, mSection } from "@/lib/m
 export const metadata: Metadata = buildMarketingMetadata({
   title: "FAQ",
   description:
-    "Frequently asked questions about Zentro products, developers, pricing, security, enterprise, pilots, and privacy.",
+    "Frequently asked questions about Smohix products, developers, pricing, security, enterprise, pilots, and privacy.",
   path: "/faq",
 });
 

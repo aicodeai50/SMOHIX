@@ -16,7 +16,7 @@ export type SlackNotificationKind =
   | "manual_test";
 
 function slackWebhookUrl(): string | null {
-  const value = process.env.ZENTRO_SLACK_WEBHOOK_URL?.trim();
+  const value = (process.env.SMOHIX_SLACK_WEBHOOK_URL ?? process.env.ZENTRO_SLACK_WEBHOOK_URL)?.trim();
   return value ? value : null;
 }
 
@@ -43,15 +43,15 @@ export function getSlackNotificationConfig(): {
   crossStaffingEscalation: boolean;
 } {
   return {
-    approvals: envEnabled(process.env.ZENTRO_SLACK_NOTIFY_APPROVALS, true),
-    executions: envEnabled(process.env.ZENTRO_SLACK_NOTIFY_EXECUTIONS, true),
-    complianceSla: envEnabled(process.env.ZENTRO_SLACK_NOTIFY_COMPLIANCE_SLA, true),
-    obligationDensity: envEnabled(process.env.ZENTRO_SLACK_NOTIFY_OBLIGATION_DENSITY, true),
-    peakWeekStaffing: envEnabled(process.env.ZENTRO_SLACK_NOTIFY_PEAK_WEEK_STAFFING, true),
-    staffingOverdue: envEnabled(process.env.ZENTRO_SLACK_NOTIFY_STAFFING_OVERDUE, true),
-    staffingSlaBreach: envEnabled(process.env.ZENTRO_SLACK_NOTIFY_STAFFING_SLA_BREACH, true),
+    approvals: envEnabled((process.env.SMOHIX_SLACK_NOTIFY_APPROVALS ?? process.env.ZENTRO_SLACK_NOTIFY_APPROVALS), true),
+    executions: envEnabled((process.env.SMOHIX_SLACK_NOTIFY_EXECUTIONS ?? process.env.ZENTRO_SLACK_NOTIFY_EXECUTIONS), true),
+    complianceSla: envEnabled((process.env.SMOHIX_SLACK_NOTIFY_COMPLIANCE_SLA ?? process.env.ZENTRO_SLACK_NOTIFY_COMPLIANCE_SLA), true),
+    obligationDensity: envEnabled((process.env.SMOHIX_SLACK_NOTIFY_OBLIGATION_DENSITY ?? process.env.ZENTRO_SLACK_NOTIFY_OBLIGATION_DENSITY), true),
+    peakWeekStaffing: envEnabled((process.env.SMOHIX_SLACK_NOTIFY_PEAK_WEEK_STAFFING ?? process.env.ZENTRO_SLACK_NOTIFY_PEAK_WEEK_STAFFING), true),
+    staffingOverdue: envEnabled((process.env.SMOHIX_SLACK_NOTIFY_STAFFING_OVERDUE ?? process.env.ZENTRO_SLACK_NOTIFY_STAFFING_OVERDUE), true),
+    staffingSlaBreach: envEnabled((process.env.SMOHIX_SLACK_NOTIFY_STAFFING_SLA_BREACH ?? process.env.ZENTRO_SLACK_NOTIFY_STAFFING_SLA_BREACH), true),
     crossStaffingEscalation: envEnabled(
-      process.env.ZENTRO_SLACK_NOTIFY_CROSS_STAFFING_ESCALATION,
+      (process.env.SMOHIX_SLACK_NOTIFY_CROSS_STAFFING_ESCALATION ?? process.env.ZENTRO_SLACK_NOTIFY_CROSS_STAFFING_ESCALATION),
       true,
     ),
   };

@@ -21,7 +21,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { SITE_BRAND_NAME } from "@/lib/site-brand";
 
 export const QUARTERLY_OBLIGATION_COMMITTEE_DIGEST_VERSION =
-  "zentro-quarterly-obligation-committee-digest/1";
+  "smohix-quarterly-obligation-committee-digest/1";
 
 export const COMMITTEE_DIGEST_HORIZON_DAYS = 90;
 
@@ -60,7 +60,7 @@ export type QuarterlyObligationCommitteeDigestPack = {
 };
 
 export type ObligationCommitteeDigestPayload = {
-  type: "zentro.obligation_committee_digest";
+  type: "smohix.obligation_committee_digest";
   version: typeof QUARTERLY_OBLIGATION_COMMITTEE_DIGEST_VERSION;
   orgId: string;
   generatedAt: string;
@@ -131,7 +131,7 @@ export function buildCommitteeDigestPayload(
 ): ObligationCommitteeDigestPayload {
   const origin = siteOrigin.replace(/\/$/, "");
   return {
-    type: "zentro.obligation_committee_digest",
+    type: "smohix.obligation_committee_digest",
     version: QUARTERLY_OBLIGATION_COMMITTEE_DIGEST_VERSION,
     orgId: input.orgId,
     generatedAt: input.generatedAt,
@@ -440,7 +440,7 @@ export async function deliverQuarterlyObligationCommitteeDigest(
     for (const recipient of recipients) {
       const sent = await sendTransactionalEmailWithAudit({
         to: recipient.email!.trim(),
-        subject: `[Zentro] Quarterly obligation committee digest — ${orgName}`,
+        subject: `[Smohix] Quarterly obligation committee digest — ${orgName}`,
         text: markdown,
         userId: actorUserId,
         orgId,

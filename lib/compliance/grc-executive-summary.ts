@@ -16,7 +16,7 @@ import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { SITE_BRAND_NAME } from "@/lib/site-brand";
 
-export const GRC_EXECUTIVE_SUMMARY_VERSION = "zentro-grc-executive-summary/1";
+export const GRC_EXECUTIVE_SUMMARY_VERSION = "smohix-grc-executive-summary/1";
 
 export type GrcFrameworkSnapshot = {
   label: string;

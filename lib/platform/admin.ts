@@ -4,7 +4,7 @@
  */
 
 export function getPlatformAdminEmails(): string[] {
-  const raw = process.env.ZENTRO_PLATFORM_ADMIN_EMAILS ?? "";
+  const raw = (process.env.SMOHIX_PLATFORM_ADMIN_EMAILS ?? process.env.ZENTRO_PLATFORM_ADMIN_EMAILS) ?? "";
   return raw
     .split(",")
     .map((e) => e.trim().toLowerCase())

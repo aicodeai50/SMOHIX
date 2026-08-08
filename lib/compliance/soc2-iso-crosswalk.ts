@@ -13,7 +13,7 @@ export type Soc2IsoCrosswalkLink = {
   mappingNote: string;
 };
 
-/** Curated SOC 2 Trust Services Criteria ↔ ISO 27001:2022 Annex A links for the Zentro catalog subset. */
+/** Curated SOC 2 Trust Services Criteria ↔ ISO 27001:2022 Annex A links for the Smohix catalog subset. */
 export const SOC2_ISO_CROSSWALK_LINKS: Soc2IsoCrosswalkLink[] = [
   {
     soc2Id: "soc2:CC1.2",
@@ -239,7 +239,7 @@ export function soc2IsoCrosswalkToCsv(pack: Soc2IsoCrosswalkPack): string {
   );
 
   return [
-    `# Zentro SOC 2 / ISO 27001 crosswalk`,
+    `# Smohix SOC 2 / ISO 27001 crosswalk`,
     `# generated_at: ${pack.generatedAt}`,
     `# period_days: ${pack.periodDays}`,
     `# links: ${pack.linkCount}`,

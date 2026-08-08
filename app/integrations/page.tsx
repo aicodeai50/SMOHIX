@@ -9,7 +9,7 @@ import { SITE_EMAIL_CONTACT, getMailtoHref } from "@/lib/billing";
 export const metadata: Metadata = {
   title: "Integrations",
   description:
-    "What Zentro connects to today and what is on the roadmap — monitoring, chat, cloud, and ticketing.",
+    "What Smohix connects to today and what is on the roadmap — monitoring, chat, cloud, and ticketing.",
 };
 
 const TODAY = [
@@ -21,7 +21,7 @@ const TODAY = [
   },
   {
     name: "SIEM & EDR shapes",
-    body: "Normalize common alert payloads into Zentro incidents. Vendor-specific OAuth connectors are planned, not implied as live.",
+    body: "Normalize common alert payloads into Smohix incidents. Vendor-specific OAuth connectors are planned, not implied as live.",
     href: "/docs/api",
     cta: "API docs",
   },
@@ -53,27 +53,27 @@ export default function IntegrationsPage() {
       <Header />
       <MarketingQuantumShell>
         <main className="flex-1 border-b border-white/[0.06]">
-          <div className="zentro-hero-future zentro-quantum-section border-b border-white/[0.06]">
+          <div className="smohix-hero-future smohix-quantum-section border-b border-white/[0.06]">
             <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent/90 zentro-eyebrow-cyber">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent/90 smohix-eyebrow-cyber">
                 Integrations
               </p>
-              <h1 className="mt-2 max-w-3xl text-3xl font-semibold tracking-tight zentro-living-headline sm:text-4xl">
+              <h1 className="mt-2 max-w-3xl text-3xl font-semibold tracking-tight smohix-living-headline sm:text-4xl">
                 Integrations — today and next
               </h1>
               <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted sm:text-lg">
-                Zentro is useful without a wall of logos: you can run incidents, runbooks, and
+                Smohix is useful without a wall of logos: you can run incidents, runbooks, and
                 guarded automations on day one. Below is what works now versus what we expect to add
                 as teams adopt the platform.
               </p>
             </div>
           </div>
 
-          <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-16 zentro-quantum-section">
+          <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-16 smohix-quantum-section">
             <section aria-labelledby="today-heading">
               <h2
                 id="today-heading"
-                className="text-lg font-semibold tracking-tight zentro-living-headline sm:text-xl"
+                className="text-lg font-semibold tracking-tight smohix-living-headline sm:text-xl"
               >
                 Available today
               </h2>
@@ -85,7 +85,7 @@ export default function IntegrationsPage() {
                 {TODAY.map((item) => (
                   <li
                     key={item.name}
-                    className="zentro-bento-cell flex flex-col rounded-2xl p-5"
+                    className="smohix-bento-cell flex flex-col rounded-2xl p-5"
                   >
                     <h3 className="text-sm font-semibold text-foreground">{item.name}</h3>
                     <p className="mt-2 flex-1 text-sm leading-relaxed text-muted">{item.body}</p>
@@ -103,7 +103,7 @@ export default function IntegrationsPage() {
             <section className="mt-16 sm:mt-20" aria-labelledby="roadmap-heading">
               <h2
                 id="roadmap-heading"
-                className="text-lg font-semibold tracking-tight zentro-living-headline sm:text-xl"
+                className="text-lg font-semibold tracking-tight smohix-living-headline sm:text-xl"
               >
                 Roadmap (vendor integrations)
               </h2>
@@ -115,7 +115,7 @@ export default function IntegrationsPage() {
                 {ROADMAP.map((block) => (
                   <div
                     key={block.category}
-                    className="zentro-bento-cell rounded-2xl border-dashed px-5 py-5"
+                    className="smohix-bento-cell rounded-2xl border-dashed px-5 py-5"
                   >
                     <h3 className="text-sm font-semibold text-foreground">{block.category}</h3>
                     <ul className="mt-3 space-y-2 text-sm text-muted">
@@ -134,7 +134,7 @@ export default function IntegrationsPage() {
                   </div>
                 ))}
               </div>
-              <div className="mt-8 zentro-bento-cell rounded-2xl p-5 sm:p-6">
+              <div className="mt-8 smohix-bento-cell rounded-2xl p-5 sm:p-6">
                 <h3 className="text-sm font-semibold text-foreground">How users connect vendors</h3>
                 <ol className="mt-3 list-inside list-decimal space-y-2 text-sm leading-relaxed text-muted">
                   <li>Create an ingest token or configure an internal HTTP endpoint from Settings.</li>

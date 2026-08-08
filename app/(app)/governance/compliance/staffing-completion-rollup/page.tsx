@@ -233,7 +233,7 @@ export default async function StaffingCompletionRollupPage({
               <p className={`mt-3 ${appMeta} text-muted`}>
                 Cron:{" "}
                 <code className="text-foreground/80">
-                  ZENTRO_STAFFING_COMPLETION_ROLLUP_CRON_SECRET
+                  SMOHIX_STAFFING_COMPLETION_ROLLUP_CRON_SECRET
                 </code>
                 {" · "}
                 Use browser Print → Save as PDF on the printable HTML link.

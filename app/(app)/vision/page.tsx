@@ -7,7 +7,7 @@ import { ConsolePanel } from "@/components/app/ConsolePanel";
 
 export const metadata: Metadata = {
   title: "Vision & roadmap",
-  description: "Where Zentro is headed — serious ops platform and long-horizon product intent.",
+  description: "Where Smohix is headed — serious ops platform and long-horizon product intent.",
 };
 
 const TRACKS = [
@@ -90,12 +90,12 @@ const HORIZON = [
 export default function VisionPage() {
   return (
     <>
-      <div className="zentro-vision-hero mb-8 rounded-2xl border border-white/[0.1] p-6 shadow-[0_0_80px_-30px_rgba(94,225,255,0.18)] md:p-8">
+      <div className="smohix-vision-hero mb-8 rounded-2xl border border-white/[0.1] p-6 shadow-[0_0_80px_-30px_rgba(94,225,255,0.18)] md:p-8">
         <PageHeader
           className="mb-0"
           eyebrow="Strategy"
           title="Vision & roadmap"
-          description="Zentro grows from a sharp operations console into a platform for policy, intelligence, and team scale — with a deliberate horizon toward supervised autonomy and ambient system awareness. Near-term work stays grounded in what we can ship with your stack today."
+          description="Smohix grows from a sharp operations console into a platform for policy, intelligence, and team scale — with a deliberate horizon toward supervised autonomy and ambient system awareness. Near-term work stays grounded in what we can ship with your stack today."
         />
       </div>
 
@@ -121,7 +121,7 @@ export default function VisionPage() {
         <p className={`text-muted ${appBody}`}>
           These ideas are <span className="font-medium text-foreground/90">research and long-term</span>{" "}
           — not a committed backlog. They inform tone, architecture, and partnerships (models, data
-          residency, safety reviews) as Zentro matures.
+          residency, safety reviews) as Smohix matures.
         </p>
         <ul className={`mt-4 space-y-2.5 text-muted ${appBody}`}>
           {HORIZON.map((h) => (
@@ -150,7 +150,7 @@ export default function VisionPage() {
       </p>
       <p className={`mt-3 ${appMeta}`}>
         <Link
-          href="https://github.com/aicodeai50/ZENTRO/blob/main/docs/VISION_AND_ROADMAP.md"
+          href="https://github.com/aicodeai50/SMOHIX/blob/main/docs/VISION_AND_ROADMAP.md"
           className="font-medium text-accent hover:underline"
         >
           View on GitHub

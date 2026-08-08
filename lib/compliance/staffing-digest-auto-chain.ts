@@ -10,7 +10,7 @@ import {
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-export const STAFFING_DIGEST_AUTO_CHAIN_VERSION = "zentro-staffing-digest-auto-chain/1";
+export const STAFFING_DIGEST_AUTO_CHAIN_VERSION = "smohix-staffing-digest-auto-chain/1";
 
 export type StaffingDigestChainStepName = "rollup" | "sla_breach" | "escalation";
 

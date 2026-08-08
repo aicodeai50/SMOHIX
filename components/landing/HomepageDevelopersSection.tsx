@@ -12,7 +12,7 @@ export function HomepageDevelopersSection() {
     >
       <div className={`${mContainer} flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center`}>
         <div>
-          <p className={`${mEyebrow} text-primary-muted`}>Build with Zentro</p>
+          <p className={`${mEyebrow} text-primary-muted`}>Build with Smohix</p>
           <h2 id="dev-band-heading" className={mH2}>
             Developer platform
           </h2>

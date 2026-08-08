@@ -15,7 +15,7 @@ import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { listThirdPartyVendors } from "@/lib/third-party-risk/data";
 
-export const COMPLIANCE_POSTURE_SCORE_VERSION = "zentro-compliance-posture-score/1";
+export const COMPLIANCE_POSTURE_SCORE_VERSION = "smohix-compliance-posture-score/1";
 
 export const POSTURE_PILLAR_WEIGHTS = {
   readiness: 0.4,

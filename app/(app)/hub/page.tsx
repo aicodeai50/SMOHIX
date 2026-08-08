@@ -93,7 +93,7 @@ export default async function HubPage() {
         canPersistServer={Boolean(userId && hasSupabaseAuth())}
         customized={hubPersonalization.customized}
       />
-      <section className="zentro-glass mt-6 rounded-2xl p-5 md:p-6">
+      <section className="smohix-glass mt-6 rounded-2xl p-5 md:p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <div className="flex flex-wrap items-center gap-2">

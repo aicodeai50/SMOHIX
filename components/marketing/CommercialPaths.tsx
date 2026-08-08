@@ -24,7 +24,7 @@ export function CommercialPaths({
     <div
       className={`grid gap-4 ${compact ? "sm:grid-cols-3" : "md:grid-cols-3"} ${className}`}
       role="list"
-      aria-label="Ways to work with Zentro"
+      aria-label="Ways to work with Smohix"
     >
       {COMMERCIAL_PATHS.map((path) => (
         <Link

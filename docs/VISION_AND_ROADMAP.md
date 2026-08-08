@@ -1,4 +1,4 @@
-# Zentro vision & roadmap
+# Smohix vision & roadmap
 
 **Audience:** product, design, and engineering. **Companion:** [`PLATFORM_PLAN.md`](./PLATFORM_PLAN.md) (what is implemented vs in-flight in the repo).
 
@@ -38,7 +38,7 @@ This file is the **north star**: serious ops platform first, then a deliberately
 
 ---
 
-## Track 3 — Intelligence: Zentro as reasoning layer
+## Track 3 — Intelligence: Smohix as reasoning layer
 
 | Capability | Label | Near / Mid | Notes |
 |------------|-------|--------------|--------|
@@ -106,11 +106,11 @@ Living dependency graph, safer zero-touch deploy pipelines, generated automation
 Digital twin / simulation, multi-agent specialist agents (incident, deploy, security, policy) orchestrated with human oversight, continuous optimization, optional federated learning patterns (opt-in, privacy-preserving), “supervised autonomy” default.
 
 **Phase E — Experience**  
-Motion-rich but accessible UI, adaptive narration of system health (opt-in voice or text), calmer UX under incident load, guided onboarding, and a cohesive **Zentro OS** narrative for the whole console.
+Motion-rich but accessible UI, adaptive narration of system health (opt-in voice or text), calmer UX under incident load, guided onboarding, and a cohesive **Smohix OS** narrative for the whole console.
 
 ---
 
-## Zentro-core pick (for the next v1 spec)
+## Smohix-core pick (for the next v1 spec)
 
 If one vertical must lead the next major release: **Incidents + automation + guardrails** — it closes the loop from **signal → triage → safe action → audit**, and every other track plugs into it.
 

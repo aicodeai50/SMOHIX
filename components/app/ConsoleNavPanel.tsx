@@ -10,7 +10,8 @@ import { mergeIdleJumpModules } from "@/lib/console/hub-personalization";
 import { appMeta } from "@/lib/app-typography";
 import { CONSOLE_MODULES } from "@/lib/console-nav";
 
-const HUB_PREFS_STORAGE_KEY = "zentro.hub.personalization";
+const HUB_PREFS_STORAGE_KEY = "smohix.hub.personalization";
+const LEGACY_HUB_PREFS_STORAGE_KEY = "zentro.hub.personalization";
 
 const SEARCH_ALIASES: ReadonlyArray<{ alias: string; targets: readonly string[] }> = [
   { alias: "gov", targets: ["/governance/policies", "/governance/access"] },
@@ -34,8 +35,19 @@ const SEARCH_ALIASES: ReadonlyArray<{ alias: string; targets: readonly string[] 
   { alias: "service", targets: ["/services"] },
   { alias: "runbook", targets: ["/runbooks"] },
 ];
-const RECENT_MODULES_STORAGE_KEY = "zentro.console.recent-modules";
+const RECENT_MODULES_STORAGE_KEY = "smohix.console.recent-modules";
+const LEGACY_RECENT_MODULES_STORAGE_KEY = "zentro.console.recent-modules";
 const MAX_RECENT_MODULES = 5;
+
+function readMigratedLocalStorage(newKey: string, legacyKey: string): string | null {
+  const current = window.localStorage.getItem(newKey);
+  if (current !== null) return current;
+  const legacy = window.localStorage.getItem(legacyKey);
+  if (legacy === null) return null;
+  window.localStorage.setItem(newKey, legacy);
+  window.localStorage.removeItem(legacyKey);
+  return legacy;
+}
 const SEARCH_LINKS = [
   { href: "/docs", label: "Docs", description: "Knowledge base" },
   { href: "/docs/api", label: "API", description: "API reference" },
@@ -173,7 +185,7 @@ export function ConsoleNavPanel({ pinnedNavHrefs = [] }: { pinnedNavHrefs?: read
 
   useEffect(() => {
     if (pinnedNavHrefs.length > 0) return;
-    const raw = window.localStorage.getItem(HUB_PREFS_STORAGE_KEY);
+    const raw = readMigratedLocalStorage(HUB_PREFS_STORAGE_KEY, LEGACY_HUB_PREFS_STORAGE_KEY);
     if (!raw) return;
     try {
       const parsed = JSON.parse(raw) as { pinnedHrefs?: unknown };
@@ -188,7 +200,10 @@ export function ConsoleNavPanel({ pinnedNavHrefs = [] }: { pinnedNavHrefs?: read
   }, [pinnedNavHrefs]);
 
   useEffect(() => {
-    const raw = window.localStorage.getItem(RECENT_MODULES_STORAGE_KEY);
+    const raw = readMigratedLocalStorage(
+      RECENT_MODULES_STORAGE_KEY,
+      LEGACY_RECENT_MODULES_STORAGE_KEY,
+    );
     if (!raw) return;
     try {
       const parsed = JSON.parse(raw) as unknown;

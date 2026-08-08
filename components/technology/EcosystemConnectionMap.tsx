@@ -20,7 +20,7 @@ export function EcosystemConnectionMap({ nodes, headingId }: EcosystemConnection
       className="relative mx-auto max-w-2xl"
       role="img"
       aria-labelledby={headingId}
-      aria-label="How Zentro ecosystem capabilities connect"
+      aria-label="How Smohix ecosystem capabilities connect"
     >
       {/* Desktop: spine + alternating nodes */}
       <div className="hidden sm:block">

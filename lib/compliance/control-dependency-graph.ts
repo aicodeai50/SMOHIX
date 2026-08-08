@@ -11,7 +11,7 @@ import type { ComplianceFramework } from "@/lib/compliance/types";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-export const CONTROL_DEPENDENCY_GRAPH_VERSION = "zentro-control-dependency-graph/1";
+export const CONTROL_DEPENDENCY_GRAPH_VERSION = "smohix-control-dependency-graph/1";
 
 export type ControlGraphEdgeKind = "crosswalk" | "shared_audit" | "shared_policy" | "thematic";
 

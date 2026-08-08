@@ -76,7 +76,7 @@ export default async function Soc2IsoCrosswalkPage() {
       <PageHeader
         eyebrow="Governance"
         title="SOC 2 / ISO 27001 crosswalk"
-        description="Curated mapping matrix linking SOC 2 Trust Services Criteria to ISO 27001:2022 Annex A controls in the Zentro catalog, with 30-day audit evidence overlay per side."
+        description="Curated mapping matrix linking SOC 2 Trust Services Criteria to ISO 27001:2022 Annex A controls in the Smohix catalog, with 30-day audit evidence overlay per side."
       />
       <p className={`-mt-4 mb-6 ${appBody}`}>
         <Link href="/governance/compliance/type-ii" className="text-accent hover:underline">

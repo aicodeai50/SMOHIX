@@ -12,7 +12,7 @@ import { escapeCsvField } from "@/lib/audit/csv-escape";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-export const BASELINE_COMPARISON_VERSION = "zentro-baseline-comparison/1";
+export const BASELINE_COMPARISON_VERSION = "smohix-baseline-comparison/1";
 
 /** All catalog frameworks included in the multi-framework baseline comparison. */
 export const BASELINE_COMPARISON_FRAMEWORKS: ComplianceFramework[] = [

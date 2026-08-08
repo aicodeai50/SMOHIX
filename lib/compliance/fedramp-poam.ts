@@ -10,7 +10,7 @@ import { escapeCsvField } from "@/lib/audit/csv-escape";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-export const FEDRAMP_POAM_VERSION = "zentro-fedramp-poam/1";
+export const FEDRAMP_POAM_VERSION = "smohix-fedramp-poam/1";
 
 /** FedRAMP assessment frameworks whose exceptions feed the POA&M pack. */
 export const FEDRAMP_POAM_SOURCE_FRAMEWORKS: ComplianceFramework[] = [
@@ -27,7 +27,7 @@ export type CatalogNist80053Link = {
   baseline: "moderate" | "high";
 };
 
-/** Curated Zentro catalog control → NIST SP 800-53 Rev 5 mappings for FedRAMP POA&M export. */
+/** Curated Smohix catalog control → NIST SP 800-53 Rev 5 mappings for FedRAMP POA&M export. */
 export const CATALOG_NIST_800_53_LINKS: CatalogNist80053Link[] = [
   { catalogId: "soc2:CC1.2", nistId: "PM-1", family: "PM", title: "Information security program plan", baseline: "moderate" },
   { catalogId: "soc2:CC5.3", nistId: "PL-2", family: "PL", title: "System security and privacy plans", baseline: "moderate" },
@@ -202,7 +202,7 @@ export function buildFedrampPoamRows(gaps: FedrampPoamGapSource[]): {
       status: "Open",
       scheduledCompletionDate: completion,
       milestone: `Remediate ${nistId} — close continuous assessment exception(s)`,
-      comments: `Derived from Zentro continuous assessment gaps mapped to NIST SP 800-53 Rev 5 (${entry.link.baseline} baseline).`,
+      comments: `Derived from Smohix continuous assessment gaps mapped to NIST SP 800-53 Rev 5 (${entry.link.baseline} baseline).`,
     });
     seq += 1;
   }

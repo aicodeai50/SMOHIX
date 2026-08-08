@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-import { ZentroMarkOgContent } from "@/components/brand/zentroMarkPaths";
+import { SmohixMarkOgContent } from "@/components/brand/smohixMarkPaths";
 import {
   SITE_BRAND_NAME,
   SITE_MARKETING_TWITTER_DESCRIPTION,
@@ -29,7 +29,7 @@ export default function OpenGraphImage() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 36 }}>
-          <ZentroMarkOgContent size={96} />
+          <SmohixMarkOgContent size={96} />
           <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 860 }}>
             <div style={{ fontSize: 58, fontWeight: 700, letterSpacing: -1.2, lineHeight: 1.1 }}>
               {SITE_BRAND_NAME}

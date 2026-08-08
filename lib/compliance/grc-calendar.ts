@@ -11,7 +11,7 @@ import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { listThirdPartyVendors } from "@/lib/third-party-risk/data";
 
-export const GRC_CALENDAR_VERSION = "zentro-grc-calendar/1";
+export const GRC_CALENDAR_VERSION = "smohix-grc-calendar/1";
 
 const FRAMEWORK_LABELS: Record<ComplianceFramework, string> = {
   soc2: "SOC 2 Type II",

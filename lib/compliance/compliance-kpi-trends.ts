@@ -14,7 +14,7 @@ import type { ComplianceFramework } from "@/lib/compliance/types";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-export const COMPLIANCE_KPI_TRENDS_VERSION = "zentro-compliance-kpi-trends/1";
+export const COMPLIANCE_KPI_TRENDS_VERSION = "smohix-compliance-kpi-trends/1";
 
 export const DEFAULT_KPI_TREND_WEEKS = 12;
 

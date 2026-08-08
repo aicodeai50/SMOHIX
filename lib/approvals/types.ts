@@ -16,7 +16,7 @@ export type ApprovalRow = {
 };
 
 export type ApprovalsListResult = {
-  /** `database` = `approval_requests`; `session` = in-memory per `zentro_dev_tid`. */
+  /** `database` = `approval_requests`; `session` = in-memory per `smohix_dev_tid`. */
   source: "database" | "session";
   pending: ApprovalRow[];
   /** Completed decisions (newest first). */

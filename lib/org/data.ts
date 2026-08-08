@@ -119,7 +119,7 @@ export async function addOrgMemberByEmail(
   if (!match?.id) {
     return {
       ok: false,
-      reason: "No Zentro account found for that email. Ask them to sign up first.",
+      reason: "No Smohix account found for that email. Ask them to sign up first.",
     };
   }
 

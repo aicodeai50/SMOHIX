@@ -25,7 +25,7 @@ import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export const OBLIGATION_DENSITY_TREND_HISTORY_VERSION =
-  "zentro-obligation-density-trend-history/1";
+  "smohix-obligation-density-trend-history/1";
 
 export const DEFAULT_TRAILING_QUARTER_DAYS = 90;
 export const DEFAULT_TREND_WEEK_COUNT = 13;

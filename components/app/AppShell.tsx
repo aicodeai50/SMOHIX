@@ -320,7 +320,7 @@ export function AppShell({
       </aside>
 
       <main className="flex min-h-0 min-w-0 flex-1 flex-col lg:overflow-hidden">
-        <div className="zentro-console-main mx-auto flex min-h-0 w-full max-w-7xl flex-1 flex-col overflow-y-auto overscroll-contain p-4 md:p-8 md:pb-10">
+        <div className="smohix-console-main mx-auto flex min-h-0 w-full max-w-7xl flex-1 flex-col overflow-y-auto overscroll-contain p-4 md:p-8 md:pb-10">
           <ConsoleNavPanel pinnedNavHrefs={pinnedNavHrefs} />
           {!authEnabled ? (
             <p className={`mb-4 rounded-xl border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-amber-100 ${appMeta}`}>

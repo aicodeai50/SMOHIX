@@ -10,7 +10,7 @@ import { complianceControlsForAcceptedPolicy } from "@/lib/compliance/map-policy
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-export const POLICY_DRIFT_VERSION = "zentro-policy-drift/1";
+export const POLICY_DRIFT_VERSION = "smohix-policy-drift/1";
 
 export type PolicyDriftSeverity = "high" | "medium" | "low";
 

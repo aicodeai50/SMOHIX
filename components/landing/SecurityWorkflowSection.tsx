@@ -48,7 +48,7 @@ export function SecurityWorkflowSection() {
   return (
     <MarketingReveal id="security-workflow" className={mSection}>
       <div className={mContainer}>
-        <p className={`${mEyebrow} zentro-eyebrow-cyber`}>Breach &amp; threat response</p>
+        <p className={`${mEyebrow} smohix-eyebrow-cyber`}>Breach &amp; threat response</p>
         <h2 className={`mt-2 ${mH2}`}>How security teams run a contained response</h2>
         <p className={mLede}>
           Parallel to incident ops — optimized for intrusion, exposure, and penetration remediation

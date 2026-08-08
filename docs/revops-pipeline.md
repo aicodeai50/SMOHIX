@@ -63,7 +63,7 @@ Metrics from database only: new leads, overdue follow-ups, pilots awaiting actio
 
 ## Email support
 
-Uses existing **Resend** integration when `ZENTRO_RESEND_API_KEY` and `ZENTRO_EMAIL_FROM` are set.
+Uses existing **Resend** integration when `SMOHIX_RESEND_API_KEY` and `SMOHIX_EMAIL_FROM` are set.
 
 - `POST /api/admin/leads/{id}/email` with `{ templateId, send?: boolean }`
 - Default: opens **mailto** draft for human review
@@ -98,17 +98,17 @@ npm run db:bundle
 
 ## Admin permissions
 
-Same as Phase 3: `ZENTRO_PLATFORM_ADMIN_EMAILS` comma-separated allowlist + Supabase session.
+Same as Phase 3: `SMOHIX_PLATFORM_ADMIN_EMAILS` comma-separated allowlist + Supabase session.
 
 ## Environment variables
 
 | Variable | Purpose |
 |----------|---------|
-| `ZENTRO_PLATFORM_ADMIN_EMAILS` | Admin UI + API access |
+| `SMOHIX_PLATFORM_ADMIN_EMAILS` | Admin UI + API access |
 | `SUPABASE_SERVICE_ROLE_KEY` | Storage (server only) |
-| `ZENTRO_RESEND_API_KEY` | Optional outbound email |
-| `ZENTRO_EMAIL_FROM` | Optional sender address |
-| `ZENTRO_CONTACT_DEV_STORE=1` | Dev in-memory fallback |
+| `SMOHIX_RESEND_API_KEY` | Optional outbound email |
+| `SMOHIX_EMAIL_FROM` | Optional sender address |
+| `SMOHIX_CONTACT_DEV_STORE=1` | Dev in-memory fallback |
 
 ## Deployment checklist
 

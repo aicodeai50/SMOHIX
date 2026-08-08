@@ -1,6 +1,6 @@
 # Security Guidelines
 
-Zentro treats both metadata exposure and unsafe execution paths as security concerns.
+Smohix treats both metadata exposure and unsafe execution paths as security concerns.
 
 ## Public Exposure Rules
 

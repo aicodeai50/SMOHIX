@@ -41,9 +41,9 @@ export default function CareersPage() {
       <Header />
       <main id="main-content" className="flex-1">
         <MarketingQuantumShell>
-          <section className={`zentro-hero-future border-b border-white/[0.06] ${mSection}`}>
+          <section className={`smohix-hero-future border-b border-white/[0.06] ${mSection}`}>
             <article className={`${mArticle} ${mContainer}`}>
-              <p className={`${mEyebrow} zentro-eyebrow-cyber`}>Careers</p>
+              <p className={`${mEyebrow} smohix-eyebrow-cyber`}>Careers</p>
               <h1 className={`mt-2 ${mH1}`}>Build operational software that security teams trust</h1>
               <p className={`mt-4 max-w-2xl ${mBody}`}>
                 {SITE_BRAND_NAME} is a product company focused on incident command, guarded automation,

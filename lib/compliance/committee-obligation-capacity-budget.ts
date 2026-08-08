@@ -11,7 +11,7 @@ import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export const COMMITTEE_OBLIGATION_CAPACITY_BUDGET_VERSION =
-  "zentro-committee-obligation-capacity-budget/1";
+  "smohix-committee-obligation-capacity-budget/1";
 
 export const DEFAULT_CAPACITY_HORIZON_DAYS = 90;
 

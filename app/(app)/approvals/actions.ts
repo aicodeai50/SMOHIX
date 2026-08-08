@@ -52,7 +52,7 @@ export async function createApprovalRequestAction(formData: FormData) {
       orgId = orgContext.orgId;
     }
   } else {
-    devTenantId = (await cookies()).get("zentro_dev_tid")?.value ?? null;
+    devTenantId = ((await cookies()).get("smohix_dev_tid")?.value ?? (await cookies()).get("zentro_dev_tid")?.value) ?? null;
   }
 
   const result = await createApprovalRequest({
@@ -103,7 +103,7 @@ export async function approvalDecisionAction(formData: FormData) {
   }
 
   if (!hasSupabaseAuth()) {
-    const tid = (await cookies()).get("zentro_dev_tid")?.value;
+    const tid = ((await cookies()).get("smohix_dev_tid")?.value ?? (await cookies()).get("zentro_dev_tid")?.value);
     if (!tid) {
       redirect("/approvals?error=no_session");
     }
@@ -192,7 +192,7 @@ export async function approvalDecisionAction(formData: FormData) {
   void sendSlackNotificationWithAudit({
     userId: user.id,
     title: `Approval ${decision}`,
-    body: `An approval request was ${decision} in Zentro.`,
+    body: `An approval request was ${decision} in Smohix.`,
     details: [`approval_id: ${id}`, `open: ${approvalUrl}`],
     kind: "approval_decision",
     auditDetails: { approval_id: id, decision },

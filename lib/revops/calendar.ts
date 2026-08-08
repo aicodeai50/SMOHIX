@@ -15,7 +15,7 @@ export function buildIcsFile(events: CalendarEventInput[]): string {
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//Zentro Technologies//RevOps//EN",
+    "PRODID:-//Smohix Technologies//RevOps//EN",
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
   ];

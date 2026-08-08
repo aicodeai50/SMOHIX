@@ -8,7 +8,7 @@ import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export const OBLIGATION_STAFFING_ACTION_TRACKER_VERSION =
-  "zentro-obligation-staffing-action-tracker/1";
+  "smohix-obligation-staffing-action-tracker/1";
 
 export const DEFAULT_STAFFING_TRACKER_HORIZON_DAYS = 90;
 

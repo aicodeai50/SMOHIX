@@ -11,7 +11,7 @@ export function Skeleton({ className = "", block = true, ...props }: SkeletonPro
       role="status"
       aria-label="Loading"
       aria-busy="true"
-      className={`zentro-skeleton rounded-lg ${block ? "min-h-[1rem]" : ""} ${className}`}
+      className={`smohix-skeleton rounded-lg ${block ? "min-h-[1rem]" : ""} ${className}`}
       {...props}
     />
   );

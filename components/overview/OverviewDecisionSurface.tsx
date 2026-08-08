@@ -102,7 +102,7 @@ export function OverviewDecisionSurface({
       </section>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <section className="zentro-glass rounded-2xl p-5 md:p-6">
+        <section className="smohix-glass rounded-2xl p-5 md:p-6">
           <div className="flex flex-wrap items-end justify-between gap-2">
             <h2 className={`${appPanelTitle} text-foreground/95`}>Pending approvals</h2>
             <Link href="/approvals" className={`font-medium text-accent hover:underline ${appMeta}`}>
@@ -136,7 +136,7 @@ export function OverviewDecisionSurface({
           )}
         </section>
 
-        <section className="zentro-glass rounded-2xl p-5 md:p-6">
+        <section className="smohix-glass rounded-2xl p-5 md:p-6">
           <div className="flex flex-wrap items-end justify-between gap-2">
             <h2 className={`${appPanelTitle} text-foreground/95`}>Last platform action</h2>
             <Link href="/audit" className={`font-medium text-accent hover:underline ${appMeta}`}>
@@ -155,7 +155,7 @@ export function OverviewDecisionSurface({
         </section>
       </div>
 
-      <section className="zentro-glass rounded-2xl p-5 md:p-6">
+      <section className="smohix-glass rounded-2xl p-5 md:p-6">
         <div className="flex flex-wrap items-end justify-between gap-2">
           <h2 className={`${appPanelTitle} text-foreground/95`}>Recent execution activity</h2>
           <Link href="/automations" className={`font-medium text-accent hover:underline ${appMeta}`}>
@@ -193,7 +193,7 @@ export function OverviewDecisionSurface({
         )}
       </section>
 
-      <section className="zentro-glass rounded-2xl p-5 md:p-6">
+      <section className="smohix-glass rounded-2xl p-5 md:p-6">
         <h2 className={`${appPanelTitle} text-foreground/95`}>System status</h2>
         <p className={`mt-1 ${appMeta}`}>Product-level signals — not infrastructure metrics.</p>
         <ul className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -233,7 +233,7 @@ export function OverviewDecisionSurface({
         </ul>
       </section>
 
-      <section className="zentro-glass rounded-2xl p-5 md:p-6">
+      <section className="smohix-glass rounded-2xl p-5 md:p-6">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <h2 className={`${appPanelTitle} text-foreground/95`}>Recent incidents</h2>
           <Link href="/incidents" className={`font-medium text-accent hover:underline ${appMeta}`}>

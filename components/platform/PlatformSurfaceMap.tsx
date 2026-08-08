@@ -160,10 +160,10 @@ const EQUIPMENT_NEXT_FIVE = [
 
 export function PlatformSurfaceMap() {
   return (
-    <MarketingReveal as="article" className={`${mArticle} zentro-quantum-section`}>
+    <MarketingReveal as="article" className={`${mArticle} smohix-quantum-section`}>
       <LivingPulse />
-      <p className={`${mEyebrow} zentro-eyebrow-cyber`}>⟡ Platform map</p>
-      <h1 className="zentro-living-headline mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
+      <p className={`${mEyebrow} smohix-eyebrow-cyber`}>⟡ Platform map</p>
+      <h1 className="smohix-living-headline mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
         Operational surfaces — one console
       </h1>
       <p className="mt-2 text-sm leading-6 text-foreground/80 sm:text-base sm:leading-7">

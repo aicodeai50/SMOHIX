@@ -100,7 +100,7 @@ export function generatePublicReference(): string {
 }
 
 export function hashIdentifier(value: string): string {
-  const salt = process.env.ZENTRO_CONTACT_HASH_SALT ?? "zentro-contact-dev";
+  const salt = (process.env.SMOHIX_CONTACT_HASH_SALT ?? process.env.ZENTRO_CONTACT_HASH_SALT) ?? "smohix-contact-dev";
   return createHash("sha256").update(`${salt}:${value}`).digest("hex").slice(0, 16);
 }
 

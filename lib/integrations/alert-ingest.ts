@@ -30,7 +30,7 @@ function asObject(value: unknown): Record<string, unknown> | null {
   return value as Record<string, unknown>;
 }
 
-function vendorSeverityToZentro(value: string): IncidentSeverity {
+function vendorSeverityToSmohix(value: string): IncidentSeverity {
   const v = value.trim().toLowerCase();
   if (v === "critical" || v === "error" || v === "fatal" || v === "p1" || v === "sev1") {
     return "critical";
@@ -350,7 +350,7 @@ function normalizeSplunkPayload(obj: Record<string, unknown>): AlertIngestPayloa
 
   return {
     title: searchName.slice(0, 500),
-    severity: vendorSeverityToZentro(severityRaw ?? "medium"),
+    severity: vendorSeverityToSmohix(severityRaw ?? "medium"),
     status: "investigating",
     summary: summary.slice(0, 12000),
     service_name: serviceName ? serviceName.slice(0, 200) : undefined,
@@ -369,7 +369,7 @@ function sentinelSeverity(value: string | null): IncidentSeverity {
   if (v === "sev2" || v === "sev 2" || v === "2") return "high";
   if (v === "sev3" || v === "sev 3" || v === "3") return "medium";
   if (v === "sev4" || v === "sev 4" || v === "4") return "low";
-  return vendorSeverityToZentro(v);
+  return vendorSeverityToSmohix(v);
 }
 
 function normalizeSentinelPayload(obj: Record<string, unknown>): AlertIngestPayload {
@@ -430,7 +430,7 @@ function crowdstrikeSeverity(value: unknown): IncidentSeverity {
     if (value === 2) return "medium";
     return "low";
   }
-  if (typeof value === "string") return vendorSeverityToZentro(value);
+  if (typeof value === "string") return vendorSeverityToSmohix(value);
   return "high";
 }
 
@@ -604,7 +604,7 @@ export function normalizeAlertIngestPayload(
 
   return {
     title: title.slice(0, 500),
-    severity: vendorSeverityToZentro(alertType || priority),
+    severity: vendorSeverityToSmohix(alertType || priority),
     status: statusFromDatadogPayload(obj),
     summary: summaryParts.join("\n").slice(0, 12000),
     service_name: tagMapped.serviceName,

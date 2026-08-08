@@ -8,7 +8,7 @@ import { SITE_BRAND_NAME } from "@/lib/site-brand";
 
 export const metadata: Metadata = {
   title: "Docs",
-  description: "Product, API, trust, and onboarding documentation for Zentro.",
+  description: "Product, API, trust, and onboarding documentation for Smohix.",
 };
 
 const CARDS = [

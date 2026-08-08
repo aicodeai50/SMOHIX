@@ -23,7 +23,7 @@ import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export const OBLIGATION_OWNER_LOAD_BALANCING_VERSION =
-  "zentro-obligation-owner-load-balancing/1";
+  "smohix-obligation-owner-load-balancing/1";
 
 export const DEFAULT_LOAD_BALANCE_HORIZON_DAYS = 90;
 

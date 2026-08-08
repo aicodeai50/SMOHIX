@@ -41,11 +41,11 @@ export default function EnterprisePage() {
       <Header />
       <MarketingQuantumShell>
         <main className="flex-1 border-b border-white/[0.06]">
-          <div className="zentro-hero-future zentro-quantum-section border-b border-white/[0.06]">
+          <div className="smohix-hero-future smohix-quantum-section border-b border-white/[0.06]">
             <article className={`${mArticle} max-w-4xl`}>
               <LivingPulse />
-              <p className={`${mEyebrow} zentro-eyebrow-cyber`}>⟡ Enterprise</p>
-              <h1 className={`mt-2 zentro-headline zentro-living-headline ${mH1}`}>
+              <p className={`${mEyebrow} smohix-eyebrow-cyber`}>⟡ Enterprise</p>
+              <h1 className={`mt-2 smohix-headline smohix-living-headline ${mH1}`}>
                 Operations and security at the scale your board expects
               </h1>
               <p className={`mt-4 ${mBody} text-base sm:text-lg`}>
@@ -56,7 +56,7 @@ export default function EnterprisePage() {
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
                   href="/contact?inquiry=enterprise"
-                  className="zentro-launch-beacon inline-flex h-10 items-center rounded-lg bg-accent px-4 text-sm font-semibold text-background"
+                  className="smohix-launch-beacon inline-flex h-10 items-center rounded-lg bg-accent px-4 text-sm font-semibold text-background"
                 >
                   Contact enterprise sales
                 </Link>
@@ -78,19 +78,19 @@ export default function EnterprisePage() {
 
           <DimensionGate />
 
-          <div className="zentro-quantum-section mx-auto max-w-4xl px-4 py-12 sm:px-6 sm:py-16">
-            <h2 className={`zentro-living-headline ${mH2}`}>What enterprise includes</h2>
+          <div className="smohix-quantum-section mx-auto max-w-4xl px-4 py-12 sm:px-6 sm:py-16">
+            <h2 className={`smohix-living-headline ${mH2}`}>What enterprise includes</h2>
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
               {packages.map((pkg) => (
-                <div key={pkg.title} className={`zentro-bento-cell ${mCard}`}>
+                <div key={pkg.title} className={`smohix-bento-cell ${mCard}`}>
                   <h3 className={mCardTitle}>{pkg.title}</h3>
                   <p className={`mt-2 ${mBody}`}>{pkg.body}</p>
                 </div>
               ))}
             </div>
 
-            <section className="zentro-holo-panel mt-12 rounded-2xl p-6 sm:p-8">
-              <h2 className={`zentro-living-headline ${mH2}`}>Procurement checklist</h2>
+            <section className="smohix-holo-panel mt-12 rounded-2xl p-6 sm:p-8">
+              <h2 className={`smohix-living-headline ${mH2}`}>Procurement checklist</h2>
               <ul className={`mt-4 space-y-2 ${mBody}`}>
                 <li>Data residency via your Supabase project region</li>
                 <li>FedRAMP-oriented deployment profile at /settings/deployment</li>

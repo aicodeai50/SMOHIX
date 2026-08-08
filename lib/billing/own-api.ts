@@ -1,4 +1,4 @@
-import { getZentroOwnApiUrl } from "@/lib/backend-urls";
+import { getSmohixOwnApiUrl } from "@/lib/backend-urls";
 
 export type OwnApiBillingEvent = {
   userId: string;
@@ -9,16 +9,16 @@ export type OwnApiBillingEvent = {
 };
 
 /**
- * Notify ZENTRO-OWN-API of billing events when centralized billing is configured.
+ * Notify SMOHIX-OWN-API of billing events when centralized billing is configured.
  * Failures are logged but do not block local webhook processing.
  */
 export async function notifyOwnApiBilling(
   event: OwnApiBillingEvent,
 ): Promise<void> {
-  const base = getZentroOwnApiUrl();
+  const base = getSmohixOwnApiUrl();
   if (!base) return;
 
-  const secret = process.env.ZENTRO_OWN_API_SECRET?.trim();
+  const secret = (process.env.SMOHIX_OWN_API_SECRET ?? process.env.ZENTRO_OWN_API_SECRET)?.trim();
   try {
     const res = await fetch(`${base.replace(/\/$/, "")}/v1/billing/events`, {
       method: "POST",

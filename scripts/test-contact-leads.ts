@@ -78,7 +78,7 @@ const normalized = normalizeLeadPayload({
   ...validPayload,
   inquiryType: "pilot",
   pilotCategory: "ai-integration",
-  productContext: "zentro-ai",
+  productContext: "smohix-ai",
 });
 assert(normalized.email === "jane@acmecorp.com", "email normalized");
 assert(normalized.metadata.is_pilot === true, "pilot flagged in metadata");
@@ -111,7 +111,8 @@ assert(fp1 === fp2, "duplicate fingerprint stable");
 
 // --- Platform admin ---
 
-process.env.ZENTRO_PLATFORM_ADMIN_EMAILS = "Admin@Example.com, ops@zentro.run";
+process.env.SMOHIX_PLATFORM_ADMIN_EMAILS = "Admin@Example.com, ops@smohix.run";
+delete process.env.ZENTRO_PLATFORM_ADMIN_EMAILS;
 assert(isPlatformAdmin("admin@example.com"), "admin email case-insensitive");
 assert(!isPlatformAdmin("stranger@example.com"), "non-admin rejected");
 assert(getPlatformAdminEmails().length === 2, "admin list parsed");

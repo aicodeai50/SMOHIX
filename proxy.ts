@@ -43,7 +43,7 @@ function noStoreHtml(response: NextResponse, pathname: string) {
 }
 
 /**
- * 1) Railway default host -> apex (so Google only indexes zentro.run and picks up your favicon).
+ * 1) Railway default host -> apex (so Google only indexes smohix.run and picks up your favicon).
  * 2) www -> apex for the primary host.
  * 3) Supabase session refresh (when env is set).
  * 4) Protect console routes; send signed-in users away from sign-in/up.
@@ -54,7 +54,7 @@ export async function proxy(request: NextRequest) {
   const apex = SITE_PRIMARY_DOMAIN.toLowerCase();
 
   if (
-    process.env.ZENTRO_SKIP_CANONICAL_HOST_REDIRECT !== "1" &&
+    (process.env.SMOHIX_SKIP_CANONICAL_HOST_REDIRECT ?? process.env.ZENTRO_SKIP_CANONICAL_HOST_REDIRECT) !== "1" &&
     hostname.endsWith(".up.railway.app") &&
     hostname !== apex
   ) {
@@ -77,8 +77,18 @@ export async function proxy(request: NextRequest) {
 
   if (!hasSupabaseAuth()) {
     const res = NextResponse.next();
-    if (!request.cookies.get("zentro_dev_tid")?.value) {
-      res.cookies.set("zentro_dev_tid", globalThis.crypto.randomUUID(), {
+    const existingTid =
+      request.cookies.get("smohix_dev_tid")?.value ?? request.cookies.get("zentro_dev_tid")?.value;
+    if (!existingTid) {
+      res.cookies.set("smohix_dev_tid", globalThis.crypto.randomUUID(), {
+        path: "/",
+        maxAge: 60 * 60 * 24 * 365,
+        sameSite: "lax",
+        httpOnly: true,
+      });
+    } else if (!request.cookies.get("smohix_dev_tid")?.value) {
+      // One-time migrate legacy Zentro cookie name without discarding tenant state.
+      res.cookies.set("smohix_dev_tid", existingTid, {
         path: "/",
         maxAge: 60 * 60 * 24 * 365,
         sameSite: "lax",
@@ -118,7 +128,7 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Include favicon and icon assets so *.up.railway.app requests redirect to zentro.run (Google favicon crawl).
+    // Include favicon and icon assets so *.up.railway.app requests redirect to smohix.run (Google favicon crawl).
     "/((?!api/health|_next/static|_next/image).*)",
   ],
 };

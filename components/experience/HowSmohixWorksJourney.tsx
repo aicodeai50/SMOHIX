@@ -6,13 +6,13 @@ import { mBody } from "@/lib/marketing-layout";
 
 const STEPS = [
   { id: "user", label: "User", sub: "Operator, developer, or leader" },
-  { id: "platform", label: "Zentro Platform", sub: "Incidents, approvals, audit" },
+  { id: "platform", label: "Smohix Platform", sub: "Incidents, approvals, audit" },
   { id: "ai", label: "AI Layer", sub: "Copilot & reasoning (server-side)" },
   { id: "products", label: "Products", sub: "API, Agents, Knowledge, Analytics…" },
   { id: "results", label: "Results", sub: "Evidence, exports, accountable ops" },
 ] as const;
 
-export function HowZentroWorksJourney() {
+export function HowSmohixWorksJourney() {
   const [active, setActive] = useState(0);
   const reduced =
     typeof window !== "undefined" &&
@@ -30,7 +30,7 @@ export function HowZentroWorksJourney() {
         viewBox="0 0 400 320"
         className="mx-auto w-full max-w-lg"
         role="img"
-        aria-label="How Zentro works: user through platform, AI, products, to results"
+        aria-label="How Smohix works: user through platform, AI, products, to results"
       >
         <defs>
           <linearGradient id="jz-flow" x1="0%" y1="0%" x2="0%" y2="100%">

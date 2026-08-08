@@ -14,7 +14,7 @@ import { matchAssetHostToService } from "@/lib/vulnerabilities/priority";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-export const SCOPE_BOUNDARY_MAPPER_VERSION = "zentro-scope-boundary-mapper/1";
+export const SCOPE_BOUNDARY_MAPPER_VERSION = "smohix-scope-boundary-mapper/1";
 
 export type ScopeBoundaryZone =
   | "cardholder"

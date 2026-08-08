@@ -17,7 +17,7 @@ import { listServicesForUser } from "@/lib/services/data";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-export const CONTROL_OWNERSHIP_MATRIX_VERSION = "zentro-control-ownership-matrix/1";
+export const CONTROL_OWNERSHIP_MATRIX_VERSION = "smohix-control-ownership-matrix/1";
 
 const FRAMEWORK_LABELS: Record<ComplianceFramework, string> = {
   soc2: "SOC 2",

@@ -1,5 +1,5 @@
 /**
- * Zentro platform map — nodes, edges, and product relationship graph.
+ * Smohix platform map — nodes, edges, and product relationship graph.
  * Single source for interactive ecosystem UI and product detail pages.
  */
 
@@ -8,7 +8,7 @@ import type { AppIconName } from "@/components/icons/AppIcon";
 export type ProductMaturity = "live" | "preview" | "prototype" | "coming-soon";
 
 export type PlatformNodeId =
-  | "zentro-run"
+  | "smohix-run"
   | "platform"
   | "ai"
   | "projects"
@@ -36,8 +36,8 @@ export type PlatformNode = {
 
 export const PLATFORM_NODES: readonly PlatformNode[] = [
   {
-    id: "zentro-run",
-    label: "Zentro.run",
+    id: "smohix-run",
+    label: "Smohix.run",
     shortDescription: "Official home and entry point for the ecosystem.",
     href: "/",
     icon: "layoutDashboard",
@@ -47,19 +47,19 @@ export const PLATFORM_NODES: readonly PlatformNode[] = [
   },
   {
     id: "platform",
-    label: "Zentro Platform",
+    label: "Smohix Platform",
     shortDescription: "Core console — incidents, automation, approvals, audit.",
-    href: "/products/zentro-platform",
+    href: "/products/smohix-platform",
     icon: "layoutDashboard",
     tier: 1,
     maturity: "live",
-    connections: ["zentro-run", "ai", "projects", "knowledge", "agents", "api", "identity"],
+    connections: ["smohix-run", "ai", "projects", "knowledge", "agents", "api", "identity"],
   },
   {
     id: "ai",
     label: "AI",
     shortDescription: "Copilot, reasoning proxy, and guided triage.",
-    href: "/products/zentro-ai",
+    href: "/products/smohix-ai",
     icon: "bot",
     tier: 2,
     maturity: "live",
@@ -98,8 +98,8 @@ export const PLATFORM_NODES: readonly PlatformNode[] = [
   {
     id: "api",
     label: "API",
-    shortDescription: "Zentro Own API, ingest tokens, and webhooks.",
-    href: "/products/zentro-own-api",
+    shortDescription: "Smohix Own API, ingest tokens, and webhooks.",
+    href: "/products/smohix-own-api",
     icon: "server",
     tier: 3,
     maturity: "live",
@@ -166,7 +166,7 @@ export const PLATFORM_LAYOUT: Record<
   PlatformNodeId,
   { x: number; y: number }
 > = {
-  "zentro-run": { x: 50, y: 6 },
+  "smohix-run": { x: 50, y: 6 },
   platform: { x: 50, y: 20 },
   ai: { x: 18, y: 36 },
   projects: { x: 50, y: 36 },
@@ -224,16 +224,16 @@ const rel = (id: PlatformNodeId) => ({
 
 export const PRODUCT_PAGES: readonly ProductPageContent[] = [
   {
-    id: "zentro-platform",
-    slug: "zentro-platform",
-    name: "Zentro Platform",
+    id: "smohix-platform",
+    slug: "smohix-platform",
+    name: "Smohix Platform",
     tagline: "The operational command layer for incidents, automation, and evidence.",
     maturity: "live",
     nodeId: "platform",
     problem:
       "Teams scatter incidents, runbooks, approvals, and audit trails across disconnected tools — slowing response and weakening accountability.",
     solution:
-      "Zentro Platform unifies incident command, guarded automation, service context, and audit export in one workspace at zentro.run.",
+      "Smohix Platform unifies incident command, guarded automation, service context, and audit export in one workspace at smohix.run.",
     howItWorks: [
       "Alerts and ingest open or enrich incidents with service context.",
       "Automations dry-run against robot backends before execution.",
@@ -251,12 +251,12 @@ export const PRODUCT_PAGES: readonly ProductPageContent[] = [
       "Tighter agent orchestration from the same console",
       "Expanded vertical solution packs",
     ],
-    uses: [rel("zentro-run"), rel("cloud")],
+    uses: [rel("smohix-run"), rel("cloud")],
     worksWith: [rel("ai"), rel("agents"), rel("api"), rel("identity"), rel("knowledge")],
     integratesWith: ["Supabase", "PayPal", "Slack approvals", "Alert ingest webhooks"],
     relatedProducts: [
-      { slug: "zentro-ai", name: "Zentro AI" },
-      { slug: "zentro-own-api", name: "Zentro Own API" },
+      { slug: "smohix-ai", name: "Smohix AI" },
+      { slug: "smohix-own-api", name: "Smohix Own API" },
       { slug: "agents", name: "Agents" },
     ],
     developerApis: [
@@ -273,18 +273,18 @@ export const PRODUCT_PAGES: readonly ProductPageContent[] = [
     secondaryCta: { href: "/architecture", label: "View architecture" },
   },
   {
-    id: "zentro-ai",
-    slug: "zentro-ai",
-    name: "Zentro AI",
+    id: "smohix-ai",
+    slug: "smohix-ai",
+    name: "Smohix AI",
     tagline: "Copilot and reasoning integrated into accountable operations.",
     maturity: "live",
     nodeId: "ai",
     problem:
       "Generic chat tools sit outside your incident and approval workflow — answers lack context and cannot safely trigger production changes.",
     solution:
-      "Zentro AI routes Copilot through same-origin APIs to OpenAI or your reasoning backend, grounded in workspace context and guardrails.",
+      "Smohix AI routes Copilot through same-origin APIs to OpenAI or your reasoning backend, grounded in workspace context and guardrails.",
     howItWorks: [
-      "Open the flagship workspace at ai.zentro.run.",
+      "Open the flagship workspace at ai.smohix.run.",
       "Console Copilot uses server-side routes — keys stay off the client.",
       "Incident-aware threads when signed in to Platform.",
       "Guided offline replies when no model is configured for your environment.",
@@ -300,9 +300,9 @@ export const PRODUCT_PAGES: readonly ProductPageContent[] = [
     ],
     uses: [rel("platform"), rel("api")],
     worksWith: [rel("agents"), rel("memory"), rel("knowledge"), rel("analytics")],
-    integratesWith: ["Zentro Platform", "Zentro identity", "Developer APIs"],
+    integratesWith: ["Smohix Platform", "Smohix identity", "Developer APIs"],
     relatedProducts: [
-      { slug: "zentro-platform", name: "Zentro Platform" },
+      { slug: "smohix-platform", name: "Smohix Platform" },
       { slug: "agents", name: "Agents" },
       { slug: "memory-pendant", name: "Memory Pendant" },
     ],
@@ -318,16 +318,16 @@ export const PRODUCT_PAGES: readonly ProductPageContent[] = [
     secondaryCta: { href: "/technology", label: "AI layer" },
   },
   {
-    id: "zentro-own-api",
-    slug: "zentro-own-api",
-    name: "Zentro Own API",
+    id: "smohix-own-api",
+    slug: "smohix-own-api",
+    name: "Smohix Own API",
     tagline: "Centralized API surface for billing events and ecosystem integration.",
     maturity: "live",
     nodeId: "api",
     problem:
       "Billing, ingest, and automation callers need stable, documented endpoints — not ad-hoc URLs per service.",
     solution:
-      "Zentro Own API (documented at /docs/api) exposes cataloged routes; optional REACT_APP_ZENTRO_OWN_API forwards billing events to your centralized service.",
+      "Smohix Own API (documented at /docs/api) exposes cataloged routes; optional REACT_APP_SMOHIX_OWN_API forwards billing events to your centralized service.",
     howItWorks: [
       "Public catalog lists authenticated and webhook routes.",
       "API keys and alert ingest tokens scoped per workspace.",
@@ -345,9 +345,9 @@ export const PRODUCT_PAGES: readonly ProductPageContent[] = [
     ],
     uses: [rel("platform"), rel("cloud")],
     worksWith: [rel("ai"), rel("agents"), rel("developers"), rel("identity")],
-    integratesWith: ["PayPal", "Supabase service role", "ZENTRO-OWN-API (optional)"],
+    integratesWith: ["PayPal", "Supabase service role", "SMOHIX-OWN-API (optional)"],
     relatedProducts: [
-      { slug: "zentro-platform", name: "Zentro Platform" },
+      { slug: "smohix-platform", name: "Smohix Platform" },
       { slug: "identity", name: "Identity" },
     ],
     developerApis: [
@@ -379,7 +379,7 @@ export const PRODUCT_PAGES: readonly ProductPageContent[] = [
     ],
     benefits: [
       "Clear healthcare context without medical device claims",
-      "Part of the Zentro ecosystem roadmap",
+      "Part of the Smohix ecosystem roadmap",
       "Pilot intake available for scoped engagements",
     ],
     roadmap: [
@@ -389,9 +389,9 @@ export const PRODUCT_PAGES: readonly ProductPageContent[] = [
     ],
     uses: [rel("ai"), rel("knowledge"), rel("agents")],
     worksWith: [rel("platform"), rel("api")],
-    integratesWith: ["Zentro AI", "Agents", "Knowledge (planned)"],
+    integratesWith: ["Smohix AI", "Agents", "Knowledge (planned)"],
     relatedProducts: [
-      { slug: "zentro-ai", name: "Zentro AI" },
+      { slug: "smohix-ai", name: "Smohix AI" },
       { slug: "agents", name: "Agents" },
       { slug: "knowledge", name: "Knowledge" },
     ],
@@ -431,8 +431,8 @@ export const PRODUCT_PAGES: readonly ProductPageContent[] = [
     worksWith: [rel("memory"), rel("projects"), rel("knowledge")],
     integratesWith: ["Robot backend", "Slack approvals", "Audit log"],
     relatedProducts: [
-      { slug: "zentro-platform", name: "Zentro Platform" },
-      { slug: "zentro-ai", name: "Zentro AI" },
+      { slug: "smohix-platform", name: "Smohix Platform" },
+      { slug: "smohix-ai", name: "Smohix AI" },
       { slug: "memory-pendant", name: "Memory Pendant" },
     ],
     developerApis: [
@@ -474,7 +474,7 @@ export const PRODUCT_PAGES: readonly ProductPageContent[] = [
     worksWith: [rel("knowledge"), rel("agents"), rel("analytics")],
     integratesWith: ["Supabase org members", "Platform hub"],
     relatedProducts: [
-      { slug: "zentro-platform", name: "Zentro Platform" },
+      { slug: "smohix-platform", name: "Smohix Platform" },
       { slug: "identity", name: "Identity" },
     ],
     developerApis: [{ href: "/docs/api", label: "Org APIs (expanding)" }],
@@ -510,7 +510,7 @@ export const PRODUCT_PAGES: readonly ProductPageContent[] = [
     worksWith: [rel("memory"), rel("projects")],
     integratesWith: ["Runbooks", "Compliance hub", "Copilot"],
     relatedProducts: [
-      { slug: "zentro-platform", name: "Zentro Platform" },
+      { slug: "smohix-platform", name: "Smohix Platform" },
       { slug: "memory-pendant", name: "Memory Pendant" },
     ],
     developerApis: [{ href: "/docs/api", label: "Governance APIs" }],
@@ -546,8 +546,8 @@ export const PRODUCT_PAGES: readonly ProductPageContent[] = [
     worksWith: [rel("ai"), rel("projects")],
     integratesWith: ["Overview module", "Services SLO", "Hub dashboard"],
     relatedProducts: [
-      { slug: "zentro-platform", name: "Zentro Platform" },
-      { slug: "zentro-ai", name: "Zentro AI" },
+      { slug: "smohix-platform", name: "Smohix Platform" },
+      { slug: "smohix-ai", name: "Smohix AI" },
     ],
     developerApis: [{ href: "/api/overview/error-budget-summary", label: "SLO summary API" }],
     documentation: [{ href: "/auth/sign-in?next=/overview", label: "Overview console" }],
@@ -581,8 +581,8 @@ export const PRODUCT_PAGES: readonly ProductPageContent[] = [
     worksWith: [rel("api"), rel("projects")],
     integratesWith: ["Supabase Auth", "PayPal billing user linkage"],
     relatedProducts: [
-      { slug: "zentro-platform", name: "Zentro Platform" },
-      { slug: "zentro-own-api", name: "Zentro Own API" },
+      { slug: "smohix-platform", name: "Smohix Platform" },
+      { slug: "smohix-own-api", name: "Smohix Own API" },
     ],
     developerApis: [{ href: "/settings/api-keys", label: "API keys" }],
     documentation: [
@@ -592,32 +592,32 @@ export const PRODUCT_PAGES: readonly ProductPageContent[] = [
     primaryCta: { href: "/auth/sign-in", label: "Sign in" },
   },
   {
-    id: "zentro-assistant",
-    slug: "zentro-assistant",
-    name: "Zentro Assistant",
+    id: "smohix-assistant",
+    slug: "smohix-assistant",
+    name: "Smohix Assistant",
     tagline: "Personal intelligent workspace for productivity — distinct from team AI chat.",
     maturity: "live",
     problem:
       "Team AI chat is not built for individual focus, planning, and personal knowledge work.",
     solution:
-      "Zentro Assistant at assistant.zentro.run is a dedicated productivity workspace within the Zentro ecosystem.",
+      "Smohix Assistant at assistant.smohix.run is a dedicated productivity workspace within the Smohix ecosystem.",
     howItWorks: [
-      "Sign in with Zentro identity — same company, separate workspace.",
+      "Sign in with Smohix identity — same company, separate workspace.",
       "Personal workflows for planning, drafting, and daily work.",
       "Optional linkage to organization Platform settings when enabled.",
     ],
     benefits: [
-      "Clear differentiation from Zentro AI team intelligence",
+      "Clear differentiation from Smohix AI team intelligence",
       "Personal productivity focus",
       "Ecosystem-native identity and access",
     ],
     roadmap: ["Calendar and task integrations", "Org-controlled Platform linkage"],
     uses: [rel("identity"), rel("ai")],
     worksWith: [rel("platform"), rel("developers")],
-    integratesWith: ["Zentro identity", "Zentro AI (optional)"],
+    integratesWith: ["Smohix identity", "Smohix AI (optional)"],
     relatedProducts: [
-      { slug: "zentro-ai", name: "Zentro AI" },
-      { slug: "zentro-platform", name: "Zentro Platform" },
+      { slug: "smohix-ai", name: "Smohix AI" },
+      { slug: "smohix-platform", name: "Smohix Platform" },
       { slug: "private-ai", name: "Private AI" },
     ],
     developerApis: [{ href: "/docs/api", label: "API catalog" }],
@@ -625,7 +625,7 @@ export const PRODUCT_PAGES: readonly ProductPageContent[] = [
       { href: "/developers", label: "Developers" },
       { href: "/docs", label: "Documentation" },
     ],
-    primaryCta: { href: "https://assistant.zentro.run", label: "Open Assistant" },
+    primaryCta: { href: "https://assistant.smohix.run", label: "Open Assistant" },
     secondaryCta: { href: "/products", label: "All products" },
   },
   {
@@ -637,11 +637,11 @@ export const PRODUCT_PAGES: readonly ProductPageContent[] = [
     problem:
       "Security-sensitive teams need AI without giving up deployment control or data boundaries.",
     solution:
-      "Private AI at pri.zentro.run provides a controlled workspace for private deployment and organization-scoped access.",
+      "Private AI at pri.smohix.run provides a controlled workspace for private deployment and organization-scoped access.",
     howItWorks: [
-      "Dedicated workspace within the Zentro ecosystem.",
+      "Dedicated workspace within the Smohix ecosystem.",
       "Organization-controlled access patterns.",
-      "Complements flagship Zentro AI — not a universal replacement.",
+      "Complements flagship Smohix AI — not a universal replacement.",
     ],
     benefits: [
       "Privacy and security-first positioning",
@@ -651,10 +651,10 @@ export const PRODUCT_PAGES: readonly ProductPageContent[] = [
     roadmap: ["Enterprise deployment guides", "Platform governance integration"],
     uses: [rel("identity"), rel("ai")],
     worksWith: [rel("platform"), rel("developers")],
-    integratesWith: ["Zentro identity", "Enterprise governance (beta)"],
+    integratesWith: ["Smohix identity", "Enterprise governance (beta)"],
     relatedProducts: [
-      { slug: "zentro-ai", name: "Zentro AI" },
-      { slug: "zentro-platform", name: "Zentro Platform" },
+      { slug: "smohix-ai", name: "Smohix AI" },
+      { slug: "smohix-platform", name: "Smohix Platform" },
       { slug: "identity", name: "Identity" },
     ],
     developerApis: [{ href: "/docs/api", label: "API catalog" }],
@@ -662,23 +662,23 @@ export const PRODUCT_PAGES: readonly ProductPageContent[] = [
       { href: "/enterprise", label: "Enterprise" },
       { href: "/trust", label: "Trust center" },
     ],
-    primaryCta: { href: "https://pri.zentro.run", label: "Open Private AI" },
+    primaryCta: { href: "https://pri.smohix.run", label: "Open Private AI" },
     secondaryCta: { href: "/contact?inquiry=enterprise", label: "Contact sales" },
   },
   {
-    id: "zentro-log",
-    slug: "zentro-log",
-    name: "Zentro Log",
+    id: "smohix-log",
+    slug: "smohix-log",
+    name: "Smohix Log",
     tagline: "Operational workspace for administrators — not a consumer product.",
     maturity: "live",
     problem:
       "Administrators need operational visibility without mixing consumer product surfaces.",
     solution:
-      "Zentro Log at log.zentro.run is an administrator workspace for operational review within the ecosystem.",
+      "Smohix Log at log.smohix.run is an administrator workspace for operational review within the ecosystem.",
     howItWorks: [
       "Restricted to authorized administrators.",
       "Complements Platform audit and governance modules.",
-      "Same Zentro identity model as other workspaces.",
+      "Same Smohix identity model as other workspaces.",
     ],
     benefits: [
       "Administrator-focused — not marketed as consumer AI",
@@ -688,14 +688,14 @@ export const PRODUCT_PAGES: readonly ProductPageContent[] = [
     roadmap: ["Expanded export controls", "Cross-workspace operational views"],
     uses: [rel("platform"), rel("identity")],
     worksWith: [rel("developers")],
-    integratesWith: ["Zentro Platform audit modules"],
+    integratesWith: ["Smohix Platform audit modules"],
     relatedProducts: [
-      { slug: "zentro-platform", name: "Zentro Platform" },
+      { slug: "smohix-platform", name: "Smohix Platform" },
       { slug: "identity", name: "Identity" },
     ],
     developerApis: [{ href: "/docs/api", label: "API catalog" }],
     documentation: [{ href: "/security", label: "Security" }],
-    primaryCta: { href: "https://log.zentro.run", label: "Open Log workspace" },
+    primaryCta: { href: "https://log.smohix.run", label: "Open Log workspace" },
     secondaryCta: { href: "/contact?inquiry=enterprise", label: "Request access" },
   },
 ] as const;
@@ -716,11 +716,11 @@ export type PlatformStatusItem = {
 };
 
 export const PLATFORM_STATUS: readonly PlatformStatusItem[] = [
-  { id: "ai", label: "Zentro AI", status: "operational", href: "/products/zentro-ai" },
-  { id: "platform", label: "Platform", status: "operational", href: "/products/zentro-platform" },
-  { id: "assistant", label: "Assistant", status: "operational", href: "/products/zentro-assistant" },
+  { id: "ai", label: "Smohix AI", status: "operational", href: "/products/smohix-ai" },
+  { id: "platform", label: "Platform", status: "operational", href: "/products/smohix-platform" },
+  { id: "assistant", label: "Assistant", status: "operational", href: "/products/smohix-assistant" },
   { id: "private-ai", label: "Private AI", status: "operational", href: "/products/private-ai" },
-  { id: "api", label: "API", status: "operational", href: "/products/zentro-own-api" },
+  { id: "api", label: "API", status: "operational", href: "/products/smohix-own-api" },
   { id: "docs", label: "Documentation", status: "operational", href: "/docs" },
   { id: "developers", label: "Developers", status: "operational", href: "/developers" },
   { id: "agents", label: "Agents", status: "preview", href: "/products/agents" },
@@ -737,20 +737,20 @@ export const ARCHITECTURE_LAYERS = [
   {
     id: "frontend",
     label: "Frontend",
-    detail: "Next.js at zentro.run — marketing, console, same-origin API routes",
+    detail: "Next.js at smohix.run — marketing, console, same-origin API routes",
     href: "/technology",
   },
   {
     id: "platform",
     label: "Platform",
     detail: "Incidents, automations, approvals, audit, Copilot modules",
-    href: "/products/zentro-platform",
+    href: "/products/smohix-platform",
   },
   {
     id: "gateway",
     label: "AI Gateway",
     detail: "Copilot route, reasoning proxy, optional OpenAI",
-    href: "/products/zentro-ai",
+    href: "/products/smohix-ai",
   },
   {
     id: "providers",
@@ -812,7 +812,7 @@ export const TECHNOLOGY_STACK = [
   },
   {
     category: "Deployment",
-    items: ["Railway NIXPACKS build", "Canonical domain zentro.run", "Migrations via Supabase SQL"],
+    items: ["Railway NIXPACKS build", "Canonical domain smohix.run", "Migrations via Supabase SQL"],
   },
 ] as const;
 

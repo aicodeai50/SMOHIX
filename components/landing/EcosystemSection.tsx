@@ -29,13 +29,13 @@ export function EcosystemSection() {
       <div className={mContainer}>
         <p className={`${mEyebrow} text-primary-muted`}>One intelligent platform</p>
         <h2 id="ecosystem-heading" className={`mt-2 ${mH2}`}>
-          The Zentro ecosystem map
+          The Smohix ecosystem map
         </h2>
         <p className={`${mLede} mt-3 max-w-2xl`}>
           Every product is a capability inside the same platform — not a separate silo.
           Explore how AI, Platform, Assistant, and developer surfaces connect inside{" "}
-          <Link href="/products/zentro-platform" className="text-accent hover:underline">
-            Zentro Platform
+          <Link href="/products/smohix-platform" className="text-accent hover:underline">
+            Smohix Platform
           </Link>
           .
         </p>

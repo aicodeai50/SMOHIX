@@ -1,6 +1,6 @@
-# Zentro Platform (web)
+# Smohix Platform (web)
 
-Next.js app for [zentro.run](https://zentro.run): marketing site + console shell.
+Next.js app for [smohix.run](https://smohix.run): marketing site + console shell.
 
 **Roadmap & completion checklist:** [`docs/PLATFORM_PLAN.md`](docs/PLATFORM_PLAN.md) · **Vision & long-term direction:** [`docs/VISION_AND_ROADMAP.md`](docs/VISION_AND_ROADMAP.md) (also **`/vision`** in the signed-in console). **Database (Supabase / Postgres):** run SQL migrations **in order** in the Supabase SQL editor (same filenames under [`supabase/migrations/`](supabase/migrations/)):
 
@@ -45,9 +45,9 @@ npm run dev
 
 Open **http://localhost:3000** (marketing) and **http://localhost:3000/hub** (console hub — works without Supabase; Copilot uses `/api/copilot/chat` with offline or OpenAI).
 
-## GitHub: `ZENTRO`
+## GitHub: `SMOHIX`
 
-1. On GitHub, create a new repo named **ZENTRO** (empty — no README/License if you want zero merge friction).
+1. On GitHub, create a new repo named **SMOHIX** (empty — no README/License if you want zero merge friction).
 2. From the folder that contains this project:
 
 **Option A — this `web` folder is the repo root** (simplest for Railway):
@@ -56,9 +56,9 @@ Open **http://localhost:3000** (marketing) and **http://localhost:3000/hub** (co
 cd web
 git init
 git add .
-git commit -m "Initial Zentro web app"
+git commit -m "Initial Smohix web app"
 git branch -M main
-git remote add origin https://github.com/aicodeai50/ZENTRO.git
+git remote add origin https://github.com/aicodeai50/SMOHIX.git
 git push -u origin main
 ```
 
@@ -70,9 +70,9 @@ git pull origin main --allow-unrelated-histories
 
 Resolve any merge (keep this project’s `README.md` if asked), then `git push -u origin main`.
 
-**Windows:** install [Git for Windows](https://git-scm.com/download/win) or use **GitHub Desktop** → add the `web` folder → publish to `aicodeai50/ZENTRO`.
+**Windows:** install [Git for Windows](https://git-scm.com/download/win) or use **GitHub Desktop** → add the `web` folder → publish to `aicodeai50/SMOHIX`.
 
-**Option B — monorepo** (e.g. `ZENTRO/web`):
+**Option B — monorepo** (e.g. `SMOHIX/web`):
 
 Push the parent folder instead and set **Railway Root Directory** to `web`.
 
@@ -88,24 +88,24 @@ Copy `.env.example` to `.env.local` and fill in values.
 | `NEXT_PUBLIC_LEMONSQUEEZY_CHECKOUT_URL` | Lemon product checkout link (CTAs use this when set). |
 | `LEMONSQUEEZY_WEBHOOK_SIGNING_SECRET` | Lemon webhook signing secret. |
 
-Webhook URL in Lemon: `https://zentro.run/api/webhooks/lemonsqueezy` (use your production domain).
+Webhook URL in Lemon: `https://smohix.run/api/webhooks/lemonsqueezy` (use your production domain).
 
-**Checkout → user link:** paid flows should use `getCheckoutUrlForUser(userId)` from `lib/billing.ts` so Lemon sends `meta.custom_data.zentro_user_id` (plus legacy key) and webhooks can attach rows in `public.subscriptions`.
+**Checkout → user link:** paid flows should use `getCheckoutUrlForUser(userId)` from `lib/billing.ts` so Lemon sends `meta.custom_data.smohix_user_id` (plus legacy key) and webhooks can attach rows in `public.subscriptions`.
 
 **Checkout key migration (temporary compatibility):**
 
-- New canonical key: `zentro_user_id`
+- New canonical key: `smohix_user_id`
 - Current checkout helpers send **both** keys for safe rollout across environments.
 - Recommended sunset for legacy key: **2026-08-31** (or after one full billing cycle in your prod workspace).
 - Sunset steps:
-  1. Confirm incoming Lemon webhook payloads include `zentro_user_id`.
-  2. Keep parser strict to `zentro_user_id` (+ optional `supabase_user_id` fallback only).
-  3. Keep checkout helpers writing only `zentro_user_id`.
+  1. Confirm incoming Lemon webhook payloads include `smohix_user_id`.
+  2. Keep parser strict to `smohix_user_id` (+ optional `supabase_user_id` fallback only).
+  3. Keep checkout helpers writing only `smohix_user_id`.
   4. Run `npm run test:security` and a test checkout/webhook in staging before production deploy.
 
 ## Railway (deploy now)
 
-Repo: **`aicodeai50/ZENTRO`**, branch **`main`**. This project ships **`railway.json`**: Railpack runs **`npm run build`**, start **`npm run start`**, healthcheck **`/api/health`** (see `app/api/health/route.ts`).
+Repo: **`aicodeai50/SMOHIX`**, branch **`main`**. This project ships **`railway.json`**: Railpack runs **`npm run build`**, start **`npm run start`**, healthcheck **`/api/health`** (see `app/api/health/route.ts`).
 
 **Deploy-first (smoke test before building more):**
 
@@ -118,9 +118,9 @@ Repo: **`aicodeai50/ZENTRO`**, branch **`main`**. This project ships **`railway.
 ### 1. Service → Source
 
 1. Open your Railway project → the **web** service (or create a service from **Empty** then attach GitHub).
-2. **Settings** → **Source** → **Connect Repo** → pick **`aicodeai50/ZENTRO`**.
+2. **Settings** → **Source** → **Connect Repo** → pick **`aicodeai50/SMOHIX`**.
 3. **Branch**: **`main`**.
-4. **Root Directory**: leave **empty** (repo root is the Next app). Only set **`web`** if your GitHub layout is `ZENTRO/web/...`.
+4. **Root Directory**: leave **empty** (repo root is the Next app). Only set **`web`** if your GitHub layout is `SMOHIX/web/...`.
 
 Save. Railway should start a deploy within a minute.
 
@@ -130,11 +130,11 @@ Add anything you use in production (same names as `.env.example`):
 
 | Name | Notes |
 |------|--------|
-| `NEXT_PUBLIC_SITE_URL` | `https://zentro.run` (optional; helps metadata when not using the default). |
+| `NEXT_PUBLIC_SITE_URL` | `https://smohix.run` (optional; helps metadata when not using the default). |
 | `NEXT_PUBLIC_LEMONSQUEEZY_CHECKOUT_URL` | Your Lemon checkout link. |
 | `LEMONSQUEEZY_WEBHOOK_SIGNING_SECRET` | Webhook signing secret (server only). |
-| `ZENTRO_REASONING_API_URL` | Your reasoning API base URL (**server only**; set in Railway, not `NEXT_PUBLIC_`). |
-| `ZENTRO_ROBOT_API_URL` | Your automation service base URL (**server only**). Used on **Settings → Connectors** for health checks. |
+| `SMOHIX_REASONING_API_URL` | Your reasoning API base URL (**server only**; set in Railway, not `NEXT_PUBLIC_`). |
+| `SMOHIX_ROBOT_API_URL` | Your automation service base URL (**server only**). Used on **Settings → Connectors** for health checks. |
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL (see **Supabase (auth)** below). |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon key (set with URL above). |
 | `SUPABASE_SERVICE_ROLE_KEY` | Service role key (**server only**); required for `/api/webhooks/lemonsqueezy` to write subscriptions. |
@@ -156,18 +156,18 @@ If target port ≠ listen port, you’ll get **502 / connection refused** even w
 
 **Networking** → **Generate Domain** (or use your `*.up.railway.app` URL). Open it — you should see the marketing home page.
 
-### 4. Custom domain `zentro.run`
+### 4. Custom domain `smohix.run`
 
-**Networking** → **Custom Domain** → add **`zentro.run`** (and **`www.zentro.run`** if you use it).  
+**Networking** → **Custom Domain** → add **`smohix.run`** (and **`www.smohix.run`** if you use it).  
 Set **Target port** to the same value as **`PORT`** / the **`Network: … 0.0.0.0:PORT`** line in deploy logs (often **8080** unless you set **`PORT=3000`**).  
 At your DNS provider, add the **CNAME / ALIAS** records Railway shows.  
 The app’s **middleware** redirects `www` → apex.
 
 ### 5. Lemon webhooks
 
-After `zentro.run` resolves to Railway, set the Lemon webhook URL to:
+After `smohix.run` resolves to Railway, set the Lemon webhook URL to:
 
-`https://zentro.run/api/webhooks/lemonsqueezy`
+`https://smohix.run/api/webhooks/lemonsqueezy`
 
 ### Troubleshooting
 
@@ -188,7 +188,7 @@ After `zentro.run` resolves to Railway, set the Lemon webhook URL to:
 **Still seeing the old UI after a git push?**
 
 1. **Deployments** → click the **latest** deploy. If it is **FAILED** or **CRASHED**, open **Build logs** / **Deploy logs** — Railway keeps serving the **last successful** deploy until a new one goes green.
-2. **Settings → Source**: confirm **Branch** is **`main`** and the repo is **`aicodeai50/ZENTRO`**. Use **Disconnect** / **Reconnect** if pushes never trigger a deploy.
+2. **Settings → Source**: confirm **Branch** is **`main`** and the repo is **`aicodeai50/SMOHIX`**. Use **Disconnect** / **Reconnect** if pushes never trigger a deploy.
 3. **Redeploy**: on the latest deployment menu, choose **Redeploy** (or **Restart** only restarts the same image — you want a **new build** when code changed). If Railway offers **Clear build cache**, use it once.
 4. **One-shot cache bust**: add variable **`NIXPACKS_NO_CACHE`** = **`1`**, redeploy, then **remove** the variable (optional; forces Nixpacks to rebuild layers).
 5. **Confirm web tier is up**: `curl -sS "https://YOUR-URL.up.railway.app/api/health"` — expect **`ok: true`** and a valid **`uptime_s`** value.
@@ -202,15 +202,15 @@ The app uses **email + password** via **`@supabase/ssr`**. Routes: **`/auth/sign
 
 **Supabase dashboard → Authentication → URL configuration**
 
-- **Site URL:** your production origin (e.g. `https://zentro.run`).
-- **Redirect URLs:** include `https://zentro.run/auth/callback` and `http://localhost:3000/auth/callback` for local dev.
+- **Site URL:** your production origin (e.g. `https://smohix.run`).
+- **Redirect URLs:** include `https://smohix.run/auth/callback` and `http://localhost:3000/auth/callback` for local dev.
 
 When both public Supabase vars are set, **middleware** requires a session for **`/hub`**, **`/overview`**, **`/copilot`**, **`/incidents`**, **`/services`**, **`/automations`**, **`/runbooks`**, **`/approvals`**, **`/audit`**, and **`/settings/**`**. If the vars are **omitted**, the console stays open without login (useful for local UI work).
 
 **Postgres tuning (migration #15):** hot-path indexes, `incidents.status` CHECK constraint, JSONB GIN on `audit_log.details`, and retention helpers (`purge_stale_audit_log`, etc.). After applying, verify with **`GET /api/health/db`**. Optional scheduled cleanup in Supabase → **Database → Extensions** → enable **pg_cron**, then schedule (service role):
 
 ```sql
-select cron.schedule('zentro-audit-retention', '0 3 * * 0', $$
+select cron.schedule('smohix-audit-retention', '0 3 * * 0', $$
   select public.purge_stale_audit_log(180);
 $$);
 ```
@@ -223,19 +223,19 @@ Browsers should **not** call your `*.up.railway.app` URLs directly (CORS, and yo
 
 ### Railway Variables (server only)
 
-- `ZENTRO_REASONING_API_URL` — base URL, no trailing slash (e.g. `https://your-api.up.railway.app`).
-- `ZENTRO_ROBOT_API_URL` — same for the automation service.
+- `SMOHIX_REASONING_API_URL` — base URL, no trailing slash (e.g. `https://your-api.up.railway.app`).
+- `SMOHIX_ROBOT_API_URL` — same for the automation service.
 
 ### Reverse proxy routes (send any path)
 
 | Your frontend calls | Upstream request |
 |---------------------|------------------|
-| `GET /api/reasoning/health` | `GET {ZENTRO_REASONING_API_URL}/health` |
-| `POST /api/reasoning/v1/chat` | `POST {ZENTRO_REASONING_API_URL}/v1/chat` |
-| `GET /api/robot/docs` | `GET {ZENTRO_ROBOT_API_URL}/docs` |
-| `GET /api/robot/health` | `GET {ZENTRO_ROBOT_API_URL}/health` |
+| `GET /api/reasoning/health` | `GET {SMOHIX_REASONING_API_URL}/health` |
+| `POST /api/reasoning/v1/chat` | `POST {SMOHIX_REASONING_API_URL}/v1/chat` |
+| `GET /api/robot/docs` | `GET {SMOHIX_ROBOT_API_URL}/docs` |
+| `GET /api/robot/health` | `GET {SMOHIX_ROBOT_API_URL}/health` |
 
-Query string, method, and body are forwarded. Headers forwarded: **`Content-Type`**, **`Accept`**, and **`Authorization`** only when it is **not** a Zentro API key (`zentro_sk_...`), so your upstream never receives credentials issued by this app.
+Query string, method, and body are forwarded. Headers forwarded: **`Content-Type`**, **`Accept`**, and **`Authorization`** only when it is **not** a Smohix API key (`zentro_sk_...`), so your upstream never receives credentials issued by this app.
 
 When Supabase auth env vars are set, callers must use a **browser session** or an **API key** from **Settings → API keys** (`Authorization: Bearer <key>` or `X-Zentro-Api-Key`). Resolving keys by hash uses **`SUPABASE_SERVICE_ROLE_KEY`** on the server.
 
@@ -263,7 +263,7 @@ Path segments cannot contain `..` or `/` (basic hardening). For public internet 
 | Route | Role |
 |--------|------|
 | **`GET /api/connectors/status`** | JSON snapshot of reasoning + automation reachability (health probe). |
-| **`/settings/billing`** | Plan, Lemon checkout with `zentro_user_id`, subscription snapshot. |
+| **`/settings/billing`** | Plan, Lemon checkout with `smohix_user_id`, subscription snapshot. |
 | **`/settings/connectors`** | UI for the same probes. |
 | **`/copilot`** | Shows connection status from the server. |
 
@@ -271,13 +271,13 @@ Path segments cannot contain `..` or `/` (basic hardening). For public internet 
 
 `POST /api/integrations/alerts` accepts:
 
-- **Native Zentro ingest shape** (`title`, `severity`, `service_name`, `dedupe_key`, etc.)
+- **Native Smohix ingest shape** (`title`, `severity`, `service_name`, `dedupe_key`, etc.)
 - **Datadog event/webhook-like payloads** (auto-normalized to incidents)
 
 For Datadog:
 
 - If payload includes event id, dedupe uses `external_ref = datadog:<event_id>`.
-- `alert_type` / `priority` are mapped to Zentro severity.
+- `alert_type` / `priority` are mapped to Smohix severity.
 - Tags like `service:<name>`, `owner:<team>`, `runbook:<slug>` are mapped when present.
 
 Optional header for explicit source hint:
@@ -287,7 +287,7 @@ Optional header for explicit source hint:
 Example:
 
 ```bash
-curl -X POST "https://zentro.run/api/integrations/alerts" \
+curl -X POST "https://smohix.run/api/integrations/alerts" \
   -H "Authorization: Bearer zentro_ingest_xxx" \
   -H "Content-Type: application/json" \
   -H "X-Zentro-Alert-Source: datadog" \
@@ -307,7 +307,7 @@ The same endpoint also accepts Alertmanager payload shape (`status`, `alerts[]`,
 
 For Prometheus/Grafana:
 
-- `labels.severity` maps to Zentro severity (`critical`/`warning`/`info` etc).
+- `labels.severity` maps to Smohix severity (`critical`/`warning`/`info` etc).
 - `labels.service`/`job`/`app` can map `service_name`.
 - `labels.owner` or `labels.team` can map `owner_hint`.
 - `labels.runbook` can map `runbook_slug` when valid.
@@ -320,7 +320,7 @@ Optional header for explicit source hint:
 Example:
 
 ```bash
-curl -X POST "https://zentro.run/api/integrations/alerts" \
+curl -X POST "https://smohix.run/api/integrations/alerts" \
   -H "Authorization: Bearer zentro_ingest_xxx" \
   -H "Content-Type: application/json" \
   -H "X-Zentro-Alert-Source: prometheus" \
@@ -349,7 +349,7 @@ curl -X POST "https://zentro.run/api/integrations/alerts" \
 The same endpoint accepts PagerDuty Events-style payloads and maps:
 
 - `event_action` (`trigger`/`resolve`) to incident status.
-- `payload.severity` / `payload.urgency` to Zentro severity.
+- `payload.severity` / `payload.urgency` to Smohix severity.
 - `dedup_key` to `external_ref` as `pagerduty:<dedup_key>`.
 - `payload.component`/`source` to `service_name`.
 - optional `payload.custom_details.owner_hint`, `team`, `runbook_slug`.
@@ -361,7 +361,7 @@ Optional header for explicit source hint:
 Example:
 
 ```bash
-curl -X POST "https://zentro.run/api/integrations/alerts" \
+curl -X POST "https://smohix.run/api/integrations/alerts" \
   -H "Authorization: Bearer zentro_ingest_xxx" \
   -H "Content-Type: application/json" \
   -H "X-Zentro-Alert-Source: pagerduty" \
@@ -386,7 +386,7 @@ curl -X POST "https://zentro.run/api/integrations/alerts" \
 The same endpoint accepts New Relic-style incident webhook payloads and maps:
 
 - `current_state` (`open`/`closed`) to incident status.
-- `severity`/`priority` to Zentro severity.
+- `severity`/`priority` to Smohix severity.
 - `incident_id` (or violation id in details) to dedupe key `newrelic:<id>`.
 - `labels.service` or target labels to `service_name`.
 
@@ -396,17 +396,17 @@ Optional header for explicit source hint:
 
 ### Monitoring alert ingest (Splunk adapter)
 
-Send Splunk alert action / webhook JSON to the same endpoint. Zentro maps:
+Send Splunk alert action / webhook JSON to the same endpoint. Smohix maps:
 
 - `search_name` / `rule_name` → title
-- `result.severity` → Zentro severity
+- `result.severity` → Smohix severity
 - `sid` or `event_id` → dedupe key `splunk:<id>`
 - `result.host` → `service_name` hint
 
 Optional header: `X-Zentro-Alert-Source: splunk` (or set `"vendor": "splunk"` in JSON body).
 
 ```bash
-curl -X POST "https://zentro.run/api/integrations/alerts" \
+curl -X POST "https://smohix.run/api/integrations/alerts" \
   -H "Authorization: Bearer YOUR_INGEST_TOKEN" \
   -H "Content-Type: application/json" \
   -H "X-Zentro-Alert-Source: splunk" \
@@ -422,7 +422,7 @@ curl -X POST "https://zentro.run/api/integrations/alerts" \
 Accepts Sentinel / Azure Monitor alert JSON (`properties.displayName`, `properties.severity`, `properties.alertId`, or `data.essentials.*`):
 
 - `properties.alertId` → dedupe `sentinel:<id>`
-- `properties.severity` → Zentro severity
+- `properties.severity` → Smohix severity
 - `data.essentials.monitorCondition` → resolved vs investigating
 
 Optional header: `X-Zentro-Alert-Source: sentinel`
@@ -432,7 +432,7 @@ Optional header: `X-Zentro-Alert-Source: sentinel`
 Accepts Falcon detection webhook shape (`event.DetectName`, `event.DetectId`, `event.Severity`, `event.ComputerName`) or flat `detection_id` payloads:
 
 - `DetectId` / `detection_id` → dedupe `crowdstrike:<id>`
-- Numeric `Severity` (1–5) → Zentro severity
+- Numeric `Severity` (1–5) → Smohix severity
 - `ComputerName` → service name hint
 
 Optional header: `X-Zentro-Alert-Source: crowdstrike`
@@ -444,7 +444,7 @@ Optional header: `X-Zentro-Alert-Source: crowdstrike`
 Qualys example (`QID`, `TITLE`, `HOST`, `CVSS_BASE`, `CVE_ID`):
 
 ```bash
-curl -X POST "https://zentro.run/api/integrations/vulnerabilities" \
+curl -X POST "https://smohix.run/api/integrations/vulnerabilities" \
   -H "Authorization: Bearer YOUR_INGEST_TOKEN" \
   -H "Content-Type: application/json" \
   -H "X-Zentro-Vuln-Source: qualys" \
@@ -460,7 +460,7 @@ curl -X POST "https://zentro.run/api/integrations/vulnerabilities" \
 Tenable example (`plugin.id`, `plugin.name`, `asset.hostname`):
 
 ```bash
-curl -X POST "https://zentro.run/api/integrations/vulnerabilities" \
+curl -X POST "https://smohix.run/api/integrations/vulnerabilities" \
   -H "Authorization: Bearer YOUR_INGEST_TOKEN" \
   -H "Content-Type: application/json" \
   -H "X-Zentro-Vuln-Source: tenable" \
@@ -471,7 +471,7 @@ curl -X POST "https://zentro.run/api/integrations/vulnerabilities" \
       "cvss_base_score": 9.1,
       "cve": ["CVE-2023-9999"]
     },
-    "asset": { "hostname": "edge.zentro.run" }
+    "asset": { "hostname": "edge.smohix.run" }
   }'
 ```
 
@@ -479,7 +479,7 @@ Console: **`/assets/vulnerabilities`** (prioritized exposure queue) · **`/chang
 
 **Exposure prioritization:** findings are ranked at read time by an exposure score combining CVSS (or severity fallback), asset criticality from the **service catalog** (production matches rank highest), and recency for open findings. The console shows priority bands, matched service names, and stats for urgent and production-asset exposure. Regression: `npm run test:vulnerability-priority`.
 
-**Pen-test finding rollup (migration #19):** when a **new** finding is ingested and its `asset_host` matches an **active** engagement scope (or the engagement is within its scheduled window), Zentro links the finding and increments `findings_count`. Force a target engagement with header `X-Zentro-Pen-Test-Engagement: <engagement_uuid>`. Response fields: `pen_test_engagement_id`, `pen_test_rolled_up`.
+**Pen-test finding rollup (migration #19):** when a **new** finding is ingested and its `asset_host` matches an **active** engagement scope (or the engagement is within its scheduled window), Smohix links the finding and increments `findings_count`. Force a target engagement with header `X-Zentro-Pen-Test-Engagement: <engagement_uuid>`. Response fields: `pen_test_engagement_id`, `pen_test_rolled_up`.
 
 ### Organization RBAC (delegated approvers)
 
@@ -495,9 +495,9 @@ After migration **#17**, create an organization at **`/settings/members`**. Role
 
 Org-scoped approval requests share a queue at **`/approvals`**. Delegated approvers **cannot approve their own requests**. Org-scoped items must be decided in the console (Slack webhook returns 403 for org rows).
 
-Invite teammates by email (they must already have a Zentro account). Requires **`SUPABASE_SERVICE_ROLE_KEY`** for email lookup.
+Invite teammates by email (they must already have a Smohix account). Requires **`SUPABASE_SERVICE_ROLE_KEY`** for email lookup.
 
-**Org-wide resources (migration #18):** when an organization is active (`zentro_org_id` cookie), incidents, services, and automation dry-runs/executions are shared across org members. Legacy personal rows (`org_id` null) remain visible alongside org rows. Alert ingest attributes incidents to the user's primary org when membership exists.
+**Org-wide resources (migration #18):** when an organization is active (`smohix_org_id` cookie), incidents, services, and automation dry-runs/executions are shared across org members. Legacy personal rows (`org_id` null) remain visible alongside org rows. Alert ingest attributes incidents to the user's primary org when membership exists.
 
 **Org SLO & dependencies (migration #20):** SLO configs, error budget burn snapshots, and service dependency edges follow the same org scope. **`/services`** burn triage and **`/overview`** error-budget widgets aggregate org-wide data; automation guardrails use org-scoped burn state when blocking critical-budget executions. Regression: `npm run test:org-slo-scope`.
 
@@ -515,7 +515,7 @@ Invite teammates by email (they must already have a Zentro account). Requires **
 
 **Legal hold markers (migration #24):** freeze incidents and linked audit rows from retention purge. Console: **`/governance/legal-holds`** and per-incident controls on **`/incidents/[id]`** (owner/admin). API: **`GET /api/governance/legal-holds`**. Audit events: `governance.legal_hold_set` / `governance.legal_hold_cleared`. Regression: `npm run test:legal-hold`.
 
-**Assessor evidence bundles (migration #25):** persisted compliance snapshots with **SHA-256 tamper-evident manifests** (JSON + CSV artifacts). Console: **`/governance/compliance/bundles`** · APIs: **`POST/GET /api/governance/compliance/bundles`**, **`GET .../bundles/[id]/download`**, scheduled **`POST .../bundles/scheduled`** (Bearer `ZENTRO_BUNDLE_CRON_SECRET`). Optional org **`evidence_bundle_webhook_url`** for HTTPS delivery. Regression: `npm run test:evidence-bundle`.
+**Assessor evidence bundles (migration #25):** persisted compliance snapshots with **SHA-256 tamper-evident manifests** (JSON + CSV artifacts). Console: **`/governance/compliance/bundles`** · APIs: **`POST/GET /api/governance/compliance/bundles`**, **`GET .../bundles/[id]/download`**, scheduled **`POST .../bundles/scheduled`** (Bearer `SMOHIX_BUNDLE_CRON_SECRET`). Optional org **`evidence_bundle_webhook_url`** for HTTPS delivery. Regression: `npm run test:evidence-bundle`.
 
 **SOC 2 Type II report mode (migration #26):** continuous control monitoring with **30d vs prior 30d** trends, exceptions, and readiness score. External **`auditor`** org role gets a read-only workspace (governance/compliance + audit only). Console: **`/governance/compliance/type-ii`** · API: **`GET /api/governance/compliance/type-ii?periodDays=30`**. Regression: `npm run test:soc2-type-ii`.
 
@@ -562,9 +562,9 @@ Invite teammates by email (they must already have a Zentro account). Requires **
 
 **Unified assessor workbook export (no migration):** single **ZIP** bundling compliance evidence (JSON + CSV), SOC 2 / ISO crosswalk, and framework assessment reports (SOC 2 Type II, ISO, PCI, HIPAA, NIST, CIS, CMMC, GDPR, program dashboard) with **manifest.json** SHA-256 file hashes. Console: **`/governance/compliance/workbook`** · API: **`GET /api/governance/compliance/workbook?periodDays=30`**. Audit event: `governance.assessor_workbook_exported`. Regression: `npm run test:assessor-workbook`.
 
-**Scheduled compliance digest webhooks (migration #30):** weekly **HTTPS digest** of program readiness **deltas** vs the prior snapshot, SOC 2 trend changes, and newly overdue attestations for GRC tools. Console: **`/governance/compliance/digest`** · APIs: **`POST /api/governance/compliance/digest`**, scheduled **`POST /api/governance/compliance/digest/scheduled`** (Bearer `ZENTRO_DIGEST_CRON_SECRET`). Org column **`compliance_digest_webhook_url`**. Audit event: `governance.compliance_digest_delivered`. Regression: `npm run test:compliance-digest`.
+**Scheduled compliance digest webhooks (migration #30):** weekly **HTTPS digest** of program readiness **deltas** vs the prior snapshot, SOC 2 trend changes, and newly overdue attestations for GRC tools. Console: **`/governance/compliance/digest`** · APIs: **`POST /api/governance/compliance/digest`**, scheduled **`POST /api/governance/compliance/digest/scheduled`** (Bearer `SMOHIX_DIGEST_CRON_SECRET`). Org column **`compliance_digest_webhook_url`**. Audit event: `governance.compliance_digest_delivered`. Regression: `npm run test:compliance-digest`.
 
-**Compliance control SLA reminders (migration #31):** **Slack** and **Resend email** nudges when attestations are **due soon** (configurable days), **overdue**, or SOC 2 / ISO controls **regress** in the 30-day window. Console: **`/governance/compliance/sla-reminders`** · APIs: **`GET/POST /api/governance/compliance/sla-reminders`**, scheduled **`POST .../sla-reminders/scheduled`** (Bearer `ZENTRO_SLA_CRON_SECRET`). Env: `ZENTRO_SLACK_NOTIFY_COMPLIANCE_SLA`, `ZENTRO_RESEND_API_KEY`, `ZENTRO_EMAIL_FROM`. Audit: `governance.compliance_sla_reminders_sent`. Regression: `npm run test:compliance-sla-reminders`.
+**Compliance control SLA reminders (migration #31):** **Slack** and **Resend email** nudges when attestations are **due soon** (configurable days), **overdue**, or SOC 2 / ISO controls **regress** in the 30-day window. Console: **`/governance/compliance/sla-reminders`** · APIs: **`GET/POST /api/governance/compliance/sla-reminders`**, scheduled **`POST .../sla-reminders/scheduled`** (Bearer `SMOHIX_SLA_CRON_SECRET`). Env: `SMOHIX_SLACK_NOTIFY_COMPLIANCE_SLA`, `SMOHIX_RESEND_API_KEY`, `SMOHIX_EMAIL_FROM`. Audit: `governance.compliance_sla_reminders_sent`. Regression: `npm run test:compliance-sla-reminders`.
 
 **FedRAMP POA&M export pack (no migration):** **Plan of Action and Milestones** CSV/JSON built from **continuous assessment exceptions** (SOC 2, ISO 27001, CMMC L2) mapped to **NIST SP 800-53 Rev 5** with risk ratings and milestone dates. Console: **`/governance/compliance/fedramp-poam`** · API: **`GET /api/governance/compliance/fedramp-poam?periodDays=30`**. Audit: `governance.fedramp_poam_exported`. Regression: `npm run test:fedramp-poam`.
 
@@ -574,19 +574,19 @@ Invite teammates by email (they must already have a Zentro account). Requires **
 
 **Obligation executive rollup PDF (no migration):** single **printable HTML** board packet combining **forecast timeline**, **crossover clusters**, **consolidation play status**, and **evidence request SLA** breaches — open in browser and **Print → Save as PDF**. Console: **`/governance/compliance/obligation-rollup`** · API: **`GET /api/governance/compliance/obligation-rollup?horizonDays=90&format=html`**. Audit: `governance.obligation_executive_rollup_exported`. Regression: `npm run test:obligation-executive-rollup`.
 
-**Staffing action SLA breach digest (migration #46):** **weekly email** and **Slack** (`ZENTRO_SLACK_NOTIFY_STAFFING_SLA_BREACH`) when open staffing actions exceed a **configurable completion SLA** (default **7 days** after peak week end) — distinct from immediate overdue nudges. Console: **`/governance/compliance/staffing-sla-breach-digest`** · APIs: **`GET/POST /api/governance/compliance/staffing-sla-breach-digest`**, cron **`POST .../staffing-sla-breach-digest/scheduled`** (Bearer `ZENTRO_STAFFING_SLA_BREACH_DIGEST_CRON_SECRET`). Audit: `governance.staffing_sla_breach_digest_exported`, `governance.staffing_sla_breach_digest_delivered`. Regression: `npm run test:staffing-sla-breach-digest`.
+**Staffing action SLA breach digest (migration #46):** **weekly email** and **Slack** (`SMOHIX_SLACK_NOTIFY_STAFFING_SLA_BREACH`) when open staffing actions exceed a **configurable completion SLA** (default **7 days** after peak week end) — distinct from immediate overdue nudges. Console: **`/governance/compliance/staffing-sla-breach-digest`** · APIs: **`GET/POST /api/governance/compliance/staffing-sla-breach-digest`**, cron **`POST .../staffing-sla-breach-digest/scheduled`** (Bearer `SMOHIX_STAFFING_SLA_BREACH_DIGEST_CRON_SECRET`). Audit: `governance.staffing_sla_breach_digest_exported`, `governance.staffing_sla_breach_digest_delivered`. Regression: `npm run test:staffing-sla-breach-digest`.
 
-**Cross-staffing committee escalation (migration #47):** **email** and **Slack** (`ZENTRO_SLACK_NOTIFY_CROSS_STAFFING_ESCALATION`) when SLA-breaching staffing actions remain open **after** the weekly completion rollup email was sent for the same UTC week. Console: **`/governance/compliance/cross-staffing-committee-escalation`** · APIs: **`GET/POST /api/governance/compliance/cross-staffing-committee-escalation`**, cron **`POST .../cross-staffing-committee-escalation/scheduled`** (Bearer `ZENTRO_CROSS_STAFFING_COMMITTEE_ESCALATION_CRON_SECRET`). Audit: `governance.cross_staffing_committee_escalation_exported`, `governance.cross_staffing_committee_escalation_delivered`. Regression: `npm run test:cross-staffing-committee-escalation`.
+**Cross-staffing committee escalation (migration #47):** **email** and **Slack** (`SMOHIX_SLACK_NOTIFY_CROSS_STAFFING_ESCALATION`) when SLA-breaching staffing actions remain open **after** the weekly completion rollup email was sent for the same UTC week. Console: **`/governance/compliance/cross-staffing-committee-escalation`** · APIs: **`GET/POST /api/governance/compliance/cross-staffing-committee-escalation`**, cron **`POST .../cross-staffing-committee-escalation/scheduled`** (Bearer `SMOHIX_CROSS_STAFFING_COMMITTEE_ESCALATION_CRON_SECRET`). Audit: `governance.cross_staffing_committee_escalation_exported`, `governance.cross_staffing_committee_escalation_delivered`. Regression: `npm run test:cross-staffing-committee-escalation`.
 
-**Staffing digest auto-chain (migration #48):** **single UTC-week cron** that runs **completion rollup → SLA breach digest → committee escalation** in sequence (deduped per org per week). Console: **`/governance/compliance/staffing-digest-auto-chain`** · cron **`POST .../staffing-digest-auto-chain/scheduled`** (Bearer `ZENTRO_STAFFING_DIGEST_AUTO_CHAIN_CRON_SECRET`). Audit: `governance.staffing_digest_auto_chain_run`. Regression: `npm run test:staffing-digest-auto-chain`.
+**Staffing digest auto-chain (migration #48):** **single UTC-week cron** that runs **completion rollup → SLA breach digest → committee escalation** in sequence (deduped per org per week). Console: **`/governance/compliance/staffing-digest-auto-chain`** · cron **`POST .../staffing-digest-auto-chain/scheduled`** (Bearer `SMOHIX_STAFFING_DIGEST_AUTO_CHAIN_CRON_SECRET`). Audit: `governance.staffing_digest_auto_chain_run`. Regression: `npm run test:staffing-digest-auto-chain`.
 
-**Staffing completion rollup export (migration #45):** **printable HTML** (browser Print → Save as PDF) and **weekly email** to owners/admins summarizing **tracked vs open vs completed** staffing actions with **completion %** (deduped per UTC week). Console: **`/governance/compliance/staffing-completion-rollup`** · APIs: **`GET/POST /api/governance/compliance/staffing-completion-rollup`**, cron **`POST .../staffing-completion-rollup/scheduled`** (Bearer `ZENTRO_STAFFING_COMPLETION_ROLLUP_CRON_SECRET`). Audit: `governance.staffing_completion_rollup_exported`, `governance.staffing_completion_rollup_delivered`. Regression: `npm run test:staffing-completion-rollup`.
+**Staffing completion rollup export (migration #45):** **printable HTML** (browser Print → Save as PDF) and **weekly email** to owners/admins summarizing **tracked vs open vs completed** staffing actions with **completion %** (deduped per UTC week). Console: **`/governance/compliance/staffing-completion-rollup`** · APIs: **`GET/POST /api/governance/compliance/staffing-completion-rollup`**, cron **`POST .../staffing-completion-rollup/scheduled`** (Bearer `SMOHIX_STAFFING_COMPLETION_ROLLUP_CRON_SECRET`). Audit: `governance.staffing_completion_rollup_exported`, `governance.staffing_completion_rollup_delivered`. Regression: `npm run test:staffing-completion-rollup`.
 
-**Staffing action overdue reminders (migration #44):** **email** assignees and **admins** (for unassigned overdue actions) and **Slack** (`ZENTRO_SLACK_NOTIFY_STAFFING_OVERDUE`) when **accepted** or **in-progress** staffing actions remain open **past the forecast peak week** (deduped per action/channel). Console: **`/governance/compliance/staffing-action-reminders`** · APIs: **`GET/POST /api/governance/compliance/staffing-action-reminders`**, cron **`POST .../staffing-action-reminders/scheduled`** (Bearer `ZENTRO_STAFFING_OVERDUE_REMINDER_CRON_SECRET`). Audit: `governance.staffing_action_overdue_reminders_exported`, `governance.staffing_action_overdue_reminders_sent`. Regression: `npm run test:staffing-action-overdue-reminders`.
+**Staffing action overdue reminders (migration #44):** **email** assignees and **admins** (for unassigned overdue actions) and **Slack** (`SMOHIX_SLACK_NOTIFY_STAFFING_OVERDUE`) when **accepted** or **in-progress** staffing actions remain open **past the forecast peak week** (deduped per action/channel). Console: **`/governance/compliance/staffing-action-reminders`** · APIs: **`GET/POST /api/governance/compliance/staffing-action-reminders`**, cron **`POST .../staffing-action-reminders/scheduled`** (Bearer `SMOHIX_STAFFING_OVERDUE_REMINDER_CRON_SECRET`). Audit: `governance.staffing_action_overdue_reminders_exported`, `governance.staffing_action_overdue_reminders_sent`. Regression: `npm run test:staffing-action-overdue-reminders`.
 
 **Obligation staffing action tracker (migration #43):** **accept and track** load-balance transfers and capacity **what-if relief** scenarios (negative peak-week delta) from **accepted → in progress → completed**. Console: **`/governance/compliance/staffing-actions`** · API: **`GET /api/governance/compliance/staffing-actions?horizonDays=90`** (JSON, CSV, or **`format=html`** completion report). Audit: `governance.obligation_staffing_action_tracker_exported`, `governance.obligation_staffing_action_accepted`, `governance.obligation_staffing_action_updated`. Regression: `npm run test:obligation-staffing-action-tracker`.
 
-**Committee peak-week staffing digest (migration #42):** **email**, **Slack** (`ZENTRO_SLACK_NOTIFY_PEAK_WEEK_STAFFING`), and optional **HTTPS webhook** when **capacity shortfall** and **load imbalance** coincide in the **same forecast peak week** (deduped per peak week). Console: **`/governance/compliance/peak-week-staffing-digest`** · APIs: **`GET/POST /api/governance/compliance/peak-week-staffing-digest`**, cron **`POST .../peak-week-staffing-digest/scheduled`** (Bearer `ZENTRO_PEAK_WEEK_STAFFING_DIGEST_CRON_SECRET`). Audit: `governance.peak_week_staffing_digest_exported`, `governance.peak_week_staffing_digest_delivered`. Regression: `npm run test:peak-week-staffing-digest`.
+**Committee peak-week staffing digest (migration #42):** **email**, **Slack** (`SMOHIX_SLACK_NOTIFY_PEAK_WEEK_STAFFING`), and optional **HTTPS webhook** when **capacity shortfall** and **load imbalance** coincide in the **same forecast peak week** (deduped per peak week). Console: **`/governance/compliance/peak-week-staffing-digest`** · APIs: **`GET/POST /api/governance/compliance/peak-week-staffing-digest`**, cron **`POST .../peak-week-staffing-digest/scheduled`** (Bearer `SMOHIX_PEAK_WEEK_STAFFING_DIGEST_CRON_SECRET`). Audit: `governance.peak_week_staffing_digest_exported`, `governance.peak_week_staffing_digest_delivered`. Regression: `npm run test:peak-week-staffing-digest`.
 
 **Obligation owner load balancing (no migration):** assigns **forecast peak-week obligations** to **RACI primary accountables** per framework (from the ownership matrix) and generates **rebalance suggestions** when owner load is uneven. Console: **`/governance/compliance/obligation-load-balancing`** · API: **`GET /api/governance/compliance/obligation-load-balancing?horizonDays=90`**. Audit: `governance.obligation_owner_load_balancing_exported`. Regression: `npm run test:obligation-owner-load-balancing`.
 
@@ -596,9 +596,9 @@ Invite teammates by email (they must already have a Zentro account). Requires **
 
 **Obligation density trend history (no migration):** **trailing-quarter** chart of **weekly obligations due** (by due week) plus **density alert delivery** counts from the alert log, with **forward forecast weeks** overlaid for capacity planning. Console: **`/governance/compliance/obligation-density-trend-history`** · API: **`GET /api/governance/compliance/obligation-density-trend-history?trailingDays=90`**. Audit: `governance.obligation_density_trend_history_exported`. Regression: `npm run test:obligation-density-trend-history`.
 
-**Compliance obligation density alerting (migration #40):** configurable org thresholds on **live forecast density** — **current week**, **peak week**, and **overdue spike** — with **Slack** (`ZENTRO_SLACK_NOTIFY_OBLIGATION_DENSITY`) and **email** to owners/admins, deduped per breach key. Console: **`/governance/compliance/obligation-density-alerts`** · APIs: **`GET/POST /api/governance/compliance/obligation-density-alerts`**, cron **`POST .../obligation-density-alerts/scheduled`** (Bearer `ZENTRO_OBLIGATION_DENSITY_ALERT_CRON_SECRET`). Audit: `governance.obligation_density_alert_exported`, `governance.obligation_density_alerts_sent`. Regression: `npm run test:obligation-density-alerting`.
+**Compliance obligation density alerting (migration #40):** configurable org thresholds on **live forecast density** — **current week**, **peak week**, and **overdue spike** — with **Slack** (`SMOHIX_SLACK_NOTIFY_OBLIGATION_DENSITY`) and **email** to owners/admins, deduped per breach key. Console: **`/governance/compliance/obligation-density-alerts`** · APIs: **`GET/POST /api/governance/compliance/obligation-density-alerts`**, cron **`POST .../obligation-density-alerts/scheduled`** (Bearer `SMOHIX_OBLIGATION_DENSITY_ALERT_CRON_SECRET`). Audit: `governance.obligation_density_alert_exported`, `governance.obligation_density_alerts_sent`. Regression: `npm run test:obligation-density-alerting`.
 
-**Quarterly obligation committee digest (migration #39):** **90-day cadence** email (and optional **HTTPS webhook**) to **owners and admins** rolling up **forecast peak weeks**, **crossover reuse clusters**, and **evidence request SLA** breaches. Console: **`/governance/compliance/committee-digest`** · APIs: **`GET/POST /api/governance/compliance/committee-digest`**, cron **`POST .../committee-digest/scheduled`** (Bearer `ZENTRO_OBLIGATION_COMMITTEE_DIGEST_CRON_SECRET`). Audit: `governance.obligation_committee_digest_exported`, `governance.obligation_committee_digest_delivered`. Regression: `npm run test:quarterly-obligation-committee-digest`.
+**Quarterly obligation committee digest (migration #39):** **90-day cadence** email (and optional **HTTPS webhook**) to **owners and admins** rolling up **forecast peak weeks**, **crossover reuse clusters**, and **evidence request SLA** breaches. Console: **`/governance/compliance/committee-digest`** · APIs: **`GET/POST /api/governance/compliance/committee-digest`**, cron **`POST .../committee-digest/scheduled`** (Bearer `SMOHIX_OBLIGATION_COMMITTEE_DIGEST_CRON_SECRET`). Audit: `governance.obligation_committee_digest_exported`, `governance.obligation_committee_digest_delivered`. Regression: `npm run test:quarterly-obligation-committee-digest`.
 
 **Board obligation forecast timeline (no migration):** **forward-looking weekly obligation density** from live GRC calendar, testing schedules, and assessor requests — **peak week**, **committee summary**, and **milestone queue** for board/committee prep. Console: **`/governance/compliance/obligation-forecast`** · API: **`GET /api/governance/compliance/obligation-forecast?horizonDays=90`**. Audit: `governance.board_obligation_forecast_exported`. Regression: `npm run test:board-obligation-forecast`.
 
@@ -610,9 +610,9 @@ Invite teammates by email (they must already have a Zentro account). Requires **
 
 **Control testing evidence linker (no migration):** links **automation dry-run** outputs to **catalog controls** (via accepted policy guardrails) and **evidence bundles** in the same collection window — appended to the **assessor workbook** ZIP as `testing/control-test-evidence-links.*`. Console: **`/governance/compliance/testing-evidence-linker`** · API: **`GET/POST /api/governance/compliance/testing-evidence-linker`**. Audit: `governance.control_testing_evidence_linker_exported`, `governance.control_testing_evidence_linked`. Regression: `npm run test:control-testing-evidence-linker`.
 
-**Compliance evidence request SLA dashboard (migration #37):** fulfillment **SLAs** for assessor document requests — **overdue** and **at-risk** queues, assignee/framework rollups, **on-time %**, and **auditor digest** (email to auditor-role members + optional webhook). Console: **`/governance/compliance/evidence-request-sla`** · APIs: **`GET/POST /api/governance/compliance/evidence-request-sla`**, cron **`POST .../evidence-request-sla/scheduled`** (Bearer `ZENTRO_EVIDENCE_REQUEST_SLA_CRON_SECRET`). Audit: `governance.evidence_request_sla_dashboard_exported`, `governance.evidence_request_sla_digest_delivered`. Regression: `npm run test:evidence-request-sla-dashboard`.
+**Compliance evidence request SLA dashboard (migration #37):** fulfillment **SLAs** for assessor document requests — **overdue** and **at-risk** queues, assignee/framework rollups, **on-time %**, and **auditor digest** (email to auditor-role members + optional webhook). Console: **`/governance/compliance/evidence-request-sla`** · APIs: **`GET/POST /api/governance/compliance/evidence-request-sla`**, cron **`POST .../evidence-request-sla/scheduled`** (Bearer `SMOHIX_EVIDENCE_REQUEST_SLA_CRON_SECRET`). Audit: `governance.evidence_request_sla_dashboard_exported`, `governance.evidence_request_sla_digest_delivered`. Regression: `npm run test:evidence-request-sla-dashboard`.
 
-**Compliance attestation renewal calendar (migration #36):** **renewal waves** (14-day lead windows) for control attestations due within a configurable **horizon** (default 90d), **per-framework** rollup, and **owner email nudges** with weekly dedup. Console: **`/governance/compliance/attestation-renewal`** · APIs: **`GET/POST /api/governance/compliance/attestation-renewal`**, cron **`POST .../attestation-renewal/scheduled`** (Bearer `ZENTRO_ATTESTATION_RENEWAL_CRON_SECRET`). Audit: `governance.attestation_renewal_calendar_exported`, `governance.attestation_renewal_nudges_sent`. Regression: `npm run test:attestation-renewal-calendar`.
+**Compliance attestation renewal calendar (migration #36):** **renewal waves** (14-day lead windows) for control attestations due within a configurable **horizon** (default 90d), **per-framework** rollup, and **owner email nudges** with weekly dedup. Console: **`/governance/compliance/attestation-renewal`** · APIs: **`GET/POST /api/governance/compliance/attestation-renewal`**, cron **`POST .../attestation-renewal/scheduled`** (Bearer `SMOHIX_ATTESTATION_RENEWAL_CRON_SECRET`). Audit: `governance.attestation_renewal_calendar_exported`, `governance.attestation_renewal_nudges_sent`. Regression: `npm run test:attestation-renewal-calendar`.
 
 **Compliance committee meeting pack (no migration):** quarterly **ZIP** with **printable HTML** (`committee-pack-summary.html` → save as PDF), **health scorecard**, **posture**, **exception register**, and **open gaps** + tamper-evident manifest. Console: **`/governance/compliance/committee-meeting-pack`** · API: **`GET /api/governance/compliance/committee-meeting-pack?periodDays=30`**. Audit: `governance.compliance_committee_meeting_pack_exported`. Regression: `npm run test:compliance-committee-meeting-pack`.
 
@@ -620,7 +620,7 @@ Invite teammates by email (they must already have a Zentro account). Requires **
 
 **Inherited control coverage gap report (no migration):** identifies **third-party vendors** whose **inherited** catalog controls lack **linked audit evidence** or **attestation sign-off** vs their register **risk tier** (critical/high require attestation). Console: **`/governance/compliance/inherited-control-gaps`** · API: **`GET /api/governance/compliance/inherited-control-gaps?periodDays=30`**. Audit: `governance.inherited_control_coverage_gaps_exported`. Regression: `npm run test:inherited-control-coverage-gaps`.
 
-**Regulatory mapping change digest (migration #35):** detects changes to the **compliance catalog**, **SOC 2 ↔ ISO crosswalk**, and **regulatory scenario catalog** vs the last org snapshot; delivers **HTTPS webhook** and optional **email** to owners/admins. Console: **`/governance/compliance/mapping-digest`** · APIs: **`GET/POST /api/governance/compliance/mapping-digest`**, scheduled **`POST .../mapping-digest/scheduled`** (Bearer `ZENTRO_MAPPING_DIGEST_CRON_SECRET`). Audit: `governance.regulatory_mapping_digest_delivered`. Regression: `npm run test:regulatory-mapping-change-digest`.
+**Regulatory mapping change digest (migration #35):** detects changes to the **compliance catalog**, **SOC 2 ↔ ISO crosswalk**, and **regulatory scenario catalog** vs the last org snapshot; delivers **HTTPS webhook** and optional **email** to owners/admins. Console: **`/governance/compliance/mapping-digest`** · APIs: **`GET/POST /api/governance/compliance/mapping-digest`**, scheduled **`POST .../mapping-digest/scheduled`** (Bearer `SMOHIX_MAPPING_DIGEST_CRON_SECRET`). Audit: `governance.regulatory_mapping_digest_delivered`. Regression: `npm run test:regulatory-mapping-change-digest`.
 
 **Compliance obligation ICS export (no migration):** downloadable **iCalendar (.ics)** feed of **attestation due dates**, **vendor reviews**, **recommended evidence bundles**, **framework checkpoints**, **control testing schedules**, and **open assessor evidence requests** from live org data. Console: **`/governance/compliance/obligation-ics`** · API: **`GET /api/governance/compliance/obligation-ics?horizonDays=365`** · Assessor API: **`obligation-ics`** resource. Audit: `governance.compliance_obligation_ics_exported`. Regression: `npm run test:compliance-obligation-ics`.
 
@@ -662,7 +662,7 @@ Invite teammates by email (they must already have a Zentro account). Requires **
 
 To require HMAC verification on `/api/integrations/alerts`, set:
 
-- `ZENTRO_ALERT_WEBHOOK_SIGNING_SECRET`
+- `SMOHIX_ALERT_WEBHOOK_SIGNING_SECRET`
 
 When set, requests must include:
 

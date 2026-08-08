@@ -17,7 +17,7 @@ import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { SITE_BRAND_NAME } from "@/lib/site-brand";
 
-export const STAFFING_COMPLETION_ROLLUP_VERSION = "zentro-staffing-completion-rollup/1";
+export const STAFFING_COMPLETION_ROLLUP_VERSION = "smohix-staffing-completion-rollup/1";
 
 export type StaffingCompletionRollupOrgSettings = {
   rollupEnabled: boolean;
@@ -408,7 +408,7 @@ export async function deliverStaffingCompletionRollup(
     for (const admin of recipients) {
       const sent = await sendTransactionalEmailWithAudit({
         to: admin.email!.trim(),
-        subject: `[Zentro] Staffing completion rollup — ${pack.orgName} (${pack.completionPercent}%)`,
+        subject: `[Smohix] Staffing completion rollup — ${pack.orgName} (${pack.completionPercent}%)`,
         text,
         userId: actorUserId,
         orgId,

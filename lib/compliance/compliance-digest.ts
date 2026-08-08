@@ -7,7 +7,7 @@ import {
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-export const COMPLIANCE_DIGEST_VERSION = "zentro-compliance-digest/1";
+export const COMPLIANCE_DIGEST_VERSION = "smohix-compliance-digest/1";
 
 export type ComplianceDigestSnapshot = {
   overallReadinessPercent: number;
@@ -54,7 +54,7 @@ export type ComplianceDigestDeltas = {
 };
 
 export type ComplianceDigestPayload = {
-  type: "zentro.compliance_digest.weekly";
+  type: "smohix.compliance_digest.weekly";
   version: typeof COMPLIANCE_DIGEST_VERSION;
   orgId: string;
   generatedAt: string;
@@ -218,7 +218,7 @@ export function buildComplianceDigestPayload(
 ): ComplianceDigestPayload {
   const origin = siteOrigin.replace(/\/$/, "");
   return {
-    type: "zentro.compliance_digest.weekly",
+    type: "smohix.compliance_digest.weekly",
     version: COMPLIANCE_DIGEST_VERSION,
     orgId,
     generatedAt: dashboard.generatedAt,

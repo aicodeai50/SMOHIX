@@ -10,7 +10,7 @@ import type { ComplianceFramework } from "@/lib/compliance/types";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-export const REGULATORY_CHANGE_IMPACT_VERSION = "zentro-regulatory-change-impact/1";
+export const REGULATORY_CHANGE_IMPACT_VERSION = "smohix-regulatory-change-impact/1";
 
 export type RegulatoryImpactKind =
   | "new_obligation"

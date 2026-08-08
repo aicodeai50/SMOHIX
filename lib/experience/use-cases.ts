@@ -18,19 +18,19 @@ export const USE_CASES: readonly UseCase[] = [
     problem:
       "Clinical and operational teams need audit trails and controlled automation without exposing PHI to ad-hoc AI tools.",
     solution:
-      "Use Platform for incidents and approvals, Identity for org RBAC, and Zentro AI at ai.zentro.run with policies you configure.",
+      "Use Platform for incidents and approvals, Identity for org RBAC, and Smohix AI at ai.smohix.run with policies you configure.",
     products: [
-      { slug: "zentro-platform", name: "Zentro Platform" },
+      { slug: "smohix-platform", name: "Smohix Platform" },
       { slug: "identity", name: "Identity" },
-      { slug: "zentro-ai", name: "Zentro AI" },
+      { slug: "smohix-ai", name: "Smohix AI" },
     ],
-    deliversNow: ["Console with audit export (where enabled)", "Supabase auth and org RBAC", "Standalone Zentro AI product"],
+    deliversNow: ["Console with audit export (where enabled)", "Supabase auth and org RBAC", "Standalone Smohix AI product"],
     requiresPilot: ["Regulated rollout scoping", "Connector policy review"],
     planned: ["Expanded vertical solution packs"],
     outcomes: [
       "Human-in-the-loop before production changes",
       "Exportable audit and evidence modules (where enabled)",
-      "No client-side API secrets on zentro.run",
+      "No client-side API secrets on smohix.run",
     ],
   },
   {
@@ -41,7 +41,7 @@ export const USE_CASES: readonly UseCase[] = [
     solution:
       "Platform console plus compliance modules (beta), Enterprise pilot path, and professional services for scoped rollouts.",
     products: [
-      { slug: "zentro-platform", name: "Zentro Platform" },
+      { slug: "smohix-platform", name: "Smohix Platform" },
       { slug: "analytics", name: "Analytics" },
       { slug: "identity", name: "Identity" },
     ],
@@ -60,9 +60,9 @@ export const USE_CASES: readonly UseCase[] = [
     problem:
       "Integrators need a stable API catalog, keys, and ingest paths — not undocumented internal URLs.",
     solution:
-      "Zentro Own API catalog, API keys, alert ingest tokens, and documented proxies to optional backends.",
+      "Smohix Own API catalog, API keys, alert ingest tokens, and documented proxies to optional backends.",
     products: [
-      { slug: "zentro-own-api", name: "Zentro Own API" },
+      { slug: "smohix-own-api", name: "Smohix Own API" },
       { slug: "identity", name: "Identity" },
     ],
     deliversNow: ["/docs/api catalog", "GET /api/health", "API keys in Settings"],
@@ -82,7 +82,7 @@ export const USE_CASES: readonly UseCase[] = [
     solution:
       "Extend Platform automations and Agents (prototype) with dry-runs, Slack approvals, and audit receipts.",
     products: [
-      { slug: "zentro-platform", name: "Zentro Platform" },
+      { slug: "smohix-platform", name: "Smohix Platform" },
       { slug: "agents", name: "Agents" },
     ],
     deliversNow: ["Automations console", "Dry-run API", "Audit log"],
@@ -103,10 +103,10 @@ export const USE_CASES: readonly UseCase[] = [
       "Runbooks module today; Knowledge product and Copilot grounding planned to connect operational context.",
     products: [
       { slug: "knowledge", name: "Knowledge" },
-      { slug: "zentro-ai", name: "Zentro AI" },
+      { slug: "smohix-ai", name: "Smohix AI" },
       { slug: "memory-pendant", name: "Memory Pendant" },
     ],
-    deliversNow: ["Runbooks module in Platform", "Zentro AI at ai.zentro.run"],
+    deliversNow: ["Runbooks module in Platform", "Smohix AI at ai.smohix.run"],
     requiresPilot: ["Memory Pendant prototype access"],
     planned: ["Unified knowledge search", "Memory Pendant integration"],
     outcomes: [
@@ -123,7 +123,7 @@ export const USE_CASES: readonly UseCase[] = [
       "Agents and Automations with dry-run API, robot proxy, and approval notes tied to incidents.",
     products: [
       { slug: "agents", name: "Agents" },
-      { slug: "zentro-platform", name: "Zentro Platform" },
+      { slug: "smohix-platform", name: "Smohix Platform" },
     ],
     deliversNow: ["Dry-run and automations routes", "Approval queue"],
     requiresPilot: ["Production agent scheduling"],
@@ -141,7 +141,7 @@ export const USE_CASES: readonly UseCase[] = [
     solution:
       "Overview command center, hub stats, and Analytics preview — same Platform identity.",
     products: [
-      { slug: "zentro-platform", name: "Zentro Platform" },
+      { slug: "smohix-platform", name: "Smohix Platform" },
       { slug: "analytics", name: "Analytics" },
     ],
     deliversNow: ["Overview when signed in", "Error budget API where configured"],
@@ -160,10 +160,10 @@ export const USE_CASES: readonly UseCase[] = [
     solution:
       "Product Access documentation, API request builder, and scoped pilot programs — live console via pilot only.",
     products: [
-      { slug: "zentro-platform", name: "Zentro Platform" },
-      { slug: "zentro-ai", name: "Zentro AI" },
+      { slug: "smohix-platform", name: "Smohix Platform" },
+      { slug: "smohix-ai", name: "Smohix AI" },
     ],
-    deliversNow: ["Public documentation", "ai.zentro.run product access"],
+    deliversNow: ["Public documentation", "ai.smohix.run product access"],
     requiresPilot: ["Scoped institutional workspace"],
     planned: [],
     outcomes: [
@@ -179,7 +179,7 @@ export const USE_CASES: readonly UseCase[] = [
     solution:
       "Trust center, audit export, Identity RBAC, and compliance modules (beta) with factual status disclosure.",
     products: [
-      { slug: "zentro-platform", name: "Zentro Platform" },
+      { slug: "smohix-platform", name: "Smohix Platform" },
       { slug: "identity", name: "Identity" },
     ],
     deliversNow: ["Trust center", "Audit export (where enabled)", "Auditor workspace role"],

@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 import { devResolveTenantFromPlainKey } from "@/lib/api-keys/dev-store";
 import {
-  extractZentroApiKey,
+  extractSmohixApiKey,
   resolveUserIdFromApiKeyPlaintext,
 } from "@/lib/api-keys/resolve";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
@@ -23,7 +23,7 @@ async function resolveProxyUserId(req: NextRequest): Promise<string | null> {
   if (user) {
     return user.id;
   }
-  const plain = extractZentroApiKey(req);
+  const plain = extractSmohixApiKey(req);
   if (!plain) {
     return null;
   }
@@ -82,7 +82,7 @@ async function denyIfProxyDevOrAnon(req: NextRequest): Promise<NextResponse | nu
     return null;
   }
   const ip = clientIpFromRequest(req);
-  const plain = extractZentroApiKey(req);
+  const plain = extractSmohixApiKey(req);
   if (plain) {
     const dev = devResolveTenantFromPlainKey(plain);
     if (!dev) {

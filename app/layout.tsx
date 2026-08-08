@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
-import { getBrandMetadataIcons } from "@/lib/brand";
+import { BRAND_ASSETS, getBrandMetadataIcons } from "@/lib/brand";
+import { INDEX_ROBOTS } from "@/lib/metadata";
 import {
   SITE_BRAND_NAME,
-  SITE_COMPANY_NAME,
   SITE_MARKETING_DESCRIPTION,
   SITE_MARKETING_TITLE,
   SITE_MARKETING_TWITTER_DESCRIPTION,
+  SITE_SEO_KEYWORDS,
 } from "@/lib/site-brand";
 import { SiteJsonLd } from "@/components/site/SiteJsonLd";
 import { AnalyticsConsentBanner } from "@/components/consent/AnalyticsConsentBanner";
@@ -25,16 +26,18 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
+/** Production canonical origin for Search Console / social previews. */
 const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  applicationName: SITE_COMPANY_NAME,
+  applicationName: SITE_BRAND_NAME,
   title: {
     default: SITE_MARKETING_TITLE,
     template: `%s · ${SITE_BRAND_NAME}`,
   },
   description: SITE_MARKETING_DESCRIPTION,
+  keywords: [...SITE_SEO_KEYWORDS],
   manifest: "/site.webmanifest",
   icons: getBrandMetadataIcons(),
   appleWebApp: {
@@ -49,22 +52,26 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: siteUrl,
-    siteName: SITE_COMPANY_NAME,
+    siteName: SITE_BRAND_NAME,
     title: SITE_MARKETING_TITLE,
     description: SITE_MARKETING_DESCRIPTION,
+    images: [
+      {
+        url: BRAND_ASSETS.openGraphImage,
+        width: 1200,
+        height: 630,
+        alt: SITE_BRAND_NAME,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: SITE_MARKETING_TITLE,
     description: SITE_MARKETING_TWITTER_DESCRIPTION,
+    images: [BRAND_ASSETS.twitterImage],
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
-  verification: {
-    google: "pnfIca15cylpyjnEBOGo00i4YNOBlxxorcb-DBkOPuI",
-  },
+  robots: INDEX_ROBOTS,
+  // Google Search Console verification is via DNS TXT on smohix.run — no meta tag.
 };
 
 export default function RootLayout({

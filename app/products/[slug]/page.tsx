@@ -28,13 +28,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!product) {
     return buildMarketingMetadata({
       title: "Product",
-      description: "Zentro Technologies product.",
+      description: "Smohix Technologies product.",
       path: `/products/${slug}`,
     });
   }
   return buildMarketingMetadata({
     title: product.name,
-    description: `${product.tagline} — ${maturityLabel(product.maturity)} on the Zentro platform.`,
+    description: `${product.tagline} — ${maturityLabel(product.maturity)} on the Smohix platform.`,
     path: `/products/${slug}`,
   });
 }

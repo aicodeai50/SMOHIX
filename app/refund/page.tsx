@@ -4,7 +4,7 @@ import { LegalContactSection } from "@/components/legal/LegalContactSection";
 
 export const metadata: Metadata = {
   title: "Refunds & billing",
-  description: "Billing cycles, refunds, and subscription terms for Zentro.",
+  description: "Billing cycles, refunds, and subscription terms for Smohix.",
 };
 
 export default function RefundPage() {
@@ -67,7 +67,7 @@ export default function RefundPage() {
         If you market to consumers in the European Union or United Kingdom, you may
         need to provide a 14-day statutory right of withdrawal for distance contracts,
         with exceptions for digital content once performance begins with consent.
-        Zentro applies mandatory local consumer rights where required by law.
+        Smohix applies mandatory local consumer rights where required by law.
       </p>
 
       <h2>6. Downgrades and mid-cycle changes</h2>

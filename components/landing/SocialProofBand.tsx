@@ -18,9 +18,9 @@ const CAPABILITIES = [
 
 export function SocialProofBand() {
   return (
-    <MarketingReveal className="border-b border-white/[0.06] py-10 sm:py-12 zentro-quantum-section">
+    <MarketingReveal className="border-b border-white/[0.06] py-10 sm:py-12 smohix-quantum-section">
       <div className={mContainer}>
-        <p className={`${mEyebrow} text-center zentro-eyebrow-cyber`}>
+        <p className={`${mEyebrow} text-center smohix-eyebrow-cyber`}>
           Built for accountable operations teams
         </p>
         <ul className="mt-6 flex flex-wrap items-center justify-center gap-2">
@@ -49,7 +49,7 @@ export function SocialProofBand() {
           {CAPABILITIES.map((item) => (
             <section
               key={item.title}
-              className="zentro-bento-cell rounded-2xl p-5 sm:p-6"
+              className="smohix-bento-cell rounded-2xl p-5 sm:p-6"
             >
               <h2 className="text-sm font-semibold text-foreground">{item.title}</h2>
               <p className="mt-2 text-sm leading-relaxed text-muted">{item.body}</p>

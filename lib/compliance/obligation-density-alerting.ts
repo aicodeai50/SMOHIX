@@ -19,7 +19,7 @@ import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { SITE_BRAND_NAME } from "@/lib/site-brand";
 
-export const OBLIGATION_DENSITY_ALERTING_VERSION = "zentro-obligation-density-alerting/1";
+export const OBLIGATION_DENSITY_ALERTING_VERSION = "smohix-obligation-density-alerting/1";
 
 export type ObligationDensityAlertType = "weekly_density" | "peak_week" | "overdue_spike";
 
@@ -303,7 +303,7 @@ function buildDensityAlertEmail(
     `Consolidation: ${siteOrigin.replace(/\/$/, "")}/governance/compliance/obligation-consolidation`,
   ];
   return {
-    subject: `[Zentro] Obligation density alert — ${orgName}`,
+    subject: `[Smohix] Obligation density alert — ${orgName}`,
     text: lines.join("\n"),
   };
 }

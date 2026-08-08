@@ -223,12 +223,12 @@ export default async function ComplianceSlaRemindersPage({
             <div className="rounded-xl border border-border bg-surface/40 px-4 py-3">
               <p className={appOverline}>Slack</p>
               <p className={`mt-1 ${appBody}`}>{slackConfigured ? "Webhook configured" : "Not configured"}</p>
-              <p className={`${appMeta} text-muted`}>ZENTRO_SLACK_WEBHOOK_URL · ZENTRO_SLACK_NOTIFY_COMPLIANCE_SLA</p>
+              <p className={`${appMeta} text-muted`}>SMOHIX_SLACK_WEBHOOK_URL · SMOHIX_SLACK_NOTIFY_COMPLIANCE_SLA</p>
             </div>
             <div className="rounded-xl border border-border bg-surface/40 px-4 py-3">
               <p className={appOverline}>Email (Resend)</p>
               <p className={`mt-1 ${appBody}`}>{emailConfigured ? "Resend configured" : "Not configured"}</p>
-              <p className={`${appMeta} text-muted`}>ZENTRO_RESEND_API_KEY · ZENTRO_EMAIL_FROM</p>
+              <p className={`${appMeta} text-muted`}>SMOHIX_RESEND_API_KEY · SMOHIX_EMAIL_FROM</p>
             </div>
           </div>
         </>

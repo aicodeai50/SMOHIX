@@ -50,12 +50,12 @@ export function HomePageJsonLd() {
         logo: logoUrl,
         email: SITE_EMAIL_CONTACT,
         description: SITE_TAGLINE,
-        sameAs: [`https://${SITE_PRIMARY_DOMAIN}`, "https://github.com/aicodeai50/ZENTRO"],
+        sameAs: [`https://${SITE_PRIMARY_DOMAIN}`, "https://github.com/aicodeai50/SMOHIX"],
       },
       {
         "@type": "ItemList",
         "@id": `${siteUrl}/#products`,
-        name: "Zentro ecosystem products",
+        name: "Smohix ecosystem products",
         itemListElement: ECOSYSTEM_PRODUCTS.map((product, index) => ({
           "@type": "ListItem",
           position: index + 1,

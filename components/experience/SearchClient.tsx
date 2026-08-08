@@ -19,7 +19,7 @@ export function SearchClient({ initialQuery = "" }: { initialQuery?: string }) {
   return (
     <div>
       <label htmlFor="site-search" className="sr-only">
-        Search Zentro
+        Search Smohix
       </label>
       <input
         id="site-search"

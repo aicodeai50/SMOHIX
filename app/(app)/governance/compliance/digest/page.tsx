@@ -150,7 +150,7 @@ export default async function ComplianceDigestPage({
                   name="compliance_digest_webhook_url"
                   type="url"
                   defaultValue={webhookUrl}
-                  placeholder="https://grc.example.com/hooks/zentro/digest"
+                  placeholder="https://grc.example.com/hooks/smohix/digest"
                   className={`h-10 w-full rounded-lg border border-border bg-background px-3 ${appBody}`}
                 />
                 <button
@@ -162,7 +162,7 @@ export default async function ComplianceDigestPage({
                 <p className={`${appMeta} text-muted`}>
                   Weekly cron: POST to{" "}
                   <span className="font-mono text-foreground/80">/api/governance/compliance/digest/scheduled</span>{" "}
-                  with <span className="font-mono">Authorization: Bearer &lt;ZENTRO_DIGEST_CRON_SECRET&gt;</span>
+                  with <span className="font-mono">Authorization: Bearer &lt;SMOHIX_DIGEST_CRON_SECRET&gt;</span>
                 </p>
               </form>
             ) : (
@@ -209,7 +209,7 @@ export default async function ComplianceDigestPage({
       <div className="mt-6 rounded-xl border border-border bg-surface/40 px-4 py-3">
         <p className={appOverline}>Payload shape</p>
         <p className={`mt-2 ${appMeta} text-muted`}>
-          Webhook body type <span className="font-mono text-foreground/80">zentro.compliance_digest.weekly</span>{" "}
+          Webhook body type <span className="font-mono text-foreground/80">smohix.compliance_digest.weekly</span>{" "}
           includes <span className="font-mono">summary</span>, <span className="font-mono">deltas</span> (readiness
           changes vs prior snapshot), <span className="font-mono">overdueAttestations</span>, and{" "}
           <span className="font-mono">topGaps</span>.

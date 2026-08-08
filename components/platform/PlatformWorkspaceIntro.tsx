@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { Button } from "@/components/ui/Button";
-import { ZENTRO_WORKSPACE_URLS } from "@/lib/ecosystem-workspaces";
+import { SMOHIX_WORKSPACE_URLS } from "@/lib/ecosystem-workspaces";
 import { mBody, mCard, mCardTitle, mContainer, mH2, mSection } from "@/lib/marketing-layout";
 
 const PLATFORM_CAPABILITIES = [
@@ -49,23 +49,23 @@ export function PlatformWorkspaceIntro() {
             Your operational workspace after sign-in
           </h1>
           <p className={`mt-4 max-w-2xl ${mBody}`}>
-            Zentro Platform is the authenticated operations layer — incidents, automation,
+            Smohix Platform is the authenticated operations layer — incidents, automation,
             governance, and administration. It lives at{" "}
             <a
-              href={ZENTRO_WORKSPACE_URLS.platform}
+              href={SMOHIX_WORKSPACE_URLS.platform}
               className="text-accent hover:underline"
               target="_blank"
               rel="noopener noreferrer"
             >
-              platform.zentro.run
+              platform.smohix.run
             </a>{" "}
-            and through the console on zentro.run — same ecosystem, same identity.
+            and through the console on smohix.run — same ecosystem, same identity.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link href="/auth/sign-in?next=/hub">
               <Button size="lg">Sign in to Platform</Button>
             </Link>
-            <Link href="/products/zentro-platform">
+            <Link href="/products/smohix-platform">
               <Button size="lg" variant="secondary">
                 Product overview
               </Button>

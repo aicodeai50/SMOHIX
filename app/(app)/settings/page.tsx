@@ -195,7 +195,7 @@ export default async function SettingsIndexPage({
       };
     });
   const setupReport = [
-    "# Zentro Setup Readiness",
+    "# Smohix Setup Readiness",
     "",
     `Progress: ${setupComplete}/${setupSteps.length} (${progressPercent}%)`,
     `Data source: ${setupMode === "supabase" ? "live Supabase workspace state" : "session mode (local/dev)"}`,
@@ -222,7 +222,7 @@ export default async function SettingsIndexPage({
         description="Billing and service links for this workspace. Runbooks and audit live under their own modules in the rail."
       />
       <ConsoleAmbientBanner snapshot={ambient} />
-      <section id="setup-wizard" className="zentro-glass mb-6 rounded-2xl p-5 md:p-6">
+      <section id="setup-wizard" className="smohix-glass mb-6 rounded-2xl p-5 md:p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 className={`${appPanelTitle} text-foreground/95`}>First-run setup wizard</h2>
@@ -380,7 +380,7 @@ export default async function SettingsIndexPage({
           </Link>
           <a
             href={setupReportHref}
-            download="zentro-setup-readiness.md"
+            download="smohix-setup-readiness.md"
             className={`rounded-full border border-white/[0.14] px-2.5 py-1 text-foreground/75 transition-colors hover:border-accent/35 hover:text-foreground ${appMeta}`}
           >
             Download setup report
@@ -417,7 +417,7 @@ export default async function SettingsIndexPage({
         ) : null}
       </section>
       {accountEmail ? (
-        <section id="profile-settings" className="zentro-glass mb-6 rounded-2xl p-5 md:p-6">
+        <section id="profile-settings" className="smohix-glass mb-6 rounded-2xl p-5 md:p-6">
           <h2 className={`${appPanelTitle} text-foreground/95`}>Profile</h2>
           <p className={`mt-1 ${appMeta}`}>
             Your display name appears in the console rail. Clear the field to fall back to your email.
@@ -426,7 +426,7 @@ export default async function SettingsIndexPage({
         </section>
       ) : null}
       {accountEmail ? (
-        <section id="notification-settings" className="zentro-glass mb-6 rounded-2xl p-5 md:p-6">
+        <section id="notification-settings" className="smohix-glass mb-6 rounded-2xl p-5 md:p-6">
           <h2 className={`${appPanelTitle} text-foreground/95`}>Notifications</h2>
           <p className={`mt-1 ${appMeta}`}>
             Choose which email notifications you receive from {accountEmail}.
@@ -437,7 +437,7 @@ export default async function SettingsIndexPage({
         </section>
       ) : null}
       {accountEmail ? (
-        <section id="account-settings" className="zentro-glass mb-6 rounded-2xl p-5 md:p-6">
+        <section id="account-settings" className="smohix-glass mb-6 rounded-2xl p-5 md:p-6">
           <h2 className={`${appPanelTitle} text-foreground/95`}>Account & data</h2>
           <p className={`mt-1 ${appMeta}`}>
             Export your workspace data or request permanent account deletion.
@@ -466,7 +466,7 @@ export default async function SettingsIndexPage({
           <Link
             key={c.href}
             href={c.href}
-            className="zentro-glass group flex flex-col rounded-2xl p-5 transition-[border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-[0_0_40px_-14px_rgba(94,225,255,0.2)]"
+            className="smohix-glass group flex flex-col rounded-2xl p-5 transition-[border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-[0_0_40px_-14px_rgba(94,225,255,0.2)]"
           >
             <h2 className={`${appPanelTitle} group-hover:text-accent`}>{c.title}</h2>
             <p className={`mt-2 flex-1 text-muted ${appBody}`}>{c.description}</p>

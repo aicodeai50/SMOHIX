@@ -34,4 +34,4 @@ export function getPayPalWebhookId(): string | undefined {
   return process.env.PAYPAL_WEBHOOK_ID?.trim() || undefined;
 }
 
-export { getZentroOwnApiUrl } from "@/lib/backend-urls";
+export { getSmohixOwnApiUrl } from "@/lib/backend-urls";

@@ -17,7 +17,7 @@ export const metadata: Metadata = buildMarketingMetadata({
 const FLOW_NOTES = [
   {
     title: "Same-origin trust boundary",
-    body: "The browser talks only to zentro.run. API keys and private Railway URLs stay on the server.",
+    body: "The browser talks only to smohix.run. API keys and private Railway URLs stay on the server.",
   },
   {
     title: "Platform as hub",

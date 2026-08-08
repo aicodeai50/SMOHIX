@@ -38,7 +38,7 @@ export async function updateIncidentStatusAction(formData: FormData) {
   }
 
   if (!hasSupabaseAuth()) {
-    const tid = (await cookies()).get("zentro_dev_tid")?.value ?? "anon";
+    const tid = ((await cookies()).get("smohix_dev_tid")?.value ?? (await cookies()).get("zentro_dev_tid")?.value) ?? "anon";
     const result = await updateIncidentStatusForUser("", id, status, {
       devTenantKey: tid,
     });
@@ -92,7 +92,7 @@ export async function updateIncidentContextAction(formData: FormData) {
   }
 
   if (!hasSupabaseAuth()) {
-    const tid = (await cookies()).get("zentro_dev_tid")?.value ?? "anon";
+    const tid = ((await cookies()).get("smohix_dev_tid")?.value ?? (await cookies()).get("zentro_dev_tid")?.value) ?? "anon";
     const result = await updateIncidentContextForUser(
       "",
       id,
@@ -185,10 +185,10 @@ export async function addIncidentCommandEventAction(formData: FormData) {
 
   const title =
     eventType === "handoff"
-      ? "Zentro incident handoff"
+      ? "Smohix incident handoff"
       : eventType === "copilot_context"
-        ? "Zentro Copilot context snapshot"
-        : "Zentro incident update";
+        ? "Smohix Copilot context snapshot"
+        : "Smohix incident update";
 
   await notifyIncidentResponders({
     supabase,

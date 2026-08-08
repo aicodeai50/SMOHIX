@@ -26,7 +26,7 @@ export const SOLUTION_PAGES: readonly SolutionPage[] = [
       "Evidence export for review and procurement",
     ],
     relatedProducts: [
-      { href: "/products/zentro-platform", label: "Zentro Platform" },
+      { href: "/products/smohix-platform", label: "Smohix Platform" },
       { href: "/products/agents", label: "Agents" },
     ],
     cta: { href: "/pilot", label: "Start a pilot" },
@@ -43,7 +43,7 @@ export const SOLUTION_PAGES: readonly SolutionPage[] = [
       "Identity, roles, and API access across the ecosystem",
     ],
     relatedProducts: [
-      { href: "/products/zentro-ai", label: "Zentro AI" },
+      { href: "/products/smohix-ai", label: "Smohix AI" },
       { href: "/products/private-ai", label: "Private AI" },
       { href: "/enterprise", label: "Enterprise" },
     ],
@@ -61,7 +61,7 @@ export const SOLUTION_PAGES: readonly SolutionPage[] = [
       "Caregiver technology projects under active development",
     ],
     relatedProducts: [
-      { href: "/products/zentro-platform", label: "Zentro Platform" },
+      { href: "/products/smohix-platform", label: "Smohix Platform" },
       { href: "/products/knowledge", label: "Knowledge" },
     ],
     relatedProjects: [
@@ -88,7 +88,7 @@ export const SOLUTION_PAGES: readonly SolutionPage[] = [
       "Pilot programs for research and teaching use cases",
     ],
     relatedProducts: [
-      { href: "/products/zentro-platform", label: "Zentro Platform" },
+      { href: "/products/smohix-platform", label: "Smohix Platform" },
       { href: "/developers", label: "Developers" },
     ],
     cta: { href: "/pilot", label: "Apply for a pilot" },

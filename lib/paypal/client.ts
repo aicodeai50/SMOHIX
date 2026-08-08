@@ -108,7 +108,7 @@ export async function createPayPalOrder(
       application_context: {
         return_url: input.returnUrl,
         cancel_url: input.cancelUrl,
-        brand_name: "Zentro",
+        brand_name: "Smohix",
         user_action: "PAY_NOW",
       },
     }),
@@ -139,7 +139,7 @@ export async function createPayPalSubscription(
       application_context: {
         return_url: input.returnUrl,
         cancel_url: input.cancelUrl,
-        brand_name: "Zentro",
+        brand_name: "Smohix",
         user_action: "SUBSCRIBE_NOW",
       },
     }),

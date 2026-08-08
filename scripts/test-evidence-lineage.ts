@@ -51,7 +51,7 @@ const bundle = {
   sinceIso,
   manifestSha256: "abc",
   manifest: {
-    version: "zentro-evidence-bundle/1",
+    version: "smohix-evidence-bundle/1",
     bundleId: "bundle-1",
     orgId: "org-1",
     generatedAt: new Date().toISOString(),
@@ -63,7 +63,7 @@ const bundle = {
     files: [],
     manifestSha256: "abc",
   },
-  storageUri: "zentro://x",
+  storageUri: "smohix://x",
   deliveryStatus: "stored",
   deliveryNote: null,
   createdAt: new Date().toISOString(),

@@ -15,7 +15,7 @@ export async function GET() {
     return NextResponse.json(
       {
         ok: false,
-        service: "zentro-db",
+        service: "smohix-db",
         error: "supabase_not_configured",
       },
       { status: 503, headers: OPERATIONAL_RESPONSE_HEADERS },
@@ -27,7 +27,7 @@ export async function GET() {
     return NextResponse.json(
       {
         ok: false,
-        service: "zentro-db",
+        service: "smohix-db",
         error: error.message,
       },
       { status: 503, headers: OPERATIONAL_RESPONSE_HEADERS },
@@ -39,7 +39,7 @@ export async function GET() {
   return NextResponse.json(
     {
       ok: payload?.ok === true,
-      service: "zentro-db",
+      service: "smohix-db",
       postgres_version: payload?.postgres_version ?? null,
       server_time: payload?.server_time ?? null,
     },

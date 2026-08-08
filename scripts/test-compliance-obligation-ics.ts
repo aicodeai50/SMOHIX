@@ -22,7 +22,7 @@ assert(escapeIcsText("a;b\nc") === "a\\;b\\nc", "ics escape semicolon and newlin
 assert(formatIcsAllDay("2026-05-24") === "20260524", "all day format");
 assert(formatIcsUtcDateTime("2026-05-24T12:00:00.000Z").endsWith("Z"), "utc format ends Z");
 
-const site = "https://zentro.run";
+const site = "https://smohix.run";
 const attestationEvent: GrcCalendarEvent = {
   id: "att-1",
   kind: "attestation_due",

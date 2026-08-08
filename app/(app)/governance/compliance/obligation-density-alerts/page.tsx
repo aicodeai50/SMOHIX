@@ -142,7 +142,7 @@ export default async function ObligationDensityAlertsPage({
           <p className={`mb-6 ${appMeta} text-muted`}>
             Slack: {pack.slackConfigured ? "configured" : "not configured"} · Email:{" "}
             {pack.emailConfigured ? "configured" : "not configured"} · Env:{" "}
-            <code className="text-foreground/80">ZENTRO_SLACK_NOTIFY_OBLIGATION_DENSITY</code>
+            <code className="text-foreground/80">SMOHIX_SLACK_NOTIFY_OBLIGATION_DENSITY</code>
           </p>
 
           {canEdit ? (

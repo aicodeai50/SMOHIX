@@ -1,4 +1,4 @@
--- Contact leads from zentro.run public contact form.
+-- Contact leads from smohix.run public contact form.
 -- Inserts/updates via service role only (Next.js API routes).
 
 create table if not exists public.contact_leads (
@@ -57,4 +57,4 @@ alter table public.contact_leads enable row level security;
 -- No policies for anon/authenticated: service role bypasses RLS for API routes.
 
 comment on table public.contact_leads is
-  'Marketing and pilot leads from zentro.run — server-only access via service role.';
+  'Marketing and pilot leads from smohix.run — server-only access via service role.';

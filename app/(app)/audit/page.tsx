@@ -206,12 +206,12 @@ export default async function AuditPage({
         </div>
       ) : null}
       {source === "session" ? (
-        <p className={`zentro-glass-subtle mb-4 rounded-xl px-4 py-3 ${appMeta}`}>
+        <p className={`smohix-glass-subtle mb-4 rounded-xl px-4 py-3 ${appMeta}`}>
           Sign in with Supabase auth to load your <span className="font-mono">audit_log</span>{" "}
           entries. The log records billing sync, API key changes, approvals, and other actions.
         </p>
       ) : hasSupabaseAuth() && userId && rows.length === 0 ? (
-        <p className={`zentro-glass-subtle mb-4 rounded-xl px-4 py-3 ${appMeta}`}>
+        <p className={`smohix-glass-subtle mb-4 rounded-xl px-4 py-3 ${appMeta}`}>
           No events yet. Ensure{" "}
           <code className="rounded bg-surface px-1 font-mono text-accent">
             supabase/migrations/20260418140000_console_extensions.sql
@@ -249,7 +249,7 @@ export default async function AuditPage({
           }
         />
       ) : (
-      <div className="zentro-table-wrap">
+      <div className="smohix-table-wrap">
         <table className={`w-full text-left ${appBody}`}>
           <thead className="border-b border-white/[0.06] bg-white/[0.03] font-mono text-[11px] font-medium uppercase tracking-[0.1em] text-muted">
             <tr>

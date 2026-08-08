@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { SITE_BRAND_NAME } from "@/lib/site-brand";
 
 /**
- * Official Zentro mark — single source of truth for every logo, icon, favicon, OG, and PWA asset.
+ * Official Smohix mark — single source of truth for every logo, icon, favicon, OG, and PWA asset.
  * The live file is `app/icon.svg` (served at /icon.svg). Do not redesign or replace this mark.
  */
 export const BRAND_MARK_SOURCE = "app/icon.svg" as const;
@@ -21,9 +21,9 @@ export const BRAND_ASSETS = {
 /** Product display names — same official mark, different product labels. */
 export const BRAND_PRODUCT_NAMES = {
   company: SITE_BRAND_NAME,
-  platform: "Zentro Platform",
-  ai: "Zentro AI",
-  ownApi: "Zentro Own API",
+  platform: "Smohix Platform",
+  ai: "Smohix AI",
+  ownApi: "Smohix Own API",
 } as const;
 
 export type BrandProductName =

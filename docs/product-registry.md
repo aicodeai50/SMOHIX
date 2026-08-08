@@ -10,7 +10,7 @@ Maintainers: update `lib/product-registry.ts` when product maturity, URLs, or ac
 | `name` / `publicName` | Display names |
 | `maturity` | `live` \| `preview` \| `prototype` \| `internal` \| `planned` |
 | `repository` | Owning repo (do not modify external repos from this site) |
-| `productPagePath` | Marketing product page on zentro.run |
+| `productPagePath` | Marketing product page on smohix.run |
 | `productUrl` | Primary open destination (HTTPS, allowlisted hosts only) |
 | `docsUrl` | Documentation entry point |
 | `healthCheck` | Optional `{ host, path }` for server-side probes |
@@ -23,9 +23,9 @@ Maintainers: update `lib/product-registry.ts` when product maturity, URLs, or ac
 
 | Product | Maturity | Public URL |
 | --- | --- | --- |
-| Zentro Platform | live | Sign-in → `/hub` |
-| Zentro AI | live | https://ai.zentro.run |
-| Zentro Own API | live | `/docs/api`, `/api/health` |
+| Smohix Platform | live | Sign-in → `/hub` |
+| Smohix AI | live | https://ai.smohix.run |
+| Smohix Own API | live | `/docs/api`, `/api/health` |
 | Identity | live | `/auth/sign-in` |
 | Agents | prototype | `/automations` (signed in) |
 | Analytics | preview | `/overview` (signed in) |
@@ -37,8 +37,8 @@ Maintainers: update `lib/product-registry.ts` when product maturity, URLs, or ac
 
 | Variable | Scope | Purpose |
 | --- | --- | --- |
-| `NEXT_PUBLIC_SITE_URL` | Public | Canonical site URL (default `https://zentro.run`) |
-| `ZENTRO_AI_PUBLIC_URL` | Server | Override for AI product URL (default `https://ai.zentro.run`) |
+| `NEXT_PUBLIC_SITE_URL` | Public | Canonical site URL (default `https://smohix.run`) |
+| `SMOHIX_AI_PUBLIC_URL` | Server | Override for AI product URL (default `https://ai.smohix.run`) |
 
 Never expose Railway internal hostnames, service role keys, or API keys in registry URLs or public pages.
 
@@ -47,7 +47,7 @@ Never expose Railway internal hostnames, service role keys, or API keys in regis
 Implemented in `lib/status/adapters.ts`:
 
 - Server-side fetch only (5s timeout, 60s cache)
-- Allowlisted hosts: `zentro.run`, `ai.zentro.run`, localhost
+- Allowlisted hosts: `smohix.run`, `ai.smohix.run`, localhost
 - Returns `operational` \| `degraded` \| `unavailable` \| `unknown` \| `prototype` \| `planned`
 - No uptime percentages without stored history
 - No Railway deployment metadata in responses
@@ -63,9 +63,9 @@ Implemented in `lib/status/adapters.ts`:
 
 | Product | Owner | Last review |
 | --- | --- | --- |
-| Zentro Platform | _TBD_ | 2026-08-01 |
-| Zentro AI | _TBD_ | 2026-08-01 |
-| Zentro Own API | _TBD_ | 2026-08-01 |
+| Smohix Platform | _TBD_ | 2026-08-01 |
+| Smohix AI | _TBD_ | 2026-08-01 |
+| Smohix Own API | _TBD_ | 2026-08-01 |
 | Memory Pendant | _TBD_ | 2026-08-01 |
 
 ## Route map
@@ -85,4 +85,4 @@ Implemented in `lib/status/adapters.ts`:
 npm run test:product-registry
 ```
 
-Validates: duplicate IDs, allowlisted hosts, Zentro AI URL, maturity CTAs, no mock files, redirect config, status sanitizer, sitemap rules.
+Validates: duplicate IDs, allowlisted hosts, Smohix AI URL, maturity CTAs, no mock files, redirect config, status sanitizer, sitemap rules.

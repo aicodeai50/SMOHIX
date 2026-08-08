@@ -24,7 +24,7 @@ export type EmailTemplate = {
 };
 
 const signOff = (input: EmailTemplateInput) =>
-  `\n\nBest regards,\n${input.senderName ?? "Zentro Technologies"}\nhttps://zentro.run`;
+  `\n\nBest regards,\n${input.senderName ?? "Smohix Technologies"}\nhttps://smohix.run`;
 
 export const EMAIL_TEMPLATES: EmailTemplate[] = [
   {
@@ -32,21 +32,21 @@ export const EMAIL_TEMPLATES: EmailTemplate[] = [
     label: "Enquiry received",
     subject: (i) => `We received your enquiry${i.referenceId ? ` (${i.referenceId})` : ""}`,
     body: (i) =>
-      `Hi ${i.contactName},\n\nThank you for contacting Zentro Technologies regarding ${i.company}. We have received your enquiry${i.referenceId ? ` (reference ${i.referenceId})` : ""} and a team member will review it shortly.${signOff(i)}`,
+      `Hi ${i.contactName},\n\nThank you for contacting Smohix Technologies regarding ${i.company}. We have received your enquiry${i.referenceId ? ` (reference ${i.referenceId})` : ""} and a team member will review it shortly.${signOff(i)}`,
   },
   {
     id: "request_more_info",
     label: "Request for more information",
     subject: (i) => `Quick follow-up — ${i.company}`,
     body: (i) =>
-      `Hi ${i.contactName},\n\nThank you for your interest in Zentro. To help us route your request, could you share a bit more about your timeline, stakeholders, and what success looks like for ${i.company}?${signOff(i)}`,
+      `Hi ${i.contactName},\n\nThank you for your interest in Smohix. To help us route your request, could you share a bit more about your timeline, stakeholders, and what success looks like for ${i.company}?${signOff(i)}`,
   },
   {
     id: "pilot_discovery_call",
     label: "Pilot discovery call",
     subject: (i) => `Pilot discovery — ${i.company}`,
     body: (i) =>
-      `Hi ${i.contactName},\n\nWe would like to schedule a discovery call to understand your goals for a Zentro pilot at ${i.company}. Please reply with a few times that work for you.${signOff(i)}`,
+      `Hi ${i.contactName},\n\nWe would like to schedule a discovery call to understand your goals for a Smohix pilot at ${i.company}. Please reply with a few times that work for you.${signOff(i)}`,
   },
   {
     id: "pilot_proposal_ready",
@@ -65,9 +65,9 @@ export const EMAIL_TEMPLATES: EmailTemplate[] = [
   {
     id: "pilot_accepted",
     label: "Pilot accepted",
-    subject: (i) => `Next steps for your Zentro pilot — ${i.company}`,
+    subject: (i) => `Next steps for your Smohix pilot — ${i.company}`,
     body: (i) =>
-      `Hi ${i.contactName},\n\nThank you for moving forward with a Zentro pilot for ${i.company}. We will confirm kickoff details and stakeholders shortly.${signOff(i)}`,
+      `Hi ${i.contactName},\n\nThank you for moving forward with a Smohix pilot for ${i.company}. We will confirm kickoff details and stakeholders shortly.${signOff(i)}`,
   },
   {
     id: "pilot_completed",

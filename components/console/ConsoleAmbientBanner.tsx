@@ -6,7 +6,7 @@ import type { ConsoleAmbientSnapshot } from "@/lib/console/ambient-status";
 export function ConsoleAmbientBanner({ snapshot }: { snapshot: ConsoleAmbientSnapshot }) {
   return (
     <section
-      className="zentro-console-ambient-banner relative mb-6 overflow-hidden rounded-2xl border border-white/[0.08] bg-black/25"
+      className="smohix-console-ambient-banner relative mb-6 overflow-hidden rounded-2xl border border-white/[0.08] bg-black/25"
       aria-label="Live operational status"
     >
       <ConsoleAmbientCanvas />

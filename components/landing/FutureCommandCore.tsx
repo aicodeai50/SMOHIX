@@ -49,22 +49,22 @@ export function FutureCommandCore() {
   return (
     <div className="relative mx-auto w-full max-w-xl lg:max-w-none">
       <div
-        className="zentro-orbit-ring pointer-events-none absolute -right-10 -top-10 h-44 w-44 opacity-70"
+        className="smohix-orbit-ring pointer-events-none absolute -right-10 -top-10 h-44 w-44 opacity-70"
         aria-hidden
       />
       <div
-        className="zentro-orbit-ring pointer-events-none absolute -left-6 bottom-8 h-28 w-28 opacity-40"
+        className="smohix-orbit-ring pointer-events-none absolute -left-6 bottom-8 h-28 w-28 opacity-40"
         style={{ animationDirection: "reverse", animationDuration: "32s" }}
         aria-hidden
       />
-      <div className="zentro-quantum-core zentro-neural-field zentro-holo-panel relative overflow-hidden rounded-2xl p-1">
-        <div className="zentro-scan-sweep pointer-events-none absolute inset-0 opacity-50" aria-hidden />
-        <div className="zentro-dimension-rift pointer-events-none absolute inset-0 opacity-30" aria-hidden />
+      <div className="smohix-quantum-core smohix-neural-field smohix-holo-panel relative overflow-hidden rounded-2xl p-1">
+        <div className="smohix-scan-sweep pointer-events-none absolute inset-0 opacity-50" aria-hidden />
+        <div className="smohix-dimension-rift pointer-events-none absolute inset-0 opacity-30" aria-hidden />
 
         <div className="relative rounded-[calc(1rem-4px)] bg-[#040508]/95 p-4 sm:p-5">
           <div className="flex items-center justify-between gap-3 border-b border-white/[0.06] pb-3">
             <div className="flex items-center gap-2">
-              <span className="zentro-pulse-dot inline-block h-2 w-2 rounded-full bg-[#6ee7b7]" />
+              <span className="smohix-pulse-dot inline-block h-2 w-2 rounded-full bg-[#6ee7b7]" />
               <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
                 Live command
               </span>
@@ -76,7 +76,7 @@ export function FutureCommandCore() {
 
           <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
             {METRICS.map((m) => (
-              <div key={m.label} className="zentro-bento-cell zentro-cell-breathe rounded-lg px-3 py-2.5">
+              <div key={m.label} className="smohix-bento-cell smohix-cell-breathe rounded-lg px-3 py-2.5">
                 <p className="text-[9px] font-semibold uppercase tracking-wider text-muted">
                   {m.label}
                 </p>
@@ -88,7 +88,7 @@ export function FutureCommandCore() {
 
           <div className="mt-4 rounded-lg border border-white/[0.06] bg-black/50 p-3 font-mono text-[11px] leading-relaxed">
             <p className="text-muted/90">
-              <span className="text-accent">⟨</span> zentro watch --live
+              <span className="text-accent">⟨</span> smohix watch --live
             </p>
             {FEED.slice(0, 4).map((line, i) => (
               <p
@@ -107,7 +107,7 @@ export function FutureCommandCore() {
             {[...Array(9)].map((_, i) => (
               <span
                 key={i}
-                className={`zentro-cell-breathe h-8 rounded border border-white/[0.06] ${
+                className={`smohix-cell-breathe h-8 rounded border border-white/[0.06] ${
                   i === 1 || i === 5
                     ? "bg-[var(--danger-dim)] shadow-[inset_0_0_20px_-8px_var(--danger)]"
                     : i === 4

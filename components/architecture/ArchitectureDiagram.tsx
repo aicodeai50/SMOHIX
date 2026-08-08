@@ -5,7 +5,7 @@ import { mBody, mH3 } from "@/lib/marketing-layout";
 
 export function ArchitectureDiagram() {
   return (
-    <div className="mx-auto max-w-lg" role="img" aria-label="Zentro system architecture layers">
+    <div className="mx-auto max-w-lg" role="img" aria-label="Smohix system architecture layers">
       <ol className="relative space-y-0">
         {ARCHITECTURE_LAYERS.map((layer, index) => {
           const isLast = index === ARCHITECTURE_LAYERS.length - 1;

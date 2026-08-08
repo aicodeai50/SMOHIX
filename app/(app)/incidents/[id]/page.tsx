@@ -73,7 +73,7 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
     orgContext = await getOrgContextForUser(user.id);
     canManageHold = !orgContext.orgId || (orgContext.role ? canManageMembers(orgContext.role) : true);
   } else {
-    devTenantKey = (await cookies()).get("zentro_dev_tid")?.value ?? "anon";
+    devTenantKey = ((await cookies()).get("smohix_dev_tid")?.value ?? (await cookies()).get("zentro_dev_tid")?.value) ?? "anon";
   }
 
   const resolved = await getIncidentForUser(userId, id, devTenantKey);
@@ -127,13 +127,13 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
   return (
     <>
       {source === "session" ? (
-        <p className={`zentro-glass-subtle mb-4 rounded-xl px-4 py-3 ${appMeta}`}>
+        <p className={`smohix-glass-subtle mb-4 rounded-xl px-4 py-3 ${appMeta}`}>
           Session-scoped incident. The timeline below records opens and status changes from this
           browser session; connect Supabase and integrations for shared history and external
           events.
         </p>
       ) : (
-        <p className={`zentro-glass-subtle mb-4 rounded-xl px-4 py-3 ${appMeta}`}>
+        <p className={`smohix-glass-subtle mb-4 rounded-xl px-4 py-3 ${appMeta}`}>
           Timeline entries come from your <span className="font-mono">audit_log</span> (status and
           owner/runbook updates) when the service role can append audits.
         </p>
@@ -222,7 +222,7 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
         </p>
       ) : null}
       {source === "database" && hasSupabaseAuth() ? (
-        <div className="zentro-glass mb-6 space-y-3 rounded-2xl p-4 md:p-5">
+        <div className="smohix-glass mb-6 space-y-3 rounded-2xl p-4 md:p-5">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <p className={appOverline}>RCA Copilot</p>
@@ -384,7 +384,7 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
         <form
           id="incident-context"
           action={updateIncidentContextAction}
-          className="zentro-glass mb-6 space-y-4 rounded-2xl p-4 md:p-5"
+          className="smohix-glass mb-6 space-y-4 rounded-2xl p-4 md:p-5"
         >
           <input type="hidden" name="id" value={row.id} />
           <p className={appOverline}>Owner & runbook</p>
@@ -454,7 +454,7 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
         <form
           id="incident-status"
           action={updateIncidentStatusAction}
-          className="zentro-glass mb-6 flex flex-wrap items-end gap-3 rounded-2xl p-4 md:p-5"
+          className="smohix-glass mb-6 flex flex-wrap items-end gap-3 rounded-2xl p-4 md:p-5"
         >
           <input type="hidden" name="id" value={row.id} />
           <div>

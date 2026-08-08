@@ -1,5 +1,5 @@
 /**
- * Zentro Technologies pilot program — truthful scope for pre-GA collaboration.
+ * Smohix Technologies pilot program — truthful scope for pre-GA collaboration.
  */
 
 export type PilotCategory = {
@@ -54,13 +54,13 @@ export const PILOT_CATEGORIES: readonly PilotCategory[] = [
 export const PILOT_PROCESS = [
   "Intro call to align scope, constraints, and maturity expectations.",
   "Pilot charter — capabilities in scope, data boundaries, and success signals.",
-  "Configuration on zentro.run with your team (connectors, roles, ingest as needed).",
+  "Configuration on smohix.run with your team (connectors, roles, ingest as needed).",
   "Iterative review with honest maturity labels — no pretense that preview features are GA.",
   "Joint decision: expand, pause, or transition to production billing where applicable.",
 ] as const;
 
 export const PILOT_DELIVERABLES = [
-  "Dedicated workspace on zentro.run with org RBAC",
+  "Dedicated workspace on smohix.run with org RBAC",
   "Documented integration points (API catalog, ingest tokens, connectors)",
   "Audit and approval workflows where in scope",
   "Regular check-ins and written progress notes",

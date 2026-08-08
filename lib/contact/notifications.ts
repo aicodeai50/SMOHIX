@@ -16,18 +16,18 @@ export type LeadNotificationProvider = {
 const noopProvider: LeadNotificationProvider = {
   name: "noop",
   async notify() {
-    /* documented — configure ZENTRO_CONTACT_WEBHOOK_URL or ZENTRO_SLACK_WEBHOOK_URL */
+    /* documented — configure SMOHIX_CONTACT_WEBHOOK_URL or SMOHIX_SLACK_WEBHOOK_URL */
   },
 };
 
 function getWebhookProvider(): LeadNotificationProvider | null {
-  const url = process.env.ZENTRO_CONTACT_WEBHOOK_URL?.trim();
+  const url = (process.env.SMOHIX_CONTACT_WEBHOOK_URL ?? process.env.ZENTRO_CONTACT_WEBHOOK_URL)?.trim();
   if (!url) return null;
 
   return {
     name: "webhook",
     async notify({ lead, stored }) {
-      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://zentro.run";
+      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://smohix.run";
       const adminLink = `${siteUrl}/admin/leads?ref=${encodeURIComponent(stored.publicReference)}`;
       const summary =
         lead.problemSummary.length > 160
@@ -55,13 +55,13 @@ function getWebhookProvider(): LeadNotificationProvider | null {
 }
 
 function getSlackProvider(): LeadNotificationProvider | null {
-  const url = process.env.ZENTRO_SLACK_WEBHOOK_URL?.trim();
+  const url = (process.env.SMOHIX_SLACK_WEBHOOK_URL ?? process.env.ZENTRO_SLACK_WEBHOOK_URL)?.trim();
   if (!url) return null;
 
   return {
     name: "slack",
     async notify({ lead, stored }) {
-      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://zentro.run";
+      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://smohix.run";
       const adminLink = `${siteUrl}/admin/leads?ref=${encodeURIComponent(stored.publicReference)}`;
       const summary =
         lead.problemSummary.length > 200

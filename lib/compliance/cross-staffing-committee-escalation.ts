@@ -23,7 +23,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { SITE_BRAND_NAME } from "@/lib/site-brand";
 
 export const CROSS_STAFFING_COMMITTEE_ESCALATION_VERSION =
-  "zentro-cross-staffing-committee-escalation/1";
+  "smohix-cross-staffing-committee-escalation/1";
 
 export type CrossStaffingEscalationOrgSettings = {
   escalationEnabled: boolean;
@@ -400,7 +400,7 @@ export async function deliverCrossStaffingCommitteeEscalation(
     for (const admin of recipients) {
       const sent = await sendTransactionalEmailWithAudit({
         to: admin.email!.trim(),
-        subject: `[Zentro] Committee escalation — ${orgName} (${pack.breachItems.length} SLA breach(es) after rollup)`,
+        subject: `[Smohix] Committee escalation — ${orgName} (${pack.breachItems.length} SLA breach(es) after rollup)`,
         text: lines.join("\n"),
         userId: actorUserId,
         orgId,

@@ -66,7 +66,7 @@ async function runContextFromRequest(req: NextRequest): Promise<RunContext | Nex
     }
     return { mode: "auth", userId: user.id, tenantKey: `u:${user.id}` };
   }
-  const tid = req.cookies.get("zentro_dev_tid")?.value;
+  const tid = (req.cookies.get("smohix_dev_tid")?.value ?? req.cookies.get("zentro_dev_tid")?.value);
   if (!tid) {
     return NextResponse.json(
       { error: "missing_dev_session", message: "Reload once to obtain a session cookie." },
@@ -430,7 +430,7 @@ export async function POST(req: NextRequest) {
     void sendSlackNotificationWithAudit({
       userId: ctx.userId,
       title: "Automation executed",
-      body: "A guarded automation execution was recorded in Zentro.",
+      body: "A guarded automation execution was recorded in Smohix.",
       details: [
         `playbook_id: ${playbookId}`,
         `mode: ${mode}`,

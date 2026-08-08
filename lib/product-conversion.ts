@@ -10,7 +10,7 @@ export type ProductConversionMeta = {
 };
 
 export const PRODUCT_CONVERSION: Record<string, ProductConversionMeta> = {
-  "zentro-platform": {
+  "smohix-platform": {
     audience: "Platform, SRE, SOC, and GRC teams running incidents and automation in production.",
     worksToday: [
       "Incidents, automations, approvals, and audit console",
@@ -18,7 +18,7 @@ export const PRODUCT_CONVERSION: Record<string, ProductConversionMeta> = {
       "Compliance and governance modules (beta)",
     ],
   },
-  "zentro-ai": {
+  "smohix-ai": {
     audience: "Operators who need Copilot inside the same workspace as incidents and approvals.",
     worksToday: [
       "Copilot chat via same-origin /api/copilot/chat",
@@ -26,7 +26,7 @@ export const PRODUCT_CONVERSION: Record<string, ProductConversionMeta> = {
       "Thread persistence when signed in",
     ],
   },
-  "zentro-own-api": {
+  "smohix-own-api": {
     audience: "Integrators and platform engineers connecting billing, ingest, and webhooks.",
     worksToday: [
       "Public API catalog at /docs/api",
@@ -36,7 +36,7 @@ export const PRODUCT_CONVERSION: Record<string, ProductConversionMeta> = {
   },
   "memory-pendant": {
     audience: "Teams planning durable agent memory across long-running workflows.",
-    worksToday: ["Product page and pilot interest — backend not yet available on zentro.run"],
+    worksToday: ["Product page and pilot interest — backend not yet available on smohix.run"],
   },
   agents: {
     audience: "Automation engineers who need dry-runs and human gates before production execution.",
@@ -125,7 +125,7 @@ export function getMaturityCtas(
     },
     secondary: {
       href: `/contact?inquiry=product&product=${encodeURIComponent(product.slug)}`,
-      label: "Contact Zentro",
+      label: "Contact Smohix",
       event: "product_cta",
     },
   };
@@ -134,7 +134,7 @@ export function getMaturityCtas(
 export function maturityCtaHint(maturity: ProductMaturity): string {
   switch (maturity) {
     case "live":
-      return "Available today on zentro.run.";
+      return "Available today on smohix.run.";
     case "preview":
       return "Preview — limited availability; join a pilot for early access.";
     case "prototype":

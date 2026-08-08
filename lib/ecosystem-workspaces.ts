@@ -1,18 +1,20 @@
 /**
- * Zentro ecosystem workspaces — public subdomains are rooms in one headquarters,
+ * Smohix ecosystem workspaces — public subdomains are rooms in one headquarters,
  * not independent companies.
  */
 
-export const ZENTRO_WORKSPACE_URLS = {
-  headquarters: "https://zentro.run",
-  platform: "https://platform.zentro.run",
-  ai: "https://ai.zentro.run",
-  assistant: "https://assistant.zentro.run",
-  privateAi: "https://pri.zentro.run",
-  log: "https://log.zentro.run",
+export const SMOHIX_WORKSPACE_URLS = {
+  headquarters: "https://smohix.run",
+  platform: "https://platform.smohix.run",
+  ai: "https://ai.smohix.run",
+  assistant: "https://assistant.smohix.run",
+  privateAi: "https://pri.smohix.run",
+  log: "https://log.smohix.run",
+  identity: "https://identity.smohix.run",
+  system: "https://system.smohix.run",
 } as const;
 
-export type WorkspaceId = keyof typeof ZENTRO_WORKSPACE_URLS;
+export type WorkspaceId = keyof typeof SMOHIX_WORKSPACE_URLS;
 
 /** Primary nav — simple top-level IA. */
 export const PRIMARY_SITE_NAV = [
@@ -26,9 +28,9 @@ export const PRIMARY_SITE_NAV = [
 
 /** Flagship products — homepage and products hub lead with these. */
 export const FLAGSHIP_PRODUCT_IDS = [
-  "zentro-ai",
-  "zentro-platform",
-  "zentro-assistant",
+  "smohix-ai",
+  "smohix-platform",
+  "smohix-assistant",
   "private-ai",
 ] as const;
 
@@ -36,27 +38,27 @@ export type FlagshipProductId = (typeof FLAGSHIP_PRODUCT_IDS)[number];
 
 export const FLAGSHIP_PRODUCTS = [
   {
-    id: "zentro-ai",
-    name: "Zentro AI",
+    id: "smohix-ai",
+    name: "Smohix AI",
     description: "Flagship AI workspace for multi-model intelligence, reasoning, and coding assistance.",
-    href: "/products/zentro-ai",
-    workspaceUrl: ZENTRO_WORKSPACE_URLS.ai,
+    href: "/products/smohix-ai",
+    workspaceUrl: SMOHIX_WORKSPACE_URLS.ai,
     status: "live" as const,
   },
   {
-    id: "zentro-platform",
-    name: "Zentro Platform",
+    id: "smohix-platform",
+    name: "Smohix Platform",
     description: "Operational workspace — organizations, projects, knowledge, agents, and administration.",
-    href: "/products/zentro-platform",
-    workspaceUrl: ZENTRO_WORKSPACE_URLS.platform,
+    href: "/products/smohix-platform",
+    workspaceUrl: SMOHIX_WORKSPACE_URLS.platform,
     status: "live" as const,
   },
   {
-    id: "zentro-assistant",
-    name: "Zentro Assistant",
+    id: "smohix-assistant",
+    name: "Smohix Assistant",
     description: "Personal intelligent workspace for productivity — distinct from team AI chat.",
-    href: "/products/zentro-assistant",
-    workspaceUrl: ZENTRO_WORKSPACE_URLS.assistant,
+    href: "/products/smohix-assistant",
+    workspaceUrl: SMOHIX_WORKSPACE_URLS.assistant,
     status: "live" as const,
   },
   {
@@ -64,7 +66,7 @@ export const FLAGSHIP_PRODUCTS = [
     name: "Private AI",
     description: "Private AI workspace for organizations that need greater control and deployment options.",
     href: "/products/private-ai",
-    workspaceUrl: ZENTRO_WORKSPACE_URLS.privateAi,
+    workspaceUrl: SMOHIX_WORKSPACE_URLS.privateAi,
     status: "live" as const,
   },
 ] as const;
@@ -119,13 +121,15 @@ export const SERVICE_OFFERINGS = [
 
 /** Hostnames allowed in public product URLs and health probes. */
 export const ECOSYSTEM_PUBLIC_HOSTS = [
-  "zentro.run",
-  "www.zentro.run",
-  "platform.zentro.run",
-  "ai.zentro.run",
-  "assistant.zentro.run",
-  "pri.zentro.run",
-  "log.zentro.run",
+  "smohix.run",
+  "www.smohix.run",
+  "platform.smohix.run",
+  "ai.smohix.run",
+  "assistant.smohix.run",
+  "pri.smohix.run",
+  "log.smohix.run",
+  "identity.smohix.run",
+  "system.smohix.run",
   "localhost",
   "127.0.0.1",
 ] as const;

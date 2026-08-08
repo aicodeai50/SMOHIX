@@ -5,7 +5,7 @@ import { SITE_BRAND_NAME } from "@/lib/site-brand";
 
 export const metadata: Metadata = {
   title: "Security",
-  description: "Security posture and operational safeguards for the Zentro platform.",
+  description: "Security posture and operational safeguards for the Smohix platform.",
 };
 
 export default function SecurityPage() {
@@ -42,7 +42,7 @@ export default function SecurityPage() {
       <h2>4. Domain and transport posture</h2>
       <p>
         Production metadata and canonical links are anchored to the apex domain
-        <strong> zentro.run</strong>. Requests to <code>www</code> hosts are redirected to the
+        <strong> smohix.run</strong>. Requests to <code>www</code> hosts are redirected to the
         canonical apex host to avoid split-origin behavior.
       </p>
 

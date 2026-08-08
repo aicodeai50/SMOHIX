@@ -8,12 +8,12 @@ export type SearchEntry = {
 };
 
 export const SEARCH_INDEX: readonly SearchEntry[] = [
-  { id: "home", title: "Home", description: "Zentro Technologies homepage", href: "/", category: "page", keywords: ["home", "zentro"] },
-  { id: "products", title: "Product Access", description: "Open live Zentro products", href: "/products", category: "page", keywords: ["products", "access", "ecosystem"] },
-  { id: "explore", title: "Explore Zentro", description: "Product orientation", href: "/explore", category: "page", keywords: ["explore", "tour", "orientation"] },
-  { id: "zentro-platform", title: "Zentro Platform", description: "Operational command layer", href: "/products/zentro-platform", category: "product", keywords: ["platform", "incidents", "audit"] },
-  { id: "zentro-ai", title: "Zentro AI", description: "Copilot and ai.zentro.run", href: "/products/zentro-ai", category: "product", keywords: ["ai", "copilot", "chat"] },
-  { id: "zentro-own-api", title: "Zentro Own API", description: "API catalog and integration", href: "/products/zentro-own-api", category: "product", keywords: ["api", "keys", "webhooks"] },
+  { id: "home", title: "Home", description: "Smohix Technologies homepage", href: "/", category: "page", keywords: ["home", "smohix"] },
+  { id: "products", title: "Product Access", description: "Open live Smohix products", href: "/products", category: "page", keywords: ["products", "access", "ecosystem"] },
+  { id: "explore", title: "Explore Smohix", description: "Product orientation", href: "/explore", category: "page", keywords: ["explore", "tour", "orientation"] },
+  { id: "smohix-platform", title: "Smohix Platform", description: "Operational command layer", href: "/products/smohix-platform", category: "product", keywords: ["platform", "incidents", "audit"] },
+  { id: "smohix-ai", title: "Smohix AI", description: "Copilot and ai.smohix.run", href: "/products/smohix-ai", category: "product", keywords: ["ai", "copilot", "chat"] },
+  { id: "smohix-own-api", title: "Smohix Own API", description: "API catalog and integration", href: "/products/smohix-own-api", category: "product", keywords: ["api", "keys", "webhooks"] },
   { id: "identity", title: "Identity", description: "Auth, RBAC, API keys", href: "/products/identity", category: "product", keywords: ["identity", "auth", "sso"] },
   { id: "agents", title: "Agents", description: "Automation playbooks", href: "/products/agents", category: "product", keywords: ["agents", "automation"] },
   { id: "analytics", title: "Analytics", description: "Operational metrics", href: "/products/analytics", category: "product", keywords: ["analytics", "slo", "metrics"] },

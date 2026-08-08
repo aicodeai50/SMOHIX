@@ -13,11 +13,11 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 function siteOrigin(req: NextRequest): string {
-  const env = process.env.ZENTRO_SITE_URL?.trim();
+  const env = (process.env.SMOHIX_SITE_URL ?? process.env.ZENTRO_SITE_URL)?.trim();
   if (env) return env.replace(/\/$/, "");
   const host = req.headers.get("x-forwarded-host") ?? req.headers.get("host");
   const proto = req.headers.get("x-forwarded-proto") ?? "https";
-  return host ? `${proto}://${host}` : "https://zentro.run";
+  return host ? `${proto}://${host}` : "https://smohix.run";
 }
 
 /** Manual digest run for org admins. POST body optional: `{ periodDays?: number }` */

@@ -1,9 +1,9 @@
 /**
- * Zentro Technologies — company positioning for zentro.run marketing.
+ * Smohix Technologies — company positioning for smohix.run marketing.
  * Truthful copy only; no invented customers, metrics, or certifications.
  */
 
-export const COMPANY_NAME = "Zentro Technologies" as const;
+export const COMPANY_NAME = "Smohix Technologies" as const;
 
 export const COMPANY_ORIGIN =
   "Founded with Norwegian engineering roots — building for clarity, privacy, and long-term product quality." as const;
@@ -12,13 +12,13 @@ export const COMPANY_MISSION =
   "Build intelligent software, AI products, developer platforms, and technology solutions that help people and organizations work smarter." as const;
 
 export const COMPANY_VISION =
-  "One Zentro ecosystem where public headquarters, authenticated workspaces, and developer surfaces feel like rooms in the same digital company — never disconnected microsites." as const;
+  "One Smohix ecosystem where public headquarters, authenticated workspaces, and developer surfaces feel like rooms in the same digital company — never disconnected microsites." as const;
 
 export const COMPANY_TECHNOLOGY_PHILOSOPHY =
   "AI-native products with human oversight, open developer standards, privacy by design, and honest maturity labels on everything we ship." as const;
 
 export const COMPANY_LONG_TERM_GOALS = [
-  "Unify flagship workspaces under one coherent Zentro identity",
+  "Unify flagship workspaces under one coherent Smohix identity",
   "Ship AI capabilities with guardrails and accountable operations by default",
   "Support regulated and high-stakes environments with audit-ready evidence",
   "Open developer surfaces — APIs, documentation, and SDKs — that integrators can trust",
@@ -28,7 +28,7 @@ export const COMPANY_HERO_HEADLINE =
   "Intelligent software for organizations that need to move fast — with control" as const;
 
 export const COMPANY_HERO_SUBHEADING =
-  "Zentro Technologies builds AI products, developer platforms, APIs, and enterprise solutions — one ecosystem at zentro.run, with workspaces for AI, platform operations, assistant productivity, and private deployment." as const;
+  "Smohix Technologies builds AI products, developer platforms, APIs, and enterprise solutions — one ecosystem at smohix.run, with workspaces for AI, platform operations, assistant productivity, and private deployment." as const;
 
 export type EcosystemProduct = {
   id: string;
@@ -53,28 +53,28 @@ export type EcosystemProduct = {
 /** Homepage and JSON-LD ecosystem list — Memory Pendant is not a flagship entry. */
 export const ECOSYSTEM_PRODUCTS: readonly EcosystemProduct[] = [
   {
-    id: "zentro-ai",
-    name: "Zentro AI",
+    id: "smohix-ai",
+    name: "Smohix AI",
     description: "Flagship AI workspace for multi-model intelligence, reasoning, and coding assistance.",
-    href: "/products/zentro-ai",
+    href: "/products/smohix-ai",
     status: "live",
     icon: "bot",
     flagship: true,
   },
   {
-    id: "zentro-platform",
-    name: "Zentro Platform",
+    id: "smohix-platform",
+    name: "Smohix Platform",
     description: "Operational workspace — incidents, automation, organizations, and administration.",
-    href: "/products/zentro-platform",
+    href: "/products/smohix-platform",
     status: "live",
     icon: "layoutDashboard",
     flagship: true,
   },
   {
-    id: "zentro-assistant",
-    name: "Zentro Assistant",
+    id: "smohix-assistant",
+    name: "Smohix Assistant",
     description: "Personal intelligent workspace for productivity — separate from team AI chat.",
-    href: "/products/zentro-assistant",
+    href: "/products/smohix-assistant",
     status: "live",
     icon: "bot",
     flagship: true,
@@ -89,16 +89,16 @@ export const ECOSYSTEM_PRODUCTS: readonly EcosystemProduct[] = [
     flagship: true,
   },
   {
-    id: "zentro-own-api",
-    name: "Zentro Own API",
+    id: "smohix-own-api",
+    name: "Smohix Own API",
     description: "Developer APIs, authentication, webhooks, and ecosystem integrations.",
-    href: "/products/zentro-own-api",
+    href: "/products/smohix-own-api",
     status: "live",
     icon: "server",
   },
   {
     id: "identity",
-    name: "Identity",
+    name: "Smohix Identity",
     description: "Authentication, organization roles, and API keys across workspaces.",
     href: "/products/identity",
     status: "live",
@@ -192,10 +192,10 @@ export const AUDIENCE_SEGMENTS: readonly AudienceSegment[] = [
   },
 ] as const;
 
-export const WHY_CHOOSE_ZENTRO = [
+export const WHY_CHOOSE_SMOHIX = [
   {
     title: "One ecosystem",
-    description: "Headquarters at zentro.run and authenticated workspaces — same company, same identity.",
+    description: "Headquarters at smohix.run and authenticated workspaces — same company, same identity.",
   },
   {
     title: "AI products",
@@ -234,7 +234,7 @@ export const COMPANY_ROADMAP: readonly RoadmapPhase[] = [
     phase: "now",
     label: "Now",
     items: [
-      "Zentro AI, Platform, Assistant, and Private AI workspaces",
+      "Smohix AI, Platform, Assistant, and Private AI workspaces",
       "Developer hub, API catalog, and documentation",
       "Operational console — incidents, automations, approvals, audit",
     ],

@@ -11,7 +11,7 @@ import {
   ALLOWLISTED_PUBLIC_HOSTS,
   PRODUCT_REGISTRY,
   validateProductRegistry,
-  ZENTRO_AI_PUBLIC_URL,
+  SMOHIX_AI_PUBLIC_URL,
   type ProductRegistryEntry,
   type RegistryMaturity,
 } from "../lib/product-registry";
@@ -30,7 +30,7 @@ assert(registryErrors.length === 0, `validateProductRegistry failed:\n${registry
 const ids = PRODUCT_REGISTRY.map((p) => p.id);
 assert(new Set(ids).size === ids.length, "duplicate product IDs in registry");
 
-assert(ZENTRO_AI_PUBLIC_URL === "https://ai.zentro.run", "ZENTRO_AI_PUBLIC_URL must be https://ai.zentro.run");
+assert(SMOHIX_AI_PUBLIC_URL === "https://ai.smohix.run", "SMOHIX_AI_PUBLIC_URL must be https://ai.smohix.run");
 
 for (const p of PRODUCT_REGISTRY) {
   if (p.maturity === "planned") {
@@ -39,7 +39,7 @@ for (const p of PRODUCT_REGISTRY) {
   }
   if (p.maturity === "prototype" && p.availableActions.some((a) => a.kind === "open_product")) {
     assert(
-      p.productUrl?.startsWith("https://") || p.id === "zentro-ai",
+      p.productUrl?.startsWith("https://") || p.id === "smohix-ai",
       `${p.id}: prototype open_product must link to real HTTPS destination`,
     );
   }
@@ -52,7 +52,7 @@ for (const p of PRODUCT_REGISTRY) {
       const host = new URL(action.href).hostname;
       const allowed =
         ALLOWLISTED_PUBLIC_HOSTS.some((h) => host === h || host.endsWith(`.${h}`)) ||
-        host.endsWith("zentro.run");
+        host.endsWith("smohix.run");
       assert(allowed, `${p.id}: action href host not allowlisted: ${host}`);
     }
   }

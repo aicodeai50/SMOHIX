@@ -9,7 +9,7 @@ import type { ComplianceFramework } from "@/lib/compliance/types";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-export const CONTROL_BENCHMARK_VERSION = "zentro-control-benchmark/1";
+export const CONTROL_BENCHMARK_VERSION = "smohix-control-benchmark/1";
 export const INDUSTRY_BENCHMARK_CATALOG_VERSION = "2026.05-industry-v1";
 
 /** Anonymized aggregate readiness percentiles — reference cohort, not your org's mock scores. */

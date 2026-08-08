@@ -17,7 +17,7 @@ import type { ComplianceFramework } from "@/lib/compliance/types";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-export const EVIDENCE_LINEAGE_VERSION = "zentro-evidence-lineage/1";
+export const EVIDENCE_LINEAGE_VERSION = "smohix-evidence-lineage/1";
 
 export type LineageStageId =
   | "audit_log"

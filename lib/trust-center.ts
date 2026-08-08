@@ -67,7 +67,7 @@ export const TRUST_PRIVACY: readonly TrustItem[] = [
   },
   {
     title: "Cookie consent banner",
-    body: "Optional analytics on zentro.run use a consent banner when NEXT_PUBLIC_ANALYTICS_REQUIRES_CONSENT is enabled. Essential forms work without analytics consent.",
+    body: "Optional analytics on smohix.run use a consent banner when NEXT_PUBLIC_ANALYTICS_REQUIRES_CONSENT is enabled. Essential forms work without analytics consent.",
     status: "current",
   },
   {
@@ -102,7 +102,7 @@ export const TRUST_AI: readonly TrustItem[] = [
 
 export const TRUST_MATURITY = {
   title: "Product maturity disclosure",
-  body: "Every product and capability on zentro.run carries an honest label: Live, Preview, Prototype, or Coming soon. We do not present roadmap items as generally available.",
+  body: "Every product and capability on smohix.run carries an honest label: Live, Preview, Prototype, or Coming soon. We do not present roadmap items as generally available.",
   status: "current" as const,
 };
 

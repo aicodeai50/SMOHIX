@@ -62,11 +62,11 @@ export default async function BackupsPage({
       ) : null}
 
       <div className="mb-6 grid gap-4 sm:grid-cols-2">
-        <div className="zentro-glass rounded-2xl p-5">
+        <div className="smohix-glass rounded-2xl p-5">
           <p className={`${appMeta} font-medium`}>Policies tracked</p>
           <p className="mt-1 text-2xl font-semibold text-foreground">{rows.length}</p>
         </div>
-        <div className="zentro-glass rounded-2xl p-5">
+        <div className="smohix-glass rounded-2xl p-5">
           <p className={`${appMeta} font-medium`}>Enabled</p>
           <p className="mt-1 text-2xl font-semibold text-foreground">{enabledCount}</p>
         </div>

@@ -58,7 +58,7 @@ export async function GET(req: NextRequest) {
     status: 200,
     headers: {
       "Content-Type": "text/csv; charset=utf-8",
-      "Content-Disposition": `attachment; filename="zentro-pilots-${exportedAt.slice(0, 10)}.csv"`,
+      "Content-Disposition": `attachment; filename="smohix-pilots-${exportedAt.slice(0, 10)}.csv"`,
     },
   });
 }

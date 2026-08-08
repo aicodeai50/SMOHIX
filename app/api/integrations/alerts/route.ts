@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
   }
 
   const rawBody = await req.text();
-  const signingSecret = process.env.ZENTRO_ALERT_WEBHOOK_SIGNING_SECRET?.trim();
+  const signingSecret = (process.env.SMOHIX_ALERT_WEBHOOK_SIGNING_SECRET ?? process.env.ZENTRO_ALERT_WEBHOOK_SIGNING_SECRET)?.trim();
   if (signingSecret) {
     const signatureHeader = req.headers.get("x-zentro-signature");
     const timestampHeader = req.headers.get("x-zentro-signature-timestamp");

@@ -71,8 +71,8 @@ export function paidProductDisplayName(
 ): string {
   if (plan === "free") return "Free";
   const tier = paidProductTierFromSummary(summary, plan);
-  if (tier === "pro") return "Zentro Pro";
-  if (tier === "team") return "Zentro Team";
+  if (tier === "pro") return "Smohix Pro";
+  if (tier === "team") return "Smohix Team";
   return "Paid";
 }
 

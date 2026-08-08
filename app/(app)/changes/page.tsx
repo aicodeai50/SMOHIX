@@ -84,19 +84,19 @@ export default async function ChangesPage({
       ) : null}
 
       <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="zentro-glass rounded-2xl p-5">
+        <div className="smohix-glass rounded-2xl p-5">
           <p className={`${appMeta} font-medium`}>Scheduled windows</p>
           <p className="mt-1 text-2xl font-semibold text-foreground">{windows.length}</p>
         </div>
-        <div className="zentro-glass rounded-2xl p-5">
+        <div className="smohix-glass rounded-2xl p-5">
           <p className={`${appMeta} font-medium`}>Upcoming / active</p>
           <p className="mt-1 text-2xl font-semibold text-foreground">{upcoming}</p>
         </div>
-        <div className="zentro-glass rounded-2xl p-5">
+        <div className="smohix-glass rounded-2xl p-5">
           <p className={`${appMeta} font-medium`}>Avg change risk (50)</p>
           <p className="mt-1 text-2xl font-semibold text-foreground">{avgRiskScore ?? "—"}</p>
         </div>
-        <div className="zentro-glass rounded-2xl p-5">
+        <div className="smohix-glass rounded-2xl p-5">
           <p className={`${appMeta} font-medium`}>Risk blocks</p>
           <p className="mt-1 text-2xl font-semibold text-foreground">{blockedRiskCount}</p>
         </div>

@@ -7,7 +7,7 @@ import { SITE_BRAND_BYLINE, SITE_PUBLIC_BRAND } from "@/lib/site-brand";
 const BRAND_POINTS = [
   {
     title: "One public home",
-    body: "Every product, doc, and console entry point lives at zentro.run — not scattered microsites.",
+    body: "Every product, doc, and console entry point lives at smohix.run — not scattered microsites.",
   },
   {
     title: "Connected products",
@@ -27,16 +27,16 @@ const BRAND_POINTS = [
   },
 ] as const;
 
-export function WhyZentroRunSection() {
+export function WhySmohixRunSection() {
   return (
     <MarketingReveal
-      id="why-zentro-run"
+      id="why-smohix-run"
       className={mSection}
-      aria-labelledby="why-zentro-run-heading"
+      aria-labelledby="why-smohix-run-heading"
     >
       <div className={mContainer}>
         <p className={`${mEyebrow} text-primary-muted`}>Public brand</p>
-        <h2 id="why-zentro-run-heading" className={mH2}>
+        <h2 id="why-smohix-run-heading" className={mH2}>
           Why {SITE_PUBLIC_BRAND}
         </h2>
         <p className={`${mLede} mt-3 max-w-2xl`}>

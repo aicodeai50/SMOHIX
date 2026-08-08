@@ -6,19 +6,19 @@ import { Header } from "@/components/site/Header";
 import { MarketingJsonLd, servicesPageJsonLd } from "@/components/site/MarketingJsonLd";
 import { Button } from "@/components/ui/Button";
 import { buildMarketingMetadata } from "@/lib/metadata";
-import { ZENTRO_SERVICES } from "@/lib/services-content";
+import { SMOHIX_SERVICES } from "@/lib/services-content";
 import { mBody, mContainer, mEyebrow, mH3, mSection } from "@/lib/marketing-layout";
 import { SITE_COMPANY_NAME } from "@/lib/site-brand";
 
 /** Public professional services — not the authenticated console service catalog at /services. */
 export const metadata: Metadata = buildMarketingMetadata({
   title: "Professional Services",
-  description: `${SITE_COMPANY_NAME} services — AI integration, automation, API development, and prototyping alongside the Zentro product ecosystem.`,
+  description: `${SITE_COMPANY_NAME} services — AI integration, automation, API development, and prototyping alongside the Smohix product ecosystem.`,
   path: "/professional-services",
 });
 
 export default function ProfessionalServicesPage() {
-  const serviceNames = ZENTRO_SERVICES.map((s) => s.title);
+  const serviceNames = SMOHIX_SERVICES.map((s) => s.title);
 
   return (
     <>
@@ -48,7 +48,7 @@ export default function ProfessionalServicesPage() {
 
         <section className={`${mSection} pb-16`}>
           <div className={`${mContainer} grid gap-5 lg:grid-cols-2`}>
-            {ZENTRO_SERVICES.map((service) => (
+            {SMOHIX_SERVICES.map((service) => (
               <article
                 key={service.id}
                 className="flex flex-col rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6"

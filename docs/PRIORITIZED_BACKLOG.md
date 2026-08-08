@@ -1,4 +1,4 @@
-# Zentro Prioritized Backlog (Execution Plan)
+# Smohix Prioritized Backlog (Execution Plan)
 
 This file turns strategy into shipping order. Priorities optimize for:
 - Faster buyer trust

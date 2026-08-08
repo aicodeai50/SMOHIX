@@ -29,13 +29,13 @@ export const metadata: Metadata = buildMarketingMetadata({
 });
 
 const DEV_LINKS = [
-  { href: "/products", title: "Product Access", description: "Open live Zentro products and documentation." },
+  { href: "/products", title: "Product Access", description: "Open live Smohix products and documentation." },
   { href: "/playground", title: "API request builder", description: "Copyable curl and SDK examples — not executed in browser." },
   { href: "/docs", title: "Documentation", description: "Guides for setup, console modules, and deployment." },
   { href: "/docs/api", title: "API reference", description: "Catalog of public and authenticated API routes." },
   { href: "/integrations", title: "Integrations", description: "Alert ingest, Slack approvals, and connector health." },
   {
-    href: "https://github.com/aicodeai50/ZENTRO",
+    href: "https://github.com/aicodeai50/SMOHIX",
     title: "GitHub",
     description: "Open-source web application and migration scripts.",
     external: true,
@@ -50,12 +50,12 @@ export default function DevelopersPage() {
       <main id="main-content" className="flex-1">
         <section className={`${mSection} border-b border-white/[0.06]`}>
           <div className={mContainer}>
-            <p className={`${mEyebrow} text-primary-muted`}>Build with Zentro</p>
+            <p className={`${mEyebrow} text-primary-muted`}>Build with Smohix</p>
             <h1 className="mt-2 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
               Developer hub
             </h1>
             <p className={`mt-4 max-w-2xl ${mBody}`}>
-              Same-origin APIs, documented routes, and API keys — integrate with Zentro without
+              Same-origin APIs, documented routes, and API keys — integrate with Smohix without
               exposing private backend URLs in the browser.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
@@ -157,7 +157,7 @@ export default function DevelopersPage() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Open Zentro AI ↗
+              Open Smohix AI ↗
             </a>
           </div>
         </section>

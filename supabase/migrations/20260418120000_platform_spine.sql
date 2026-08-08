@@ -1,4 +1,4 @@
--- Zentro platform spine: profiles, billing subscriptions, webhook idempotency.
+-- Smohix platform spine: profiles, billing subscriptions, webhook idempotency.
 -- Apply in Supabase → SQL Editor (or `supabase db push` if you use the CLI).
 -- Requires: extensions pgcrypto (usually enabled on Supabase).
 

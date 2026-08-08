@@ -128,7 +128,7 @@ assert(deltas.overdueDelta === 1, "one additional overdue attestation");
 assert(deltas.newOverdueAttestations.length === 1, "one newly overdue control");
 assert(deltas.newOverdueAttestations[0]?.controlRef === "iso:A.5.15", "iso control is new overdue");
 
-assert(COMPLIANCE_DIGEST_VERSION === "zentro-compliance-digest/1", "digest version constant");
+assert(COMPLIANCE_DIGEST_VERSION === "smohix-compliance-digest/1", "digest version constant");
 assert(isPathAllowedForAuditor("/governance/compliance/digest"), "auditor can open digest page");
 
 console.log("test-compliance-digest: all checks passed");

@@ -8,11 +8,11 @@ export const FAQ_GROUPS: readonly FaqGroup[] = [
     items: [
       {
         q: "What products are live today?",
-        a: "Zentro Platform, Zentro AI (ai.zentro.run), Zentro Own API, and Identity are live. Analytics and Agents are preview/prototype. Projects, Knowledge, and Memory Pendant are planned or prototype — see Product Access at /products.",
+        a: "Smohix Platform, Smohix AI (ai.smohix.run), Smohix Own API, and Smohix Identity are live. Analytics and Agents are preview/prototype. Projects, Knowledge, and Memory Pendant are planned or prototype — see Product Access at /products.",
       },
       {
         q: "Does the site simulate products?",
-        a: "No. Zentro.run links to real products, documentation, and console routes. The API request builder at /playground generates copyable examples only — it does not execute requests.",
+        a: "No. Smohix.run links to real products, documentation, and console routes. The API request builder at /playground generates copyable examples only — it does not execute requests.",
       },
       {
         q: "How do I try live functionality?",

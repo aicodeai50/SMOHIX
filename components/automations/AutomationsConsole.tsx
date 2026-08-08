@@ -262,11 +262,11 @@ export function AutomationsConsole({
         auditLogged={auditTrailOnDryRun}
       />
       {msg ? (
-        <p className={`zentro-glass-subtle rounded-xl px-4 py-3 ${appBody} text-muted`}>
+        <p className={`smohix-glass-subtle rounded-xl px-4 py-3 ${appBody} text-muted`}>
           {msg}
         </p>
       ) : null}
-      <div className="zentro-table-wrap">
+      <div className="smohix-table-wrap">
         <table className={`w-full text-left ${appBody}`}>
           <thead className="border-b border-white/[0.06] bg-white/[0.03] font-mono text-[11px] font-medium uppercase tracking-[0.1em] text-muted">
             <tr>
@@ -325,7 +325,7 @@ export function AutomationsConsole({
           </tbody>
         </table>
       </div>
-      <section className="zentro-glass rounded-2xl p-5 md:p-6">
+      <section className="smohix-glass rounded-2xl p-5 md:p-6">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h2 className={`${appPanelTitle} text-foreground/90`}>Recent dry-runs</h2>
           {auditTrailOnDryRun ? (
@@ -370,7 +370,7 @@ export function AutomationsConsole({
           </ul>
         )}
       </section>
-      <section className="zentro-glass rounded-2xl p-5 md:p-6">
+      <section className="smohix-glass rounded-2xl p-5 md:p-6">
         <h2 className={`${appPanelTitle} text-foreground/90`}>Recent execution receipts</h2>
         {executions.length === 0 ? (
           <p className={`mt-3 rounded-xl border border-dashed border-white/[0.1] bg-white/[0.02] px-4 py-6 text-center ${appBody} text-muted`}>

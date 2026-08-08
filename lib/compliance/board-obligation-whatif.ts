@@ -21,7 +21,7 @@ import type { ComplianceFramework } from "@/lib/compliance/types";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-export const BOARD_OBLIGATION_WHATIF_VERSION = "zentro-board-obligation-whatif/1";
+export const BOARD_OBLIGATION_WHATIF_VERSION = "smohix-board-obligation-whatif/1";
 
 export const DEFAULT_WHATIF_HORIZON_DAYS = 90;
 

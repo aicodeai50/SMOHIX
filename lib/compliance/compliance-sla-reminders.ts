@@ -304,7 +304,7 @@ function buildOwnerEmailBody(
   }
   lines.push(`Open attestations: ${siteOrigin.replace(/\/$/, "")}/governance/compliance/attestations`);
   return {
-    subject: `[Zentro] Compliance SLA reminders — ${orgName}`,
+    subject: `[Smohix] Compliance SLA reminders — ${orgName}`,
     text: lines.join("\n"),
   };
 }
@@ -325,7 +325,7 @@ function buildRegressedEmailBody(
   }
   lines.push("", `Program dashboard: ${siteOrigin.replace(/\/$/, "")}/governance/compliance/program`);
   return {
-    subject: `[Zentro] Control readiness regression — ${orgName}`,
+    subject: `[Smohix] Control readiness regression — ${orgName}`,
     text: lines.join("\n"),
   };
 }

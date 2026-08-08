@@ -12,7 +12,7 @@ import { listOrgMembers } from "@/lib/org/data";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-export const ATTESTATION_RENEWAL_CALENDAR_VERSION = "zentro-attestation-renewal-calendar/1";
+export const ATTESTATION_RENEWAL_CALENDAR_VERSION = "smohix-attestation-renewal-calendar/1";
 
 export const RENEWAL_WAVE_LEAD_DAYS = 14;
 
@@ -424,7 +424,7 @@ function buildOwnerRenewalEmail(input: {
     `Renewal calendar: ${input.siteOrigin.replace(/\/$/, "")}/governance/compliance/attestation-renewal`,
   );
   return {
-    subject: `[Zentro] Attestation renewal wave — ${input.orgName}`,
+    subject: `[Smohix] Attestation renewal wave — ${input.orgName}`,
     text: lines.join("\n"),
   };
 }

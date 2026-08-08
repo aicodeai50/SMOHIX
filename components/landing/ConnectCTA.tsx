@@ -16,16 +16,16 @@ export function ConnectCTA({
   return (
     <MarketingReveal
       id="connect"
-      className="py-16 sm:py-20 zentro-quantum-section"
+      className="py-16 sm:py-20 smohix-quantum-section"
       aria-labelledby="connect-heading"
     >
       <div className={mContainer}>
-        <div className="zentro-neural-field zentro-holo-panel zentro-quantum-core relative overflow-hidden rounded-2xl px-6 py-10 sm:px-10 sm:py-12">
-          <div className="zentro-dimension-rift pointer-events-none absolute inset-0 opacity-25" aria-hidden />
-          <div className="zentro-scan-sweep pointer-events-none absolute inset-0 opacity-30" aria-hidden />
+        <div className="smohix-neural-field smohix-holo-panel smohix-quantum-core relative overflow-hidden rounded-2xl px-6 py-10 sm:px-10 sm:py-12">
+          <div className="smohix-dimension-rift pointer-events-none absolute inset-0 opacity-25" aria-hidden />
+          <div className="smohix-scan-sweep pointer-events-none absolute inset-0 opacity-30" aria-hidden />
           <div className="relative max-w-2xl">
-            <p className={`${mEyebrow} zentro-eyebrow-cyber`}>⟡ Get started</p>
-            <h2 id="connect-heading" className={`zentro-living-headline mt-2 ${mH2}`}>
+            <p className={`${mEyebrow} smohix-eyebrow-cyber`}>⟡ Get started</p>
+            <h2 id="connect-heading" className={`smohix-living-headline mt-2 ${mH2}`}>
               Open the operational console
             </h2>
             <p className={`mt-2 ${mBody}`}>
@@ -46,7 +46,7 @@ export function ConnectCTA({
             <div id="trial" className="mt-8 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap">
               <Link
                 href="/hub"
-                className="zentro-launch-beacon inline-flex h-11 items-center justify-center rounded-lg bg-accent px-5 text-sm font-semibold text-background shadow-[0_0_24px_-8px_var(--accent-glow)] transition-opacity hover:opacity-90"
+                className="smohix-launch-beacon inline-flex h-11 items-center justify-center rounded-lg bg-accent px-5 text-sm font-semibold text-background shadow-[0_0_24px_-8px_var(--accent-glow)] transition-opacity hover:opacity-90"
               >
                 {marketingCta.connectExplore}
               </Link>

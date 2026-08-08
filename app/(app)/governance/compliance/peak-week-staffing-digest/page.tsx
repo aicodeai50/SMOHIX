@@ -217,9 +217,9 @@ export default async function PeakWeekStaffingDigestPage({
                 ) : null}
               </div>
               <p className={`mt-3 ${appMeta} text-muted`}>
-                Slack: <code className="text-foreground/80">ZENTRO_SLACK_NOTIFY_PEAK_WEEK_STAFFING</code>
+                Slack: <code className="text-foreground/80">SMOHIX_SLACK_NOTIFY_PEAK_WEEK_STAFFING</code>
                 {" · "}
-                Cron: <code className="text-foreground/80">ZENTRO_PEAK_WEEK_STAFFING_DIGEST_CRON_SECRET</code>
+                Cron: <code className="text-foreground/80">SMOHIX_PEAK_WEEK_STAFFING_DIGEST_CRON_SECRET</code>
               </p>
             </ConsolePanel>
           ) : null}

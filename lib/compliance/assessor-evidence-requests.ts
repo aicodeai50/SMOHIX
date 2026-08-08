@@ -10,7 +10,7 @@ import { listOrgMembers, type OrgMemberRow } from "@/lib/org/data";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-export const ASSESSOR_EVIDENCE_REQUESTS_VERSION = "zentro-assessor-evidence-requests/1";
+export const ASSESSOR_EVIDENCE_REQUESTS_VERSION = "smohix-assessor-evidence-requests/1";
 
 export const EVIDENCE_DOCUMENT_TYPES = [
   "control_evidence",

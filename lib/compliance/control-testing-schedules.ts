@@ -12,7 +12,7 @@ import type { ComplianceFramework } from "@/lib/compliance/types";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-export const CONTROL_TESTING_SCHEDULES_VERSION = "zentro-control-testing-schedules/1";
+export const CONTROL_TESTING_SCHEDULES_VERSION = "smohix-control-testing-schedules/1";
 
 export const EVIDENCE_COLLECTION_CADENCE_DAYS = 30;
 export const ATTESTATION_COLLECTION_LEAD_DAYS = 14;

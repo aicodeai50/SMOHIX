@@ -33,14 +33,14 @@ function isAllowlistedHost(hostname: string): boolean {
   if (ALLOWLISTED_PUBLIC_HOSTS.includes(h as (typeof ALLOWLISTED_PUBLIC_HOSTS)[number])) {
     return true;
   }
-  return h === "ai.zentro.run" || h.endsWith(".zentro.run");
+  return h === "ai.smohix.run" || h.endsWith(".smohix.run");
 }
 
 function resolveProbeUrl(entry: ProductRegistryEntry): string | null {
   if (!entry.healthCheck) return null;
   const base =
-    entry.healthCheck.host === "ai.zentro.run"
-      ? "https://ai.zentro.run"
+    entry.healthCheck.host === "ai.smohix.run"
+      ? "https://ai.smohix.run"
       : getSiteUrl().replace(/\/$/, "");
   try {
     const u = new URL(entry.healthCheck.path, base);
@@ -133,7 +133,7 @@ export async function fetchSiteHealthView(): Promise<{
     const data = (await res.json()) as Record<string, unknown>;
     return {
       ok: data.ok === true,
-      service: typeof data.service === "string" ? data.service : "zentro-web",
+      service: typeof data.service === "string" ? data.service : "smohix-web",
       uptime_s:
         typeof data.uptime_s === "number" && Number.isFinite(data.uptime_s)
           ? Math.max(0, Math.round(data.uptime_s))

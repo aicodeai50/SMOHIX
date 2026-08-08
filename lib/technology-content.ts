@@ -15,19 +15,19 @@ export const PLATFORM_ARCHITECTURE_FLOW: readonly TechnologyFlowStep[] = [
     description: "Operators, developers, security teams, and organizational leaders",
   },
   {
-    label: "Zentro.run",
+    label: "Smohix.run",
     description: "Unified public experience — marketing, products, and console entry",
     href: "/",
   },
   {
-    label: "Zentro Platform",
+    label: "Smohix Platform",
     description: "Core workspace for incidents, automation, approvals, and audit",
-    href: "/products/zentro-platform",
+    href: "/products/smohix-platform",
   },
   {
     label: "AI Gateway",
     description: "Secure routing for multi-model intelligence and streaming inference",
-    href: "/products/zentro-ai",
+    href: "/products/smohix-ai",
   },
   {
     label: "Models & Intelligence",
@@ -50,18 +50,18 @@ export const CORE_PLATFORM_CARDS = [
     title: "Platform",
     description:
       "Unified platform for users, organizations, products, identity, billing, and administration.",
-    href: "/products/zentro-platform",
+    href: "/products/smohix-platform",
   },
   {
     title: "Artificial Intelligence",
     description:
       "Multi-model intelligence with routing, reasoning, streaming, coding assistance, and future agent orchestration.",
-    href: "/products/zentro-ai",
+    href: "/products/smohix-ai",
   },
   {
     title: "API Platform",
     description: "Developer APIs, authentication, SDKs, webhooks, and integrations.",
-    href: "/products/zentro-own-api",
+    href: "/products/smohix-own-api",
   },
   {
     title: "Knowledge",
@@ -154,8 +154,8 @@ export type EcosystemNode = {
 /** Vertical connection map — executive labels only. */
 export const ECOSYSTEM_CONNECTION_FLOW: readonly EcosystemNode[] = [
   {
-    id: "zentro-run",
-    label: "Zentro.run",
+    id: "smohix-run",
+    label: "Smohix.run",
     description: "Official home and product entry point",
     href: "/",
   },
@@ -163,7 +163,7 @@ export const ECOSYSTEM_CONNECTION_FLOW: readonly EcosystemNode[] = [
     id: "platform",
     label: "Platform",
     description: "Operational command and workspace",
-    href: "/products/zentro-platform",
+    href: "/products/smohix-platform",
   },
   {
     id: "identity",
@@ -175,7 +175,7 @@ export const ECOSYSTEM_CONNECTION_FLOW: readonly EcosystemNode[] = [
     id: "ai",
     label: "AI",
     description: "Copilot, reasoning, and intelligent assistance",
-    href: "/products/zentro-ai",
+    href: "/products/smohix-ai",
   },
   {
     id: "knowledge",
@@ -275,7 +275,7 @@ export const SECURITY_PILLARS = [
 ] as const;
 
 export const DEVELOPER_ECOSYSTEM_LINKS = [
-  { href: "/developers", label: "Developers", description: "Hub for builders integrating with Zentro" },
+  { href: "/developers", label: "Developers", description: "Hub for builders integrating with Smohix" },
   { href: "/docs/api", label: "API", description: "Catalog of public HTTP interfaces" },
   { href: "/docs", label: "Documentation", description: "Product, trust, and onboarding guides" },
   { href: "/developers", label: "SDK", description: "Client libraries and patterns (expanding)" },

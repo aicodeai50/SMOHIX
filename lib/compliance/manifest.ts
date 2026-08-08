@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import type { ComplianceEvidencePack } from "@/lib/compliance/export";
 import { complianceEvidencePackToCsv } from "@/lib/compliance/export";
 
-export const EVIDENCE_BUNDLE_MANIFEST_VERSION = "zentro-evidence-bundle/1";
+export const EVIDENCE_BUNDLE_MANIFEST_VERSION = "smohix-evidence-bundle/1";
 
 export type EvidenceBundleFileEntry = {
   name: string;

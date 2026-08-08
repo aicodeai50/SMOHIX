@@ -29,10 +29,10 @@ function asNumberString(v: unknown): string | undefined {
   return undefined;
 }
 
-/** Checkout custom data: pass `{ "zentro_user_id": "<auth uuid>" }` from your app. */
-export function extractZentroUserId(meta: LemonMeta | undefined): string | undefined {
+/** Checkout custom data: pass `{ "smohix_user_id": "<auth uuid>" }` from your app. */
+export function extractSmohixUserId(meta: LemonMeta | undefined): string | undefined {
   const raw =
-    meta?.custom_data?.zentro_user_id ?? meta?.custom_data?.supabase_user_id;
+    meta?.custom_data?.smohix_user_id ?? meta?.custom_data?.supabase_user_id;
   const s = asString(raw);
   if (!s) return undefined;
   const uuid =

@@ -14,7 +14,7 @@ import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { SITE_BRAND_NAME } from "@/lib/site-brand";
 
-export const OBLIGATION_EXECUTIVE_ROLLUP_VERSION = "zentro-obligation-executive-rollup/1";
+export const OBLIGATION_EXECUTIVE_ROLLUP_VERSION = "smohix-obligation-executive-rollup/1";
 
 export const OBLIGATION_ROLLUP_HORIZON_DAYS = 90;
 

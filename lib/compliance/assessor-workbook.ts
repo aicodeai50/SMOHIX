@@ -32,7 +32,7 @@ import {
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-export const ASSESSOR_WORKBOOK_VERSION = "zentro-assessor-workbook/1";
+export const ASSESSOR_WORKBOOK_VERSION = "smohix-assessor-workbook/1";
 
 export type AssessorWorkbookFile = {
   path: string;
@@ -56,7 +56,7 @@ function sha256Hex(input: string): string {
 
 export function buildAssessorWorkbookReadme(manifest: AssessorWorkbookManifest): string {
   const lines = [
-    "Zentro unified assessor workbook",
+    "Smohix unified assessor workbook",
     `Version: ${manifest.version}`,
     `Generated: ${manifest.generatedAt}`,
     `Period: ${manifest.periodDays} days`,
@@ -277,7 +277,7 @@ export async function buildAssessorWorkbookZip(
 
   const zip = await assessorWorkbookToZip(built.files, manifest);
   const stamp = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-  const filename = `zentro-assessor-workbook-${built.periodDays}d-${stamp}.zip`;
+  const filename = `smohix-assessor-workbook-${built.periodDays}d-${stamp}.zip`;
 
   return { zip, manifest, filename };
 }

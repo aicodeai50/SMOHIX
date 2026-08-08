@@ -91,7 +91,7 @@ export function ConsoleAmbientCanvas() {
   return (
     <canvas
       ref={canvasRef}
-      className="zentro-console-ambient-canvas pointer-events-none absolute inset-0 h-full w-full"
+      className="smohix-console-ambient-canvas pointer-events-none absolute inset-0 h-full w-full"
       aria-hidden
     />
   );

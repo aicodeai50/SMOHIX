@@ -8,7 +8,7 @@
 #   supabase db push          # apply pending migrations to linked project
 #   supabase gen types typescript --linked > lib/supabase/database.types.ts
 
-project_id = "zentro"
+project_id = "smohix"
 
 [api]
 enabled = true

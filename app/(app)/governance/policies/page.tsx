@@ -123,7 +123,7 @@ export default async function GovernancePoliciesPage({
         </p>
       ) : null}
       <PolicyBlockAnalyticsPanel />
-      <section className="zentro-glass rounded-2xl p-5 md:p-6">
+      <section className="smohix-glass rounded-2xl p-5 md:p-6">
         <h2 className={appPanelTitle}>Suggestions</h2>
         {suggestions.length === 0 ? (
           <p className={`mt-3 ${appBody} text-muted`}>No suggestions for this filter.</p>
