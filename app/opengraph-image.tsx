@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-import { HqMarkOgContent } from "@/components/brand/hq/HqMarkOg";
+import { HqLockupOgContent } from "@/components/brand/hq/HqMarkOg";
 import { BRAND_MARK_COLORS } from "@/lib/brand";
 import {
   SITE_BRAND_NAME,
@@ -21,31 +21,38 @@ export default function OpenGraphImage() {
           height: "100%",
           display: "flex",
           flexDirection: "column",
+          alignItems: "center",
           justifyContent: "space-between",
-          padding: "72px 80px",
-          background: `linear-gradient(145deg, ${BRAND_MARK_COLORS.background} 0%, #0c1018 42%, #080a10 100%)`,
+          padding: "64px 80px",
+          background: `linear-gradient(160deg, ${BRAND_MARK_COLORS.background} 0%, #0a0e16 50%, #06070b 100%)`,
           color: BRAND_MARK_COLORS.foreground,
           fontFamily:
             'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
         }}
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: 28, maxWidth: 980 }}>
-          <HqMarkOgContent width={480} height={150} stroke={BRAND_MARK_COLORS.foreground} />
-          <div
-            style={{
-              width: 120,
-              height: 4,
-              borderRadius: 2,
-              background: BRAND_MARK_COLORS.accent,
-              opacity: 0.85,
-            }}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 40,
+            flex: 1,
+            justifyContent: "center",
+          }}
+        >
+          <HqLockupOgContent
+            symbolSize={200}
+            stroke={BRAND_MARK_COLORS.foreground}
+            accent={BRAND_MARK_COLORS.accent}
           />
           <div
             style={{
-              fontSize: 30,
+              display: "flex",
+              fontSize: 26,
               lineHeight: 1.45,
               color: BRAND_MARK_COLORS.muted,
-              maxWidth: 920,
+              maxWidth: 820,
+              textAlign: "center",
             }}
           >
             {SITE_MARKETING_TWITTER_DESCRIPTION}
@@ -54,16 +61,19 @@ export default function OpenGraphImage() {
         <div
           style={{
             display: "flex",
+            width: "100%",
             alignItems: "baseline",
             justifyContent: "space-between",
-            fontSize: 22,
+            fontSize: 20,
             color: "#6b7280",
           }}
         >
           <span style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
             {SITE_PRIMARY_DOMAIN}
           </span>
-          <span style={{ fontSize: 18, opacity: 0.75 }}>Enterprise AI operations and cybersecurity</span>
+          <span style={{ display: "flex", fontSize: 17, opacity: 0.75 }}>
+            Enterprise AI operations and cybersecurity
+          </span>
         </div>
       </div>
     ),

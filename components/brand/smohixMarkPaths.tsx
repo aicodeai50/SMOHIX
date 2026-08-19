@@ -11,7 +11,7 @@ type MarkSvgProps = {
   gradientId?: string;
 };
 
-/** @deprecated Legacy gradient HQ mark — superseded by Precision Plate (`components/brand/hq/`). */
+/** @deprecated Legacy gradient HQ mark — superseded by Flow Mark (`components/brand/hq/`). */
 export function SmohixMarkSvgPaths({ gradientId = "smohix-official-bg" }: MarkSvgProps) {
   return (
     <>

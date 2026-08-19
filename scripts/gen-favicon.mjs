@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import sharp from "sharp";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-/** HQ micro-mark — must match `app/icon.svg` (Precision Plate favicon geometry). */
+/** HQ micro-mark — must match `app/icon.svg` (Flow Mark S symbol, no text). */
 const svgPath = join(root, "app", "icon.svg");
 const pngPath = join(root, "public", "icon.png");
 const icoPath = join(root, "public", "favicon.ico");

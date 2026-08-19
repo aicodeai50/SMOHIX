@@ -4,9 +4,17 @@
 
 | Surface | Identity | Domain |
 | --- | --- | --- |
-| Smohix HQ | **Precision Plate** — framed custom `smohix` wordmark | [smohix.run](https://smohix.run) |
+| Smohix HQ | **Flow Mark** — custom geometric S + cyan registration dot | [smohix.run](https://smohix.run) |
 
-HQ uses its own master mark and micro-mark. It does **not** copy the Smohix AI Aperture S.
+HQ uses its own master symbol, horizontal wordmark (`smohix.run`), and vertical lockup. It does **not** copy the Smohix AI Aperture S.
+
+### HQ variants
+
+| Variant | Use |
+| --- | --- |
+| Symbol (S + dot) | Favicon, app icon, badges — **no text** |
+| Wordmark (S + smohix.run) | Header, footer, navigation |
+| Lockup (vertical S + smohix.run) | OpenGraph, social cards, corporate surfaces |
 
 ## Products
 
@@ -22,7 +30,7 @@ Products belong to Smohix but may use **distinct product marks** under a shared 
 ## Shared design language
 
 - Precise geometry and restrained line weights
-- Monochrome-first; color is accent, not requirement
+- Monochrome-first; cyan/teal accent for registration dot and `.run` suffix
 - Strong black/white reproduction
 - Consistent spacing and optical balance
 - Minimal ornamentation
@@ -32,7 +40,7 @@ Products belong to Smohix but may use **distinct product marks** under a shared 
 
 ```
 SMOHIX (company)
-├── HQ identity      → smohix.run
+├── HQ identity      → smohix.run (Flow Mark S)
 ├── Smohix AI        → ai.smohix.run (Aperture S)
 ├── Smohix Platform  → platform.smohix.run
 └── …
@@ -40,13 +48,18 @@ SMOHIX (company)
 
 Do not copy one icon everywhere. Maintain coherent family resemblance through principles, not identical glyphs.
 
-## HQ proposal assets (review)
+## HQ assets
 
 | Asset | Path |
 | --- | --- |
-| Primary mark | `public/brand/hq/smohix-hq-mark.svg` |
-| Domain lockup | `public/brand/hq/smohix-hq-domain.svg` |
-| Micro-mark | `public/brand/hq/smohix-hq-micro.svg` |
+| Master symbol | `public/brand/hq/smohix-hq-mark.svg` |
+| Domain wordmark | `public/brand/hq/smohix-hq-domain.svg` |
+| Micro symbol | `public/brand/hq/smohix-hq-micro.svg` |
+| Favicon source | `app/icon.svg` (S only, no text) |
 | Preview (internal) | `/brand-preview` (noindex, not in sitemap) |
 
-Live header, footer, favicon, OG, and JSON-LD use **Precision Plate** (`/brand/hq/smohix-hq-mark.svg`). Smohix AI retains Aperture S at ai.smohix.run.
+Live header, footer, favicon, OG, and JSON-LD use **Flow Mark**. Smohix AI retains Aperture S at ai.smohix.run.
+
+## Visual similarity note
+
+Flow Mark is an original geometric construction for Smohix HQ. It is not legal trademark clearance — perform formal review before external registration campaigns.

@@ -6,7 +6,7 @@ import { BRAND_MARK_COLORS } from "@/lib/brand";
 export const size = { width: 180, height: 180 };
 export const contentType = "image/png";
 
-/** Apple Touch Icon — HQ micro-mark with safe padding on dark background. */
+/** Apple Touch Icon — Flow Mark S + dot on dark rounded container (symbol only, no text). */
 export default function AppleIcon() {
   return new ImageResponse(
     (
@@ -21,10 +21,11 @@ export default function AppleIcon() {
         }}
       >
         <HqMicroMarkOgContent
-          size={152}
+          size={168}
           stroke={BRAND_MARK_COLORS.foreground}
-          background="transparent"
-          padding={0.12}
+          accent={BRAND_MARK_COLORS.accent}
+          background={BRAND_MARK_COLORS.background}
+          padding={0.14}
         />
       </div>
     ),

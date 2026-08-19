@@ -1,98 +1,139 @@
 import {
-  HQ_DOMAIN_SUFFIX_PATHS,
-  HQ_DOMAIN_VIEWBOX,
-  HQ_FRAME_PATHS,
-  HQ_FRAME_STROKE,
-  HQ_LETTER_PATHS,
-  HQ_MARK_VIEWBOX,
-  HQ_MICRO_PATHS,
+  HQ_ACCENT_COLOR,
+  HQ_CONTAINER_PATH,
+  HQ_MICRO_REGISTRATION_DOT,
+  HQ_MICRO_S_LOWER_PATH,
+  HQ_MICRO_S_UPPER_PATH,
+  HQ_MICRO_STROKE,
   HQ_MICRO_VIEWBOX,
-  HQ_STROKE,
+  HQ_REGISTRATION_DOT,
+  HQ_S_LOWER_PATH,
+  HQ_S_UPPER_PATH,
+  HQ_SYMBOL_STROKE,
+  HQ_SYMBOL_VIEWBOX,
 } from "@/lib/brand/hq/geometry";
 
-type OgStrokeProps = {
+type OgProps = {
   stroke?: string;
+  accent?: string;
+  background?: string;
 };
 
-/** Precision Plate wordmark for `next/og` ImageResponse (fixed colors, no CSS variables). */
-export function HqMarkOgContent({
-  width = 420,
-  height = 132,
-  stroke = "#eef0f4",
-}: { width?: number; height?: number } & OgStrokeProps) {
-  return (
-    <svg
-      width={width}
-      height={height}
-      viewBox={HQ_MARK_VIEWBOX}
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <g stroke={stroke} strokeWidth={HQ_FRAME_STROKE} strokeLinecap="square">
-        <path d={HQ_FRAME_PATHS.topLeft} />
-        <path d={HQ_FRAME_PATHS.bottomRight} />
-      </g>
-      <g stroke={stroke} strokeWidth={HQ_STROKE} strokeLinecap="round" strokeLinejoin="round">
-        {Object.values(HQ_LETTER_PATHS).map((d) => (
-          <path key={d.slice(0, 12)} d={d} />
-        ))}
-      </g>
-    </svg>
-  );
-}
+function FlowSymbolPaths({
+  micro,
+  stroke,
+  accent,
+  strokeWidth,
+}: {
+  micro: boolean;
+  stroke: string;
+  accent: string;
+  strokeWidth: number;
+}) {
+  const upper = micro ? HQ_MICRO_S_UPPER_PATH : HQ_S_UPPER_PATH;
+  const lower = micro ? HQ_MICRO_S_LOWER_PATH : HQ_S_LOWER_PATH;
+  const dot = micro ? HQ_MICRO_REGISTRATION_DOT : HQ_REGISTRATION_DOT;
 
-/** Optional domain lockup for larger OG contexts. */
-export function HqDomainLockupOgContent({
-  width = 520,
-  height = 128,
-  stroke = "#eef0f4",
-}: { width?: number; height?: number } & OgStrokeProps) {
   return (
-    <svg
-      width={width}
-      height={height}
-      viewBox={HQ_DOMAIN_VIEWBOX}
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <g stroke={stroke} strokeWidth={HQ_FRAME_STROKE} strokeLinecap="square">
-        <path d={HQ_FRAME_PATHS.topLeft} />
-        <path d={HQ_FRAME_PATHS.bottomRight} />
-      </g>
-      <g stroke={stroke} strokeWidth={HQ_STROKE} strokeLinecap="round" strokeLinejoin="round">
-        {Object.values(HQ_LETTER_PATHS).map((d) => (
-          <path key={`w-${d.slice(0, 12)}`} d={d} />
-        ))}
-      </g>
-      <g
+    <>
+      <path
+        d={upper}
+        fill="none"
         stroke={stroke}
-        strokeWidth={HQ_STROKE * 0.88}
+        strokeWidth={strokeWidth}
         strokeLinecap="round"
         strokeLinejoin="round"
-        opacity={0.92}
-      >
-        <path d={HQ_DOMAIN_SUFFIX_PATHS.dot} />
-        <path d={HQ_DOMAIN_SUFFIX_PATHS.r} />
-        <path d={HQ_DOMAIN_SUFFIX_PATHS.u} />
-        <path d={HQ_DOMAIN_SUFFIX_PATHS.n} />
-      </g>
+      />
+      <path
+        d={lower}
+        fill="none"
+        stroke={stroke}
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle cx={dot.cx} cy={dot.cy} r={dot.r} fill={accent} />
+    </>
+  );
+}
+
+/** Flow Mark symbol for `next/og` ImageResponse. */
+export function HqMarkOgContent({
+  size = 160,
+  stroke = "#f4f4f5",
+  accent = HQ_ACCENT_COLOR,
+}: { size?: number } & OgProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox={HQ_SYMBOL_VIEWBOX}
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <FlowSymbolPaths
+        micro={false}
+        stroke={stroke}
+        accent={accent}
+        strokeWidth={HQ_SYMBOL_STROKE}
+      />
     </svg>
   );
 }
 
-/** HQ micro-mark for Apple touch icon and compact OG badges. */
+/** Vertical lockup for OpenGraph / Twitter — S + smohix.run. */
+export function HqLockupOgContent({
+  symbolSize = 200,
+  stroke = "#f4f4f5",
+  accent = HQ_ACCENT_COLOR,
+}: { symbolSize?: number } & OgProps) {
+  const textSize = Math.round(symbolSize * 0.22);
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: Math.round(symbolSize * 0.14),
+      }}
+    >
+      <HqMarkOgContent size={symbolSize} stroke={stroke} accent={accent} />
+      <div
+        style={{
+          display: "flex",
+          fontSize: textSize,
+          fontWeight: 600,
+          letterSpacing: "0.04em",
+          fontFamily:
+            'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+        }}
+      >
+        <span style={{ color: stroke }}>smohix</span>
+        <span style={{ color: accent }}>.run</span>
+      </div>
+    </div>
+  );
+}
+
+/** @deprecated Use HqLockupOgContent — kept for import compat. */
+export function HqDomainLockupOgContent(props: Parameters<typeof HqLockupOgContent>[0]) {
+  return <HqLockupOgContent {...props} />;
+}
+
+/** HQ symbol for Apple touch icon — rounded dark container, S only (no text). */
 export function HqMicroMarkOgContent({
-  size = 120,
-  stroke = "#eef0f4",
+  size = 180,
+  stroke = "#f4f4f5",
+  accent = HQ_ACCENT_COLOR,
   background = "#06070b",
-  padding = 0.18,
+  padding = 0.16,
 }: {
   size?: number;
   background?: string;
   padding?: number;
-} & OgStrokeProps) {
+} & OgProps) {
   const inner = Math.round(size * (1 - padding * 2));
-  const offset = Math.round((size - inner) / 2);
+  const radius = Math.round(size * 0.14);
   return (
     <div
       style={{
@@ -102,7 +143,8 @@ export function HqMicroMarkOgContent({
         alignItems: "center",
         justifyContent: "center",
         background,
-        borderRadius: Math.round(size * 0.14),
+        borderRadius: radius,
+        border: "1px solid rgba(255,255,255,0.08)",
       }}
     >
       <svg
@@ -111,21 +153,54 @@ export function HqMicroMarkOgContent({
         viewBox={HQ_MICRO_VIEWBOX}
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        style={{ margin: offset }}
       >
-        <g stroke={stroke} strokeWidth={1.35} strokeLinecap="square">
-          <path d={HQ_MICRO_PATHS.frame} />
-          <path d={HQ_MICRO_PATHS.base} />
-          <path d={HQ_MICRO_PATHS.rail} />
-          <path d={HQ_MICRO_PATHS.tick} strokeLinecap="round" />
-        </g>
-        <path
-          d={HQ_MICRO_PATHS.sHook}
-          fill="none"
+        <FlowSymbolPaths
+          micro
           stroke={stroke}
-          strokeWidth={1.35}
-          strokeLinecap="round"
-          strokeLinejoin="round"
+          accent={accent}
+          strokeWidth={HQ_MICRO_STROKE}
+        />
+      </svg>
+    </div>
+  );
+}
+
+/** Symbol-only export with optional container for static SVG generation. */
+export function HqSymbolOgContent({
+  size = 120,
+  stroke = "#f4f4f5",
+  accent = HQ_ACCENT_COLOR,
+  showContainer = false,
+  background = "#06070b",
+}: { size?: number; showContainer?: boolean; background?: string } & OgProps) {
+  if (!showContainer) {
+    return <HqMarkOgContent size={size} stroke={stroke} accent={accent} />;
+  }
+  return (
+    <div
+      style={{
+        width: size,
+        height: size,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background,
+        borderRadius: size * 0.14,
+      }}
+    >
+      <svg
+        width={size * 0.68}
+        height={size * 0.68}
+        viewBox={HQ_SYMBOL_VIEWBOX}
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d={HQ_CONTAINER_PATH} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={1} />
+        <FlowSymbolPaths
+          micro={false}
+          stroke={stroke}
+          accent={accent}
+          strokeWidth={HQ_SYMBOL_STROKE}
         />
       </svg>
     </div>

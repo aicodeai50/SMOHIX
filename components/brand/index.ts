@@ -1,9 +1,15 @@
 export { BrandLogo, BRAND_PRODUCT_NAMES } from "./BrandLogo";
 export type { BrandLogoProps } from "./BrandLogo";
-export { HqDomainLockup, HqMark, HqMicroMark } from "./hq/HqMark";
-export { HqDomainLockupOgContent, HqMarkOgContent, HqMicroMarkOgContent } from "./hq/HqMarkOg";
-
-/** @deprecated Legacy gradient mark — not used on customer-facing smohix.run surfaces. */
-export { SmohixMark } from "./SmohixMark";
-/** @deprecated Legacy gradient mark paths — retained for reference only. */
-export { SmohixMarkOgContent, SmohixMarkSvgPaths } from "./smohixMarkPaths";
+export { SmohixHqLockup } from "./hq/SmohixHqLockup";
+export { SmohixHqMark, renderSmohixHqMarkSvg } from "./hq/SmohixHqMark";
+export type { SmohixHqMarkTone } from "./hq/SmohixHqMark";
+export { SmohixHqWordmark } from "./hq/SmohixHqWordmark";
+export { HqDomainLockup, HqMark, HqMicroMark, renderHqMarkSvg } from "./hq/HqMark";
+export type { HqMarkTone } from "./hq/HqMark";
+export {
+  HqDomainLockupOgContent,
+  HqLockupOgContent,
+  HqMarkOgContent,
+  HqMicroMarkOgContent,
+  HqSymbolOgContent,
+} from "./hq/HqMarkOg";

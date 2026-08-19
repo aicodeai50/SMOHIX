@@ -7,9 +7,9 @@ import { SITE_BRAND_NAME } from "@/lib/site-brand";
 export const HQ_BRAND_CONCEPT = HQ_CONCEPT_NAME;
 
 /**
- * Official Smohix HQ mark — Precision Plate framed wordmark.
+ * Official Smohix HQ mark — Flow Mark geometric S + smohix.run wordmark.
  * Master vector: `public/brand/hq/smohix-hq-mark.svg`
- * Favicon/micro: `app/icon.svg` (synced from HQ micro-mark geometry).
+ * Favicon/micro: `app/icon.svg` (S symbol only — no text).
  */
 export const BRAND_MARK_SOURCE = "public/brand/hq/smohix-hq-mark.svg" as const;
 
@@ -51,12 +51,12 @@ export const BRAND_MARK_COLORS = {
 
 export const BRAND_MARK_VIEWBOX = 32 as const;
 
-/** Organization / WebSite JSON-LD logo — primary HQ wordmark. */
+/** Organization / WebSite JSON-LD logo — primary HQ symbol mark. */
 export function getBrandLogoUrl(siteUrl: string): string {
   return new URL(BRAND_ASSETS.markSvg, siteUrl).href;
 }
 
-/** Metadata icons for root layout — HQ micro-mark favicon assets. */
+/** HQ micro-mark favicon assets — S symbol only at small sizes. */
 export function getBrandMetadataIcons(): NonNullable<Metadata["icons"]> {
   return {
     icon: [

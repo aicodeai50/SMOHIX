@@ -186,10 +186,12 @@ assert(
   "package-lock must not reference @zentro packages",
 );
 
-// 9) Favicon uses HQ micro geometry (no embedded brand word text)
+// 9) Favicon uses Flow Mark S geometry only (no visible brand word text)
 const icon = read("app/icon.svg");
-assert(!/zentro|smohix/i.test(icon), "icon.svg must remain geometry-only (no brand word)");
-assert(icon.includes("M4 26V8H21"), "icon.svg must use HQ micro-mark frame geometry");
+assert(!/zentro/i.test(icon), "icon.svg must not reference zentro");
+assert(!/<text[\s>]/i.test(icon), "icon.svg must not contain SVG text elements");
+assert(!icon.includes(".run"), "icon.svg must not contain .run");
+assert(icon.includes("M 23 4.2"), "icon.svg must use Flow Mark micro S upper stroke");
 
 // 10) Redirects for legacy product paths
 const nextConfig = read("next.config.ts");

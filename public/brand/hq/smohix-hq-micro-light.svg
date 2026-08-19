@@ -1,9 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none" role="img" aria-label="Smohix">
-  <g stroke="#ffffff" stroke-width="1.35" stroke-linecap="square">
-    <path d="M4 26V8H21" />
-    <path d="M4 26H23" />
-    <path d="M23 26V17.5" />
-    <path d="M6.5 11.5V13.5" stroke-linecap="round" />
-  </g>
-  <path d="M11.5 15.2C9.2 15.2 8 16.6 8 18.2C8 19.8 9.3 20.8 11.4 20.8C13.2 20.8 14.2 19.6 14.2 18.4" fill="none" stroke="#ffffff" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M 23 4.2 C 15.4 4.2 9 8.3 7.7 13.4 C 7 16 8.3 17.3 10.6 17.9" stroke="#0a0a0a" stroke-width="2.85" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M 9 27.8 C 16.6 27.8 23 23.7 24.3 18.6 C 25 16 23.7 14.7 21.4 14.1" stroke="#0a0a0a" stroke-width="2.85" stroke-linecap="round" stroke-linejoin="round" />
+  <circle cx="9.6" cy="19.8" r="1.7" fill="#5ee1ff" />
 </svg>
