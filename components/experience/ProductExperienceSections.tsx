@@ -60,31 +60,6 @@ export function ProductExperienceSections({ product }: { product: ProductPageCon
         </section>
       ) : null}
 
-      {product.slug === "memory-pendant" ? (
-        <section aria-labelledby="memory-prototype-heading">
-          <h2 id="memory-prototype-heading" className={mH3}>
-            Prototype status
-          </h2>
-          <p className={`mt-3 ${mBody}`}>
-            Memory Pendant is a real prototype with a separate backend — not simulated on this marketing
-            site. We do not publish patient or user records on smohix.run.
-          </p>
-          <ul className={`mt-4 space-y-2 ${mBody}`}>
-            {registry.limitations.map((l) => (
-              <li key={l} className="flex gap-2">
-                <span className="text-warning" aria-hidden>
-                  ·
-                </span>
-                {l}
-              </li>
-            ))}
-          </ul>
-          <Link href="/contact?inquiry=pilot&product=memory-pendant" className={`mt-4 inline-block text-sm ${mLinkInline}`}>
-            Apply for pilot →
-          </Link>
-        </section>
-      ) : null}
-
       {conversion ? (
         <section aria-labelledby="works-today-detail-heading">
           <h2 id="works-today-detail-heading" className={mH3}>

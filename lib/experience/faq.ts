@@ -8,7 +8,7 @@ export const FAQ_GROUPS: readonly FaqGroup[] = [
     items: [
       {
         q: "What products are live today?",
-        a: "Smohix Platform, Smohix AI (ai.smohix.run), Smohix Own API, and Smohix Identity are live. Analytics and Agents are preview/prototype. Projects, Knowledge, and Memory Pendant are planned or prototype — see Product Access at /products.",
+        a: "Smohix Platform, Smohix AI (ai.smohix.run), Smohix Own API, and Smohix Identity are live. Analytics and Agents are preview/prototype. Projects and Knowledge are planned or prototype — see Product Access at /products.",
       },
       {
         q: "Does the site simulate products?",

@@ -39,12 +39,12 @@ export const SOLUTION_PAGES: readonly SolutionPage[] = [
       "Enterprise AI programs need routing, access control, and operational accountability — not a disconnected chat tab.",
     outcomes: [
       "Flagship AI workspace plus console integration",
-      "Private AI options for greater deployment control",
+      "Smohix PRI options for greater deployment control",
       "Identity, roles, and API access across the ecosystem",
     ],
     relatedProducts: [
       { href: "/products/smohix-ai", label: "Smohix AI" },
-      { href: "/products/private-ai", label: "Private AI" },
+      { href: "/products/private-ai", label: "Smohix PRI" },
       { href: "/enterprise", label: "Enterprise" },
     ],
     cta: { href: "/contact?inquiry=enterprise", label: "Contact enterprise sales" },
@@ -68,10 +68,9 @@ export const SOLUTION_PAGES: readonly SolutionPage[] = [
       {
         name: "Memory Pendant",
         description:
-          "Connected caregiver software with AI-assisted workflows and patient memory support.",
-        href: "/products/memory-pendant",
+          "Connected caregiver software concept with AI-assisted workflows for continuity of context.",
         note:
-          "Under active development. Hardware integration pending. Not a certified medical device.",
+          "Prototype / Experimental concept. Memory Pendant is a prototype concept and is not a certified medical device. Not a certified medical device. Under active development; hardware integration pending.",
       },
     ],
     cta: { href: "/contact?inquiry=healthcare", label: "Discuss healthcare scope" },
@@ -101,11 +100,11 @@ export const SOLUTION_PAGES: readonly SolutionPage[] = [
       "Public-sector deployments require accountability-first architecture — we do not claim certifications we have not published.",
     outcomes: [
       "Governance and audit modules for serious rollouts",
-      "Private AI deployment options for controlled environments",
+      "Smohix PRI deployment options for controlled environments",
       "Procurement-oriented trust and security documentation",
     ],
     relatedProducts: [
-      { href: "/products/private-ai", label: "Private AI" },
+      { href: "/products/private-ai", label: "Smohix PRI" },
       { href: "/enterprise", label: "Enterprise" },
       { href: "/trust", label: "Trust center" },
     ],

@@ -17,7 +17,7 @@ import {
   mStaggerGrid,
 } from "@/lib/marketing-layout";
 
-/** Homepage flagship product row — AI, Platform, Assistant, Private AI. */
+/** Homepage flagship product row — AI, Platform, Assistant, Smohix PRI. */
 export function FlagshipProductsSection() {
   return (
     <MarketingReveal className={mSection} aria-labelledby="flagship-products-heading">

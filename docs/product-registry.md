@@ -29,7 +29,7 @@ Maintainers: update `lib/product-registry.ts` when product maturity, URLs, or ac
 | Identity | live | `/auth/sign-in` |
 | Agents | prototype | `/automations` (signed in) |
 | Analytics | preview | `/overview` (signed in) |
-| Memory Pendant | prototype | Product page + pilot only |
+| Memory Pendant (Healthcare project) | prototype | `/solutions/healthcare` |
 | Projects | planned | `/settings/members` foundation |
 | Knowledge | planned | `/runbooks` module |
 
@@ -66,7 +66,6 @@ Implemented in `lib/status/adapters.ts`:
 | Smohix Platform | _TBD_ | 2026-08-01 |
 | Smohix AI | _TBD_ | 2026-08-01 |
 | Smohix Own API | _TBD_ | 2026-08-01 |
-| Memory Pendant | _TBD_ | 2026-08-01 |
 
 ## Route map
 

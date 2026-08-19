@@ -19,7 +19,6 @@ export const SEARCH_INDEX: readonly SearchEntry[] = [
   { id: "analytics", title: "Analytics", description: "Operational metrics", href: "/products/analytics", category: "product", keywords: ["analytics", "slo", "metrics"] },
   { id: "projects", title: "Projects", description: "Team organization", href: "/products/projects", category: "product", keywords: ["projects", "teams"] },
   { id: "knowledge", title: "Knowledge", description: "Runbooks and context", href: "/products/knowledge", category: "product", keywords: ["knowledge", "runbooks"] },
-  { id: "memory-pendant", title: "Memory Pendant", description: "Agent memory prototype", href: "/products/memory-pendant", category: "product", keywords: ["memory", "pendant"] },
   { id: "developers", title: "Developers", description: "Developer hub", href: "/developers", category: "documentation", keywords: ["developers", "sdk", "integrate"] },
   { id: "docs", title: "Documentation", description: "Guides and setup", href: "/docs", category: "documentation", keywords: ["docs", "documentation", "guide"] },
   { id: "docs-api", title: "API reference", description: "HTTP API catalog", href: "/docs/api", category: "documentation", keywords: ["api", "reference", "rest"] },

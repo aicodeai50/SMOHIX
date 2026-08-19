@@ -16,7 +16,6 @@ export type PlatformNodeId =
   | "agents"
   | "api"
   | "analytics"
-  | "memory"
   | "cloud"
   | "identity"
   | "developers";
@@ -63,7 +62,7 @@ export const PLATFORM_NODES: readonly PlatformNode[] = [
     icon: "bot",
     tier: 2,
     maturity: "live",
-    connections: ["platform", "agents", "memory", "knowledge", "api"],
+    connections: ["platform", "agents", "knowledge", "api"],
   },
   {
     id: "projects",
@@ -83,7 +82,7 @@ export const PLATFORM_NODES: readonly PlatformNode[] = [
     icon: "bookOpen",
     tier: 2,
     maturity: "coming-soon",
-    connections: ["platform", "ai", "memory", "projects"],
+    connections: ["platform", "ai", "projects"],
   },
   {
     id: "agents",
@@ -93,7 +92,7 @@ export const PLATFORM_NODES: readonly PlatformNode[] = [
     icon: "workflow",
     tier: 3,
     maturity: "prototype",
-    connections: ["ai", "platform", "api", "memory", "projects"],
+    connections: ["ai", "platform", "api", "projects"],
   },
   {
     id: "api",
@@ -114,16 +113,6 @@ export const PLATFORM_NODES: readonly PlatformNode[] = [
     tier: 3,
     maturity: "preview",
     connections: ["platform", "ai", "api"],
-  },
-  {
-    id: "memory",
-    label: "Memory",
-    shortDescription: "Memory Pendant — persistent agent and workflow memory.",
-    href: "/products/memory-pendant",
-    icon: "telescope",
-    tier: 4,
-    maturity: "coming-soon",
-    connections: ["ai", "agents", "knowledge"],
   },
   {
     id: "cloud",
@@ -175,7 +164,6 @@ export const PLATFORM_LAYOUT: Record<
   api: { x: 50, y: 52 },
   analytics: { x: 82, y: 52 },
   developers: { x: 50, y: 64 },
-  memory: { x: 18, y: 78 },
   cloud: { x: 50, y: 78 },
   identity: { x: 82, y: 78 },
 };
@@ -299,12 +287,11 @@ export const PRODUCT_PAGES: readonly ProductPageContent[] = [
       "Knowledge grounding when Knowledge product matures",
     ],
     uses: [rel("platform"), rel("api")],
-    worksWith: [rel("agents"), rel("memory"), rel("knowledge"), rel("analytics")],
+    worksWith: [rel("agents"), rel("knowledge"), rel("analytics")],
     integratesWith: ["Smohix Platform", "Smohix identity", "Developer APIs"],
     relatedProducts: [
       { slug: "smohix-platform", name: "Smohix Platform" },
       { slug: "agents", name: "Agents" },
-      { slug: "memory-pendant", name: "Memory Pendant" },
     ],
     developerApis: [
       { href: "/docs/api", label: "Copilot API routes" },
@@ -362,45 +349,6 @@ export const PRODUCT_PAGES: readonly ProductPageContent[] = [
     secondaryCta: { href: "/auth/sign-in?next=/settings/api-keys", label: "Create API key" },
   },
   {
-    id: "memory-pendant",
-    slug: "memory-pendant",
-    name: "Memory Pendant",
-    tagline: "Connected caregiver software — patient memory support under active development.",
-    maturity: "prototype",
-    nodeId: "memory",
-    problem:
-      "Caregivers and families need better continuity for patient context — without overstating product maturity.",
-    solution:
-      "Memory Pendant is a healthcare-area project: AI-assisted workflows and patient memory support, developed with honest labels about certification and hardware status.",
-    howItWorks: [
-      "Positioned within Healthcare solutions — not a flagship homepage product.",
-      "Software workflows under active development.",
-      "Hardware integration pending.",
-    ],
-    benefits: [
-      "Clear healthcare context without medical device claims",
-      "Part of the Smohix ecosystem roadmap",
-      "Pilot intake available for scoped engagements",
-    ],
-    roadmap: [
-      "Caregiver workflow maturation",
-      "Hardware integration when ready",
-      "Healthcare solution packaging",
-    ],
-    uses: [rel("ai"), rel("knowledge"), rel("agents")],
-    worksWith: [rel("platform"), rel("api")],
-    integratesWith: ["Smohix AI", "Agents", "Knowledge (planned)"],
-    relatedProducts: [
-      { slug: "smohix-ai", name: "Smohix AI" },
-      { slug: "agents", name: "Agents" },
-      { slug: "knowledge", name: "Knowledge" },
-    ],
-    developerApis: [{ href: "/docs/api", label: "Future API surfaces (TBD)" }],
-    documentation: [{ href: "/architecture", label: "Architecture" }],
-    primaryCta: { href: "/solutions/healthcare", label: "Healthcare solutions" },
-    secondaryCta: { href: "/contact?inquiry=healthcare", label: "Contact us" },
-  },
-  {
     id: "agents",
     slug: "agents",
     name: "Agents",
@@ -424,16 +372,15 @@ export const PRODUCT_PAGES: readonly ProductPageContent[] = [
     ],
     roadmap: [
       "First-class agent registry and scheduling",
-      "Memory Pendant context injection",
+      "Healthcare memory context injection",
       "Multi-step agent graphs",
     ],
     uses: [rel("ai"), rel("platform"), rel("api")],
-    worksWith: [rel("memory"), rel("projects"), rel("knowledge")],
+    worksWith: [rel("projects"), rel("knowledge")],
     integratesWith: ["Robot backend", "Slack approvals", "Audit log"],
     relatedProducts: [
       { slug: "smohix-platform", name: "Smohix Platform" },
       { slug: "smohix-ai", name: "Smohix AI" },
-      { slug: "memory-pendant", name: "Memory Pendant" },
     ],
     developerApis: [
       { href: "/api/automations/dry-run", label: "Dry-run API" },
@@ -507,11 +454,10 @@ export const PRODUCT_PAGES: readonly ProductPageContent[] = [
       "Assessor export linkage",
     ],
     uses: [rel("platform"), rel("ai")],
-    worksWith: [rel("memory"), rel("projects")],
+    worksWith: [rel("projects")],
     integratesWith: ["Runbooks", "Compliance hub", "Copilot"],
     relatedProducts: [
       { slug: "smohix-platform", name: "Smohix Platform" },
-      { slug: "memory-pendant", name: "Memory Pendant" },
     ],
     developerApis: [{ href: "/docs/api", label: "Governance APIs" }],
     documentation: [{ href: "/auth/sign-in?next=/runbooks", label: "Runbooks" }],
@@ -618,7 +564,7 @@ export const PRODUCT_PAGES: readonly ProductPageContent[] = [
     relatedProducts: [
       { slug: "smohix-ai", name: "Smohix AI" },
       { slug: "smohix-platform", name: "Smohix Platform" },
-      { slug: "private-ai", name: "Private AI" },
+      { slug: "private-ai", name: "Smohix PRI" },
     ],
     developerApis: [{ href: "/docs/api", label: "API catalog" }],
     documentation: [
@@ -631,13 +577,13 @@ export const PRODUCT_PAGES: readonly ProductPageContent[] = [
   {
     id: "private-ai",
     slug: "private-ai",
-    name: "Private AI",
+    name: "Smohix PRI",
     tagline: "Private AI workspace for organizations that need greater control.",
     maturity: "live",
     problem:
       "Security-sensitive teams need AI without giving up deployment control or data boundaries.",
     solution:
-      "Private AI at pri.smohix.run provides a controlled workspace for private deployment and organization-scoped access.",
+      "Smohix PRI at pri.smohix.run provides a controlled workspace for private deployment and organization-scoped access.",
     howItWorks: [
       "Dedicated workspace within the Smohix ecosystem.",
       "Organization-controlled access patterns.",
@@ -662,7 +608,7 @@ export const PRODUCT_PAGES: readonly ProductPageContent[] = [
       { href: "/enterprise", label: "Enterprise" },
       { href: "/trust", label: "Trust center" },
     ],
-    primaryCta: { href: "https://pri.smohix.run", label: "Open Private AI" },
+    primaryCta: { href: "https://pri.smohix.run", label: "Open Smohix PRI" },
     secondaryCta: { href: "/contact?inquiry=enterprise", label: "Contact sales" },
   },
   {
@@ -719,10 +665,12 @@ export const PLATFORM_STATUS: readonly PlatformStatusItem[] = [
   { id: "ai", label: "Smohix AI", status: "operational", href: "/products/smohix-ai" },
   { id: "platform", label: "Platform", status: "operational", href: "/products/smohix-platform" },
   { id: "assistant", label: "Assistant", status: "operational", href: "/products/smohix-assistant" },
-  { id: "private-ai", label: "Private AI", status: "operational", href: "/products/private-ai" },
-  { id: "api", label: "API", status: "operational", href: "/products/smohix-own-api" },
+  { id: "private-ai", label: "Smohix PRI", status: "operational", href: "/products/private-ai" },
+  { id: "api", label: "Smohix Own API", status: "operational", href: "/products/smohix-own-api" },
   { id: "docs", label: "Documentation", status: "operational", href: "/docs" },
   { id: "developers", label: "Developers", status: "operational", href: "/developers" },
+  { id: "log", label: "Smohix Log", status: "operational", href: "/products/smohix-log" },
+  { id: "identity", label: "Smohix Identity", status: "operational", href: "/products/identity" },
   { id: "agents", label: "Agents", status: "preview", href: "/products/agents" },
   { id: "analytics", label: "Analytics", status: "preview", href: "/products/analytics" },
 ] as const;
@@ -741,6 +689,12 @@ export const ARCHITECTURE_LAYERS = [
     href: "/technology",
   },
   {
+    id: "own-api",
+    label: "Smohix Own API",
+    detail: "Documented gateway surface — product UIs call Own API / same-origin routes; private backends stay server-side",
+    href: "/products/smohix-own-api",
+  },
+  {
     id: "platform",
     label: "Platform",
     detail: "Incidents, automations, approvals, audit, Copilot modules",
@@ -755,7 +709,7 @@ export const ARCHITECTURE_LAYERS = [
   {
     id: "providers",
     label: "Providers",
-    detail: "OpenAI, SH backend, Robot backend (private Railway network)",
+    detail: "Configured AI and automation backends (server-side only)",
     href: "/architecture",
   },
   {
@@ -767,7 +721,7 @@ export const ARCHITECTURE_LAYERS = [
   {
     id: "infra",
     label: "Infrastructure",
-    detail: "Railway services, private *.railway.internal networking",
+    detail: "Deployed services with private networking — topology not published",
     href: "/technology",
   },
 ] as const;
@@ -799,7 +753,12 @@ export const TECHNOLOGY_STACK = [
   },
   {
     category: "Developer stack",
-    items: ["REST API catalog", "API keys (zentro_sk_)", "Alert ingest tokens", "PayPal webhooks"],
+    items: [
+      "Smohix API catalog",
+      "Smohix API keys (zentro_sk_ prefix — legacy-compatible)",
+      "Alert ingest tokens",
+      "PayPal webhooks",
+    ],
   },
   {
     category: "Security",

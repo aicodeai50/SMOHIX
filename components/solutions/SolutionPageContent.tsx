@@ -5,6 +5,7 @@ import type { SolutionPage } from "@/lib/solutions-content";
 import { mBody, mCard, mCardTitle, mH3, mLinkInline } from "@/lib/marketing-layout";
 
 export function SolutionPageContent({ solution }: { solution: SolutionPage }) {
+  const projectsHeading = solution.slug === "healthcare" ? "Experimental Healthcare Concepts" : "Projects in this area";
   return (
     <div className="space-y-10">
       <section aria-labelledby="outcomes-heading">
@@ -43,7 +44,7 @@ export function SolutionPageContent({ solution }: { solution: SolutionPage }) {
       {solution.relatedProjects && solution.relatedProjects.length > 0 ? (
         <section aria-labelledby="related-projects-heading">
           <h2 id="related-projects-heading" className={mH3}>
-            Projects in this area
+            {projectsHeading}
           </h2>
           <div className="mt-4 space-y-4">
             {solution.relatedProjects.map((project) => (

@@ -53,12 +53,33 @@ assert(
   "primary nav structure",
 );
 
-for (const name of ["Smohix AI", "Smohix Platform", "Smohix Assistant", "Smohix Log", "Smohix Identity"]) {
+for (const name of [
+  "Smohix AI",
+  "Smohix Platform",
+  "Smohix Assistant",
+  "Smohix PRI",
+  "Smohix Log",
+  "Smohix Identity",
+  "Smohix Own API",
+]) {
   assert(
     PRODUCT_REGISTRY.some((p) => p.publicName === name || p.name === name),
     `missing product label: ${name}`,
   );
 }
+
+assert(
+  FLAGSHIP_PRODUCT_IDS.join(",") === "smohix-ai,smohix-platform,smohix-assistant,private-ai",
+  "flagship hierarchy ids",
+);
+assert(
+  FLAGSHIP_ECOSYSTEM_PRODUCTS.every((p) => p.name !== "Private AI"),
+  "flagship must use Smohix PRI public name",
+);
+assert(
+  FLAGSHIP_ECOSYSTEM_PRODUCTS.some((p) => p.id === "private-ai" && p.name === "Smohix PRI"),
+  "Smohix PRI must be flagship",
+);
 
 assert(!FLAGSHIP_PRODUCT_IDS.includes("memory-pendant" as never), "Memory Pendant must not be flagship");
 assert(

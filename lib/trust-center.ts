@@ -95,7 +95,7 @@ export const TRUST_AI: readonly TrustItem[] = [
   },
   {
     title: "Memory and agent lineage",
-    body: "Audit-friendly memory lineage is planned with Memory Pendant — not available today.",
+    body: "Audit-friendly memory lineage is planned — not available today.",
     status: "planned",
   },
 ] as const;

@@ -18,7 +18,7 @@ import { SITE_COMPANY_NAME } from "@/lib/site-brand";
 
 export const metadata: Metadata = buildMarketingMetadata({
   title: "Products",
-  description: `${SITE_COMPANY_NAME} — Smohix AI, Platform, Assistant, Private AI, APIs, and honest maturity labels for every workspace.`,
+  description: `${SITE_COMPANY_NAME} — Smohix AI, Platform, Assistant, Smohix PRI, APIs, and honest maturity labels for every workspace.`,
   path: "/products",
 });
 

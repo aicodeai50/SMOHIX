@@ -104,11 +104,10 @@ export const USE_CASES: readonly UseCase[] = [
     products: [
       { slug: "knowledge", name: "Knowledge" },
       { slug: "smohix-ai", name: "Smohix AI" },
-      { slug: "memory-pendant", name: "Memory Pendant" },
     ],
     deliversNow: ["Runbooks module in Platform", "Smohix AI at ai.smohix.run"],
-    requiresPilot: ["Memory Pendant prototype access"],
-    planned: ["Unified knowledge search", "Memory Pendant integration"],
+    requiresPilot: [],
+    planned: ["Unified knowledge search"],
     outcomes: [
       "Runbooks linkable from incidents now",
       "Future: search and AI-grounded answers in workspace",

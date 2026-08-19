@@ -36,7 +36,7 @@ const WORKSPACES = [
   { label: "Smohix Platform", url: SMOHIX_WORKSPACE_URLS.platform },
   { label: "Smohix AI", url: SMOHIX_WORKSPACE_URLS.ai },
   { label: "Smohix Assistant", url: SMOHIX_WORKSPACE_URLS.assistant },
-  { label: "Private AI", url: SMOHIX_WORKSPACE_URLS.privateAi },
+  { label: "Smohix PRI", url: SMOHIX_WORKSPACE_URLS.privateAi },
   { label: "Smohix Log", url: SMOHIX_WORKSPACE_URLS.log },
 ] as const;
 

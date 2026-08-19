@@ -34,10 +34,6 @@ export const PRODUCT_CONVERSION: Record<string, ProductConversionMeta> = {
       "PayPal webhook sync and proxy routes",
     ],
   },
-  "memory-pendant": {
-    audience: "Teams planning durable agent memory across long-running workflows.",
-    worksToday: ["Product page and pilot interest — backend not yet available on smohix.run"],
-  },
   agents: {
     audience: "Automation engineers who need dry-runs and human gates before production execution.",
     worksToday: [

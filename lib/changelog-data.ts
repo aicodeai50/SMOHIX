@@ -9,7 +9,6 @@ export type ChangelogCategory =
   | "smohix-platform"
   | "smohix-own-api"
   | "sdk"
-  | "memory-pendant"
   | "infrastructure";
 
 export type ChangelogChangeType =
@@ -33,7 +32,6 @@ export const CHANGELOG_CATEGORY_LABELS: Record<ChangelogCategory, string> = {
   "smohix-platform": "Smohix Platform",
   "smohix-own-api": "Smohix Own API",
   sdk: "SDK",
-  "memory-pendant": "Memory Pendant",
   infrastructure: "Infrastructure",
 };
 

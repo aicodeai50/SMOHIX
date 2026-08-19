@@ -22,14 +22,15 @@ export const DEVELOPER_SDKS: readonly SdkEntry[] = [
     detail: "Open-source web app at github.com/aicodeai50/SMOHIX — primary integration surface today.",
   },
   {
-    name: "TypeScript SDK",
+    name: "Smohix SDK (@smohix/sdk)",
     status: "preview",
-    detail: "Documented alongside the API catalog; dedicated package publishing is in progress.",
+    detail:
+      "Preferred TypeScript package name for the Smohix API client. Publishing is in progress — use the documented REST catalog and API keys until the package is released. Migration notes may retain temporary @zentro/sdk compatibility where required.",
   },
   {
     name: "Python SDK",
     status: "coming-soon",
-    detail: "Planned — use REST and API keys until published.",
+    detail: "Planned — use the Smohix API (REST) and API keys until published.",
   },
   {
     name: "CLI",
@@ -40,13 +41,14 @@ export const DEVELOPER_SDKS: readonly SdkEntry[] = [
 
 export const DEVELOPER_QUICK_START = [
   {
-    step: "1. Read the API catalog",
+    step: "1. Read the Smohix API catalog",
     detail: "Browse authenticated and public routes at /docs/api.",
     href: "/docs/api",
   },
   {
     step: "2. Sign in and create an API key",
-    detail: "Keys use the zentro_sk_ prefix and are managed in Settings.",
+    detail:
+      "Smohix API keys currently use the zentro_sk_ prefix (legacy-compatible) and are managed in Settings.",
     href: "/auth/sign-in?next=/settings/api-keys",
   },
   {
@@ -65,7 +67,7 @@ export const DEVELOPER_AUTH = {
   title: "Authentication",
   points: [
     "Browser sessions: Supabase Auth cookies on console routes.",
-    "Programmatic access: API keys (Authorization: Bearer zentro_sk_…).",
+    "Programmatic access: Smohix API keys (Authorization: Bearer zentro_sk_… — legacy-compatible prefix).",
     "Alert ingest: dedicated ingest tokens scoped per workspace.",
     "Webhooks: PayPal signature verification server-side; never expose secrets in client code.",
   ],

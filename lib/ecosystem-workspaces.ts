@@ -63,7 +63,7 @@ export const FLAGSHIP_PRODUCTS = [
   },
   {
     id: "private-ai",
-    name: "Private AI",
+    name: "Smohix PRI",
     description: "Private AI workspace for organizations that need greater control and deployment options.",
     href: "/products/private-ai",
     workspaceUrl: SMOHIX_WORKSPACE_URLS.privateAi,
@@ -95,7 +95,7 @@ export const SOLUTION_AREAS = [
   {
     slug: "healthcare",
     title: "Healthcare",
-    description: "Compliance-oriented workflows and caregiver technology — including Memory Pendant.",
+    description: "Compliance-oriented workflows and caregiver technology — experimental prototypes under development.",
     href: "/solutions/healthcare",
   },
   {

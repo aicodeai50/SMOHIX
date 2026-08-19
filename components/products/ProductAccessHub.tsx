@@ -86,8 +86,6 @@ export function ProductAccessHub() {
     const aFlag = isFlagshipProduct(a.id) ? 0 : 1;
     const bFlag = isFlagshipProduct(b.id) ? 0 : 1;
     if (aFlag !== bFlag) return aFlag - bFlag;
-    if (a.id === "memory-pendant") return 1;
-    if (b.id === "memory-pendant") return -1;
     return a.publicName.localeCompare(b.publicName);
   });
   return (

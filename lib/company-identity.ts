@@ -81,12 +81,20 @@ export const ECOSYSTEM_PRODUCTS: readonly EcosystemProduct[] = [
   },
   {
     id: "private-ai",
-    name: "Private AI",
+    name: "Smohix PRI",
     description: "Private AI workspace for organizations needing greater control and deployment options.",
     href: "/products/private-ai",
     status: "live",
     icon: "shieldCheck",
     flagship: true,
+  },
+  {
+    id: "smohix-log",
+    name: "Smohix Log",
+    description: "Administrator operational workspace — not marketed as a consumer product.",
+    href: "/products/smohix-log",
+    status: "live",
+    icon: "telescope",
   },
   {
     id: "smohix-own-api",
@@ -234,7 +242,7 @@ export const COMPANY_ROADMAP: readonly RoadmapPhase[] = [
     phase: "now",
     label: "Now",
     items: [
-      "Smohix AI, Platform, Assistant, and Private AI workspaces",
+      "Smohix AI, Platform, Assistant, and Smohix PRI workspaces",
       "Developer hub, API catalog, and documentation",
       "Operational console — incidents, automations, approvals, audit",
     ],
