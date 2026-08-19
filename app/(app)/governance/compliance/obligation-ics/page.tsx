@@ -135,7 +135,7 @@ export default async function ObligationIcsPage() {
             </ol>
             <p className={`mt-4 ${appMeta} text-muted`}>{pack.subscriptionHint}</p>
             <p className={`mt-2 ${appMeta} text-muted`}>
-              Assessor automation endpoint (Bearer <code className="text-foreground/80">zentro_ca_*</code>
+              Assessor automation endpoint (Bearer <code className="text-foreground/80">smohix_ca_*</code>
               ):{" "}
               <span className="break-all text-foreground/70">{assessorApiUrl}</span>
             </p>

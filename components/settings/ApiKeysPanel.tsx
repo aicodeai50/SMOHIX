@@ -221,7 +221,7 @@ export function ApiKeysPanel({
               Authorization: Bearer &lt;key&gt;
             </span>{" "}
             or header{" "}
-            <span className="font-mono text-foreground/80">X-Zentro-Api-Key</span> on same-origin
+            <span className="font-mono text-foreground/80">X-Smohix-Api-Key</span> on same-origin
             requests to <span className="font-mono">/api/reasoning/…</span> and{" "}
             <span className="font-mono">/api/robot/…</span>.
           </p>
@@ -242,7 +242,7 @@ export function ApiKeysPanel({
                     Authorization: Bearer &lt;key&gt;
                   </span>{" "}
                   or header{" "}
-                  <span className="font-mono text-foreground/80">X-Zentro-Api-Key</span> on
+                  <span className="font-mono text-foreground/80">X-Smohix-Api-Key</span> on
                   requests to <span className="font-mono">/api/reasoning/…</span> and{" "}
                   <span className="font-mono">/api/robot/…</span>. Other REST routes use your
                   session or specialized tokens (see API docs).

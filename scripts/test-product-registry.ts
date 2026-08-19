@@ -69,7 +69,7 @@ for (const p of PRODUCT_REGISTRY.filter((x) => x.maturity === "planned")) {
 
 // --- Developer examples: no API keys in static exports ---
 const devJourney = readFileSync(path.join(root, "lib/developer-journey.ts"), "utf8");
-assert(!devJourney.includes("zentro_sk_live_"), "developer-journey must not embed real API keys");
+assert(!devJourney.includes("smohix_sk_live_"), "developer-journey must not embed real API keys");
 assert(devJourney.includes("/api/health"), "developer-journey must document health route");
 
 // --- Status adapters: SSRF-safe patterns ---

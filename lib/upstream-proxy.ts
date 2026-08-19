@@ -6,6 +6,7 @@ import {
   extractSmohixApiKey,
   resolveUserIdFromApiKeyPlaintext,
 } from "@/lib/api-keys/resolve";
+import { isApiKeyPlaintext } from "@/lib/api-keys/token";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getRobotBackendUrl, getShBackendApiUrl } from "@/lib/backend-urls";
@@ -30,7 +31,7 @@ async function resolveProxyUserId(req: NextRequest): Promise<string | null> {
   return resolveUserIdFromApiKeyPlaintext(plain);
 }
 
-/** When Supabase auth env is set, proxy allows a session cookie or a valid `zentro_sk_` API key. */
+/** When Supabase auth env is set, proxy allows a session cookie or a valid Smohix API key. */
 async function denyIfProxyUnauthenticated(
   req: NextRequest,
 ): Promise<NextResponse | null> {
@@ -44,7 +45,7 @@ async function denyIfProxyUnauthenticated(
         {
           error: "Unauthorized",
           message:
-            "Sign in, or call with Authorization: Bearer <zentro_sk_…> or X-Zentro-Api-Key (see Settings -> API keys). API key validation needs SUPABASE_SERVICE_ROLE_KEY on the server.",
+            "Sign in, or call with Authorization: Bearer <smohix_sk_…> or X-Smohix-Api-Key (see Settings → API keys). API key validation needs SUPABASE_SERVICE_ROLE_KEY on the server.",
         },
         { status: 401 },
       );
@@ -143,7 +144,7 @@ function pickForwardHeaders(req: NextRequest): Headers {
   const auth = req.headers.get("authorization");
   if (auth?.startsWith("Bearer ")) {
     const token = auth.slice("Bearer ".length).trim();
-    if (token && !token.startsWith("zentro_sk_")) {
+    if (token && !isApiKeyPlaintext(token)) {
       out.set("authorization", auth);
     }
   }

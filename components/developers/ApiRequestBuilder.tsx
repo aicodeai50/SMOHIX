@@ -12,7 +12,7 @@ function buildJavaScript(example: (typeof DEVELOPER_EXAMPLES)[number], base: str
   const path = example.request.match(/smohix\.run(\S+)/)?.[1] ?? "/api/health";
   return `const res = await fetch("${base}${path}", {
   headers: {
-    Authorization: "Bearer zentro_sk_your_key_here",
+    Authorization: "Bearer smohix_sk_your_key_here",
   },
 });
 if (!res.ok) throw new Error(\`HTTP \${res.status}\`);

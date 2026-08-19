@@ -1,5 +1,7 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 
+import { readSmohixHeader, SMOHIX_HEADERS } from "@/lib/integrations/smohix-headers";
+
 type VerifyInput = {
   rawBody: string;
   signatureHeader: string | null;
@@ -24,11 +26,9 @@ function safeEqualHex(expectedHex: string, providedHex: string): boolean {
 
 /**
  * Optional alert-webhook signature verification.
- * Supports:
- * - `X-Zentro-Signature: <hex>`
- * - `X-Zentro-Signature: sha256=<hex>`
- * If `X-Zentro-Signature-Timestamp` is present, verifies `${timestamp}.${rawBody}` first,
- * then falls back to raw-body HMAC for compatibility.
+ * Supports canonical Smohix headers (and legacy Zentro names server-side):
+ * - `X-Smohix-Signature: <hex>` or `sha256=<hex>`
+ * - Optional `X-Smohix-Signature-Timestamp` — verifies `${timestamp}.${rawBody}` first.
  */
 export function verifyAlertWebhookSignature(input: VerifyInput): boolean {
   const signature = input.signatureHeader?.trim();
@@ -47,3 +47,15 @@ export function verifyAlertWebhookSignature(input: VerifyInput): boolean {
   const expectedRawHex = toHexDigest(input.rawBody, input.signingSecret);
   return safeEqualHex(expectedRawHex, providedHex);
 }
+
+export function readAlertWebhookSignatureHeaders(headers: Headers): {
+  signatureHeader: string | null;
+  timestampHeader: string | null;
+} {
+  return {
+    signatureHeader: readSmohixHeader(headers, "alertSignature"),
+    timestampHeader: readSmohixHeader(headers, "alertSignatureTimestamp"),
+  };
+}
+
+export const ALERT_SIGNATURE_HEADER_DOC = SMOHIX_HEADERS.alertSignature;

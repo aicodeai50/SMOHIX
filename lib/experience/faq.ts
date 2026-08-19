@@ -30,7 +30,7 @@ export const FAQ_GROUPS: readonly FaqGroup[] = [
       },
       {
         q: "How do I authenticate API requests?",
-        a: "Browser: Supabase session cookies. Scripts: Authorization: Bearer zentro_sk_… API keys. Ingest: dedicated ingest tokens per route docs.",
+        a: "Browser: Supabase session cookies. Scripts: Authorization: Bearer smohix_sk_… Smohix API keys. Ingest: dedicated ingest tokens per route docs.",
       },
       {
         q: "Is there a public health check?",

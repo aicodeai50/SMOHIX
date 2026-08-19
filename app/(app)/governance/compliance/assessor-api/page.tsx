@@ -68,7 +68,7 @@ export default async function AssessorApiPage({
       <PageHeader
         eyebrow="Governance"
         title="Assessor-scoped compliance API"
-        description="Issue read-only tokens (zentro_ca_*) for external auditors. Tokens call live export builders against your org audit_log and policies — same data as the console, without full UI access."
+        description="Issue read-only tokens (smohix_ca_*) for external auditors. Tokens call live export builders against your org audit_log and policies — same data as the console, without full UI access."
       />
       <p className={`-mt-4 mb-6 ${appBody}`}>
         <Link href="/governance/compliance/bundles" className="text-accent hover:underline">

@@ -198,15 +198,31 @@ assert(nextConfig.includes("destination: \"/products/smohix-ai\""), "smohix-ai r
 assert(nextConfig.includes("zentro.run"), "legacy host redirect retained temporarily");
 
 // 11) Active marketing copy must not say Zentro (spot-check key surfaces)
-for (const rel of [
+const CUSTOMER_ZENTRO_RE = /(?:x-zentro-|X-Zentro-|zentro_sk_|zentro_ca_|zentro_ingest_)/i;
+
+const integrationSurfaces = [
+  "lib/developer-journey.ts",
+  "lib/ecosystem-graph.ts",
+  "components/settings/ApiKeysPanel.tsx",
+  "app/(app)/settings/connectors/page.tsx",
+  "lib/docs/api-catalog.ts",
+  "components/landing/HomepageDevelopersSection.tsx",
+];
+
+const marketingSurfaces = [
   "lib/site-brand.ts",
   "lib/company-identity.ts",
   "components/landing/Hero.tsx",
   "app/company/page.tsx",
   "public/site.webmanifest",
-]) {
+];
+
+for (const rel of integrationSurfaces) {
+  assert(!CUSTOMER_ZENTRO_RE.test(read(rel)), `${rel} still contains customer-facing zentro integration branding`);
+}
+
+for (const rel of marketingSurfaces) {
   const body = read(rel).toLowerCase();
-  // Allow documented legacy cookie / env fallback tokens only outside these files
   assert(!body.includes("zentro"), `${rel} still contains zentro`);
 }
 

@@ -17,8 +17,8 @@ export function HomepageDevelopersSection() {
             Developer platform
           </h2>
           <p className={`mt-2 max-w-xl ${mBody}`}>
-            Smohix API catalog, API keys (zentro_sk_ prefix — legacy-compatible), ingest tokens,
-            and GitHub source — labeled honestly for what ships today.
+            Smohix API catalog, API keys, ingest tokens, developer resources, and GitHub
+            source — clearly labeled by current availability.
           </p>
         </div>
         <div className="flex flex-wrap gap-3">

@@ -59,7 +59,7 @@ export const PRODUCT_CONVERSION: Record<string, ProductConversionMeta> = {
     worksToday: [
       "Supabase auth for console routes",
       "Org roles and delegated approvers",
-      "zentro_sk_ API keys in Settings",
+      "Smohix API keys in Settings",
     ],
   },
 };

@@ -7,7 +7,7 @@
  *   node scripts/gen-alert-signature.mjs --secret "my-secret" --body-file payload.json --timestamp 1715000000
  *
  * Env fallback:
- *   SMOHIX_ALERT_WEBHOOK_SIGNING_SECRET
+ *   SMOHIX_ALERT_WEBHOOK_SIGNING_SECRET (legacy ZENTRO_ALERT_WEBHOOK_SIGNING_SECRET accepted server-side)
  */
 import fs from "node:fs";
 import { createHmac } from "node:crypto";
@@ -78,15 +78,15 @@ const rawSig = hmacHex(secret, body);
 const ts = typeof args.timestamp === "string" ? args.timestamp.trim() : "";
 
 console.log("Headers (raw-body mode):");
-console.log(`X-Zentro-Signature: ${rawSig}`);
-console.log(`X-Zentro-Signature: sha256=${rawSig}`);
+console.log(`X-Smohix-Signature: ${rawSig}`);
+console.log(`X-Smohix-Signature: sha256=${rawSig}`);
 
 if (ts) {
   const tsSig = hmacHex(secret, `${ts}.${body}`);
   console.log("");
   console.log("Headers (timestamp mode):");
-  console.log(`X-Zentro-Signature-Timestamp: ${ts}`);
-  console.log(`X-Zentro-Signature: ${tsSig}`);
-  console.log(`X-Zentro-Signature: sha256=${tsSig}`);
+  console.log(`X-Smohix-Signature-Timestamp: ${ts}`);
+  console.log(`X-Smohix-Signature: ${tsSig}`);
+  console.log(`X-Smohix-Signature: sha256=${tsSig}`);
 }
 

@@ -7,7 +7,8 @@ import {
   resolveAlertIngestUserId,
   type AlertIngestPayload,
 } from "@/lib/integrations/alert-ingest";
-import { verifyAlertWebhookSignature } from "@/lib/integrations/alert-webhook-verify";
+import { verifyAlertWebhookSignature, readAlertWebhookSignatureHeaders } from "@/lib/integrations/alert-webhook-verify";
+import { readSmohixHeader } from "@/lib/integrations/smohix-headers";
 import { clientIpFromRequest, takeToken } from "@/lib/rate-limit/memory";
 
 export const runtime = "nodejs";
@@ -43,8 +44,7 @@ export async function POST(req: NextRequest) {
   const rawBody = await req.text();
   const signingSecret = (process.env.SMOHIX_ALERT_WEBHOOK_SIGNING_SECRET ?? process.env.ZENTRO_ALERT_WEBHOOK_SIGNING_SECRET)?.trim();
   if (signingSecret) {
-    const signatureHeader = req.headers.get("x-zentro-signature");
-    const timestampHeader = req.headers.get("x-zentro-signature-timestamp");
+    const { signatureHeader, timestampHeader } = readAlertWebhookSignatureHeaders(req.headers);
     const ok = verifyAlertWebhookSignature({
       rawBody,
       signatureHeader,
@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
         {
           error: "unauthorized",
           message:
-            "Invalid alert webhook signature. Expected X-Zentro-Signature HMAC-SHA256.",
+            "Invalid alert webhook signature. Expected X-Smohix-Signature HMAC-SHA256.",
         },
         { status: 401 },
       );
@@ -75,7 +75,9 @@ export async function POST(req: NextRequest) {
     resolved.tokenId,
     normalizeAlertIngestPayload(
       body as AlertIngestPayload,
-      req.headers.get("x-zentro-alert-source") ?? req.headers.get("user-agent"),
+      req.headers.get("x-smohix-alert-source") ??
+        readSmohixHeader(req.headers, "alertSource") ??
+        req.headers.get("user-agent"),
     ),
   );
 

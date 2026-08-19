@@ -2,6 +2,7 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 import { getEvidenceBundleForOrg, packToDownloadBody } from "@/lib/compliance/evidence-bundle";
+import { SMOHIX_HEADERS } from "@/lib/integrations/smohix-headers";
 import { getOrgContextForUser } from "@/lib/org/context";
 import { OPERATIONAL_RESPONSE_HEADERS } from "@/lib/security/operational-headers";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
@@ -59,7 +60,7 @@ export async function GET(req: NextRequest, { params }: Params) {
       ...OPERATIONAL_RESPONSE_HEADERS,
       "Content-Type": mediaType,
       "Content-Disposition": `attachment; filename="${filename}"`,
-      "X-Zentro-Manifest-Sha256": resolved.row.manifestSha256,
+      [SMOHIX_HEADERS.manifestSha256]: resolved.row.manifestSha256,
     },
   });
 }

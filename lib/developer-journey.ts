@@ -25,7 +25,7 @@ export const DEVELOPER_SDKS: readonly SdkEntry[] = [
     name: "Smohix SDK (@smohix/sdk)",
     status: "preview",
     detail:
-      "Preferred TypeScript package name for the Smohix API client. Publishing is in progress — use the documented REST catalog and API keys until the package is released. Migration notes may retain temporary @zentro/sdk compatibility where required.",
+      "Preferred TypeScript package name for the Smohix API client. Publishing is in progress — use the documented REST catalog and API keys until the package is released.",
   },
   {
     name: "Python SDK",
@@ -48,7 +48,7 @@ export const DEVELOPER_QUICK_START = [
   {
     step: "2. Sign in and create an API key",
     detail:
-      "Smohix API keys currently use the zentro_sk_ prefix (legacy-compatible) and are managed in Settings.",
+      "Smohix API keys are created in Settings and sent as Authorization: Bearer <key>.",
     href: "/auth/sign-in?next=/settings/api-keys",
   },
   {
@@ -67,7 +67,7 @@ export const DEVELOPER_AUTH = {
   title: "Authentication",
   points: [
     "Browser sessions: Supabase Auth cookies on console routes.",
-    "Programmatic access: Smohix API keys (Authorization: Bearer zentro_sk_… — legacy-compatible prefix).",
+    "Programmatic access: Smohix API keys (Authorization: Bearer smohix_sk_…).",
     "Alert ingest: dedicated ingest tokens scoped per workspace.",
     "Webhooks: PayPal signature verification server-side; never expose secrets in client code.",
   ],
@@ -76,7 +76,7 @@ export const DEVELOPER_AUTH = {
 export const DEVELOPER_EXAMPLE = `// Example: authenticated API request (server or script)
 const res = await fetch("${SITE}/api/overview/error-budget-summary", {
   headers: {
-    Authorization: "Bearer zentro_sk_your_key_here",
+    Authorization: "Bearer smohix_sk_your_key_here",
   },
 });
 if (!res.ok) throw new Error(\`HTTP \${res.status}\`);
@@ -126,7 +126,7 @@ export const DEVELOPER_EXAMPLES: readonly DeveloperExample[] = [
     title: "Error budget summary",
     description: "Authenticated session or API key — see /docs/api.",
     request: `curl -s ${SITE}/api/overview/error-budget-summary \\
-  -H "Authorization: Bearer zentro_sk_your_key_here"`,
+  -H "Authorization: Bearer smohix_sk_your_key_here"`,
     response: `{
   "services": [ … ],
   "summary": { "criticalBurn": 0, "warningBurn": 1 }

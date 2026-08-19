@@ -14,7 +14,7 @@ import { hasSupabaseAuth } from "@/lib/supabase/env";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-/** Read-only compliance exports for external assessors. Auth: Bearer or X-Zentro-Api-Key with zentro_ca_* token. */
+/** Read-only compliance exports for external assessors. Auth: Bearer or X-Smohix-Api-Key with smohix_ca_* token. */
 export async function GET(
   req: NextRequest,
   ctx: { params: Promise<{ resource: string }> },
@@ -44,7 +44,7 @@ export async function GET(
     return NextResponse.json(
       {
         error: "unauthorized",
-        message: "Send Authorization: Bearer <zentro_ca_…> or X-Zentro-Api-Key.",
+        message: "Send Authorization: Bearer <smohix_ca_…> or X-Smohix-Api-Key.",
       },
       { status: 401, headers: OPERATIONAL_RESPONSE_HEADERS },
     );

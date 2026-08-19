@@ -29,7 +29,7 @@ export const TRUST_SECURITY: readonly TrustItem[] = [
   },
   {
     title: "Authentication",
-    body: "Supabase Auth protects console routes. API keys (zentro_sk_) and alert ingest tokens scope programmatic access.",
+    body: "Supabase Auth protects console routes. Smohix API keys and alert ingest tokens scope programmatic access.",
     status: "current",
   },
   {

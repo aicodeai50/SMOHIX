@@ -189,7 +189,7 @@ export const PRODUCT_REGISTRY: readonly ProductRegistryEntry[] = [
     ],
     capabilities: [
       "Public Smohix API catalog",
-      "API keys (zentro_sk_ prefix — legacy-compatible)",
+      "API keys",
       "Alert ingest tokens",
       "Webhooks",
     ],

@@ -509,7 +509,7 @@ export const PRODUCT_PAGES: readonly ProductPageContent[] = [
     problem:
       "Every product needs consistent sign-in, roles, and programmatic access — not one-off auth per feature.",
     solution:
-      "Identity spans Supabase auth, organization members, delegated approvers, and zentro_sk_ API keys.",
+      "Identity spans Supabase auth, organization members, delegated approvers, and Smohix API keys.",
     howItWorks: [
       "Supabase sessions protect console routes.",
       "Org roles filter modules (including auditor workspace).",
@@ -755,7 +755,7 @@ export const TECHNOLOGY_STACK = [
     category: "Developer stack",
     items: [
       "Smohix API catalog",
-      "Smohix API keys (zentro_sk_ prefix — legacy-compatible)",
+      "Smohix API keys",
       "Alert ingest tokens",
       "PayPal webhooks",
     ],

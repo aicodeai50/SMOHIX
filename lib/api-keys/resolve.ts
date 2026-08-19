@@ -1,33 +1,36 @@
 import {
-  ASSESSOR_API_KEY_PREFIX,
-  API_KEY_PREFIX,
+  API_KEY_HEADER,
+  API_KEY_PREFIXES,
+  ASSESSOR_API_KEY_PREFIXES,
+  LEGACY_API_KEY_HEADER,
   hashApiKeyPlaintext,
 } from "@/lib/api-keys/token";
 import { createServiceSupabaseClient } from "@/lib/supabase/admin";
 
-function extractPrefixedKey(req: { headers: Headers }, prefix: string): string | null {
+function extractPrefixedKey(req: { headers: Headers }, prefixes: readonly string[]): string | null {
   const auth = req.headers.get("authorization");
   if (auth?.startsWith("Bearer ")) {
     const t = auth.slice("Bearer ".length).trim();
-    if (t.startsWith(prefix)) {
+    if (prefixes.some((prefix) => t.startsWith(prefix))) {
       return t;
     }
   }
-  const h = req.headers.get("x-zentro-api-key")?.trim();
-  if (h?.startsWith(prefix)) {
-    return h;
+  for (const headerName of [API_KEY_HEADER, LEGACY_API_KEY_HEADER]) {
+    const h = req.headers.get(headerName)?.trim();
+    if (h && prefixes.some((prefix) => h.startsWith(prefix))) {
+      return h;
+    }
   }
   return null;
 }
 
 export function extractSmohixApiKey(req: { headers: Headers }): string | null {
-  return extractPrefixedKey(req, API_KEY_PREFIX);
+  return extractPrefixedKey(req, API_KEY_PREFIXES);
 }
 
 export function extractAssessorApiKey(req: { headers: Headers }): string | null {
-  return extractPrefixedKey(req, ASSESSOR_API_KEY_PREFIX);
+  return extractPrefixedKey(req, ASSESSOR_API_KEY_PREFIXES);
 }
-
 
 /**
  * Resolve owning user for proxy auth. Requires service role to read by `secret_hash`

@@ -235,9 +235,9 @@ Browsers should **not** call your `*.up.railway.app` URLs directly (CORS, and yo
 | `GET /api/robot/docs` | `GET {SMOHIX_ROBOT_API_URL}/docs` |
 | `GET /api/robot/health` | `GET {SMOHIX_ROBOT_API_URL}/health` |
 
-Query string, method, and body are forwarded. Headers forwarded: **`Content-Type`**, **`Accept`**, and **`Authorization`** only when it is **not** a Smohix API key (`zentro_sk_...`), so your upstream never receives credentials issued by this app.
+Query string, method, and body are forwarded. Headers forwarded: **`Content-Type`**, **`Accept`**, and **`Authorization`** only when it is **not** a Smohix API key (`smohix_sk_...`), so your upstream never receives credentials issued by this app.
 
-When Supabase auth env vars are set, callers must use a **browser session** or an **API key** from **Settings → API keys** (`Authorization: Bearer <key>` or `X-Zentro-Api-Key`). Resolving keys by hash uses **`SUPABASE_SERVICE_ROLE_KEY`** on the server.
+When Supabase auth env vars are set, callers must use a **browser session** or an **API key** from **Settings → API keys** (`Authorization: Bearer <key>` or `X-Smohix-Api-Key`). Resolving keys by hash uses **`SUPABASE_SERVICE_ROLE_KEY`** on the server.
 
 **Examples (client or Server Component):**
 
@@ -282,15 +282,15 @@ For Datadog:
 
 Optional header for explicit source hint:
 
-- `X-Zentro-Alert-Source: datadog`
+- `X-Smohix-Alert-Source: datadog`
 
 Example:
 
 ```bash
 curl -X POST "https://smohix.run/api/integrations/alerts" \
-  -H "Authorization: Bearer zentro_ingest_xxx" \
+  -H "Authorization: Bearer smohix_ingest_xxx" \
   -H "Content-Type: application/json" \
-  -H "X-Zentro-Alert-Source: datadog" \
+  -H "X-Smohix-Alert-Source: datadog" \
   -d '{
     "id": 987654321,
     "title": "API 5xx spike",
@@ -315,15 +315,15 @@ For Prometheus/Grafana:
 
 Optional header for explicit source hint:
 
-- `X-Zentro-Alert-Source: prometheus` (or `grafana`)
+- `X-Smohix-Alert-Source: prometheus` (or `grafana`)
 
 Example:
 
 ```bash
 curl -X POST "https://smohix.run/api/integrations/alerts" \
-  -H "Authorization: Bearer zentro_ingest_xxx" \
+  -H "Authorization: Bearer smohix_ingest_xxx" \
   -H "Content-Type: application/json" \
-  -H "X-Zentro-Alert-Source: prometheus" \
+  -H "X-Smohix-Alert-Source: prometheus" \
   -d '{
     "status": "firing",
     "alerts": [
@@ -356,15 +356,15 @@ The same endpoint accepts PagerDuty Events-style payloads and maps:
 
 Optional header for explicit source hint:
 
-- `X-Zentro-Alert-Source: pagerduty`
+- `X-Smohix-Alert-Source: pagerduty`
 
 Example:
 
 ```bash
 curl -X POST "https://smohix.run/api/integrations/alerts" \
-  -H "Authorization: Bearer zentro_ingest_xxx" \
+  -H "Authorization: Bearer smohix_ingest_xxx" \
   -H "Content-Type: application/json" \
-  -H "X-Zentro-Alert-Source: pagerduty" \
+  -H "X-Smohix-Alert-Source: pagerduty" \
   -d '{
     "event_action": "trigger",
     "dedup_key": "payments-api-5xx",
@@ -392,7 +392,7 @@ The same endpoint accepts New Relic-style incident webhook payloads and maps:
 
 Optional header for explicit source hint:
 
-- `X-Zentro-Alert-Source: newrelic`
+- `X-Smohix-Alert-Source: newrelic`
 
 ### Monitoring alert ingest (Splunk adapter)
 
@@ -403,13 +403,13 @@ Send Splunk alert action / webhook JSON to the same endpoint. Smohix maps:
 - `sid` or `event_id` → dedupe key `splunk:<id>`
 - `result.host` → `service_name` hint
 
-Optional header: `X-Zentro-Alert-Source: splunk` (or set `"vendor": "splunk"` in JSON body).
+Optional header: `X-Smohix-Alert-Source: splunk` (or set `"vendor": "splunk"` in JSON body).
 
 ```bash
 curl -X POST "https://smohix.run/api/integrations/alerts" \
   -H "Authorization: Bearer YOUR_INGEST_TOKEN" \
   -H "Content-Type: application/json" \
-  -H "X-Zentro-Alert-Source: splunk" \
+  -H "X-Smohix-Alert-Source: splunk" \
   -d '{
     "search_name": "Failed logins threshold",
     "sid": "scheduler_12345",
@@ -425,7 +425,7 @@ Accepts Sentinel / Azure Monitor alert JSON (`properties.displayName`, `properti
 - `properties.severity` → Smohix severity
 - `data.essentials.monitorCondition` → resolved vs investigating
 
-Optional header: `X-Zentro-Alert-Source: sentinel`
+Optional header: `X-Smohix-Alert-Source: sentinel`
 
 ### Monitoring alert ingest (CrowdStrike Falcon adapter)
 
@@ -435,7 +435,7 @@ Accepts Falcon detection webhook shape (`event.DetectName`, `event.DetectId`, `e
 - Numeric `Severity` (1–5) → Smohix severity
 - `ComputerName` → service name hint
 
-Optional header: `X-Zentro-Alert-Source: crowdstrike`
+Optional header: `X-Smohix-Alert-Source: crowdstrike`
 
 ### Vulnerability scanner ingest (Qualys / Tenable)
 
@@ -447,7 +447,7 @@ Qualys example (`QID`, `TITLE`, `HOST`, `CVSS_BASE`, `CVE_ID`):
 curl -X POST "https://smohix.run/api/integrations/vulnerabilities" \
   -H "Authorization: Bearer YOUR_INGEST_TOKEN" \
   -H "Content-Type: application/json" \
-  -H "X-Zentro-Vuln-Source: qualys" \
+  -H "X-Smohix-Vuln-Source: qualys" \
   -d '{
     "QID": "38173",
     "TITLE": "SSL Certificate Expiry",
@@ -463,7 +463,7 @@ Tenable example (`plugin.id`, `plugin.name`, `asset.hostname`):
 curl -X POST "https://smohix.run/api/integrations/vulnerabilities" \
   -H "Authorization: Bearer YOUR_INGEST_TOKEN" \
   -H "Content-Type: application/json" \
-  -H "X-Zentro-Vuln-Source: tenable" \
+  -H "X-Smohix-Vuln-Source: tenable" \
   -d '{
     "plugin": {
       "id": "19506",
@@ -479,7 +479,7 @@ Console: **`/assets/vulnerabilities`** (prioritized exposure queue) · **`/chang
 
 **Exposure prioritization:** findings are ranked at read time by an exposure score combining CVSS (or severity fallback), asset criticality from the **service catalog** (production matches rank highest), and recency for open findings. The console shows priority bands, matched service names, and stats for urgent and production-asset exposure. Regression: `npm run test:vulnerability-priority`.
 
-**Pen-test finding rollup (migration #19):** when a **new** finding is ingested and its `asset_host` matches an **active** engagement scope (or the engagement is within its scheduled window), Smohix links the finding and increments `findings_count`. Force a target engagement with header `X-Zentro-Pen-Test-Engagement: <engagement_uuid>`. Response fields: `pen_test_engagement_id`, `pen_test_rolled_up`.
+**Pen-test finding rollup (migration #19):** when a **new** finding is ingested and its `asset_host` matches an **active** engagement scope (or the engagement is within its scheduled window), Smohix links the finding and increments `findings_count`. Force a target engagement with header `X-Smohix-Pen-Test-Engagement: <engagement_uuid>`. Response fields: `pen_test_engagement_id`, `pen_test_rolled_up`.
 
 ### Organization RBAC (delegated approvers)
 
@@ -548,7 +548,7 @@ Invite teammates by email (they must already have a Smohix account). Requires **
 45. `20260554120000_compliance_staffing_completion_rollup.sql` — staffing completion rollup email + delivery log
 46. `20260555120000_compliance_staffing_sla_breach_digest.sql` — staffing SLA breach digest settings + delivery log
 47. `20260556120000_compliance_cross_staffing_committee_escalation.sql` — cross-staffing committee escalation settings + delivery log
-32. `20260541120000_compliance_assessor_api_tokens.sql` — org-scoped assessor API tokens (zentro_ca_*)
+32. `20260541120000_compliance_assessor_api_tokens.sql` — org-scoped assessor API tokens (smohix_ca_*)
 
 **NIST CSF 2.0 alignment (no migration):** twelve representative **NIST Cybersecurity Framework 2.0** outcomes across core functions with **implementation maturity tiers** (Partial → Adaptive) from shared audit/policy evidence. Console: **`/governance/compliance/nist-csf`** · API: **`GET /api/governance/compliance/nist-csf?periodDays=30`**. Program dashboard includes NIST maturity and readiness. Evidence export adds **`nist_csf_controls`** column. Regression: `npm run test:nist-csf`.
 
@@ -656,7 +656,7 @@ Invite teammates by email (they must already have a Smohix account). Requires **
 
 **Compliance automation runbooks (migration #33):** link **live assessment gaps** from the program dashboard to **in-repo runbooks** and **automation playbooks**, then track **open / in progress / resolved** closure per org. Console: **`/governance/compliance/runbooks`** · API: **`GET /api/governance/compliance/gap-remediations?periodDays=30`**. Program dashboard includes **gap remediation** counts. Audit: `governance.compliance_gap_remediation_started`, `governance.compliance_gap_remediation_resolved`. Regression: `npm run test:compliance-gap-runbooks`.
 
-**Assessor-scoped compliance API tokens (migration #32):** org-level **`zentro_ca_*`** read-only keys for external auditors. Issue tokens at **`/governance/compliance/assessor-api`** · call **`GET /api/governance/compliance/assessor/{resource}`** (e.g. `evidence-export`, `workbook`, `crosswalk`, `baseline-comparison`, framework JSON reports) with `Authorization: Bearer <token>`. Uses the same live export builders as the console (org `audit_log` + policies). Requires **`SUPABASE_SERVICE_ROLE_KEY`** on the server. Audit: `governance.assessor_api_token_created`, `governance.assessor_api_accessed`. Regression: `npm run test:assessor-api`.
+**Assessor-scoped compliance API tokens (migration #32):** org-level **`smohix_ca_*`** read-only keys for external auditors. Issue tokens at **`/governance/compliance/assessor-api`** · call **`GET /api/governance/compliance/assessor/{resource}`** (e.g. `evidence-export`, `workbook`, `crosswalk`, `baseline-comparison`, framework JSON reports) with `Authorization: Bearer <token>`. Uses the same live export builders as the console (org `audit_log` + policies). Requires **`SUPABASE_SERVICE_ROLE_KEY`** on the server. Audit: `governance.assessor_api_token_created`, `governance.assessor_api_accessed`. Regression: `npm run test:assessor-api`.
 
 ### Optional webhook signature verification (recommended)
 
@@ -666,8 +666,8 @@ To require HMAC verification on `/api/integrations/alerts`, set:
 
 When set, requests must include:
 
-- `X-Zentro-Signature: <hex>` or `sha256=<hex>`
-- Optional: `X-Zentro-Signature-Timestamp` (if provided, verifier checks `${timestamp}.${rawBody}`)
+- `X-Smohix-Signature: <hex>` or `sha256=<hex>`
+- Optional: `X-Smohix-Signature-Timestamp` (if provided, verifier checks `${timestamp}.${rawBody}`)
 
 Digest algorithm: **HMAC-SHA256** over raw request body (or timestamp + body mode above).
 

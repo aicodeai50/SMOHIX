@@ -93,12 +93,12 @@ export const API_GROUPS: ApiGroup[] = [
         summary: "Upsert Qualys/Tenable finding; auto-open incident for high/critical (Bearer ingest token).",
         auth: "Bearer ingest token",
         notes:
-          "Same token as alert ingest. Optional X-Zentro-Vuln-Source header. Supports Qualys (QID/HOST), Tenable (plugin/asset), or generic finding_id payloads.",
+          "Same token as alert ingest. Optional X-Smohix-Vuln-Source header. Supports Qualys (QID/HOST), Tenable (plugin/asset), or generic finding_id payloads.",
       },
       {
         method: "GET",
         path: "/api/health/db",
-        summary: "Postgres readiness via zentro_db_health() RPC (requires migration #15).",
+        summary: "Postgres readiness via database health RPC (requires migration #15).",
         auth: "None",
       },
       {
@@ -700,7 +700,7 @@ export const API_GROUPS: ApiGroup[] = [
       {
         method: "POST",
         path: "/api/governance/compliance/assessor-tokens",
-        summary: "Create org assessor API token (zentro_ca_*); returns plaintext key once.",
+        summary: "Create org assessor API token (smohix_ca_*); returns plaintext key once.",
         auth: "Session cookie (owner/admin)",
       },
       {
@@ -713,7 +713,7 @@ export const API_GROUPS: ApiGroup[] = [
         method: "GET",
         path: "/api/governance/compliance/assessor/{id}",
         summary:
-          "Assessor read-only export — evidence-export, workbook, crosswalk, obligation-ics, baseline-comparison, risk-heatmap, executive-summary, framework reports; Bearer zentro_ca_* token.",
+          "Assessor read-only export — evidence-export, workbook, crosswalk, obligation-ics, baseline-comparison, risk-heatmap, executive-summary, framework reports; Bearer smohix_ca_* token.",
         auth: "Bearer assessor token",
       },
       {

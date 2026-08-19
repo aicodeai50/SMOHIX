@@ -192,7 +192,7 @@ export default async function ConnectorsPage({
   const noneConfigured = connectors.every((c) => !c.baseUrl);
   const configuredConnectorsCount = connectors.filter((c) => Boolean(c.baseUrl)).length;
   const siteUrl = getSiteUrl();
-  const exampleToken = "zentro_ingest_xxx";
+  const exampleToken = "smohix_ingest_xxx";
   const exampleSecret = "replace-with-signing-secret";
   const signatureModeEnabled = Boolean(
     (process.env.SMOHIX_ALERT_WEBHOOK_SIGNING_SECRET ?? process.env.ZENTRO_ALERT_WEBHOOK_SIGNING_SECRET)?.trim(),
@@ -1185,7 +1185,7 @@ export default async function ConnectorsPage({
         </div>
         <p className={`mt-4 ${appMeta}`}>
           If active tokens are zero, create one below. If signature mode is enabled, include valid{" "}
-          <span className="font-mono text-foreground/80">X-Zentro-Signature</span> headers.
+          <span className="font-mono text-foreground/80">X-Smohix-Signature</span> headers.
         </p>
         <div id="ingest-token-setup" className="mt-4 rounded-xl border border-white/[0.08] bg-black/20 p-4">
           <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
@@ -1660,7 +1660,7 @@ export default async function ConnectorsPage({
             const cmd = `curl -X POST "${siteUrl}/api/integrations/alerts" \\
   -H "Authorization: Bearer ${exampleToken}" \\
   -H "Content-Type: application/json" \\
-  -H "X-Zentro-Alert-Source: ${a.sourceHint}" \\
+  -H "X-Smohix-Alert-Source: ${a.sourceHint}" \\
   -d '${payload}'`;
             const signedCmd = `# 1) Save payload and generate signature
 cat > payload.json <<'JSON'
@@ -1673,9 +1673,9 @@ npm run gen:alert-signature -- --secret "${exampleSecret}" --body-file payload.j
 curl -X POST "${siteUrl}/api/integrations/alerts" \\
   -H "Authorization: Bearer ${exampleToken}" \\
   -H "Content-Type: application/json" \\
-  -H "X-Zentro-Alert-Source: ${a.sourceHint}" \\
-  -H "X-Zentro-Signature-Timestamp: 1715000000" \\
-  -H "X-Zentro-Signature: sha256=<replace_with_generated_hmac>" \\
+  -H "X-Smohix-Alert-Source: ${a.sourceHint}" \\
+  -H "X-Smohix-Signature-Timestamp: 1715000000" \\
+  -H "X-Smohix-Signature: sha256=<replace_with_generated_hmac>" \\
   -d @payload.json`;
             return (
               <div key={a.vendor} className="rounded-xl border border-white/[0.08] bg-black/30 p-4">
@@ -1715,10 +1715,10 @@ curl -X POST "${siteUrl}/api/integrations/alerts" \\
           <span className="font-mono text-foreground/80">SMOHIX_ALERT_WEBHOOK_SIGNING_SECRET</span>,
           then send{" "}
           <span className="font-mono text-foreground/80">
-            X-Zentro-Signature: sha256=&lt;hmac_hex&gt;
+            X-Smohix-Signature: sha256=&lt;hmac_hex&gt;
           </span>{" "}
           where HMAC is SHA-256 over raw body (or <span className="font-mono">timestamp.rawBody</span>{" "}
-          with <span className="font-mono">X-Zentro-Signature-Timestamp</span>).
+          with <span className="font-mono">X-Smohix-Signature-Timestamp</span>).
         </p>
         <pre className="mt-2 overflow-x-auto rounded-lg border border-white/[0.08] bg-black/40 p-3 font-mono text-[11px] leading-relaxed text-foreground/85">{`npm run gen:alert-signature -- --secret "${exampleSecret}" --body-file payload.json --timestamp 1715000000`}</pre>
       </section>
@@ -1932,7 +1932,7 @@ curl -X POST "${siteUrl}/api/integrations/alerts" \\
             </p>
             <ul className={`mt-2 list-inside list-disc space-y-1 text-foreground/80 ${appBody}`}>
               <li>
-                Set <span className="font-mono">X-Zentro-Alert-Source</span> to{" "}
+                Set <span className="font-mono">X-Smohix-Alert-Source</span> to{" "}
                 <span className="font-mono">datadog</span>,{" "}
                 <span className="font-mono">prometheus</span>,{" "}
                 <span className="font-mono">pagerduty</span>, or{" "}

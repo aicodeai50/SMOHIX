@@ -42,7 +42,7 @@ export const COMMERCIAL_PATHS: readonly CommercialPath[] = [
       "Use the API catalog, API keys, documentation, and GitHub source to integrate with the Smohix platform.",
     href: "/developers",
     cta: "Developer hub",
-    analyticsEvent: "build_with_zentro",
+    analyticsEvent: "build_with_smohix",
   },
 ] as const;
 

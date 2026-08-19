@@ -260,7 +260,7 @@ export function buildComplianceObligationIcsPackFromEvents(input: {
     calendarName,
     eventCount: events.length,
     subscriptionHint:
-      "Import the .ics file into Google Calendar, Outlook, or Apple Calendar. Re-download periodically to refresh deadlines. Assessor API: GET /api/governance/compliance/assessor/obligation-ics with a zentro_ca_* token.",
+      "Import the .ics file into Google Calendar, Outlook, or Apple Calendar. Re-download periodically to refresh deadlines. Assessor API: GET /api/governance/compliance/assessor/obligation-ics with a smohix_ca_* token.",
     ics: buildIcsCalendarDocument({
       orgId: input.orgId,
       calendarName,

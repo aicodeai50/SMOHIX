@@ -17,7 +17,7 @@ function assert(condition: boolean, message: string) {
 
 const plain = generateAssessorApiKeyPlaintext();
 assert(plain.startsWith(ASSESSOR_API_KEY_PREFIX), "assessor key prefix");
-assert(displayAssessorKeyPrefix(plain).includes("zentro_ca_"), "display prefix");
+assert(displayAssessorKeyPrefix(plain).includes("smohix_ca_"), "display prefix");
 assert(hashApiKeyPlaintext(plain).length === 64, "sha256 hash hex");
 
 const headers = new Headers({ authorization: `Bearer ${plain}` });
