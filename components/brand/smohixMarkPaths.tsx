@@ -1,18 +1,25 @@
-import { BRAND_MARK_COLORS } from "@/lib/brand";
+/** Legacy gradient HQ mark colors — retained only for deprecated SmohixMark reference file. */
+const LEGACY_GRADIENT_MARK_COLORS = {
+  backgroundStart: "#0b0f14",
+  backgroundMid: "#121922",
+  backgroundEnd: "#0a1018",
+  glyph: "#5ee1ff",
+  border: "rgba(255,255,255,0.09)",
+} as const;
 
 type MarkSvgProps = {
   gradientId?: string;
 };
 
-/** Official Smohix mark paths — mirrors `app/icon.svg` exactly. */
+/** @deprecated Legacy gradient HQ mark — superseded by Precision Plate (`components/brand/hq/`). */
 export function SmohixMarkSvgPaths({ gradientId = "smohix-official-bg" }: MarkSvgProps) {
   return (
     <>
       <defs>
         <linearGradient id={gradientId} x1="4" y1="4" x2="28" y2="28" gradientUnits="userSpaceOnUse">
-          <stop stopColor={BRAND_MARK_COLORS.backgroundStart} />
-          <stop offset="0.5" stopColor={BRAND_MARK_COLORS.backgroundMid} />
-          <stop offset="1" stopColor={BRAND_MARK_COLORS.backgroundEnd} />
+          <stop stopColor={LEGACY_GRADIENT_MARK_COLORS.backgroundStart} />
+          <stop offset="0.5" stopColor={LEGACY_GRADIENT_MARK_COLORS.backgroundMid} />
+          <stop offset="1" stopColor={LEGACY_GRADIENT_MARK_COLORS.backgroundEnd} />
         </linearGradient>
       </defs>
       <rect width="32" height="32" rx="6" fill={`url(#${gradientId})`} />
@@ -21,12 +28,12 @@ export function SmohixMarkSvgPaths({ gradientId = "smohix-official-bg" }: MarkSv
         height="32"
         rx="6"
         fill="none"
-        stroke={BRAND_MARK_COLORS.border}
+        stroke={LEGACY_GRADIENT_MARK_COLORS.border}
         strokeWidth="1"
       />
       <path
         d="M9.35 10.35h13.3M22.65 10.35L9.35 21.65M9.35 21.65h13.3"
-        stroke={BRAND_MARK_COLORS.glyph}
+        stroke={LEGACY_GRADIENT_MARK_COLORS.glyph}
         strokeWidth="1.78"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -35,7 +42,7 @@ export function SmohixMarkSvgPaths({ gradientId = "smohix-official-bg" }: MarkSv
   );
 }
 
-/** JSX for `next/og` ImageResponse — fixed gradient id (no hooks). */
+/** @deprecated Legacy OG content — superseded by `HqMarkOgContent`. */
 export function SmohixMarkOgContent({ size }: { size: number }) {
   return (
     <div

@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 
-import { SmohixMarkOgContent } from "@/components/brand/smohixMarkPaths";
+import { HqMarkOgContent } from "@/components/brand/hq/HqMarkOg";
+import { BRAND_MARK_COLORS } from "@/lib/brand";
 import {
   SITE_BRAND_NAME,
   SITE_MARKETING_TWITTER_DESCRIPTION,
@@ -22,30 +23,32 @@ export default function OpenGraphImage() {
           flexDirection: "column",
           justifyContent: "space-between",
           padding: "72px 80px",
-          background: "linear-gradient(145deg, #06070b 0%, #0c1018 42%, #080a10 100%)",
-          color: "#eef0f4",
+          background: `linear-gradient(145deg, ${BRAND_MARK_COLORS.background} 0%, #0c1018 42%, #080a10 100%)`,
+          color: BRAND_MARK_COLORS.foreground,
           fontFamily:
             'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 36 }}>
-          <SmohixMarkOgContent size={96} />
-          <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 860 }}>
-            <div style={{ fontSize: 58, fontWeight: 700, letterSpacing: -1.2, lineHeight: 1.1 }}>
-              {SITE_BRAND_NAME}
-            </div>
-            <div
-              style={{
-                width: 120,
-                height: 4,
-                borderRadius: 2,
-                background: "#5ee1ff",
-                opacity: 0.85,
-              }}
-            />
-            <div style={{ fontSize: 30, lineHeight: 1.45, color: "#a8b0c3", maxWidth: 920 }}>
-              {SITE_MARKETING_TWITTER_DESCRIPTION}
-            </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 28, maxWidth: 980 }}>
+          <HqMarkOgContent width={480} height={150} stroke={BRAND_MARK_COLORS.foreground} />
+          <div
+            style={{
+              width: 120,
+              height: 4,
+              borderRadius: 2,
+              background: BRAND_MARK_COLORS.accent,
+              opacity: 0.85,
+            }}
+          />
+          <div
+            style={{
+              fontSize: 30,
+              lineHeight: 1.45,
+              color: BRAND_MARK_COLORS.muted,
+              maxWidth: 920,
+            }}
+          >
+            {SITE_MARKETING_TWITTER_DESCRIPTION}
           </div>
         </div>
         <div

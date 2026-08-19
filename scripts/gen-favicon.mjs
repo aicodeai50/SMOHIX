@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import sharp from "sharp";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-/** Official mark — must match `app/icon.svg` (single source of truth). */
+/** HQ micro-mark — must match `app/icon.svg` (Precision Plate favicon geometry). */
 const svgPath = join(root, "app", "icon.svg");
 const pngPath = join(root, "public", "icon.png");
 const icoPath = join(root, "public", "favicon.ico");
@@ -13,12 +13,13 @@ const icoPath = join(root, "public", "favicon.ico");
 const pngToIco = (await import("png-to-ico")).default;
 
 const svg = readFileSync(svgPath);
+/** 512px master PNG for PWA / metadata; transparent background preserved. */
 await sharp(svg).resize(512, 512).png().toFile(pngPath);
 
 const base = sharp(readFileSync(pngPath));
-const sizes = [16, 32, 48];
+const sizes = [16, 32, 48, 64];
 const buffers = await Promise.all(
-  sizes.map((s) => base.clone().resize(s, s, { fit: "cover", position: "center" }).png().toBuffer()),
+  sizes.map((s) => base.clone().resize(s, s, { fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } }).png().toBuffer()),
 );
 
 const buf = await pngToIco(buffers);

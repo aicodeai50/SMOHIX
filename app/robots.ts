@@ -52,6 +52,8 @@ export default function robots(): MetadataRoute.Robots {
           "/resilience/",
           "/status",
           "/status/",
+          "/brand-preview",
+          "/brand-preview/",
         ],
       },
     ],

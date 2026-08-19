@@ -10,8 +10,8 @@ export function Header() {
   return (
     <header className="smohix-header-living sticky top-0 z-50 border-b border-white/[0.06] backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
-        <Link href="/" className="min-w-0 shrink-0 text-foreground no-underline">
-          <Logo />
+        <Link href="/" aria-label="Smohix home" className="min-w-0 shrink-0 text-foreground no-underline">
+          <Logo decorative />
         </Link>
 
         <nav className="hidden items-center gap-0.5 lg:flex" aria-label="Primary">

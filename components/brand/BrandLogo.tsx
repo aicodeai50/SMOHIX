@@ -1,36 +1,34 @@
-import { BRAND_PRODUCT_NAMES, type BrandProductName } from "@/lib/brand";
-import { SITE_BRAND_NAME } from "@/lib/site-brand";
+import { BRAND_PRODUCT_NAMES } from "@/lib/brand";
 
-import { SmohixMark } from "./SmohixMark";
+import { HqMark, type HqMarkTone } from "./hq/HqMark";
 
-type BrandLogoProps = {
+/** Precision Plate wordmark aspect ratio (140×44 viewBox). */
+const HQ_MARK_ASPECT = 140 / 44;
+
+export type BrandLogoProps = {
   className?: string;
-  /** Product label beside the mark. Defaults to "Smohix". */
-  productName?: BrandProductName | string;
-  /** Hide the wordmark and show only the official mark. */
-  markOnly?: boolean;
-  /** Mark pixel size. Default 32. */
-  markSize?: number;
+  /** Stroke tone for the framed smohix wordmark. */
+  tone?: HqMarkTone;
+  /** Wordmark height in px — default fits h-16 header without increasing chrome height. */
+  height?: number;
+  /** When true, hide SVG from assistive tech (parent link provides accessible name). */
+  decorative?: boolean;
 };
 
 /**
- * Official Smohix logo — mark + optional product name.
- * Every surface (marketing, console, auth, admin, mobile) should use this component.
+ * Official Smohix HQ corporate logo — Precision Plate framed "smohix" wordmark.
+ * Used across marketing, console, auth, and admin surfaces on smohix.run.
  */
 export function BrandLogo({
   className = "",
-  productName = SITE_BRAND_NAME,
-  markOnly = false,
-  markSize = 32,
+  tone = "light",
+  height = 26,
+  decorative = false,
 }: BrandLogoProps) {
+  const width = Math.round(height * HQ_MARK_ASPECT);
   return (
-    <div className={`flex items-center gap-2.5 ${className}`}>
-      <SmohixMark size={markSize} />
-      {!markOnly ? (
-        <span className="whitespace-nowrap text-xl font-bold tracking-tight text-foreground">
-          {productName}
-        </span>
-      ) : null}
+    <div className={`flex items-center ${className}`.trim()}>
+      <HqMark tone={tone} width={width} height={height} decorative={decorative} />
     </div>
   );
 }
