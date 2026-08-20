@@ -1,5 +1,6 @@
 "use client";
 
+import { SmohixHqDomainWordmark } from "@/components/brand/hq/SmohixHqDomainWordmark";
 import { SmohixHqLockup } from "@/components/brand/hq/SmohixHqLockup";
 import { SmohixHqMark } from "@/components/brand/hq/SmohixHqMark";
 import { SmohixHqWordmark } from "@/components/brand/hq/SmohixHqWordmark";
@@ -69,9 +70,16 @@ export function HqBrandPreviewBoard() {
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-lg font-semibold text-foreground">Horizontal wordmark — smohix.run</h2>
-        <Swatch label="Standard header wordmark" className="bg-background">
+        <h2 className="text-lg font-semibold text-foreground">Brand wordmark — Smohix</h2>
+        <Swatch label="Header / footer primary brand" className="bg-background">
           <SmohixHqWordmark tone="dark" symbolSize={32} />
+        </Swatch>
+      </section>
+
+      <section className="space-y-4">
+        <h2 className="text-lg font-semibold text-foreground">Domain wordmark — smohix.run</h2>
+        <Swatch label="Social / domain lockup contexts only" className="bg-background">
+          <SmohixHqDomainWordmark tone="dark" symbolSize={32} />
         </Swatch>
       </section>
 
@@ -139,6 +147,9 @@ export function HqBrandPreviewBoard() {
       <section className="space-y-2 text-sm text-muted">
         <h2 className="text-lg font-semibold text-foreground">Brand architecture rule</h2>
         <ul className="list-inside list-disc space-y-1">
+          <li>Header / footer — [S] Smohix (brand wordmark)</li>
+          <li>Hero eyebrow — smohix.run by Smohix Technologies (domain context)</li>
+          <li>OG / social — S + Smohix + smohix.run (presentation lockup)</li>
           <li>Smohix HQ (smohix.run) — Flow Mark geometric S identity</li>
           <li>Smohix AI (ai.smohix.run) — Aperture S product identity (unchanged)</li>
           <li>Favicon uses S symbol only — no smohix.run text</li>

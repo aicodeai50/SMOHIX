@@ -6,15 +6,16 @@
 | --- | --- | --- |
 | Smohix HQ | **Flow Mark** — custom geometric S + cyan registration dot | [smohix.run](https://smohix.run) |
 
-HQ uses its own master symbol, horizontal wordmark (`smohix.run`), and vertical lockup. It does **not** copy the Smohix AI Aperture S.
+HQ uses its own master symbol, brand wordmark (`Smohix`), domain wordmark (`smohix.run`), and vertical lockup. It does **not** copy the Smohix AI Aperture S.
 
 ### HQ variants
 
 | Variant | Use |
 | --- | --- |
 | Symbol (S + dot) | Favicon, app icon, badges — **no text** |
-| Wordmark (S + smohix.run) | Header, footer, navigation |
-| Lockup (vertical S + smohix.run) | OpenGraph, social cards, corporate surfaces |
+| Brand wordmark (S + Smohix) | Header, footer, navigation |
+| Domain wordmark (S + smohix.run) | Social previews, domain assets — not primary navigation |
+| Lockup (vertical S + Smohix + smohix.run) | OpenGraph, social cards, corporate surfaces |
 
 ## Products
 

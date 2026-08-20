@@ -8,7 +8,7 @@ export type BrandLogoProps = Omit<SmohixHqWordmarkProps, "symbolSize" | "height"
 };
 
 /**
- * Official Smohix HQ corporate logo — Flow Mark S + smohix.run wordmark.
+ * Official Smohix HQ corporate logo — Flow Mark S + Smohix brand wordmark.
  * Used across marketing, console, auth, and admin surfaces on smohix.run.
  */
 export function BrandLogo({

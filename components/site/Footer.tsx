@@ -54,7 +54,7 @@ export function Footer() {
             <Logo />
             <p className={mBody}>
               {SITE_COMPANY_NAME} builds AI products, developer platforms, APIs, and enterprise
-              solutions — the official headquarters of the Smohix ecosystem at {SITE_PRIMARY_DOMAIN}.
+              solutions across one Smohix ecosystem.
             </p>
             <p className="text-xs text-muted">
               {COMPANY_NAME} <span aria-hidden>·</span> {SITE_PRIMARY_DOMAIN}

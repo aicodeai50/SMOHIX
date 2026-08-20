@@ -81,7 +81,7 @@ export function HqMarkOgContent({
   );
 }
 
-/** Vertical lockup for OpenGraph / Twitter — S + smohix.run. */
+/** Vertical lockup for OpenGraph / Twitter — S + Smohix + smohix.run. */
 export function HqLockupOgContent({
   symbolSize = 200,
   stroke = "#f4f4f5",
@@ -101,15 +101,37 @@ export function HqLockupOgContent({
       <div
         style={{
           display: "flex",
-          fontSize: textSize,
-          fontWeight: 600,
-          letterSpacing: "0.04em",
-          fontFamily:
-            'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+          flexDirection: "column",
+          alignItems: "center",
+          gap: Math.round(symbolSize * 0.06),
         }}
       >
-        <span style={{ color: stroke }}>smohix</span>
-        <span style={{ color: accent }}>.run</span>
+        <span
+          style={{
+            display: "flex",
+            fontSize: textSize,
+            fontWeight: 600,
+            letterSpacing: "0.03em",
+            color: stroke,
+            fontFamily:
+              'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+          }}
+        >
+          Smohix
+        </span>
+        <span
+          style={{
+            display: "flex",
+            fontSize: Math.round(textSize * 0.72),
+            fontWeight: 600,
+            letterSpacing: "0.04em",
+            fontFamily:
+              'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+          }}
+        >
+          <span style={{ color: stroke }}>smohix</span>
+          <span style={{ color: accent }}>.run</span>
+        </span>
       </div>
     </div>
   );

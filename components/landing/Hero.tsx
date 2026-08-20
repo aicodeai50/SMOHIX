@@ -25,11 +25,6 @@ export function Hero() {
               {COMPANY_HERO_HEADLINE}
             </h1>
             <p className={`${mHeroLede} mt-5 max-w-xl`}>{COMPANY_HERO_SUBHEADING}</p>
-            <p className={`mt-4 max-w-xl ${mBody}`}>
-              One headquarters at smohix.run — flagship AI, platform operations, assistant
-              productivity, and private deployment workspaces for teams that need clarity without
-              leaving the ecosystem.
-            </p>
 
             <div className={`mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap ${mStaggerGrid}`}>
               <TrackableLink href="/products" event="explore_products">

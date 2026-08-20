@@ -1,7 +1,5 @@
 import type { HTMLAttributes } from "react";
 
-import { HQ_ACCENT_COLOR } from "@/lib/brand/hq/geometry";
-
 import { SmohixHqMark, type SmohixHqMarkTone } from "./SmohixHqMark";
 
 export type SmohixHqWordmarkProps = HTMLAttributes<HTMLDivElement> & {
@@ -9,21 +7,20 @@ export type SmohixHqWordmarkProps = HTMLAttributes<HTMLDivElement> & {
   decorative?: boolean;
   /** Symbol height in px — text scales proportionally. */
   symbolSize?: number;
-  /** Hide ".run" suffix at extremely constrained widths (symbol-only fallback). */
+  /** Force symbol-only (overrides responsive behavior). */
   symbolOnly?: boolean;
-  /** Text size class override. */
   textClassName?: string;
 };
 
-function wordColors(tone: SmohixHqMarkTone): { primary: string; accent: string } {
-  if (tone === "dark") return { primary: "#f4f4f5", accent: HQ_ACCENT_COLOR };
-  if (tone === "mono") return { primary: "currentColor", accent: "currentColor" };
-  return { primary: "#0a0a0a", accent: HQ_ACCENT_COLOR };
+function labelColor(tone: SmohixHqMarkTone): string {
+  if (tone === "dark") return "#f4f4f5";
+  if (tone === "mono") return "currentColor";
+  return "#0a0a0a";
 }
 
 /**
- * Horizontal HQ wordmark — [S symbol] smohix.run
- * Used in header, footer, and navigation branding.
+ * Primary HQ brand wordmark — [S symbol] Smohix
+ * Use in header, footer, and navigation. Do not append ".run" here.
  */
 export function SmohixHqWordmark({
   tone = "dark",
@@ -34,7 +31,6 @@ export function SmohixHqWordmark({
   className = "",
   ...rest
 }: SmohixHqWordmarkProps) {
-  const colors = wordColors(tone);
   const textSize =
     symbolSize >= 26 ? "text-[1.0625rem]" : symbolSize >= 22 ? "text-[0.9375rem]" : "text-sm";
 
@@ -43,23 +39,16 @@ export function SmohixHqWordmark({
       className={`inline-flex min-w-0 items-center gap-2.5 ${className}`.trim()}
       role={decorative ? undefined : "img"}
       aria-hidden={decorative ? true : undefined}
-      aria-label={decorative ? undefined : "Smohix smohix.run"}
+      aria-label={decorative ? undefined : "Smohix"}
       {...rest}
     >
-      <SmohixHqMark
-        tone={tone}
-        micro
-        size={symbolSize}
-        decorative
-        aria-hidden
-      />
+      <SmohixHqMark tone={tone} micro size={symbolSize} decorative aria-hidden />
       {!symbolOnly ? (
         <span
-          className={`whitespace-nowrap font-semibold tracking-tight ${textSize} ${textClassName}`.trim()}
-          style={{ letterSpacing: "0.02em" }}
+          className={`whitespace-nowrap font-semibold tracking-tight max-[279px]:hidden ${textSize} ${textClassName}`.trim()}
+          style={{ letterSpacing: "0.02em", color: labelColor(tone) }}
         >
-          <span style={{ color: colors.primary }}>smohix</span>
-          <span style={{ color: colors.accent }}>.run</span>
+          Smohix
         </span>
       ) : null}
     </div>

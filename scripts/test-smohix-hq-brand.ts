@@ -95,10 +95,19 @@ for (const rel of runtimeFiles) {
   assert(!body.includes('from "./SmohixMark"'), `${rel} must not import legacy SmohixMark`);
 }
 
-// Wordmark shows smohix.run
+// Primary brand wordmark — Smohix (not smohix.run)
 const wordmark = read("components/brand/hq/SmohixHqWordmark.tsx");
-assert(wordmark.includes("smohix"), "wordmark includes smohix");
-assert(wordmark.includes(".run"), "wordmark includes .run suffix");
+assert(wordmark.includes("Smohix"), "wordmark shows Smohix brand");
+assert(!/>\s*\.run\s*</.test(wordmark), "primary wordmark must not render .run suffix");
+assert(!wordmark.includes('color: HQ_ACCENT_COLOR }}>.run'), "primary wordmark must not use domain accent suffix");
+
+// Domain wordmark reserved for explicit domain contexts
+const domainWordmark = read("components/brand/hq/SmohixHqDomainWordmark.tsx");
+assert(domainWordmark.includes(".run"), "domain wordmark includes .run suffix");
+assert(domainWordmark.includes("SmohixHqDomainWordmark"), "domain wordmark component exported");
+
+// Header logo must not render domain suffix
+assert(!/>\s*\.run\s*</.test(brandLogo), "BrandLogo must not render .run domain suffix");
 
 // Preview route remains internal-only
 const previewPage = read("app/brand-preview/page.tsx");

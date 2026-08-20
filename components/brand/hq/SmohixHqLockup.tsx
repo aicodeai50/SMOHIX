@@ -9,18 +9,17 @@ export type SmohixHqLockupProps = HTMLAttributes<HTMLDivElement> & {
   decorative?: boolean;
   /** Symbol width in px. */
   symbolSize?: number;
-  /** Layout direction. */
   direction?: "vertical" | "horizontal";
 };
 
-function wordColors(tone: SmohixHqMarkTone): { primary: string; accent: string } {
-  if (tone === "dark") return { primary: "#f4f4f5", accent: HQ_ACCENT_COLOR };
-  if (tone === "mono") return { primary: "currentColor", accent: "currentColor" };
-  return { primary: "#0a0a0a", accent: HQ_ACCENT_COLOR };
+function colors(tone: SmohixHqMarkTone): { brand: string; accent: string } {
+  if (tone === "dark") return { brand: "#f4f4f5", accent: HQ_ACCENT_COLOR };
+  if (tone === "mono") return { brand: "currentColor", accent: "currentColor" };
+  return { brand: "#0a0a0a", accent: HQ_ACCENT_COLOR };
 }
 
 /**
- * HQ brand lockup — large S symbol + smohix.run
+ * HQ presentation lockup — S symbol + Smohix brand + smohix.run domain
  * Used for OG, social cards, and corporate identity surfaces.
  */
 export function SmohixHqLockup({
@@ -31,26 +30,37 @@ export function SmohixHqLockup({
   className = "",
   ...rest
 }: SmohixHqLockupProps) {
-  const colors = wordColors(tone);
+  const palette = colors(tone);
   const isVertical = direction === "vertical";
-  const textSize = symbolSize >= 100 ? "text-3xl" : symbolSize >= 72 ? "text-2xl" : "text-xl";
+  const brandSize = symbolSize >= 100 ? "text-3xl" : symbolSize >= 72 ? "text-2xl" : "text-xl";
+  const domainSize = symbolSize >= 100 ? "text-xl" : symbolSize >= 72 ? "text-lg" : "text-base";
 
   return (
     <div
-      className={`inline-flex items-center ${isVertical ? "flex-col gap-5" : "flex-row gap-4"} ${className}`.trim()}
+      className={`inline-flex items-center ${isVertical ? "flex-col gap-4" : "flex-row gap-4"} ${className}`.trim()}
       role={decorative ? undefined : "img"}
       aria-hidden={decorative ? true : undefined}
       aria-label={decorative ? undefined : "Smohix smohix.run"}
       {...rest}
     >
       <SmohixHqMark tone={tone} size={symbolSize} decorative />
-      <span
-        className={`whitespace-nowrap font-semibold tracking-tight ${textSize}`}
-        style={{ letterSpacing: "0.04em" }}
+      <div
+        className={`flex flex-col ${isVertical ? "items-center gap-1" : "items-start gap-0.5"}`}
       >
-        <span style={{ color: colors.primary }}>smohix</span>
-        <span style={{ color: colors.accent }}>.run</span>
-      </span>
+        <span
+          className={`whitespace-nowrap font-semibold tracking-tight ${brandSize}`}
+          style={{ letterSpacing: "0.03em", color: palette.brand }}
+        >
+          Smohix
+        </span>
+        <span
+          className={`whitespace-nowrap font-semibold tracking-tight ${domainSize}`}
+          style={{ letterSpacing: "0.04em" }}
+        >
+          <span style={{ color: palette.brand }}>smohix</span>
+          <span style={{ color: palette.accent }}>.run</span>
+        </span>
+      </div>
     </div>
   );
 }

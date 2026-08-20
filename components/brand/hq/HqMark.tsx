@@ -7,7 +7,7 @@ import { SmohixHqMark, renderSmohixHqMarkSvg } from "./SmohixHqMark";
 
 export { SmohixHqMark as HqMark, renderSmohixHqMarkSvg as renderHqMarkSvg } from "./SmohixHqMark";
 export type { SmohixHqMarkTone as HqMarkTone } from "./SmohixHqMark";
-export { SmohixHqWordmark as HqDomainLockup } from "./SmohixHqWordmark";
+export { SmohixHqDomainWordmark as HqDomainLockup } from "./SmohixHqDomainWordmark";
 
 export function HqMicroMark(props: ComponentProps<typeof SmohixHqMark>) {
   return <SmohixHqMark micro {...props} />;
