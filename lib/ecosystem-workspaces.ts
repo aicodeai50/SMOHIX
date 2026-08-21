@@ -16,14 +16,14 @@ export const SMOHIX_WORKSPACE_URLS = {
 
 export type WorkspaceId = keyof typeof SMOHIX_WORKSPACE_URLS;
 
-/** Primary nav — simple top-level IA. */
+/** Primary nav — concise HQ IA (Smohix AI + Sign in live in header actions). */
 export const PRIMARY_SITE_NAV = [
   { href: "/products", label: "Products" },
-  { href: "/solutions", label: "Solutions" },
+  { href: "/platform", label: "Platform" },
   { href: "/developers", label: "Developers" },
-  { href: "/professional-services", label: "Services" },
+  { href: "/enterprise", label: "Enterprise" },
   { href: "/pricing", label: "Pricing" },
-  { href: "/company", label: "Company" },
+  { href: "/pilot", label: "Pilot" },
 ] as const;
 
 /** Flagship products — homepage and products hub lead with these. */
@@ -48,9 +48,10 @@ export const FLAGSHIP_PRODUCTS = [
   {
     id: "smohix-platform",
     name: "Smohix Platform",
-    description: "Operational workspace — organizations, projects, knowledge, agents, and administration.",
-    href: "/products/smohix-platform",
-    workspaceUrl: SMOHIX_WORKSPACE_URLS.platform,
+    description:
+      "Operational workspace — incidents, automation, approvals, and administration after sign-in.",
+    href: "/platform",
+    workspaceUrl: "/auth/sign-in?next=/hub",
     status: "live" as const,
   },
   {
@@ -59,7 +60,7 @@ export const FLAGSHIP_PRODUCTS = [
     description: "Personal intelligent workspace for productivity — distinct from team AI chat.",
     href: "/products/smohix-assistant",
     workspaceUrl: SMOHIX_WORKSPACE_URLS.assistant,
-    status: "live" as const,
+    status: "preview" as const,
   },
   {
     id: "private-ai",
@@ -67,7 +68,7 @@ export const FLAGSHIP_PRODUCTS = [
     description: "Private AI workspace for organizations that need greater control and deployment options.",
     href: "/products/private-ai",
     workspaceUrl: SMOHIX_WORKSPACE_URLS.privateAi,
-    status: "live" as const,
+    status: "preview" as const,
   },
 ] as const;
 

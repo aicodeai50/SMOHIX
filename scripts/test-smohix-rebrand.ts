@@ -49,7 +49,7 @@ assert(!SITE_MARKETING_DESCRIPTION.toLowerCase().includes("zentro"), "marketing 
 assert(HEADER_ACTIONS.openAi.label === "Open Smohix AI", "Open Smohix AI CTA label");
 assert(HEADER_ACTIONS.openAi.href === "https://ai.smohix.run", "Open Smohix AI URL");
 assert(
-  HEADER_NAV.map((n) => n.label).join(",") === "Products,Solutions,Developers,Services,Pricing,Company",
+  HEADER_NAV.map((n) => n.label).join(",") === "Products,Platform,Developers,Enterprise,Pricing,Pilot",
   "primary nav structure",
 );
 

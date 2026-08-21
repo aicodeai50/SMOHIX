@@ -43,7 +43,7 @@ assert(
 // --- Primary navigation IA ---
 const navLabels = HEADER_NAV.map((n) => n.label);
 assert(
-  navLabels.join(",") === "Products,Solutions,Developers,Services,Pricing,Company",
+  navLabels.join(",") === "Products,Platform,Developers,Enterprise,Pricing,Pilot",
   `unexpected HEADER_NAV: ${navLabels.join(", ")}`,
 );
 

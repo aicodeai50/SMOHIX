@@ -1,7 +1,6 @@
 import Link from "next/link";
 
 import { Button } from "@/components/ui/Button";
-import { SMOHIX_WORKSPACE_URLS } from "@/lib/ecosystem-workspaces";
 import { mBody, mCard, mCardTitle, mContainer, mH2, mSection } from "@/lib/marketing-layout";
 
 const PLATFORM_CAPABILITIES = [
@@ -43,31 +42,30 @@ export function PlatformWorkspaceIntro() {
       <section className={`${mSection} border-b border-white/[0.06]`}>
         <div className={mContainer}>
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent/90">
-            Platform workspace
+            Platform
           </p>
           <h1 className="mt-2 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            Your operational workspace after sign-in
+            Platform overview — then Hub when you sign in
           </h1>
           <p className={`mt-4 max-w-2xl ${mBody}`}>
-            Smohix Platform is the authenticated operations layer — incidents, automation,
-            governance, and administration. It lives at{" "}
-            <a
-              href={SMOHIX_WORKSPACE_URLS.platform}
-              className="text-accent hover:underline"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              platform.smohix.run
-            </a>{" "}
-            and through the console on smohix.run — same ecosystem, same identity.
+            <strong className="font-medium text-foreground">/platform</strong> explains Smohix
+            Platform capabilities.{" "}
+            <strong className="font-medium text-foreground">/hub</strong> is the authenticated
+            working console (incidents, automation, governance, settings). Same product — public
+            overview versus signed-in workspace.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link href="/auth/sign-in?next=/hub">
-              <Button size="lg">Sign in to Platform</Button>
+              <Button size="lg">Sign in to Hub</Button>
             </Link>
             <Link href="/products/smohix-platform">
               <Button size="lg" variant="secondary">
                 Product overview
+              </Button>
+            </Link>
+            <Link href="/docs">
+              <Button size="lg" variant="secondary">
+                Documentation
               </Button>
             </Link>
           </div>

@@ -25,7 +25,10 @@ export function HomepageDevelopersSection() {
           <TrackableLink href="/developers" event="developer_quick_start">
             <Button>Developer hub</Button>
           </TrackableLink>
-          <TrackableLink href="/docs/api" event="documentation_link">
+          <TrackableLink href="/docs" event="documentation_link">
+            <Button variant="secondary">Docs</Button>
+          </TrackableLink>
+          <TrackableLink href="/docs/api" event="api_reference_link">
             <Button variant="secondary">API reference</Button>
           </TrackableLink>
         </div>

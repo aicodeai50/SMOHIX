@@ -5,6 +5,7 @@
 
 export type AnalyticsEvent =
   | "explore_products"
+  | "explore_platform"
   | "start_pilot"
   | "contact_submit"
   | "contact_form_started"
@@ -19,6 +20,7 @@ export type AnalyticsEvent =
   | "developer_quick_start"
   | "product_cta"
   | "documentation_link"
+  | "api_reference_link"
   | "services_cta"
   | "pilot_apply"
   | "build_with_smohix"

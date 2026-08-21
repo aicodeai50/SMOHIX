@@ -73,12 +73,21 @@ export function MarketingMobileNav() {
             >
               Sign in
             </Link>
+            <a
+              href="https://ai.smohix.run"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-10 items-center justify-center rounded-lg border border-white/[0.1] px-4 text-sm font-medium text-muted transition-colors hover:text-foreground"
+              onClick={() => setOpen(false)}
+            >
+              Open Smohix AI ↗
+            </a>
             <Link
               href="/hub"
               className="inline-flex h-10 items-center justify-center rounded-lg bg-accent px-4 text-sm font-semibold text-background transition-opacity hover:opacity-90"
               onClick={() => setOpen(false)}
             >
-              Console
+              Open Hub
             </Link>
           </div>
         </div>

@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { AppIcon } from "@/components/icons/AppIcon";
 import { FutureCommandCore } from "@/components/landing/FutureCommandCore";
 import { MarketingReveal } from "@/components/marketing/MarketingReveal";
@@ -27,17 +29,17 @@ export function Hero() {
             <p className={`${mHeroLede} mt-5 max-w-xl`}>{COMPANY_HERO_SUBHEADING}</p>
 
             <div className={`mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap ${mStaggerGrid}`}>
-              <TrackableLink href="/products" event="explore_products">
-                <Button size="lg">Explore products</Button>
+              <TrackableLink href="/platform" event="explore_platform">
+                <Button size="lg">Explore Platform</Button>
               </TrackableLink>
-              <TrackableLink href="/developers" event="developers_hub">
+              <TrackableLink href="/products" event="explore_products">
                 <Button size="lg" variant="secondary">
-                  Developer hub
+                  Explore products
                 </Button>
               </TrackableLink>
-              <TrackableLink href="/auth/sign-in?next=/hub" event="open_console">
+              <TrackableLink href="/pilot" event="start_pilot">
                 <Button size="lg" variant="secondary">
-                  Sign in
+                  Start a pilot
                 </Button>
               </TrackableLink>
             </div>
@@ -56,6 +58,16 @@ export function Hero() {
                 Enterprise solutions
               </li>
             </ul>
+            <p className={`mt-4 ${mBody} text-muted`}>
+              Already onboarded?{" "}
+              <Link
+                href="/auth/sign-in?next=/hub"
+                className="font-medium text-accent hover:underline"
+              >
+                Sign in to Hub
+              </Link>
+              .
+            </p>
           </div>
 
           <div id="preview" className="lg:justify-self-end" aria-hidden={false}>
