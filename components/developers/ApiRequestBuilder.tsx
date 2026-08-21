@@ -9,12 +9,22 @@ import { mBody, mBodySm } from "@/lib/marketing-layout";
 type Format = "curl" | "javascript" | "typescript";
 
 function buildJavaScript(example: (typeof DEVELOPER_EXAMPLES)[number], base: string): string {
-  const path = example.request.match(/smohix\.run(\S+)/)?.[1] ?? "/api/health";
-  return `const res = await fetch("${base}${path}", {
+  const urlMatch = example.request.match(/https?:\/\/[^\s\\]+/);
+  const url = urlMatch?.[0]?.replace(/https:\/\/smohix\.run/g, base) ?? `${base}/api/health`;
+  if (example.usesApiKey) {
+    return `const key = process.env.SMOHIX_API_KEY; // smohix_sk_example_not_a_real_secret
+if (!key) throw new Error("Missing SMOHIX_API_KEY");
+
+const res = await fetch("${url}", {
   headers: {
-    Authorization: "Bearer smohix_sk_your_key_here",
+    Authorization: \`Bearer \${key}\`,
   },
 });
+if (!res.ok) throw new Error(\`HTTP \${res.status}\`);
+const data = await res.json();
+console.log(data);`;
+  }
+  return `const res = await fetch("${url}");
 if (!res.ok) throw new Error(\`HTTP \${res.status}\`);
 const data = await res.json();
 console.log(data);`;

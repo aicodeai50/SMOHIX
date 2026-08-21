@@ -13,6 +13,11 @@ export const metadata: Metadata = {
 
 const CARDS = [
   {
+    title: "Developer platform",
+    body: "API documentation entry, quick start, API keys, and secure integration guidance.",
+    href: "/developers",
+  },
+  {
     title: "How it works",
     body: "Narrated walkthrough of incident handling, approvals, and audit evidence.",
     href: "/docs/film",
@@ -24,7 +29,7 @@ const CARDS = [
   },
   {
     title: "HTTP API reference",
-    body: "Methods, paths, auth — grouped catalog plus OpenAPI sketch for tooling.",
+    body: "Authentication, endpoints, errors, rate limits, webhooks, and security guidance.",
     href: "/docs/api",
   },
   {
@@ -48,14 +53,19 @@ const CARDS = [
     href: "/integrations",
   },
   {
+    title: "Security",
+    body: "Security model and operational expectations for Smohix.",
+    href: "/security",
+  },
+  {
+    title: "Status",
+    body: "Service health and operational status.",
+    href: "/status",
+  },
+  {
     title: "Decision intelligence",
     body: "How risk scoring, approval briefs, and predicted-vs-actual outcomes support safer changes.",
     href: "/auth/sign-in?next=/governance/policies",
-  },
-  {
-    title: "Security model",
-    body: "Runtime guardrails, metadata hardening, auditability requirements, and verification expectations.",
-    href: "/trust",
   },
   {
     title: "Vision & roadmap",

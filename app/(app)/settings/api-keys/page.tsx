@@ -52,8 +52,17 @@ export default async function ApiKeysSettingsPage({
       <>
         <PageHeader
           title="API keys"
-          description="Session mode: keys are stored in server memory per browser session (cookie). They authenticate /api/reasoning and /api/robot until Supabase is connected; then keys live in Postgres."
+          description="Session mode: keys are stored in server memory for this browser session. They authenticate /api/reasoning and /api/robot until Supabase is connected."
         />
+        <p className={`mb-6 max-w-2xl ${appBody}`}>
+          <Link href="/docs/api#api-keys" className="font-medium text-accent hover:underline">
+            API key documentation →
+          </Link>
+          {" · "}
+          <Link href="/developers" className="font-medium text-accent hover:underline">
+            Developer platform →
+          </Link>
+        </p>
         {returnHref ? (
           <p className={`mb-4 ${appBody}`}>
             <Link href={returnHref} className="font-medium text-accent hover:underline">
@@ -130,8 +139,17 @@ export default async function ApiKeysSettingsPage({
     <>
       <PageHeader
         title="API keys"
-        description="Authenticate server-side jobs and tools to the same-origin reasoning and robot proxies without a browser session."
+        description="Authenticate server-side jobs to the same-origin reasoning and robot proxies. Secrets are shown once at creation; only the key prefix is retained afterward."
       />
+      <p className={`mb-6 max-w-2xl ${appBody}`}>
+        <Link href="/docs/api#api-keys" className="font-medium text-accent hover:underline">
+          API key documentation →
+        </Link>
+        {" · "}
+        <Link href="/developers" className="font-medium text-accent hover:underline">
+          Developer platform →
+        </Link>
+      </p>
       {returnHref ? (
         <p className={`mb-4 ${appBody}`}>
           <Link href={returnHref} className="font-medium text-accent hover:underline">

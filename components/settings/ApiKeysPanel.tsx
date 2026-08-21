@@ -118,20 +118,36 @@ export function ApiKeysPanel({
       {sessionScoped ? (
         <p className={`rounded-lg border border-cyan-500/25 bg-cyan-500/10 px-4 py-3 text-cyan-100/90 ${appBody}`}>
           <span className="font-medium text-foreground/90">Session-scoped keys.</span> Stored in
-          server memory for your <span className="font-mono">smohix_dev_tid</span> cookie and used
-          to authenticate <span className="font-mono">/api/reasoning/*</span> and{" "}
-          <span className="font-mono">/api/robot/*</span> without Supabase. They do not survive
-          deploy or cold start; connect Supabase for durable keys.
+          server memory for this browser session and used to authenticate{" "}
+          <span className="font-mono">/api/reasoning/*</span> and{" "}
+          <span className="font-mono">/api/robot/*</span>. They do not survive deploy or cold start;
+          connect Supabase for durable keys.
         </p>
       ) : !serviceRoleConfigured ? (
         <p className={`rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-amber-100/90 ${appBody}`}>
-          Set <span className="font-mono">SUPABASE_SERVICE_ROLE_KEY</span> on the server so
-          API keys can authenticate proxy requests (
-          <span className="font-mono">/api/reasoning</span>,{" "}
-          <span className="font-mono">/api/robot</span>). You can still create keys here; they
-          will work for proxy calls once the service role is configured.
+          Server configuration still needs a service role so API keys can authenticate proxy
+          requests (<span className="font-mono">/api/reasoning</span>,{" "}
+          <span className="font-mono">/api/robot</span>). You can create keys now; they work for
+          proxy calls once that configuration is complete.
         </p>
       ) : null}
+
+      <div className={`rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3 ${appMeta}`}>
+        <p className="font-medium text-foreground/90">Security guidance</p>
+        <ul className="mt-2 list-inside list-disc space-y-1">
+          <li>Store secrets in environment variables or a secret manager — never in Git.</li>
+          <li>The full key is shown only once at creation; we store a hash and prefix afterward.</li>
+          <li>Revoke immediately if a key may be exposed, then mint a replacement.</li>
+          <li>
+            API keys authenticate connector proxies only. Alert ingest and console routes use other
+            credentials — see{" "}
+            <a href="/docs/api#api-keys" className="font-medium text-accent hover:underline">
+              API documentation
+            </a>
+            .
+          </li>
+        </ul>
+      </div>
 
       {err ? (
         <p className={`rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-red-200/90 ${appBody}`}>
@@ -208,7 +224,7 @@ export function ApiKeysPanel({
           onClick={() => void generate()}
           className={`h-10 shrink-0 rounded-lg bg-accent px-4 font-medium text-background disabled:opacity-50 ${appBody}`}
         >
-          {busy ? "Working…" : "Generate API key"}
+          {busy ? "Working…" : "Create API key"}
         </button>
       </div>
 
@@ -230,10 +246,10 @@ export function ApiKeysPanel({
           <div className="border-t border-border px-4 py-8 sm:px-6">
             <ConsoleEmptyState
               title="No API keys yet"
-              description="Keys authenticate the same-origin reasoning and robot proxies from scripts, CI, or external tools. Use a label per integration so you can revoke one without touching the others."
+              description="Create an API key to authenticate server-side scripts against the same-origin reasoning and robot proxies. Label each key by integration so you can revoke one safely."
               ctas={[
                 { href: "#api-key-create", label: "Create API key" },
-                { href: "/docs/api", label: "Scopes & endpoints", variant: "secondary" },
+                { href: "/docs/api#api-keys", label: "API key documentation", variant: "secondary" },
               ]}
               footnote={
                 <p>
@@ -244,8 +260,8 @@ export function ApiKeysPanel({
                   or header{" "}
                   <span className="font-mono text-foreground/80">X-Smohix-Api-Key</span> on
                   requests to <span className="font-mono">/api/reasoning/…</span> and{" "}
-                  <span className="font-mono">/api/robot/…</span>. Other REST routes use your
-                  session or specialized tokens (see API docs).
+                  <span className="font-mono">/api/robot/…</span>. Keys do not use fine-grained
+                  scopes today. Other routes use your session or specialized tokens.
                 </p>
               }
             />
