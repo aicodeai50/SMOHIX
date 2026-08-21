@@ -61,11 +61,11 @@ export default async function HubPage() {
   const signedIn = Boolean(displayName);
   const title = signedIn && firstName ? `Welcome back, ${firstName}` : "Welcome to Smohix";
   const guidedFlow = [
-    "Alert opens incident",
-    "System proposes guarded action",
+    "Service or alert opens incident",
+    "Incident links runbooks and dry-runs",
     "Human approves high-risk change",
-    "Dry-run executes with evidence",
-    "Audit timeline captures proof",
+    "Guarded execution records evidence",
+    "Audit and Copilot stay on the same thread",
   ];
 
   const ambient = await loadConsoleAmbientSnapshot();

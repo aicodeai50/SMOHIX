@@ -35,6 +35,12 @@ import { listOrgMembers, type OrgMemberRow } from "@/lib/org/data";
 import { canManageMembers } from "@/lib/org/roles";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import {
+  approvalsHrefForIncident,
+  automationsHrefForIncident,
+  copilotHrefForIncident,
+  servicesHrefForService,
+} from "@/lib/workflow/incident-links";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -99,7 +105,7 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
 
   const automationHref =
     source === "database" && hasSupabaseAuth()
-      ? `/automations?incident=${encodeURIComponent(id)}`
+      ? automationsHrefForIncident(id)
       : "/automations";
 
   const robotConnectorConfigured = isRobotBackendConfigured();
@@ -164,7 +170,91 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
         description={`${row.id} · ${row.severity} · ${row.status} · updated ${row.updated}${
           row.serviceName ? ` · ${row.serviceName}` : ""
         }${row.ownerHint ? ` · ${row.ownerHint}` : ""}`}
+        actions={
+          source === "database" && hasSupabaseAuth() ? (
+            <Link
+              href={copilotHrefForIncident(row.id)}
+              className={`inline-flex h-10 items-center rounded-xl border border-accent/40 bg-accent/15 px-4 font-semibold text-accent hover:bg-accent/20 ${appBody}`}
+            >
+              Ask Copilot about this incident
+            </Link>
+          ) : null
+        }
       />
+      {source === "database" ? (
+        <nav
+          className="smohix-glass mb-6 rounded-2xl px-4 py-3 md:px-5"
+          aria-label="Incident next actions"
+        >
+          <p className={appOverline}>Next actions</p>
+          <p className={`mt-1 text-muted ${appMeta}`}>
+            What is happening, and what should we do next — without leaving this incident.
+          </p>
+          <ul className="mt-3 flex flex-wrap gap-2">
+            {row.serviceId ? (
+              <li>
+                <Link
+                  href={servicesHrefForService(row.serviceId)}
+                  className={`inline-flex rounded-lg border border-white/[0.1] px-3 py-1.5 font-medium text-muted transition-colors hover:border-accent/35 hover:text-foreground ${appMeta}`}
+                >
+                  Open service
+                </Link>
+              </li>
+            ) : null}
+            {row.runbookSlug ? (
+              <li>
+                <Link
+                  href={`/runbooks/${row.runbookSlug}`}
+                  className={`inline-flex rounded-lg border border-white/[0.1] px-3 py-1.5 font-medium text-muted transition-colors hover:border-accent/35 hover:text-foreground ${appMeta}`}
+                >
+                  Open runbook
+                </Link>
+              </li>
+            ) : (
+              <li>
+                <Link
+                  href="/runbooks"
+                  className={`inline-flex rounded-lg border border-white/[0.1] px-3 py-1.5 font-medium text-muted transition-colors hover:border-accent/35 hover:text-foreground ${appMeta}`}
+                >
+                  Browse runbooks
+                </Link>
+              </li>
+            )}
+            <li>
+              <Link
+                href={automationsHrefForIncident(row.id)}
+                className={`inline-flex rounded-lg border border-white/[0.1] px-3 py-1.5 font-medium text-muted transition-colors hover:border-accent/35 hover:text-foreground ${appMeta}`}
+              >
+                Dry-run automation
+              </Link>
+            </li>
+            <li>
+              <Link
+                href={approvalsHrefForIncident(row.id)}
+                className={`inline-flex rounded-lg border border-white/[0.1] px-3 py-1.5 font-medium text-muted transition-colors hover:border-accent/35 hover:text-foreground ${appMeta}`}
+              >
+                Request approval
+              </Link>
+            </li>
+            <li>
+              <Link
+                href={copilotHrefForIncident(row.id)}
+                className={`inline-flex rounded-lg border border-accent/35 bg-accent/10 px-3 py-1.5 font-medium text-accent transition-colors hover:bg-accent/20 ${appMeta}`}
+              >
+                Ask Copilot
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/audit"
+                className={`inline-flex rounded-lg border border-white/[0.1] px-3 py-1.5 font-medium text-muted transition-colors hover:border-accent/35 hover:text-foreground ${appMeta}`}
+              >
+                Audit log
+              </Link>
+            </li>
+          </ul>
+        </nav>
+      ) : null}
       {scenarioSeeded ? (
         <p className={`mb-4 rounded-xl border border-emerald-400/25 bg-emerald-500/[0.08] px-4 py-3 text-emerald-100/90 ${appBody}`}>
           Guided scenario ready: incident created, approval queued, and dry-run evidence attached.
@@ -234,10 +324,10 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
               <input type="hidden" name="id" value={row.id} />
               <div className="flex flex-wrap gap-2">
                 <Link
-                  href={`/copilot?incident=${encodeURIComponent(row.id)}`}
+                  href={copilotHrefForIncident(row.id)}
                   className={`inline-flex h-10 items-center rounded-xl border border-accent/40 bg-accent/15 px-5 font-semibold text-accent hover:bg-accent/20 ${appBody}`}
                 >
-                  Open scoped Copilot
+                  Ask Copilot about this incident
                 </Link>
                 <button
                   type="submit"
@@ -335,7 +425,10 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
       {source === "database" && row.serviceId ? (
         <p className={`mb-4 text-muted ${appBody}`}>
           Linked service:{" "}
-          <Link href="/services" className="font-medium text-accent hover:underline">
+          <Link
+            href={servicesHrefForService(row.serviceId)}
+            className="font-medium text-accent hover:underline"
+          >
             {row.serviceName ?? "Open catalog"}
           </Link>
         </p>

@@ -69,13 +69,14 @@ export default async function IncidentsPage() {
           title="No incidents yet"
           description={
             source === "database"
-              ? "Create your first incident to track response, or wire HTTP ingest so alerts open rows automatically."
+              ? "Create an incident from Services when burn looks wrong, or open one manually — then move through automations, approvals, runbooks, Copilot, and audit from the incident page."
               : "Session mode keeps incidents in this browser only. Sign in with Supabase for a shared, persistent queue."
           }
           ctas={[
             { href: "/incidents/new", label: "Create incident" },
             ...(source === "database"
               ? ([
+                  { href: "/services", label: "Start from a service", variant: "secondary" as const },
                   { href: "/settings", label: "Alert ingest & tokens", variant: "secondary" as const },
                 ] as const)
               : ([

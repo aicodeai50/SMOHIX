@@ -182,6 +182,7 @@ export async function createApprovalRequest(input: {
   requestedBy: string;
   policyHint: string;
   orgId?: string | null;
+  incidentId?: string | null;
 }): Promise<{ ok: true; id: string } | { ok: false; reason: string }> {
   const action = input.actionLabel.trim();
   if (!action) {
@@ -190,10 +191,13 @@ export async function createApprovalRequest(input: {
 
   const rb = input.requestedBy.trim();
   const pol = input.policyHint.trim();
-  const brief = buildDecisionBrief({
+  const briefBase = buildDecisionBrief({
     actionLabel: action,
     policyHint: pol,
   });
+  const brief = input.incidentId
+    ? { ...briefBase, incident_id: input.incidentId.trim().toLowerCase() }
+    : briefBase;
 
   if (!hasSupabaseAuth()) {
     const tid = input.devTenantId;

@@ -26,6 +26,14 @@ const INCIDENT_AUDIT_TYPES = [
   "incident.comment_added",
   "incident.handoff_added",
   "incident.copilot_context_added",
+  "automation.dry_run",
+  "automation.executed",
+  "automation.execution_blocked_slo",
+  "automation.execution_blocked_risk",
+  "automation.execution_blocked_policy",
+  "approval.requested",
+  "approval.approved",
+  "approval.denied",
 ] as const;
 
 /** Timeline for a DB-backed incident from `audit_log`. */
@@ -98,6 +106,45 @@ export async function listIncidentTimelineFromAudit(
         out.push({
           at: formatUtc(String(row.created_at)),
           label: "Copilot context snapshot recorded",
+        });
+      } else if (et === "automation.dry_run") {
+        const playbook =
+          typeof details.playbook_id === "string" ? details.playbook_id : "playbook";
+        const ok = details.ok === true || details.ok === "true";
+        out.push({
+          at: formatUtc(String(row.created_at)),
+          label: `Automation dry-run ${ok ? "succeeded" : "failed"} (${playbook})`,
+        });
+      } else if (et === "automation.executed") {
+        const playbook =
+          typeof details.playbook_id === "string" ? details.playbook_id : "playbook";
+        out.push({
+          at: formatUtc(String(row.created_at)),
+          label: `Automation executed (${playbook})`,
+        });
+      } else if (
+        et === "automation.execution_blocked_slo" ||
+        et === "automation.execution_blocked_risk" ||
+        et === "automation.execution_blocked_policy"
+      ) {
+        out.push({
+          at: formatUtc(String(row.created_at)),
+          label: "Automation blocked by guardrails",
+        });
+      } else if (et === "approval.requested") {
+        out.push({
+          at: formatUtc(String(row.created_at)),
+          label: "Approval requested",
+        });
+      } else if (et === "approval.approved") {
+        out.push({
+          at: formatUtc(String(row.created_at)),
+          label: "Approval approved",
+        });
+      } else if (et === "approval.denied") {
+        out.push({
+          at: formatUtc(String(row.created_at)),
+          label: "Approval denied",
         });
       }
     }

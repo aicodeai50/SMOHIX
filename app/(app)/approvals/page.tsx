@@ -18,6 +18,11 @@ import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { appBody, appLabel, appMeta, appOverline, appPanelTitle } from "@/lib/app-typography";
 import { loadConsoleAmbientSnapshot } from "@/lib/console/load-ambient-status";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import {
+  extractIncidentIdFromApprovalContext,
+  incidentHref,
+  isIncidentUuid,
+} from "@/lib/workflow/incident-links";
 
 export const metadata: Metadata = {
   title: "Approvals",
@@ -27,7 +32,12 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 type Props = {
-  searchParams: Promise<{ error?: string; message?: string; created?: string }>;
+  searchParams: Promise<{
+    error?: string;
+    message?: string;
+    created?: string;
+    incident?: string;
+  }>;
 };
 
 export default async function ApprovalsPage({ searchParams }: Props) {
@@ -35,6 +45,8 @@ export default async function ApprovalsPage({ searchParams }: Props) {
   const errQ = typeof sp.error === "string" ? sp.error : undefined;
   const msgQ = typeof sp.message === "string" ? sp.message : undefined;
   const createdOk = sp.created === "1";
+  const incidentParam = typeof sp.incident === "string" ? sp.incident.trim() : "";
+  const linkedIncidentId = isIncidentUuid(incidentParam) ? incidentParam.toLowerCase() : null;
 
   let userId = "";
   let devTenantId: string | null = null;
@@ -81,6 +93,18 @@ export default async function ApprovalsPage({ searchParams }: Props) {
         description="Human approval controls for high-impact changes. Submit requests, decide pending items, and track completed outcomes."
       />
       <ConsoleAmbientBanner snapshot={ambient} />
+      {linkedIncidentId ? (
+        <p className={`mb-4 rounded-xl border border-accent/25 bg-accent/10 px-4 py-3 text-accent ${appBody}`}>
+          Creating approval in context of incident{" "}
+          <Link
+            href={incidentHref(linkedIncidentId)}
+            className="font-semibold underline-offset-2 hover:underline"
+          >
+            {linkedIncidentId}
+          </Link>
+          . The request will keep a soft link back to that incident.
+        </p>
+      ) : null}
       {orgContext?.orgId ? (
         <p className={`-mt-4 mb-4 ${appMeta}`}>
           Organization: <span className="text-foreground/90">{orgContext.orgName}</span>
@@ -165,6 +189,9 @@ export default async function ApprovalsPage({ searchParams }: Props) {
           Describe the change. Optional fields help reviewers apply the right policy.
         </p>
         <form action={createApprovalRequestAction} className="mt-4 max-w-2xl space-y-4">
+          {linkedIncidentId ? (
+            <input type="hidden" name="incident_id" value={linkedIncidentId} />
+          ) : null}
           <div>
             <label htmlFor="action_label" className={`mb-1.5 block ${appLabel}`}>
               Action <span className="text-red-400/90">*</span>
@@ -175,6 +202,11 @@ export default async function ApprovalsPage({ searchParams }: Props) {
               required
               maxLength={500}
               placeholder="e.g. Promote canary to production — svc/checkout"
+              defaultValue={
+                linkedIncidentId
+                  ? `Guarded change for incident ${linkedIncidentId}`
+                  : undefined
+              }
               className={`h-11 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 text-foreground outline-none ring-accent/25 transition-[border-color,box-shadow] focus:border-accent/40 focus:ring-2 ${appBody}`}
             />
           </div>
@@ -218,8 +250,8 @@ export default async function ApprovalsPage({ searchParams }: Props) {
           {pending.length === 0 ? (
             <div className="mt-4">
               <ConsoleEmptyState
-                title="Nothing waiting for a decision"
-                description="Submit a request below or enqueue from automation when your deployment supports it."
+                title="Nothing awaiting approval"
+                description="When operators request a high-impact change, pending items appear here for human decision."
                 ctas={[{ href: "#action_label", label: "New request", variant: "secondary" }]}
               />
             </div>
@@ -240,6 +272,24 @@ export default async function ApprovalsPage({ searchParams }: Props) {
                   <p className={`mt-1 ${appMeta}`}>
                     {p.requestedBy} · {p.policy}
                   </p>
+                  {(() => {
+                    const incidentId = extractIncidentIdFromApprovalContext({
+                      policyHint: p.policy,
+                      actionLabel: p.action,
+                    });
+                    if (!incidentId) return null;
+                    return (
+                      <p className={`mt-2 ${appMeta}`}>
+                        Linked incident:{" "}
+                        <Link
+                          href={incidentHref(incidentId)}
+                          className="font-medium text-accent hover:underline"
+                        >
+                          Open incident →
+                        </Link>
+                      </p>
+                    );
+                  })()}
                   <div className="mt-3 rounded-lg border border-white/[0.08] bg-white/[0.02] p-3">
                     <div className="flex flex-wrap gap-2">
                       <span className={`rounded-full border border-white/[0.12] px-2 py-0.5 ${appMeta}`}>
@@ -346,6 +396,23 @@ export default async function ApprovalsPage({ searchParams }: Props) {
                   Risk {r.decisionBrief.riskScore} · Confidence {r.decisionBrief.confidenceScore} ·{" "}
                   {r.decisionBrief.blastRadius}
                 </p>
+                {(() => {
+                  const incidentId = extractIncidentIdFromApprovalContext({
+                    policyHint: r.policy,
+                    actionLabel: r.action,
+                  });
+                  if (!incidentId) return null;
+                  return (
+                    <p className={`mt-1 ${appMeta}`}>
+                      <Link
+                        href={incidentHref(incidentId)}
+                        className="font-medium text-accent hover:underline"
+                      >
+                        Open linked incident →
+                      </Link>
+                    </p>
+                  );
+                })()}
                 </li>
               ))}
             </ul>

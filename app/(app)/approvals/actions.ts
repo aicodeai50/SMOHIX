@@ -15,17 +15,29 @@ import { canCreateApprovalRequest, canDecideApproval } from "@/lib/org/roles";
 import { getSiteUrl } from "@/lib/site";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import {
+  attachIncidentTokenToPolicyHint,
+  extractIncidentIdFromApprovalContext,
+  isIncidentUuid,
+  withIncidentIdOnBrief,
+} from "@/lib/workflow/incident-links";
 
 export async function createApprovalRequestAction(formData: FormData) {
   const actionLabel = String(formData.get("action_label") ?? "");
   const requestedBy = String(formData.get("requested_by") ?? "");
-  const policyHint = String(formData.get("policy_hint") ?? "");
+  const policyHintRaw = String(formData.get("policy_hint") ?? "");
+  const incidentRaw = String(formData.get("incident_id") ?? "").trim();
+  const incidentId = isIncidentUuid(incidentRaw) ? incidentRaw.toLowerCase() : null;
+  const policyHint = incidentId
+    ? attachIncidentTokenToPolicyHint(policyHintRaw, incidentId)
+    : policyHintRaw;
   const policy = evaluateApprovalPolicy(actionLabel, policyHint);
 
   if (policy.blockedReason) {
-    redirect(
-      `/approvals?error=create&message=${encodeURIComponent(policy.blockedReason)}`,
-    );
+    const bounce = incidentId
+      ? `/approvals?incident=${encodeURIComponent(incidentId)}&error=create&message=${encodeURIComponent(policy.blockedReason)}`
+      : `/approvals?error=create&message=${encodeURIComponent(policy.blockedReason)}`;
+    redirect(bounce);
   }
 
   let userId = "";
@@ -60,21 +72,28 @@ export async function createApprovalRequestAction(formData: FormData) {
     devTenantId,
     actionLabel,
     requestedBy,
-    policyHint: policy.normalizedPolicyHint,
+    policyHint: incidentId
+      ? attachIncidentTokenToPolicyHint(policy.normalizedPolicyHint, incidentId)
+      : policy.normalizedPolicyHint,
     orgId,
+    incidentId,
   });
 
   if (!result.ok) {
-    redirect(
-      `/approvals?error=create&message=${encodeURIComponent(result.reason)}`,
-    );
+    const bounce = incidentId
+      ? `/approvals?incident=${encodeURIComponent(incidentId)}&error=create&message=${encodeURIComponent(result.reason)}`
+      : `/approvals?error=create&message=${encodeURIComponent(result.reason)}`;
+    redirect(bounce);
   }
 
   if (auditUserId) {
-    const brief = buildDecisionBrief({
-      actionLabel: actionLabel.trim(),
-      policyHint: policy.normalizedPolicyHint,
-    });
+    const brief = withIncidentIdOnBrief(
+      buildDecisionBrief({
+        actionLabel: actionLabel.trim(),
+        policyHint: policy.normalizedPolicyHint,
+      }) as unknown as Record<string, unknown>,
+      incidentId,
+    );
     void appendAuditEvent({
       event_type: "approval.requested",
       user_id: auditUserId,
@@ -84,12 +103,17 @@ export async function createApprovalRequestAction(formData: FormData) {
         action_label: actionLabel.trim().slice(0, 200),
         decision_brief: brief,
         org_id: orgId,
+        ...(incidentId ? { incident_id: incidentId } : {}),
       },
     });
   }
 
   revalidatePath("/approvals");
   revalidatePath("/overview");
+  if (incidentId) {
+    revalidatePath(`/incidents/${incidentId}`);
+    redirect(`/approvals?created=1&incident=${encodeURIComponent(incidentId)}`);
+  }
   redirect("/approvals?created=1");
 }
 
@@ -140,17 +164,26 @@ export async function approvalDecisionAction(formData: FormData) {
     redirect("/approvals?error=not_found");
   }
 
-  const brief = buildDecisionBrief({
+  const briefBase = buildDecisionBrief({
     actionLabel: String(existing.action_label ?? "approval"),
     policyHint: String(existing.policy_hint ?? ""),
   });
+  const linkedIncidentId = extractIncidentIdFromApprovalContext({
+    policyHint: String(existing.policy_hint ?? ""),
+    actionLabel: String(existing.action_label ?? ""),
+    decisionBriefJson: existing.decision_brief_json,
+  });
+  const brief = withIncidentIdOnBrief(
+    briefBase as unknown as Record<string, unknown>,
+    linkedIncidentId,
+  );
 
   const requesterId =
     (existing.requester_id as string | null) ?? (existing.user_id as string | null);
   const orgId = existing.org_id as string | null;
 
   if (orgId && orgContext.orgId === orgId && orgContext.role) {
-    if (!canDecideApproval(orgContext.role, brief.riskScore)) {
+    if (!canDecideApproval(orgContext.role, briefBase.riskScore)) {
       redirect("/approvals?error=rbac&message=Your+org+role+cannot+decide+this+request.");
     }
     if (requesterId === user.id) {
@@ -186,7 +219,13 @@ export async function approvalDecisionAction(formData: FormData) {
     event_type: decision === "approved" ? "approval.approved" : "approval.denied",
     user_id: user.id,
     org_id: orgId,
-    details: { approval_id: id, decision_brief: brief, org_id: orgId, decided_by: user.id },
+    details: {
+      approval_id: id,
+      decision_brief: brief,
+      org_id: orgId,
+      decided_by: user.id,
+      ...(linkedIncidentId ? { incident_id: linkedIncidentId } : {}),
+    },
   });
   const approvalUrl = `${getSiteUrl()}/approvals`;
   void sendSlackNotificationWithAudit({
@@ -200,4 +239,7 @@ export async function approvalDecisionAction(formData: FormData) {
 
   revalidatePath("/approvals");
   revalidatePath("/overview");
+  if (linkedIncidentId) {
+    revalidatePath(`/incidents/${linkedIncidentId}`);
+  }
 }

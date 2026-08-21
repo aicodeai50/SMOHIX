@@ -13,6 +13,7 @@ import { loadConsoleAmbientSnapshot } from "@/lib/console/load-ambient-status";
 import { listServiceDependencyGraphForUser } from "@/lib/services/dependencies";
 import { getOrgContextForUser } from "@/lib/org/context";
 import { listServicesForUser } from "@/lib/services/data";
+import { newIncidentHrefForService } from "@/lib/workflow/incident-links";
 import {
   getErrorBudgetOverviewSummary,
   listLatestBurnStatesForUser,
@@ -298,9 +299,10 @@ export default async function ServicesPage({
               <div className="mt-4">
                 <ConsoleEmptyState
                   title="No services yet"
-                  description="Add a service to track ownership, health, and incident linkage. Monitoring can create incidents automatically once integrations are connected."
+                  description="Add a service to track ownership, health, and incident linkage. From each service you can open a linked incident when something needs response."
                   ctas={[
                     { href: "#svc-name", label: "Add service" },
+                    { href: "/incidents", label: "Open incidents", variant: "secondary" },
                     { href: "/settings/connectors", label: "Connect monitoring", variant: "secondary" },
                   ]}
                 />
@@ -341,7 +343,31 @@ export default async function ServicesPage({
                         {r.ownerHint ? (
                           <p className={appMeta}>{r.ownerHint}</p>
                         ) : null}
-                        <p className={`mt-1 font-mono text-accent/80 ${appMeta}`}>{r.id}</p>
+                        <p className={`mt-1 font-mono text-accent/80 ${appMeta}`} id={`service-${r.id}`}>
+                          {r.id}
+                        </p>
+                        <div className="mt-2 flex flex-wrap gap-3">
+                          <Link
+                            href={newIncidentHrefForService(r.id, {
+                              severity:
+                                (latestBurnStates.get(r.id) ?? "healthy") === "critical"
+                                  ? "critical"
+                                  : (latestBurnStates.get(r.id) ?? "healthy") === "warning"
+                                    ? "high"
+                                    : "medium",
+                              title: `Incident: ${r.name}`,
+                            })}
+                            className={`font-medium text-accent hover:underline ${appMeta}`}
+                          >
+                            Create incident
+                          </Link>
+                          <Link
+                            href="/automations"
+                            className={`font-medium text-muted hover:text-accent hover:underline ${appMeta}`}
+                          >
+                            Automations
+                          </Link>
+                        </div>
                       </div>
                       <form action={deleteServiceAction}>
                         <input type="hidden" name="id" value={r.id} />
