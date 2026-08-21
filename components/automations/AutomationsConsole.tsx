@@ -235,18 +235,16 @@ export function AutomationsConsole({
       <GuardedAutomationIdentity />
       {linkedIncidentId && auditTrailOnDryRun ? (
         <p className={`rounded-xl border border-accent/25 bg-accent/[0.06] px-4 py-3 text-foreground/90 ${appMeta}`}>
-          <span className="font-medium text-foreground">Incident context.</span> Dry-runs started
-          here will include{" "}
-          <span className="font-mono text-accent/95">{linkedIncidentId}</span> in your audit payload
-          so timelines stay traceable.{" "}
+          <span className="font-medium text-foreground">Working on a linked incident.</span> Dry-runs
+          and evidence from this console stay attached to that incident timeline.{" "}
           <Link href={`/incidents/${encodeURIComponent(linkedIncidentId)}`} className="text-accent hover:underline">
             Back to incident →
           </Link>
         </p>
       ) : linkedIncidentId && !auditTrailOnDryRun ? (
         <p className={`rounded-xl border border-amber-400/20 bg-amber-500/[0.06] px-4 py-3 ${appMeta}`}>
-          Incident id is present in the URL, but linking dry-runs to audit requires signing in with
-          a workspace where automations are enabled.{" "}
+          An incident is selected in the URL, but linking dry-runs to the audit trail requires signing
+          in with automations enabled.{" "}
           <Link
             href={`/auth/sign-in?next=${encodeURIComponent(`/automations?incident=${linkedIncidentId}`)}`}
             className="font-medium text-accent hover:underline"

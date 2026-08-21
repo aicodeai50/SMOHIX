@@ -157,11 +157,16 @@ export default async function HubPage() {
         </ol>
       </section>
       <p className={`mt-6 max-w-2xl text-pretty ${appBody} text-muted`}>
-        Automations, runbooks, approvals, audit, connectors, and the focused module rail stay above.{" "}
+        Start from{" "}
+        <Link href="/services" className="font-medium text-accent hover:underline">
+          Services
+        </Link>{" "}
+        when something needs response, then move through incidents, runbooks, automations, approvals,
+        Copilot, and audit.{" "}
         <Link href="/vision" className="font-medium text-accent hover:underline">
           Vision & roadmap
         </Link>{" "}
-        describes where the product is headed — from serious ops console to long-horizon autonomy.
+        describes where the product is headed.
       </p>
     </>
   );

@@ -6,8 +6,14 @@
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
-const INCIDENT_TOKEN_RE =
-  /(?:^|[\s|])incident:([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})(?:$|[\s|])/i;
+const UUID_CAPTURE =
+  "([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})";
+
+const INCIDENT_TOKEN_RE = new RegExp(
+  `(?:^|[\\s|])incident:${UUID_CAPTURE}(?:$|[\\s|])`,
+  "i",
+);
+const BARE_INCIDENT_RE = new RegExp(`(?:for\\s+)?incident\\s+${UUID_CAPTURE}`, "i");
 
 export function isIncidentUuid(value: string | null | undefined): boolean {
   return Boolean(value && UUID_RE.test(value.trim()));
@@ -24,10 +30,30 @@ export function extractIncidentIdFromApprovalContext(input: {
 
   for (const raw of [input.policyHint, input.actionLabel]) {
     if (!raw) continue;
-    const match = raw.match(INCIDENT_TOKEN_RE);
-    if (match?.[1] && isIncidentUuid(match[1])) return match[1].toLowerCase();
+    const token = raw.match(INCIDENT_TOKEN_RE);
+    if (token?.[1] && isIncidentUuid(token[1])) return token[1].toLowerCase();
+    const bare = raw.match(BARE_INCIDENT_RE);
+    if (bare?.[1] && isIncidentUuid(bare[1])) return bare[1].toLowerCase();
   }
   return null;
+}
+
+/** Operator-facing policy note — strips machine tokens (incident:, risk:, requires:). */
+export function formatPolicyHintForDisplay(policyHint: string | null | undefined): string {
+  if (!policyHint) return "—";
+  const cleaned = policyHint
+    .split("|")
+    .map((part) => part.trim())
+    .filter((part) => {
+      if (!part) return false;
+      const lower = part.toLowerCase();
+      if (lower.startsWith("incident:")) return false;
+      if (lower.startsWith("risk:")) return false;
+      if (lower.startsWith("requires:")) return false;
+      return true;
+    })
+    .join(" · ");
+  return cleaned || "Standard review";
 }
 
 function extractFromBrief(brief: unknown): string | null {

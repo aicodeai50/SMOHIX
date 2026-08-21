@@ -7,6 +7,7 @@ import { appBody, appLabel, appMeta } from "@/lib/app-typography";
 import { listRunbooks } from "@/lib/runbooks/catalog";
 import { getOrgContextForUser } from "@/lib/org/context";
 import { listServicesForUser } from "@/lib/services/data";
+import { servicesHrefForService } from "@/lib/workflow/incident-links";
 import { createIncidentAction } from "../actions";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -44,6 +45,9 @@ export default async function NewIncidentPage({
   const { error, service_id, severity, title, owner_hint } = await searchParams;
   const preselectedServiceId =
     typeof service_id === "string" && services.some((s) => s.id === service_id) ? service_id : "";
+  const preselectedService = preselectedServiceId
+    ? services.find((s) => s.id === preselectedServiceId) ?? null
+    : null;
   const preselectedSeverity =
     severity === "low" || severity === "medium" || severity === "high" || severity === "critical"
       ? severity
@@ -62,6 +66,19 @@ export default async function NewIncidentPage({
             : "Create an incident for this workspace session. Sign in to a configured workspace for persistent, shared incident history."
         }
       />
+      {preselectedService ? (
+        <p className={`mb-4 rounded-xl border border-accent/25 bg-accent/10 px-4 py-3 text-accent ${appBody}`}>
+          Creating from service{" "}
+          <span className="font-semibold text-foreground">{preselectedService.name}</span>. You can
+          change the service below if needed.{" "}
+          <Link
+            href={servicesHrefForService(preselectedService.id)}
+            className="font-semibold underline-offset-2 hover:underline"
+          >
+            Back to service →
+          </Link>
+        </p>
+      ) : null}
       {error ? (
         <p
           className={`mb-4 rounded-lg border border-red-500/25 bg-red-500/10 px-3 py-2 text-red-200/90 ${appBody}`}
@@ -184,10 +201,10 @@ export default async function NewIncidentPage({
             Create incident
           </button>
           <Link
-            href="/incidents"
+            href={preselectedService ? servicesHrefForService(preselectedService.id) : "/incidents"}
             className={`inline-flex h-11 items-center justify-center rounded-lg border border-border px-5 text-muted hover:text-foreground ${appBody}`}
           >
-            Cancel
+            {preselectedService ? "Back to service" : "Cancel"}
           </Link>
         </div>
       </form>

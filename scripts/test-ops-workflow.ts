@@ -1,5 +1,5 @@
 /**
- * Operations workflow soft-link helpers.
+ * Operations workflow soft-link helpers + Phase 17 UX contracts.
  * Run: npx --yes tsx scripts/test-ops-workflow.ts
  */
 
@@ -13,6 +13,7 @@ import {
   automationsHrefForIncident,
   copilotHrefForIncident,
   extractIncidentIdFromApprovalContext,
+  formatPolicyHintForDisplay,
   isIncidentUuid,
   newIncidentHrefForService,
   servicesHrefForService,
@@ -46,6 +47,19 @@ assert(
   }) === sampleId,
   "extract from brief",
 );
+assert(
+  extractIncidentIdFromApprovalContext({
+    actionLabel: `Guarded change for incident ${sampleId}`,
+  }) === sampleId,
+  "extract bare incident uuid from action",
+);
+
+const display = formatPolicyHintForDisplay(
+  `two-person approval | change window | incident:${sampleId} | risk:high | requires:two-person`,
+);
+assert(!display.includes("incident:"), "display strips incident token");
+assert(!display.toLowerCase().includes("risk:"), "display strips risk token");
+assert(display.includes("two-person") || display.includes("change window"), "keeps human policy text");
 
 const brief = withIncidentIdOnBrief({ riskScore: 40, confidenceScore: 50 }, sampleId);
 assert(brief.incident_id === sampleId, "brief merge");
@@ -57,19 +71,35 @@ assert(copilotHrefForIncident(sampleId).includes(`incident=${sampleId}`), "copil
 assert(servicesHrefForService("svc-9").includes("#service-svc-9"), "service deep link");
 
 const servicesPage = read("app/(app)/services/page.tsx");
-assert(servicesPage.includes("newIncidentHrefForService") || servicesPage.includes("incidents/new?service_id="), "services create-incident CTA");
+assert(servicesPage.includes("Create incident"), "services create-incident CTA");
+assert(servicesPage.includes("newIncidentHrefForService"), "services href helper");
+
+const newIncidentPage = read("app/(app)/incidents/new/page.tsx");
+assert(newIncidentPage.includes("Creating from service") || newIncidentPage.includes("Back to service"), "new incident service banner");
 
 const incidentPage = read("app/(app)/incidents/[id]/page.tsx");
-assert(incidentPage.includes("Next actions") || incidentPage.includes("workflow"), "incident workflow strip");
-assert(incidentPage.includes("approvalsHrefForIncident") || incidentPage.includes("/approvals?incident="), "incident→approvals");
-assert(incidentPage.includes("Ask Copilot") || incidentPage.includes("Open scoped Copilot"), "incident→copilot");
+assert(incidentPage.includes("Next actions"), "incident workflow strip");
+assert(incidentPage.includes("approvalsHrefForIncident"), "incident→approvals");
+assert(incidentPage.includes("Ask Copilot"), "incident→copilot");
+assert(!incidentPage.includes("audit_log"), "no raw audit_log copy");
 
 const approvalsPage = read("app/(app)/approvals/page.tsx");
-assert(approvalsPage.includes("incident"), "approvals accepts incident context");
-assert(approvalsPage.includes("extractIncidentIdFromApprovalContext") || approvalsPage.includes("Open incident"), "approvals backlink");
+assert(approvalsPage.includes("formatPolicyHintForDisplay"), "approvals sanitize policy display");
+assert(approvalsPage.includes("Open incident"), "approvals backlink");
+assert(approvalsPage.includes("linkedIncidentId"), "approvals row soft-link field");
+
+const approvalsData = read("lib/approvals/data.ts");
+assert(approvalsData.includes("linkedIncidentId"), "mapRow sets linkedIncidentId");
 
 const approvalsActions = read("app/(app)/approvals/actions.ts");
-assert(approvalsActions.includes("attachIncidentTokenToPolicyHint") || approvalsActions.includes("incident_id"), "approval create stores incident");
+assert(approvalsActions.includes("attachIncidentTokenToPolicyHint"), "approval create stores incident");
+
+const automations = read("components/automations/AutomationsConsole.tsx");
+assert(automations.includes("Back to incident"), "automations incident backlink");
+assert(!automations.includes("audit payload"), "no audit payload jargon");
+
+const copilotPage = read("app/(app)/copilot/page.tsx");
+assert(copilotPage.includes("Incident context"), "copilot incident banner");
 
 const timeline = read("lib/incidents/timeline.ts");
 assert(timeline.includes("automation.dry_run") || timeline.includes("approval.requested"), "timeline includes workflow events");

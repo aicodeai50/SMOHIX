@@ -1,5 +1,6 @@
 import type { ApprovalRow } from "./types";
 import { buildDecisionBrief } from "@/lib/decision-intelligence";
+import { extractIncidentIdFromApprovalContext } from "@/lib/workflow/incident-links";
 
 type Bucket = { pending: ApprovalRow[]; recent: ApprovalRow[] };
 
@@ -28,6 +29,10 @@ export function devCreateApproval(
 ): string {
   const id = `dev-apr-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
   const b = bucket(tenantId);
+  const linkedIncidentId = extractIncidentIdFromApprovalContext({
+    policyHint: input.policy,
+    actionLabel: input.action,
+  });
   b.pending.unshift({
     id,
     action: input.action,
@@ -38,6 +43,7 @@ export function devCreateApproval(
       actionLabel: input.action,
       policyHint: input.policy,
     }),
+    linkedIncidentId,
     requesterId: null,
     canDecide: true,
     decideBlockedReason: null,

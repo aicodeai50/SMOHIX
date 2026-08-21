@@ -140,8 +140,8 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
         </p>
       ) : (
         <p className={`smohix-glass-subtle mb-4 rounded-xl px-4 py-3 ${appMeta}`}>
-          Timeline entries come from your <span className="font-mono">audit_log</span> (status and
-          owner/runbook updates) when the service role can append audits.
+          Timeline entries come from your audit trail (status changes, owner/runbook updates,
+          automations, and approvals) when audits can be recorded.
         </p>
       )}
       {holdSet ? (
@@ -167,7 +167,7 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
       ) : null}
       <PageHeader
         title={row.title}
-        description={`${row.id} · ${row.severity} · ${row.status} · updated ${row.updated}${
+        description={`${row.severity} · ${row.status} · updated ${row.updated}${
           row.serviceName ? ` · ${row.serviceName}` : ""
         }${row.ownerHint ? ` · ${row.ownerHint}` : ""}`}
         actions={
@@ -181,6 +181,11 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
           ) : null
         }
       />
+      {source === "database" ? (
+        <p className={`mb-3 font-mono text-muted ${appMeta}`} title={row.id}>
+          Incident {row.id.slice(0, 8)}…
+        </p>
+      ) : null}
       {source === "database" ? (
         <nav
           className="smohix-glass mb-6 rounded-2xl px-4 py-3 md:px-5"
@@ -223,7 +228,7 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
             <li>
               <Link
                 href={automationsHrefForIncident(row.id)}
-                className={`inline-flex rounded-lg border border-white/[0.1] px-3 py-1.5 font-medium text-muted transition-colors hover:border-accent/35 hover:text-foreground ${appMeta}`}
+                className={`inline-flex rounded-lg border border-accent/30 bg-accent/10 px-3 py-1.5 font-medium text-accent transition-colors hover:bg-accent/20 ${appMeta}`}
               >
                 Dry-run automation
               </Link>
@@ -231,7 +236,7 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
             <li>
               <Link
                 href={approvalsHrefForIncident(row.id)}
-                className={`inline-flex rounded-lg border border-white/[0.1] px-3 py-1.5 font-medium text-muted transition-colors hover:border-accent/35 hover:text-foreground ${appMeta}`}
+                className={`inline-flex rounded-lg border border-accent/30 bg-accent/10 px-3 py-1.5 font-medium text-accent transition-colors hover:bg-accent/20 ${appMeta}`}
               >
                 Request approval
               </Link>
@@ -239,7 +244,7 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
             <li>
               <Link
                 href={copilotHrefForIncident(row.id)}
-                className={`inline-flex rounded-lg border border-accent/35 bg-accent/10 px-3 py-1.5 font-medium text-accent transition-colors hover:bg-accent/20 ${appMeta}`}
+                className={`inline-flex rounded-lg border border-white/[0.1] px-3 py-1.5 font-medium text-muted transition-colors hover:border-accent/35 hover:text-foreground ${appMeta}`}
               >
                 Ask Copilot
               </Link>
@@ -249,7 +254,7 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
                 href="/audit"
                 className={`inline-flex rounded-lg border border-white/[0.1] px-3 py-1.5 font-medium text-muted transition-colors hover:border-accent/35 hover:text-foreground ${appMeta}`}
               >
-                Audit log
+                Open audit trail
               </Link>
             </li>
           </ul>
@@ -259,7 +264,7 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
         <p className={`mb-4 rounded-xl border border-emerald-400/25 bg-emerald-500/[0.08] px-4 py-3 text-emerald-100/90 ${appBody}`}>
           Guided scenario ready: incident created, approval queued, and dry-run evidence attached.
           Next, review{" "}
-          <Link href="/approvals" className="font-semibold text-emerald-200 underline-offset-2 hover:underline">
+          <Link href={approvalsHrefForIncident(row.id)} className="font-semibold text-emerald-200 underline-offset-2 hover:underline">
             approvals
           </Link>{" "}
           and{" "}

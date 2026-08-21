@@ -18,8 +18,9 @@ import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { appBody, appLabel, appMeta, appOverline, appPanelTitle } from "@/lib/app-typography";
 import { loadConsoleAmbientSnapshot } from "@/lib/console/load-ambient-status";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { getIncidentForUser } from "@/lib/incidents/data";
 import {
-  extractIncidentIdFromApprovalContext,
+  formatPolicyHintForDisplay,
   incidentHref,
   isIncidentUuid,
 } from "@/lib/workflow/incident-links";
@@ -86,6 +87,17 @@ export default async function ApprovalsPage({ searchParams }: Props) {
 
   const ambient = await loadConsoleAmbientSnapshot({ context: "approvals" });
 
+  let linkedIncidentTitle: string | null = null;
+  if (linkedIncidentId && userId && hasSupabaseAuth()) {
+    const resolved = await getIncidentForUser(
+      userId,
+      linkedIncidentId,
+      null,
+      orgContext?.orgId ?? null,
+    );
+    linkedIncidentTitle = resolved?.row.title ?? null;
+  }
+
   return (
     <>
       <PageHeader
@@ -95,14 +107,20 @@ export default async function ApprovalsPage({ searchParams }: Props) {
       <ConsoleAmbientBanner snapshot={ambient} />
       {linkedIncidentId ? (
         <p className={`mb-4 rounded-xl border border-accent/25 bg-accent/10 px-4 py-3 text-accent ${appBody}`}>
-          Creating approval in context of incident{" "}
+          Linked to this incident
+          {linkedIncidentTitle ? (
+            <>
+              : <span className="font-semibold text-foreground">{linkedIncidentTitle}</span>
+            </>
+          ) : null}
+          .{" "}
           <Link
             href={incidentHref(linkedIncidentId)}
             className="font-semibold underline-offset-2 hover:underline"
           >
-            {linkedIncidentId}
-          </Link>
-          . The request will keep a soft link back to that incident.
+            Open incident →
+          </Link>{" "}
+          New requests stay connected so reviewers can return to the same workspace.
         </p>
       ) : null}
       {orgContext?.orgId ? (
@@ -170,17 +188,13 @@ export default async function ApprovalsPage({ searchParams }: Props) {
       ) : null}
       {source === "session" ? (
         <p className={`smohix-glass-subtle mb-4 rounded-xl px-4 py-3 ${appMeta}`}>
-          Approvals are scoped to this browser session (server memory +{" "}
-          <span className="font-mono">smohix_dev_tid</span>). Connect Supabase and run{" "}
-          <code className="rounded bg-surface px-1 font-mono text-accent">
-            supabase/migrations/20260418140000_console_extensions.sql
-          </code>{" "}
-          for a shared <span className="font-mono">approval_requests</span> queue.
+          Approvals are scoped to this browser session. Sign in to a configured workspace for a
+          shared, persistent approval queue.
         </p>
       ) : hasSupabaseAuth() && pending.length === 0 && recent.length === 0 ? (
         <p className={`smohix-glass-subtle mb-4 rounded-xl px-4 py-3 ${appMeta}`}>
-          No rows in <span className="font-mono">approval_requests</span> yet. Use the form below or
-          your API/automation to enqueue work.
+          No approval requests yet. Submit one below, or start from an incident with{" "}
+          <span className="text-foreground/85">Request approval</span>.
         </p>
       ) : null}
       <section className="smohix-glass mb-6 rounded-2xl p-5 md:p-6">
@@ -204,7 +218,9 @@ export default async function ApprovalsPage({ searchParams }: Props) {
               placeholder="e.g. Promote canary to production — svc/checkout"
               defaultValue={
                 linkedIncidentId
-                  ? `Guarded change for incident ${linkedIncidentId}`
+                  ? linkedIncidentTitle
+                    ? `Guarded change: ${linkedIncidentTitle}`
+                    : "Guarded change for linked incident"
                   : undefined
               }
               className={`h-11 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 text-foreground outline-none ring-accent/25 transition-[border-color,box-shadow] focus:border-accent/40 focus:ring-2 ${appBody}`}
@@ -270,26 +286,19 @@ export default async function ApprovalsPage({ searchParams }: Props) {
                     </ExecutionBadge>
                   </div>
                   <p className={`mt-1 ${appMeta}`}>
-                    {p.requestedBy} · {p.policy}
+                    {p.requestedBy} · {formatPolicyHintForDisplay(p.policy)}
                   </p>
-                  {(() => {
-                    const incidentId = extractIncidentIdFromApprovalContext({
-                      policyHint: p.policy,
-                      actionLabel: p.action,
-                    });
-                    if (!incidentId) return null;
-                    return (
+                  {p.linkedIncidentId ? (
                       <p className={`mt-2 ${appMeta}`}>
                         Linked incident:{" "}
                         <Link
-                          href={incidentHref(incidentId)}
+                          href={incidentHref(p.linkedIncidentId)}
                           className="font-medium text-accent hover:underline"
                         >
                           Open incident →
                         </Link>
                       </p>
-                    );
-                  })()}
+                  ) : null}
                   <div className="mt-3 rounded-lg border border-white/[0.08] bg-white/[0.02] p-3">
                     <div className="flex flex-wrap gap-2">
                       <span className={`rounded-full border border-white/[0.12] px-2 py-0.5 ${appMeta}`}>
@@ -396,23 +405,16 @@ export default async function ApprovalsPage({ searchParams }: Props) {
                   Risk {r.decisionBrief.riskScore} · Confidence {r.decisionBrief.confidenceScore} ·{" "}
                   {r.decisionBrief.blastRadius}
                 </p>
-                {(() => {
-                  const incidentId = extractIncidentIdFromApprovalContext({
-                    policyHint: r.policy,
-                    actionLabel: r.action,
-                  });
-                  if (!incidentId) return null;
-                  return (
+                {r.linkedIncidentId ? (
                     <p className={`mt-1 ${appMeta}`}>
                       <Link
-                        href={incidentHref(incidentId)}
+                        href={incidentHref(r.linkedIncidentId)}
                         className="font-medium text-accent hover:underline"
                       >
                         Open linked incident →
                       </Link>
                     </p>
-                  );
-                })()}
+                  ) : null}
                 </li>
               ))}
             </ul>

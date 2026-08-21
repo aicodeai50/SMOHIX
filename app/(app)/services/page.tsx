@@ -343,10 +343,10 @@ export default async function ServicesPage({
                         {r.ownerHint ? (
                           <p className={appMeta}>{r.ownerHint}</p>
                         ) : null}
-                        <p className={`mt-1 font-mono text-accent/80 ${appMeta}`} id={`service-${r.id}`}>
-                          {r.id}
+                        <p className={`mt-1 text-muted ${appMeta}`} id={`service-${r.id}`}>
+                          Catalog entry for this service
                         </p>
-                        <div className="mt-2 flex flex-wrap gap-3">
+                        <div className="mt-2 flex flex-wrap items-center gap-2">
                           <Link
                             href={newIncidentHrefForService(r.id, {
                               severity:
@@ -357,13 +357,13 @@ export default async function ServicesPage({
                                     : "medium",
                               title: `Incident: ${r.name}`,
                             })}
-                            className={`font-medium text-accent hover:underline ${appMeta}`}
+                            className={`inline-flex rounded-lg border border-accent/35 bg-accent/10 px-2.5 py-1 font-medium text-accent transition-colors hover:bg-accent/20 ${appMeta}`}
                           >
                             Create incident
                           </Link>
                           <Link
                             href="/automations"
-                            className={`font-medium text-muted hover:text-accent hover:underline ${appMeta}`}
+                            className={`inline-flex rounded-lg border border-white/[0.1] px-2.5 py-1 font-medium text-muted transition-colors hover:border-accent/35 hover:text-foreground ${appMeta}`}
                           >
                             Automations
                           </Link>

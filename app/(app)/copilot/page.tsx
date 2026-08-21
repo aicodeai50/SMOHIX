@@ -8,8 +8,11 @@ import { PageHeader } from "@/components/app/PageHeader";
 import { ConsolePanel } from "@/components/app/ConsolePanel";
 import { loadConsoleAmbientSnapshot } from "@/lib/console/load-ambient-status";
 import { appBody, appMeta } from "@/lib/app-typography";
+import { getIncidentForUser } from "@/lib/incidents/data";
+import { getOrgContextForUser } from "@/lib/org/context";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { isIncidentUuid } from "@/lib/workflow/incident-links";
 
 export const metadata: Metadata = {
   title: "Smohix Copilot",
@@ -30,8 +33,11 @@ export default async function CopilotPage({
   searchParams?: Promise<{ incident?: string }>;
 }) {
   const sp = (await searchParams) ?? {};
-  const incidentId = typeof sp.incident === "string" ? sp.incident.trim() : "";
+  const incidentRaw = typeof sp.incident === "string" ? sp.incident.trim() : "";
+  const incidentId = isIncidentUuid(incidentRaw) ? incidentRaw.toLowerCase() : "";
   let persistSession = false;
+  let incidentTitle: string | null = null;
+  let incidentMeta: string | null = null;
   if (hasSupabaseAuth()) {
     try {
       const supabase = await createServerSupabaseClient();
@@ -39,6 +45,19 @@ export default async function CopilotPage({
         data: { user },
       } = await supabase.auth.getUser();
       persistSession = Boolean(user);
+      if (user && incidentId) {
+        const org = await getOrgContextForUser(user.id);
+        const resolved = await getIncidentForUser(user.id, incidentId, null, org.orgId);
+        if (resolved?.row) {
+          incidentTitle = resolved.row.title;
+          const parts = [
+            resolved.row.severity,
+            resolved.row.status,
+            resolved.row.serviceName ?? null,
+          ].filter(Boolean);
+          incidentMeta = parts.join(" · ");
+        }
+      }
     } catch {
       persistSession = false;
     }
@@ -66,15 +85,21 @@ export default async function CopilotPage({
         <div className="space-y-4 lg:col-span-2">
           <ConsolePanel title="Conversation">
             {incidentId ? (
-              <p className={`mb-4 rounded-xl border border-accent/25 bg-accent-dim/40 px-3 py-2 text-accent ${appMeta}`}>
-                Incident context attached:{" "}
+              <div className={`mb-4 rounded-xl border border-accent/25 bg-accent-dim/40 px-3 py-2 text-accent ${appMeta}`}>
+                <p className="font-medium text-foreground">Incident context</p>
+                <p className="mt-1">
+                  {incidentTitle ?? "Scoped conversation"}
+                  {incidentMeta ? (
+                    <span className="text-muted"> · {incidentMeta}</span>
+                  ) : null}
+                </p>
                 <Link
                   href={`/incidents/${encodeURIComponent(incidentId)}`}
-                  className="font-medium underline-offset-2 hover:underline"
+                  className="mt-1 inline-block font-medium underline-offset-2 hover:underline"
                 >
-                  {incidentId}
+                  Open incident →
                 </Link>
-              </p>
+              </div>
             ) : null}
             <CopilotChat persistSession={persistSession} incidentId={incidentId || null} />
           </ConsolePanel>

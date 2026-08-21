@@ -2,6 +2,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { buildDecisionBrief, parseDecisionBrief } from "@/lib/decision-intelligence";
 import { canDecideApproval, type OrgRole } from "@/lib/org/roles";
+import { extractIncidentIdFromApprovalContext } from "@/lib/workflow/incident-links";
 
 import { devCreateApproval, devListApprovals } from "./dev-store";
 import type { ApprovalRow, ApprovalsListResult } from "./types";
@@ -24,6 +25,11 @@ function mapRow(
   const decisionBrief = parseDecisionBrief(r.decision_brief_json, {
     actionLabel: action,
     policyHint: policy,
+  });
+  const linkedIncidentId = extractIncidentIdFromApprovalContext({
+    policyHint: policy,
+    actionLabel: action,
+    decisionBriefJson: r.decision_brief_json,
   });
   const requesterId = (r.requester_id as string | null) ?? (r.user_id as string | null) ?? null;
 
@@ -54,6 +60,7 @@ function mapRow(
     policy,
     status: r.status as ApprovalRow["status"],
     decisionBrief,
+    linkedIncidentId,
     requesterId,
     canDecide,
     decideBlockedReason,
