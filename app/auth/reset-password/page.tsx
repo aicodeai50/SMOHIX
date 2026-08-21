@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 function ResetFallback() {
   return (
     <div
-      className="smohix-glass-subtle h-64 animate-pulse rounded-3xl"
+      className="smohix-surface h-64 animate-pulse rounded-[var(--la-radius-lg)]"
       aria-hidden
     />
   );

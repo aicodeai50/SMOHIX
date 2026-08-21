@@ -14,7 +14,7 @@ export function CodeSurface({
   label?: string;
 }) {
   return (
-    <div className={`smohix-code-surface ${className}`.trim()}>
+    <div className={`smohix-code-surface min-w-0 max-w-full ${className}`.trim()}>
       {label ? (
         <div className="smohix-code-surface__meta">
           <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted/80">{label}</span>

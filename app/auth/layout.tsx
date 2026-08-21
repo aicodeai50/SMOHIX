@@ -17,7 +17,8 @@ export default function AuthLayout({
 }) {
   return (
     <div className="smohix-spatial-grid relative flex min-h-screen flex-col bg-background">
-      <IntelligenceField className="opacity-35" animate={false} />
+      {/* Single restrained field for the auth environment — forms stay primary */}
+      <IntelligenceField className="opacity-[0.28] md:opacity-[0.32]" animate={false} />
       <header className="relative z-[1] flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] px-4 py-4 sm:px-6">
         <Link href="/" className="min-w-0 shrink text-foreground no-underline">
           <Logo />

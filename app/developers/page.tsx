@@ -1,6 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import {
+  CodeSurface,
+  IntelligenceField,
+  SmohixHorizon,
+  SmohixSurface,
+  StateBeacon,
+  SystemLabel,
+} from "@/components/architecture";
 import { ApiRequestBuilder } from "@/components/developers/ApiRequestBuilder";
 import { CommercialPaths } from "@/components/marketing/CommercialPaths";
 import { TrackableLink } from "@/components/marketing/TrackableLink";
@@ -22,6 +30,7 @@ import {
   DEVELOPER_SECURITY_GUIDANCE,
   DEVELOPER_VERSIONING,
   sdkStatusLabel,
+  type SdkStatus,
 } from "@/lib/developer-journey";
 import { buildMarketingMetadata } from "@/lib/metadata";
 import { mBody, mContainer, mEyebrow, mH3, mSection } from "@/lib/marketing-layout";
@@ -33,15 +42,23 @@ export const metadata: Metadata = buildMarketingMetadata({
   path: "/developers",
 });
 
+function sdkBeaconTone(status: SdkStatus): "verified" | "attention" | "aware" | "dormant" {
+  if (status === "available") return "verified";
+  if (status === "preview") return "attention";
+  if (status === "coming-soon") return "aware";
+  return "dormant";
+}
 export default function DevelopersPage() {
   return (
     <>
       <MarketingJsonLd graph={developersPageJsonLd()} />
       <Header />
       <main id="main-content" className="flex-1">
-        <section className={`${mSection} border-b border-white/[0.06]`}>
-          <div className={mContainer}>
-            <p className={`${mEyebrow} text-primary-muted`}>Developer Platform</p>
+        <section className={`smohix-spatial-grid relative overflow-hidden ${mSection} border-b border-white/[0.06]`}>
+          <IntelligenceField className="opacity-40 md:opacity-50" animate={false} />
+          <div className={`relative ${mContainer}`}>
+            <SystemLabel>Developer platform</SystemLabel>
+            <p className={`${mEyebrow} mt-3 text-accent/80`}>API · Keys · Integrations</p>
             <h1 className="mt-2 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
               Build secure integrations with Smohix
             </h1>
@@ -50,6 +67,12 @@ export default function DevelopersPage() {
               operational workflows — without inventing endpoints or exposing private backends in
               the browser.
             </p>
+            <div className="mt-6 max-w-md">
+              <SmohixHorizon />
+              <p className="mt-2 font-mono text-[10px] tracking-[0.16em] text-muted/70">
+                DOCS · KEYS · SECURITY · STATUS
+              </p>
+            </div>
             <div className="mt-8 flex flex-wrap gap-3">
               <TrackableLink href="/docs/api" event="developer_quick_start">
                 <Button>Read API documentation</Button>
@@ -101,13 +124,12 @@ export default function DevelopersPage() {
             <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {DEVELOPER_CAPABILITIES.map((cap) => (
                 <li key={cap.title}>
-                  <Link
-                    href={cap.href}
-                    className="flex h-full flex-col rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5 transition-[border-color] hover:border-accent/30"
-                  >
-                    <h3 className="text-base font-semibold text-foreground">{cap.title}</h3>
-                    <p className={`mt-2 flex-1 ${mBody}`}>{cap.description}</p>
-                    <span className="mt-4 text-xs font-semibold text-accent">Open →</span>
+                  <Link href={cap.href} className="block h-full">
+                    <SmohixSurface tone="aware" className="flex h-full flex-col p-5">
+                      <h3 className="text-base font-semibold text-foreground">{cap.title}</h3>
+                      <p className={`mt-2 flex-1 ${mBody}`}>{cap.description}</p>
+                      <span className="mt-4 text-xs font-semibold text-accent">Open →</span>
+                    </SmohixSurface>
                   </Link>
                 </li>
               ))}
@@ -122,18 +144,17 @@ export default function DevelopersPage() {
             </h2>
             <ol className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {DEVELOPER_QUICK_START.map((step) => (
-                <li
-                  key={step.step}
-                  className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5"
-                >
-                  <TrackableLink
-                    href={step.href}
-                    event="developer_quick_start"
-                    className="font-semibold text-foreground hover:text-accent"
-                  >
-                    {step.step}
-                  </TrackableLink>
-                  <p className={`mt-2 ${mBody}`}>{step.detail}</p>
+                <li key={step.step}>
+                  <SmohixSurface tone="dormant" className="h-full p-5">
+                    <TrackableLink
+                      href={step.href}
+                      event="developer_quick_start"
+                      className="font-semibold text-foreground hover:text-accent"
+                    >
+                      {step.step}
+                    </TrackableLink>
+                    <p className={`mt-2 ${mBody}`}>{step.detail}</p>
+                  </SmohixSurface>
                 </li>
               ))}
             </ol>
@@ -149,23 +170,25 @@ export default function DevelopersPage() {
               Example uses a clearly fake key prefix. Replace with a secret from Settings → API keys.
               API keys authenticate the reasoning and robot proxies — not every console route.
             </p>
-            <pre className="mt-6 overflow-x-auto rounded-xl border border-white/[0.08] bg-black/40 p-4 text-xs leading-relaxed text-foreground/90">
-              <code>{DEVELOPER_EXAMPLE}</code>
-            </pre>
+            <CodeSurface label="HTTP example" className="mt-6">
+              <pre>
+                <code>{DEVELOPER_EXAMPLE}</code>
+              </pre>
+            </CodeSurface>
           </div>
         </section>
 
         <section className={`${mSection} border-t border-white/[0.06]`}>
           <div className={`${mContainer} grid gap-10 lg:grid-cols-2`}>
-            <div>
+            <SmohixSurface tone="dormant" className="p-5 md:p-6">
               <h2 className={mH3}>{DEVELOPER_AUTH.title}</h2>
               <ul className={`mt-4 list-inside list-disc space-y-2 ${mBody}`}>
                 {DEVELOPER_AUTH.points.map((p) => (
                   <li key={p}>{p}</li>
                 ))}
               </ul>
-            </div>
-            <div>
+            </SmohixSurface>
+            <SmohixSurface tone="dormant" className="p-5 md:p-6">
               <h2 className={mH3}>Errors &amp; rate limits</h2>
               <ul className={`mt-4 list-inside list-disc space-y-2 ${mBody}`}>
                 {DEVELOPER_ERROR_HANDLING.map((p) => (
@@ -173,7 +196,7 @@ export default function DevelopersPage() {
                 ))}
               </ul>
               <p className={`mt-4 ${mBody}`}>{DEVELOPER_RATE_LIMITS.body}</p>
-            </div>
+            </SmohixSurface>
           </div>
         </section>
 
@@ -209,17 +232,20 @@ export default function DevelopersPage() {
             </p>
             <ul className="mt-6 space-y-3">
               {DEVELOPER_SDKS.map((sdk) => (
-                <li
-                  key={sdk.name}
-                  className="flex flex-wrap items-start justify-between gap-3 rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3"
-                >
-                  <div>
-                    <p className="font-medium text-foreground">{sdk.name}</p>
-                    <p className={`mt-1 text-sm ${mBody}`}>{sdk.detail}</p>
-                  </div>
-                  <span className="rounded-full border border-white/[0.12] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted">
-                    {sdkStatusLabel(sdk.status)}
-                  </span>
+                <li key={sdk.name}>
+                  <SmohixSurface
+                    tone="dormant"
+                    className="flex flex-wrap items-start justify-between gap-3 px-4 py-3"
+                  >
+                    <div>
+                      <p className="font-medium text-foreground">{sdk.name}</p>
+                      <p className={`mt-1 text-sm ${mBody}`}>{sdk.detail}</p>
+                    </div>
+                    <StateBeacon
+                      label={sdkStatusLabel(sdk.status)}
+                      tone={sdkBeaconTone(sdk.status)}
+                    />
+                  </SmohixSurface>
                 </li>
               ))}
             </ul>

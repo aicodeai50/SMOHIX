@@ -56,7 +56,7 @@ export default function DocsApiPage() {
     <>
       <Header />
       <main className="flex-1 border-b border-white/[0.06]">
-        <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 sm:py-16">
+        <div className="mx-auto w-full min-w-0 max-w-4xl px-4 py-12 sm:px-6 sm:py-16">
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">API documentation</p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
             HTTP API reference
@@ -64,7 +64,7 @@ export default function DocsApiPage() {
           <p className="mt-3 text-sm leading-relaxed text-muted">
             Catalog derived from <code className="font-mono text-xs text-accent/90">app/api</code> route
             handlers in this repository. Base URL:{" "}
-            <span className="font-mono text-xs text-foreground/85">{base}</span>
+            <span className="break-all font-mono text-xs text-foreground/85">{base}</span>
           </p>
 
           <nav
@@ -269,10 +269,10 @@ export default function DocsApiPage() {
             <p className="mt-2 text-sm text-muted">
               Partial YAML for local tooling only — not a complete published OpenAPI specification.
             </p>
-            <CodeSurface label="OpenAPI sketch" className="mt-4 max-h-80 overflow-auto">
+            <CodeSurface label="OpenAPI sketch" className="mt-4 max-h-80">
               <pre className="font-mono text-[10px] leading-relaxed text-foreground/80 sm:text-xs">
-              {sketch}
-            </pre>
+                {sketch}
+              </pre>
             </CodeSurface>
           </section>
 

@@ -123,6 +123,24 @@ body {
   z-index: 1;
 }
 
+/* Mobile Living Architecture — quieter environment, content first */
+@media (max-width: 768px) {
+  .smohix-spatial-grid::before {
+    opacity: 0.4;
+    background-size: 40px 40px;
+  }
+  .smohix-intelligence-field {
+    opacity: 0.45;
+  }
+  .smohix-intelligence-field--animate {
+    animation: none;
+  }
+  .smohix-horizon::after {
+    height: 8px;
+    top: -4px;
+  }
+}
+
 /* Smohix Horizon — architectural boundary light */
 .smohix-horizon {
   position: relative;
@@ -356,6 +374,7 @@ body {
 }
 .smohix-code-surface__body {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   padding: 0.75rem 0.85rem;
   font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
   font-size: 0.75rem;
@@ -364,7 +383,9 @@ body {
 }
 .smohix-code-surface__body pre {
   margin: 0;
+  max-width: 100%;
   white-space: pre-wrap;
+  overflow-wrap: anywhere;
   word-break: break-word;
 }
 
@@ -678,9 +699,6 @@ body {
   isolation: isolate;
   overflow: clip;
 }
-.smohix-quantum-canvas {
-  opacity: 0.38;
-}
 .smohix-singularity-field {
   background:
     radial-gradient(ellipse 55% 40% at 50% 15%, rgba(94, 225, 255, 0.04), transparent 58%),
@@ -854,60 +872,6 @@ body {
   min-height: 100%;
 }
 
-.smohix-cosmic-nebula {
-  z-index: 0;
-}
-
-.smohix-nebula-veil {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(96px);
-  opacity: 0.28;
-  animation: smohix-nebula-drift-centered 32s ease-in-out infinite alternate;
-}
-.smohix-nebula-veil--cyan {
-  width: min(80vw, 640px);
-  height: min(45vh, 360px);
-  top: -8%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: radial-gradient(circle, rgba(94, 225, 255, 0.2), transparent 70%);
-}
-@keyframes smohix-nebula-drift {
-  0% {
-    transform: translate(0, 0) scale(1);
-    opacity: 0.45;
-  }
-  100% {
-    transform: translate(24px, -18px) scale(1.08);
-    opacity: 0.75;
-  }
-}
-@keyframes smohix-nebula-drift-centered {
-  0% {
-    transform: translate(-50%, 0) scale(1);
-    opacity: 0.45;
-  }
-  100% {
-    transform: translate(calc(-50% + 24px), -18px) scale(1.08);
-    opacity: 0.75;
-  }
-}
-
-.smohix-ascension-horizon {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 22%;
-  background: linear-gradient(
-    0deg,
-    rgba(94, 225, 255, 0.05) 0%,
-    transparent 100%
-  );
-  opacity: 0.5;
-}
-
 .smohix-universe-hero {
   position: relative;
 }
@@ -993,11 +957,6 @@ body {
   .smohix-launch-beacon {
     animation: none;
   }
-  .smohix-quantum-canvas {
-    display: none;
-  }
-  .smohix-nebula-veil,
-  .smohix-ascension-horizon,
   .smohix-universe-hero::before,
   .smohix-logo-glow {
     animation: none !important;

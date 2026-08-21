@@ -43,7 +43,15 @@ assert(read("components/copilot/CopilotChat.tsx").includes("smohix-copilot-env")
 assert(read("components/landing/MarketingQuantumShell.tsx").includes("IntelligenceField"), "quantum shell replaced");
 assert(!read("components/landing/MarketingQuantumShell.tsx").includes("CosmicNebula"), "nebula removed from shell");
 assert(read("components/auth/AuthCard.tsx").includes("SmohixHorizon"), "auth horizon");
+assert(read("app/auth/layout.tsx").includes("IntelligenceField"), "auth layout field");
+assert(!read("components/auth/AuthCard.tsx").includes("IntelligenceField"), "auth card no double field");
+assert(read("app/developers/page.tsx").includes("SmohixHorizon"), "developers horizon");
+assert(read("app/developers/page.tsx").includes("CodeSurface"), "developers code surface");
+assert(read("app/developers/page.tsx").includes("StateBeacon"), "developers state beacon");
+assert(!existsSync(path.join(root, "components/landing/CosmicNebula.tsx")), "dead CosmicNebula removed");
+assert(!existsSync(path.join(root, "components/landing/QuantumDimension.tsx")), "dead QuantumDimension removed");
 assert(read("components/settings/ApiKeysPanel.tsx").includes("CodeSurface"), "api keys code surface");
 assert(read("app/docs/api/page.tsx").includes("CodeSurface"), "docs api code surface");
+assert(globals.includes("Mobile Living Architecture"), "mobile LA restraint");
 
 console.log("test-living-architecture-propagation: all checks passed");
