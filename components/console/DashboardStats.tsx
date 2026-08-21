@@ -101,7 +101,7 @@ export function QuickActions() {
     { href: "/incidents/new", label: "New incident", icon: "alertTriangle" as const },
     { href: "/automations", label: "Automations", icon: "workflow" as const },
     { href: "/copilot", label: "Ask Copilot", icon: "bot" as const },
-    { href: "/settings/billing", label: "Billing", icon: "creditCard" as const },
+    { href: "/settings#setup-wizard", label: "Setup wizard", icon: "settings" as const },
   ];
 
   return (

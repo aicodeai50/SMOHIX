@@ -5,6 +5,7 @@ import { launchGuidedScenarioAction } from "./actions";
 import { PageHeader } from "@/components/app/PageHeader";
 import { ConsoleAmbientBanner } from "@/components/console/ConsoleAmbientBanner";
 import { DashboardStats, QuickActions } from "@/components/console/DashboardStats";
+import { HubOnboardingPanel } from "@/components/console/HubOnboardingPanel";
 import { HubQuickLinksPanel } from "@/components/console/HubQuickLinksPanel";
 import { getUserDisplayName, getUserFirstName } from "@/lib/auth/display-name";
 import { buildHubPersonalizationState } from "@/lib/console/hub-personalization";
@@ -30,6 +31,8 @@ export default async function HubPage() {
   let displayName: string | null = null;
   let userId: string | null = null;
   let orgRole = null as import("@/lib/org/roles").OrgRole | null;
+  let orgName: string | null = null;
+  let hasOrganization = false;
 
   if (hasSupabaseAuth()) {
     try {
@@ -41,20 +44,25 @@ export default async function HubPage() {
       displayName = getUserDisplayName(user);
       userId = user?.id ?? null;
       if (user) {
-        orgRole = (await getOrgContextForUser(user.id)).role;
+        const org = await getOrgContextForUser(user.id);
+        orgRole = org.role;
+        orgName = org.orgName;
+        hasOrganization = Boolean(org.orgId);
       }
     } catch {
       firstName = null;
       displayName = null;
       userId = null;
+      orgName = null;
+      hasOrganization = false;
     }
   }
 
   const signedIn = Boolean(displayName);
-  const title = signedIn && firstName ? `Welcome back, ${firstName}` : "Dashboard";
+  const title = signedIn && firstName ? `Welcome back, ${firstName}` : "Welcome to Smohix";
   const description = signedIn
-    ? "Your operations command center — stats, quick actions, and module shortcuts."
-    : "Core flows work without accounts. Sign in for shared sessions, billing, and durable history.";
+    ? "Your operations command center — start with setup, products, docs, or Smohix AI."
+    : "Core flows work without accounts. Sign in for shared sessions, organizations, and durable history.";
   const guidedFlow = [
     "Alert opens incident",
     "System proposes guarded action",
@@ -84,6 +92,12 @@ export default async function HubPage() {
     <>
       <PageHeader eyebrow={SITE_BRAND_NAME} title={title} description={description} />
       <ConsoleAmbientBanner snapshot={ambient} />
+      <HubOnboardingPanel
+        orgName={orgName}
+        orgRole={orgRole}
+        hasOrganization={hasOrganization}
+        signedIn={signedIn}
+      />
       <DashboardStats userId={userId} />
       <QuickActions />
       <HubQuickLinksPanel
@@ -122,8 +136,7 @@ export default async function HubPage() {
         </ol>
       </section>
       <p className={`mt-6 max-w-2xl text-pretty ${appBody} text-muted`}>
-        Automations, runbooks, approvals, audit, billing, connectors, and the focused module rail stay
-        above.{" "}
+        Automations, runbooks, approvals, audit, connectors, and the focused module rail stay above.{" "}
         <Link href="/vision" className="font-medium text-accent hover:underline">
           Vision & roadmap
         </Link>{" "}

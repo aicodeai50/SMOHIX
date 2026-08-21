@@ -51,7 +51,7 @@ export const FLAGSHIP_PRODUCTS = [
     description:
       "Operational workspace — incidents, automation, approvals, and administration after sign-in.",
     href: "/platform",
-    workspaceUrl: "/auth/sign-in?next=/hub",
+    workspaceUrl: "/hub",
     status: "live" as const,
   },
   {
