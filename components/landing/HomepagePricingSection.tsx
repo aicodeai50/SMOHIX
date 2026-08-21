@@ -5,11 +5,8 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { mBody, mContainer, mEyebrow, mH2, mLede, mSection } from "@/lib/marketing-layout";
 import { PRICING_TIERS } from "@/lib/product-identity";
-import { isBillingConfigured } from "@/lib/billing";
 
 export function HomepagePricingSection() {
-  const billingReady = isBillingConfigured();
-
   return (
     <MarketingReveal
       id="pricing"
@@ -22,18 +19,14 @@ export function HomepagePricingSection() {
           Plans that scale with your team
         </h2>
         <p className={`${mLede} mt-3 max-w-2xl`}>
-          Transparent tiers billed through PayPal. Upgrade anytime from your
-          workspace billing page.
+          Transparent published tiers. Self-serve checkout is coming soon —
+          contact us or start a pilot for Pro and Team access today.
         </p>
 
         <div className="mt-12 grid gap-6 lg:grid-cols-3">
           {PRICING_TIERS.map((plan) => {
             const href =
-              plan.id === "free"
-                ? "/auth/sign-in?next=/hub"
-                : billingReady
-                  ? `/auth/sign-in?next=/settings/billing?tier=${plan.id}`
-                  : "/pricing";
+              plan.id === "free" ? "/auth/sign-in?next=/hub" : "/contact";
 
             return (
               <Card

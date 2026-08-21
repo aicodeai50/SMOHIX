@@ -75,9 +75,9 @@ export const PRICING_TIERS = [
       "Full automation execution",
       "Alert ingest & API keys",
       "Audit export & Copilot",
-      "PayPal billing",
+      "Workspace billing (coming soon)",
     ],
-    cta: "Subscribe — Pro",
+    cta: "Contact us",
     highlight: false,
   },
   {
@@ -92,7 +92,7 @@ export const PRICING_TIERS = [
       "Compliance mapping (beta)",
       "Priority support",
     ],
-    cta: "Subscribe — Team",
+    cta: "Contact us",
     highlight: true,
   },
 ] as const;

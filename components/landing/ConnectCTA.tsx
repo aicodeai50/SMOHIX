@@ -1,18 +1,18 @@
 import Link from "next/link";
 import { MarketingReveal } from "@/components/marketing/MarketingReveal";
-import { getTrialHref } from "@/lib/billing";
 import { marketingCta } from "@/lib/marketing-copy";
 import { mBody, mContainer, mEyebrow, mH2 } from "@/lib/marketing-layout";
 
-export function ConnectCTA({
-  signedInCheckoutUrl,
-  signedInTeamCheckoutUrl,
-}: {
+/**
+ * Homepage / landing connect panel.
+ * Self-serve checkout is deferred — paid CTAs route to contact / pilot, not payment flows.
+ */
+export function ConnectCTA(_props?: {
+  /** @deprecated Ignored while public checkout is deferred */
   signedInCheckoutUrl?: string | null;
+  /** @deprecated Ignored while public checkout is deferred */
   signedInTeamCheckoutUrl?: string | null;
 }) {
-  const trialHref = signedInCheckoutUrl?.trim() || getTrialHref();
-  const teamHref = signedInTeamCheckoutUrl?.trim();
   return (
     <MarketingReveal
       id="connect"
@@ -41,7 +41,7 @@ export function ConnectCTA({
               <Link href="/changelog" className="font-medium text-accent hover:underline">
                 changelog
               </Link>
-              .
+              . Self-serve subscriptions are coming soon.
             </p>
             <div id="trial" className="mt-8 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap">
               <Link
@@ -56,25 +56,18 @@ export function ConnectCTA({
               >
                 Enterprise
               </Link>
-              <a
-                href={trialHref}
+              <Link
+                href="/contact"
                 className="inline-flex h-11 items-center justify-center rounded-lg border border-dashed border-white/[0.12] bg-transparent px-5 text-sm font-medium text-muted transition-colors hover:border-white/[0.2] hover:text-foreground"
-                {...(trialHref.startsWith("http")
-                  ? { target: "_blank", rel: "noopener noreferrer" }
-                  : {})}
               >
-                {signedInCheckoutUrl ? "Subscribe — Pro" : "Subscribe (trial)"}
-              </a>
-              {teamHref ? (
-                <a
-                  href={teamHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex h-11 items-center justify-center rounded-lg border border-dashed border-white/[0.12] bg-transparent px-5 text-sm font-medium text-muted transition-colors hover:border-white/[0.2] hover:text-foreground"
-                >
-                  Subscribe — Team
-                </a>
-              ) : null}
+                Contact us
+              </Link>
+              <Link
+                href="/pilot"
+                className="inline-flex h-11 items-center justify-center rounded-lg border border-dashed border-white/[0.12] bg-transparent px-5 text-sm font-medium text-muted transition-colors hover:border-white/[0.2] hover:text-foreground"
+              >
+                Start a pilot
+              </Link>
             </div>
           </div>
         </div>

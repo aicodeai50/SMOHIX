@@ -41,14 +41,17 @@ Teams juggle alerts, runbooks, approvals, and audit evidence across disconnected
 
 ## Billing
 
-PayPal replaces Lemon Squeezy:
+**Public self-serve checkout is deferred.** Marketing pricing CTAs route to contact / pilot
+until frontend checkout is intentionally launched.
+
+Backend PayPal support remains in code for a future cutover:
 
 - **Free** — explore console
 - **Pro** ($29/mo) — individual operators
 - **Team** ($79/mo) — shared org workspace
-- **Top-ups** — prepaid balance via PayPal Orders
+- **Top-ups** — prepaid balance via PayPal Orders (when enabled)
 
-Webhook: `POST /api/webhooks/paypal`
+Webhook (when enabled): `POST /api/webhooks/paypal`
 
 Optional centralized billing: `SMOHIX_OWN_API_URL`
 
