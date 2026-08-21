@@ -273,15 +273,15 @@ export function CopilotChat({
   }
 
   return (
-    <div className="flex flex-col gap-5 lg:flex-row lg:items-stretch">
+    <div className="smohix-copilot-env flex flex-col gap-5 p-3 sm:p-4 lg:flex-row lg:items-stretch">
       {persistSession ? (
-        <aside className="flex w-full shrink-0 flex-col rounded-xl border border-border bg-surface/70 p-3 shadow-sm lg:w-60">
+        <aside className="flex w-full shrink-0 flex-col rounded-lg border border-white/[0.08] bg-white/[0.02] p-3 lg:w-60">
           <div className="flex items-center justify-between gap-2">
             <span className={`font-semibold text-foreground/90 ${appMeta}`}>Threads</span>
             <button
               type="button"
               onClick={newConversation}
-              className={`rounded-lg border border-border bg-background/30 px-2.5 py-1 font-medium text-muted transition-colors hover:border-accent/35 hover:text-foreground ${appMeta}`}
+              className={`rounded-lg border border-white/[0.1] bg-background/30 px-2.5 py-1 font-medium text-muted transition-colors hover:border-accent/35 hover:text-foreground ${appMeta}`}
             >
               New chat
             </button>
@@ -301,8 +301,8 @@ export function CopilotChat({
                     onClick={() => void loadThread(t.id)}
                     className={`w-full rounded-lg px-2.5 py-2 text-left transition-colors ${
                       activeThreadId === t.id
-                        ? "bg-accent-dim/90 text-foreground shadow-[inset_0_0_0_1px_rgba(56,189,248,0.2)]"
-                        : "text-muted hover:bg-surface-elevated/70 hover:text-foreground"
+                        ? "bg-accent-dim/90 text-foreground shadow-[inset_0_0_0_1px_rgba(16,185,129,0.2)]"
+                        : "text-muted hover:bg-white/[0.04] hover:text-foreground"
                     }`}
                   >
                     <span className={`line-clamp-2 font-medium leading-snug ${appMeta}`}>
@@ -340,11 +340,14 @@ export function CopilotChat({
           </p>
         ) : null}
         <div
-          className="max-h-[min(28rem,70vh)] space-y-4 overflow-y-auto rounded-xl border border-border bg-background/35 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"
+          className="relative max-h-[min(28rem,70vh)] space-y-4 overflow-y-auto rounded-lg border border-white/[0.08] bg-background/40 p-4"
           role="log"
           aria-live="polite"
           aria-relevant="additions"
         >
+          {pending ? (
+            <p className="sr-only">Copilot is responding</p>
+          ) : null}
           {msgs.length === 0 ? (
             <div className={`space-y-3 text-muted ${appBody}`}>
               <p className="text-foreground/85">
@@ -366,10 +369,10 @@ export function CopilotChat({
                 className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
               >
                 <div
-                  className={`max-w-[min(100%,36rem)] rounded-2xl px-4 py-2.5 break-words whitespace-pre-wrap ${appBody} ${
+                  className={`max-w-[min(100%,36rem)] rounded-lg px-4 py-2.5 break-words whitespace-pre-wrap ${appBody} ${
                     m.role === "user"
-                      ? "border border-accent/30 bg-accent-dim/85 text-foreground shadow-[0_0_24px_-10px_rgba(94,225,255,0.35)]"
-                      : "border border-white/[0.08] bg-white/[0.04] text-foreground/92 backdrop-blur-sm"
+                      ? "border border-accent/30 bg-accent-dim/85 text-foreground"
+                      : "border border-white/[0.08] bg-white/[0.04] text-foreground/92"
                   }`}
                 >
                   <span className="sr-only">{m.role === "user" ? "You said: " : "Copilot: "}</span>
@@ -380,13 +383,11 @@ export function CopilotChat({
           )}
           {pending ? (
             <div className="flex justify-start" aria-busy="true" aria-label="Copilot is responding">
-              <div className="flex items-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3 backdrop-blur-sm">
-                <span className="flex gap-1">
-                  <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted [animation-delay:-0.2s]" />
-                  <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted [animation-delay:-0.1s]" />
-                  <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted" />
+              <div className="flex items-center gap-2 rounded-lg border border-accent/25 bg-accent/[0.06] px-4 py-3">
+                <span className="smohix-beacon smohix-beacon--processing" aria-hidden>
+                  <span className="smohix-beacon__mark" />
                 </span>
-                <span className={appMeta}>Generating response…</span>
+                <span className={appMeta}>Responding…</span>
               </div>
             </div>
           ) : null}

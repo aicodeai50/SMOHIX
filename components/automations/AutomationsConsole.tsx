@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 
 import { AuditWhisperInline } from "@/components/guardrails/AuditWhisperInline";
+import { CodeSurface, StateBeacon } from "@/components/architecture";
 import { ExecutionBadge } from "@/components/guardrails/ExecutionBadge";
 import { ExecutionOutcomeBadge } from "@/components/guardrails/ExecutionOutcomeBadge";
 import { ExecutionModeCallout } from "@/components/guardrails/ExecutionModeCallout";
@@ -377,12 +378,19 @@ export function AutomationsConsole({
         ) : (
           <ul className={`mt-3 space-y-2 ${appMeta}`}>
             {executions.slice(0, 10).map((x) => (
-              <li key={x.id} className="rounded-lg border border-white/[0.08] bg-white/[0.02] px-3 py-2">
+              <li key={x.id}>
+                <CodeSurface label={`Receipt · ${x.mode}`}>
                 <p className="font-mono text-foreground/90">{x.playbookId}</p>
                 <p className="text-foreground/75">
-                  {x.mode} · {new Date(x.at).toLocaleString()}
+                  {new Date(x.at).toLocaleString()}
                 </p>
-                <p className="text-foreground/65">Rollback: {x.rollbackPlan}</p>
+                <div className="mt-1">
+                  <StateBeacon
+                    label={x.ok ? "Succeeded" : "Failed"}
+                    tone={x.ok ? "verified" : "critical"}
+                  />
+                </div>
+                <p className="mt-2 text-foreground/65">Rollback: {x.rollbackPlan}</p>
                 {x.expectedOutcome ? (
                   <p className="text-foreground/65">
                     Expected: {x.expectedOutcome.summary} ({x.expectedOutcome.timeToStableMins}m)
@@ -427,6 +435,7 @@ export function AutomationsConsole({
                     </ul>
                   </div>
                 ) : null}
+                </CodeSurface>
               </li>
             ))}
           </ul>

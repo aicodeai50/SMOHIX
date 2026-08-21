@@ -26,9 +26,9 @@ export function FlagshipProductsSection() {
   return (
     <MarketingReveal className={mSection} aria-labelledby="flagship-products-heading">
       <div className={mContainer}>
-        <p className={`${mEyebrow} text-accent/90`}>Products</p>
+        <p className={`${mEyebrow} text-accent/80`}>Products</p>
         <h2 id="flagship-products-heading" className={`mt-2 ${mH2}`}>
-          Workspaces in one ecosystem
+          Workspaces in one architecture
         </h2>
         <p className={`${mLede} mt-3 max-w-2xl`}>
           Smohix.run is headquarters. Each product opens a workspace — same company, same identity.
@@ -47,7 +47,7 @@ export function FlagshipProductsSection() {
             return (
               <article
                 key={product.id}
-                className={`flex flex-col rounded-2xl border border-white/[0.08] bg-gradient-to-br from-white/[0.04] to-transparent p-6 ${mCardMotion} hover:border-accent/30`}
+                className={`smohix-surface smohix-surface--aware flex flex-col p-6 ${mCardMotion}`}
               >
                 <div className="flex items-start justify-between gap-3">
                   <h3 className="text-lg font-semibold text-foreground">{product.name}</h3>

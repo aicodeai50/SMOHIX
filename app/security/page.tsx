@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { LegalLayout } from "@/components/legal/LegalLayout";
 import { ContactEmail } from "@/components/legal/ContactEmail";
+import { SmohixHorizon, SystemLabel } from "@/components/architecture";
 import { SITE_BRAND_NAME } from "@/lib/site-brand";
 
 export const metadata: Metadata = {
@@ -11,6 +12,12 @@ export const metadata: Metadata = {
 export default function SecurityPage() {
   return (
     <LegalLayout title="Security" lastUpdated="May 2026">
+      <div className="mb-6 max-w-md">
+        <SystemLabel>Trust boundary</SystemLabel>
+        <div className="mt-2">
+          <SmohixHorizon />
+        </div>
+      </div>
       <div className="legal-callout">
         <strong>Security-first operations.</strong> {SITE_BRAND_NAME} is designed to keep
         control evidence, approvals, and automation safeguards visible by default.

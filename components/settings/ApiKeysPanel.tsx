@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
+import { CodeSurface } from "@/components/architecture";
 import { appBody, appLabel, appMeta, appPanelTitle } from "@/lib/app-typography";
 
 export type ApiKeyRow = {
@@ -116,8 +117,8 @@ export function ApiKeysPanel({
         </p>
       ) : null}
       {sessionScoped ? (
-        <p className={`rounded-lg border border-cyan-500/25 bg-cyan-500/10 px-4 py-3 text-cyan-100/90 ${appBody}`}>
-          <span className="font-medium text-foreground/90">Session-scoped keys.</span> Stored in
+        <p className={`rounded-lg border border-accent/25 bg-accent/[0.08] px-4 py-3 text-foreground/90 ${appBody}`}>
+          <span className="font-medium text-foreground">Session-scoped keys.</span> Stored in
           server memory for this browser session and used to authenticate{" "}
           <span className="font-mono">/api/reasoning/*</span> and{" "}
           <span className="font-mono">/api/robot/*</span>. They do not survive deploy or cold start;
@@ -161,9 +162,9 @@ export function ApiKeysPanel({
           <p className={`mt-2 ${appMeta}`}>
             This value is never shown again. Store it in a password manager or secret store.
           </p>
-          <pre className={`mt-3 overflow-x-auto rounded-lg bg-background/80 p-3 font-mono text-foreground ${appMeta}`}>
-            {minted}
-          </pre>
+          <CodeSurface label="Secret · shown once" className="mt-3">
+            <pre className={`font-mono text-foreground ${appMeta}`}>{minted}</pre>
+          </CodeSurface>
           <div className="mt-4 flex flex-wrap gap-2">
             {inApiKeyWizardStep ? (
               <button

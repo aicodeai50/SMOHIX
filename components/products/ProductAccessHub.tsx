@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { SmohixHorizon } from "@/components/architecture";
 import { MaturityBadge } from "@/components/marketing/MaturityBadge";
 import { Button } from "@/components/ui/Button";
 import { isFlagshipProduct } from "@/lib/ecosystem-workspaces";
@@ -10,7 +11,7 @@ import {
   type ProductAction,
   type ProductRegistryEntry,
 } from "@/lib/product-registry";
-import { mBody, mBodySm, mCard, mFocusRing } from "@/lib/marketing-layout";
+import { mBody, mBodySm, mFocusRing } from "@/lib/marketing-layout";
 
 function ActionLink({ action }: { action: ProductAction }) {
   const className = `text-sm font-medium text-accent hover:underline ${mFocusRing}`;
@@ -46,7 +47,7 @@ function ProductAccessCard({ product }: { product: ProductRegistryEntry }) {
   );
 
   return (
-    <article className={mCard}>
+    <article className="smohix-surface smohix-surface--aware p-5 md:p-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold text-foreground">{product.publicName}</h2>
@@ -89,10 +90,18 @@ export function ProductAccessHub() {
     return a.publicName.localeCompare(b.publicName);
   });
   return (
-    <div className="grid gap-6 lg:grid-cols-2">
-      {products.map((product) => (
-        <ProductAccessCard key={product.id} product={product} />
-      ))}
+    <div>
+      <div className="mb-8 max-w-lg">
+        <SmohixHorizon />
+        <p className="mt-2 font-mono text-[10px] tracking-[0.16em] text-muted/70">
+          HQ · AI · ASSISTANT · PRI · PLATFORM
+        </p>
+      </div>
+      <div className="grid gap-5 lg:grid-cols-2">
+        {products.map((product) => (
+          <ProductAccessCard key={product.id} product={product} />
+        ))}
+      </div>
     </div>
   );
 }

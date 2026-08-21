@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { ConsoleAmbientBanner } from "@/components/console/ConsoleAmbientBanner";
+import { IntelligenceField, SmohixHorizon } from "@/components/architecture";
 import { ConnectionStatus } from "@/components/copilot/ConnectionStatus";
 import { CopilotChat } from "@/components/copilot/CopilotChat";
 import { PageHeader } from "@/components/app/PageHeader";
@@ -81,12 +82,21 @@ export default async function CopilotPage({
         }
       />
       <ConsoleAmbientBanner snapshot={ambient} />
+      <div className="relative mb-5 overflow-hidden rounded-lg">
+        <IntelligenceField className="opacity-50" animate={false} withNodes />
+        <div className="relative px-1 py-3">
+          <SmohixHorizon />
+          <p className="mt-2 font-mono text-[10px] tracking-[0.16em] text-muted/65">
+            CONTEXT · CONVERSATION · HUMAN AUTHORITY
+          </p>
+        </div>
+      </div>
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-4 lg:col-span-2">
           <ConsolePanel title="Conversation">
             {incidentId ? (
-              <div className={`mb-4 rounded-xl border border-accent/25 bg-accent-dim/40 px-3 py-2 text-accent ${appMeta}`}>
-                <p className="font-medium text-foreground">Incident context</p>
+              <div className={`mb-4 rounded-lg border border-accent/25 bg-accent-dim/40 px-3 py-2 text-accent ${appMeta}`}>
+                <p className="font-medium text-foreground">Incident context attached</p>
                 <p className="mt-1">
                   {incidentTitle ?? "Scoped conversation"}
                   {incidentMeta ? (

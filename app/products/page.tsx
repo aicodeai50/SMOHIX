@@ -29,7 +29,7 @@ export default function ProductsPage() {
       <main id="main-content" className="flex-1">
         <MarketingReveal className={mSection}>
           <div className={mContainer}>
-            <p className={`${mEyebrow} text-primary-muted`}>Products</p>
+            <p className={`${mEyebrow} text-accent/80`}>Products</p>
             <h1 className={`mt-2 ${mH1}`}>Smohix Technologies products</h1>
             <p className={mLede}>
               Flagship workspaces and platform capabilities — each card links to a real destination

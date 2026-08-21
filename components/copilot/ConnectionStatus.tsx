@@ -1,7 +1,9 @@
 import Link from "next/link";
 
+import { StateBeacon } from "@/components/architecture";
 import { isShBackendConfigured } from "@/lib/backend-urls";
 import { appBody, appMeta } from "@/lib/app-typography";
+import { copilotConnectionBeacon } from "@/lib/architecture/ops-state";
 import { getConnectorHealthRows } from "@/lib/connectors-health";
 
 /** Copilot connection status — product language, not env-var instructions. */
@@ -16,9 +18,7 @@ export async function ConnectionStatus() {
 
   const advancedReady = openai || (usesReasoningProxy && reasoning) || reasoning;
   const statusLabel = advancedReady ? "Ready" : "Limited";
-  const statusClass = advancedReady
-    ? "bg-emerald-500/16 text-emerald-200"
-    : "bg-amber-400/14 text-amber-100";
+  const beacon = copilotConnectionBeacon(statusLabel);
 
   const brainLine = openai
     ? "Copilot can draft rich, contextual responses for incidents, services, and runbooks."
@@ -29,7 +29,7 @@ export async function ConnectionStatus() {
         : "Advanced reasoning isn't configured for this workspace. Guided assistance still works.";
 
   return (
-    <div className={`rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3 ${appBody}`}>
+    <div className={`smohix-surface smohix-surface--aware px-4 py-3 ${appBody}`}>
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="min-w-0">
           <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">
@@ -37,11 +37,7 @@ export async function ConnectionStatus() {
           </p>
           <p className={`mt-1 text-muted ${appMeta}`}>{brainLine}</p>
         </div>
-        <span
-          className={`shrink-0 rounded-md px-2 py-1 text-[10px] font-semibold uppercase tracking-wider ${statusClass}`}
-        >
-          {statusLabel}
-        </span>
+        <StateBeacon {...beacon} />
       </div>
       {!advancedReady ? (
         <div className="mt-3 flex flex-wrap items-center gap-2">

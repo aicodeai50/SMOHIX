@@ -65,7 +65,7 @@ function TrustItemList({
       </h2>
       <ul className="mt-6 space-y-4">
         {items.map((item) => (
-          <li key={item.title} className={mCard}>
+          <li key={item.title} className="smohix-surface smohix-surface--dormant p-4 md:p-5">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <h3 className={`${mH3} text-base`}>{item.title}</h3>
               <TrustStatusBadge status={item.status} />
@@ -85,7 +85,7 @@ export default function TrustPage() {
       <main className="flex-1 border-b border-white/[0.06]">
         <article className={mArticle}>
           <MarketingReveal as="div">
-            <p className={`${mEyebrow} text-primary-muted`}>Trust center</p>
+            <p className={`${mEyebrow} text-accent/80`}>Trust center</p>
             <h1 className={`mt-2 ${mH1}`}>Trust &amp; governance</h1>
             <p className={`mt-4 ${mBody}`}>
               {SITE_PUBLIC_BRAND} is built for teams accountable for operational changes. This

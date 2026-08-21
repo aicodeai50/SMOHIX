@@ -1,12 +1,12 @@
-import { CosmicNebula } from "@/components/landing/CosmicNebula";
-import { QuantumDimension } from "@/components/landing/QuantumDimension";
+import { IntelligenceField } from "@/components/architecture";
 
+/**
+ * Marketing shell aligned to Living Architecture — restrained field, no nebula/quantum FX.
+ */
 export function MarketingQuantumShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="smohix-quantum-realm smohix-universe-realm relative">
-      <CosmicNebula />
-      <QuantumDimension />
-      <div className="smohix-singularity-field pointer-events-none absolute inset-0" aria-hidden />
+    <div className="smohix-spatial-grid relative overflow-hidden">
+      <IntelligenceField className="opacity-40" animate={false} />
       <div className="relative z-[1]">{children}</div>
     </div>
   );

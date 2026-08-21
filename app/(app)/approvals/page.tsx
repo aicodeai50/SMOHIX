@@ -7,6 +7,7 @@ import { approvalDecisionAction, createApprovalRequestAction } from "./actions";
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
 import { ConsoleAmbientBanner } from "@/components/console/ConsoleAmbientBanner";
+import { StateBeacon, SystemLabel } from "@/components/architecture";
 import { ExecutionBadge } from "@/components/guardrails/ExecutionBadge";
 import { ExecutionModeCallout } from "@/components/guardrails/ExecutionModeCallout";
 import { GuardedAutomationIdentity } from "@/components/guardrails/GuardedAutomationIdentity";
@@ -16,6 +17,7 @@ import { getOrgContextForUser } from "@/lib/org/context";
 import { roleLabel } from "@/lib/org/roles";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { appBody, appLabel, appMeta, appOverline, appPanelTitle } from "@/lib/app-typography";
+import { approvalStatusBeacon } from "@/lib/architecture/ops-state";
 import { loadConsoleAmbientSnapshot } from "@/lib/console/load-ambient-status";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getIncidentForUser } from "@/lib/incidents/data";
@@ -101,10 +103,14 @@ export default async function ApprovalsPage({ searchParams }: Props) {
   return (
     <>
       <PageHeader
+        eyebrow="Operations · Human authority"
         title="Approvals"
         description="Human approval controls for high-impact changes. Submit requests, decide pending items, and track completed outcomes."
       />
-      <ConsoleAmbientBanner snapshot={ambient} />
+      <div className="mb-4 flex flex-wrap items-center gap-2">
+        <SystemLabel>Decision boundary</SystemLabel>
+        <StateBeacon label="Human required" tone="attention" />
+      </div>      <ConsoleAmbientBanner snapshot={ambient} />
       {linkedIncidentId ? (
         <p className={`mb-4 rounded-xl border border-accent/25 bg-accent/10 px-4 py-3 text-accent ${appBody}`}>
           Linked to this incident
@@ -276,14 +282,12 @@ export default async function ApprovalsPage({ searchParams }: Props) {
               {pending.map((p) => (
                 <li
                   key={p.id}
-                  className="rounded-xl border border-white/[0.08] bg-white/[0.03] p-4 transition-[border-color,box-shadow] hover:border-amber-400/20 hover:shadow-[0_0_24px_-14px_rgba(251,191,36,0.15)]"
+                  className="smohix-human-authority p-4 transition-[border-color,box-shadow] hover:border-amber-400/35"
                 >
                   <p className={`font-mono ${appMeta}`}>{p.id}</p>
                   <div className="mt-2 flex flex-wrap items-start justify-between gap-2">
                     <p className={`min-w-0 font-medium text-foreground ${appBody}`}>{p.action}</p>
-                    <ExecutionBadge tone="warn" title="Waiting for a human decision">
-                      Pending approval
-                    </ExecutionBadge>
+                    <StateBeacon {...approvalStatusBeacon("pending")} title="Waiting for a human decision" />
                   </div>
                   <p className={`mt-1 ${appMeta}`}>
                     {p.requestedBy} · {formatPolicyHintForDisplay(p.policy)}
@@ -391,13 +395,9 @@ export default async function ApprovalsPage({ searchParams }: Props) {
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <span className={`${appBody} text-foreground/90`}>{r.action}</span>
                     {r.status === "approved" ? (
-                      <ExecutionBadge tone="success" title="Recorded in audit when Supabase append is enabled">
-                        Approved
-                      </ExecutionBadge>
+                      <StateBeacon {...approvalStatusBeacon("approved")} />
                     ) : (
-                      <ExecutionBadge tone="danger" title="Blocked path — revisit policy or open a new request">
-                        Denied
-                      </ExecutionBadge>
+                      <StateBeacon {...approvalStatusBeacon("denied")} />
                     )}
                   </div>
                   <p className={`mt-1 font-mono ${appMeta}`}>{r.id}</p>

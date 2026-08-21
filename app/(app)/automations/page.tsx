@@ -142,6 +142,7 @@ export default async function AutomationsPage({
   return (
     <>
       <PageHeader
+        eyebrow="Operations"
         title="Automations"
         description="Playbooks with guarded dry-runs and evidence. Connect automation under Settings → Integrations for live robot execution; otherwise simulated runs are recorded."
       />

@@ -21,7 +21,7 @@ export default function PlatformPage() {
       <MarketingQuantumShell>
         <main id="main-content" className="flex-1 border-b border-white/[0.06]">
           <PlatformWorkspaceIntro />
-          <div className="smohix-quantum-section border-t border-white/[0.06]">
+          <div className="border-t border-white/[0.06]">
             <PlatformSurfaceMap />
           </div>
         </main>

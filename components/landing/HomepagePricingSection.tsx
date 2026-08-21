@@ -14,7 +14,7 @@ export function HomepagePricingSection() {
       aria-labelledby="pricing-heading"
     >
       <div className={mContainer}>
-        <p className={`${mEyebrow} text-primary-muted`}>Pricing</p>
+        <p className={`${mEyebrow} text-accent/80`}>Pricing</p>
         <h2 id="pricing-heading" className={`mt-2 ${mH2}`}>
           Plans that scale with your team
         </h2>

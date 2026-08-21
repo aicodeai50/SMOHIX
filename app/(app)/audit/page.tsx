@@ -92,6 +92,7 @@ export default async function AuditPage({
   return (
     <>
       <PageHeader
+        eyebrow="Knowledge & governance"
         title="Audit log"
         description="Append-only log for billing sync, API keys, approvals, and automation events — mapped to SOC 2 / ISO 27001 controls."
       />
@@ -260,8 +261,17 @@ export default async function AuditPage({
             </tr>
           </thead>
           <tbody className={`divide-y divide-white/[0.05] font-mono ${appMeta}`}>
-            {rows.map((e) => (
-                <tr key={e.id} className="transition-colors hover:bg-white/[0.03]">
+            {rows.map((e, i) => (
+                <tr
+                  key={e.id}
+                  className={`transition-colors hover:bg-white/[0.03] ${
+                    i === 0
+                      ? "smohix-temporal-current"
+                      : i < 4
+                        ? "smohix-temporal-recent"
+                        : "smohix-temporal-past"
+                  }`}
+                >
                   <td className="px-4 py-3 text-muted">{e.ts}</td>
                   <td className="px-4 py-3 text-foreground">{e.actor}</td>
                   <td className="px-4 py-3 text-accent">{e.action}</td>

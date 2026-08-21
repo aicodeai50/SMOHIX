@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
+import { CodeSurface } from "@/components/architecture";
 import {
   DEVELOPER_AUTH,
   DEVELOPER_ERROR_HANDLING,
@@ -268,9 +269,11 @@ export default function DocsApiPage() {
             <p className="mt-2 text-sm text-muted">
               Partial YAML for local tooling only — not a complete published OpenAPI specification.
             </p>
-            <pre className="mt-4 max-h-80 overflow-auto rounded-xl border border-white/[0.08] bg-black/50 p-4 font-mono text-[10px] leading-relaxed text-foreground/80 sm:text-xs">
+            <CodeSurface label="OpenAPI sketch" className="mt-4 max-h-80 overflow-auto">
+              <pre className="font-mono text-[10px] leading-relaxed text-foreground/80 sm:text-xs">
               {sketch}
             </pre>
+            </CodeSurface>
           </section>
 
           <p className="mt-12 flex flex-wrap gap-4 text-sm">

@@ -23,6 +23,7 @@ export default async function RunbooksIndexPage() {
   return (
     <>
       <PageHeader
+        eyebrow="Operations"
         title="Runbook intelligence"
         description="Living procedures with version labels and step-level checks. Stored in-repo for now — wire to your doc store or Git when you connect backends."
       />
@@ -32,7 +33,7 @@ export default async function RunbooksIndexPage() {
           <Link
             key={b.slug}
             href={`/runbooks/${b.slug}`}
-            className="rounded-xl border border-border bg-surface/80 p-5 transition-colors hover:border-accent/40 hover:bg-surface-elevated/50"
+            className="smohix-surface smohix-surface--aware p-5 transition-[border-color,box-shadow] hover:border-accent/30"
           >
             <p className={`font-mono uppercase tracking-wide ${appMeta}`}>
               v{b.version} · {b.steps} steps

@@ -6,7 +6,9 @@ import { redirect } from "next/navigation";
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
 import { ConsoleAmbientBanner } from "@/components/console/ConsoleAmbientBanner";
+import { StateBeacon } from "@/components/architecture";
 import { appBody, appMeta } from "@/lib/app-typography";
+import { incidentSeverityBeacon, incidentStatusBeacon } from "@/lib/architecture/ops-state";
 import { loadConsoleAmbientSnapshot } from "@/lib/console/load-ambient-status";
 import { listIncidentsForUser } from "@/lib/incidents/data";
 import { getOrgContextForUser } from "@/lib/org/context";
@@ -47,12 +49,13 @@ export default async function IncidentsPage() {
       <div className="mb-4 flex flex-wrap items-start justify-between gap-4">
         <PageHeader
           className="min-w-0 flex-1"
+          eyebrow="Operations"
           title="Incidents"
           description="Unified view of signals, ownership, and timeline entries. With Supabase configured and the incidents migration applied, rows load from your database."
         />
         <Link
           href="/incidents/new"
-          className={`inline-flex h-10 shrink-0 items-center justify-center rounded-xl bg-accent px-5 font-semibold text-background shadow-[0_0_28px_-8px_rgba(94,225,255,0.45)] transition-[opacity,box-shadow] hover:opacity-95 hover:shadow-[0_0_36px_-6px_rgba(94,225,255,0.55)] ${appBody}`}
+          className={`inline-flex h-10 shrink-0 items-center justify-center rounded-lg bg-accent px-5 font-semibold text-background shadow-[0_0_20px_-10px_rgba(16,185,129,0.4)] transition-opacity hover:opacity-95 ${appBody}`}
         >
           New incident
         </Link>
@@ -141,8 +144,12 @@ export default async function IncidentsPage() {
                       "—"
                     )}
                   </td>
-                  <td className="px-4 py-3 capitalize text-muted">{row.severity}</td>
-                  <td className="px-4 py-3 capitalize text-muted">{row.status}</td>
+                  <td className="px-4 py-3">
+                    <StateBeacon {...incidentSeverityBeacon(row.severity)} />
+                  </td>
+                  <td className="px-4 py-3">
+                    <StateBeacon {...incidentStatusBeacon(row.status)} />
+                  </td>
                   <td className="px-4 py-3 text-muted">{row.updated}</td>
                 </tr>
               ))}

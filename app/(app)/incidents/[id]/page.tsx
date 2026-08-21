@@ -17,6 +17,7 @@ import {
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
 import { ConsolePanel } from "@/components/app/ConsolePanel";
+import { StateBeacon, SystemLabel } from "@/components/architecture";
 import { AuditWhisperInline } from "@/components/guardrails/AuditWhisperInline";
 import { ExecutionOutcomeBadge } from "@/components/guardrails/ExecutionOutcomeBadge";
 import { getLatestAuditWhisperForIncident } from "@/lib/audit/whispers";
@@ -27,6 +28,7 @@ import { getIncidentForUser } from "@/lib/incidents/data";
 import { listIncidentCommandEvents, type IncidentCommandEvent } from "@/lib/incidents/command-loop";
 import { listRunbooks } from "@/lib/runbooks/catalog";
 import { appBody, appLabel, appMeta, appOverline } from "@/lib/app-typography";
+import { incidentSeverityBeacon, incidentStatusBeacon } from "@/lib/architecture/ops-state";
 import { getIncidentTimeline } from "@/lib/incidents/timeline";
 import { getLatestIncidentRcaRun } from "@/lib/incidents/rca";
 import { isRobotBackendConfigured } from "@/lib/backend-urls";
@@ -166,21 +168,27 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
         </p>
       ) : null}
       <PageHeader
+        eyebrow="Operations · Incident"
         title={row.title}
-        description={`${row.severity} · ${row.status} · updated ${row.updated}${
-          row.serviceName ? ` · ${row.serviceName}` : ""
-        }${row.ownerHint ? ` · ${row.ownerHint}` : ""}`}
+        description={`Updated ${row.updated}${row.serviceName ? ` · ${row.serviceName}` : ""}${
+          row.ownerHint ? ` · ${row.ownerHint}` : ""
+        }`}
         actions={
           source === "database" && hasSupabaseAuth() ? (
             <Link
               href={copilotHrefForIncident(row.id)}
-              className={`inline-flex h-10 items-center rounded-xl border border-accent/40 bg-accent/15 px-4 font-semibold text-accent hover:bg-accent/20 ${appBody}`}
+              className={`inline-flex h-10 items-center rounded-lg border border-accent/40 bg-accent/15 px-4 font-semibold text-accent hover:bg-accent/20 ${appBody}`}
             >
               Ask Copilot about this incident
             </Link>
           ) : null
         }
       />
+      <div className="mb-4 flex flex-wrap items-center gap-2">
+        <SystemLabel>Signal</SystemLabel>
+        <StateBeacon {...incidentSeverityBeacon(row.severity)} />
+        <StateBeacon {...incidentStatusBeacon(row.status)} />
+      </div>
       {source === "database" ? (
         <p className={`mb-3 font-mono text-muted ${appMeta}`} title={row.id}>
           Incident {row.id.slice(0, 8)}…
@@ -188,7 +196,7 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
       ) : null}
       {source === "database" ? (
         <nav
-          className="smohix-glass mb-6 rounded-2xl px-4 py-3 md:px-5"
+          className="smohix-surface smohix-surface--active mb-6 px-4 py-3 md:px-5"
           aria-label="Incident next actions"
         >
           <p className={appOverline}>Next actions</p>
@@ -236,7 +244,7 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
             <li>
               <Link
                 href={approvalsHrefForIncident(row.id)}
-                className={`inline-flex rounded-lg border border-accent/30 bg-accent/10 px-3 py-1.5 font-medium text-accent transition-colors hover:bg-accent/20 ${appMeta}`}
+                className={`inline-flex rounded-lg border border-amber-400/35 bg-amber-400/10 px-3 py-1.5 font-medium text-amber-100 transition-colors hover:bg-amber-400/15 ${appMeta}`}
               >
                 Request approval
               </Link>
@@ -761,15 +769,23 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
           />
         ) : (
           <ul className={`space-y-3 font-mono ${appBody}`}>
-            {timeline.map((e, i) => (
+            {timeline.map((e, i) => {
+              const temporalClass =
+                i === 0
+                  ? "smohix-temporal-current"
+                  : i < 3
+                    ? "smohix-temporal-recent"
+                    : "smohix-temporal-past";
+              return (
               <li
                 key={`${e.at}-${i}-${e.label.slice(0, 24)}`}
-                className="flex gap-4 border-b border-white/[0.05] pb-3 last:border-0 last:pb-0"
+                className={`flex gap-4 border-b border-white/[0.05] pb-3 last:border-0 last:pb-0 ${temporalClass}`}
               >
                 <span className={`shrink-0 ${appMeta}`}>{e.at} UTC</span>
                 <span className="text-foreground/90">{e.label}</span>
               </li>
-            ))}
+              );
+            })}
           </ul>
         )}
       </ConsolePanel>

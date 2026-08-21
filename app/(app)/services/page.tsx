@@ -7,7 +7,9 @@ import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
 import { ConsoleAmbientBanner } from "@/components/console/ConsoleAmbientBanner";
 import { ConsolePanel } from "@/components/app/ConsolePanel";
+import { StateBeacon } from "@/components/architecture";
 import { appBody, appLabel, appMeta, appOverline, appPanelTitle } from "@/lib/app-typography";
+import { burnStateBeacon } from "@/lib/architecture/ops-state";
 import { billingPlanFromSummary, getSubscriptionSummary } from "@/lib/billing/plan";
 import { loadConsoleAmbientSnapshot } from "@/lib/console/load-ambient-status";
 import { listServiceDependencyGraphForUser } from "@/lib/services/dependencies";
@@ -316,25 +318,15 @@ export default async function ServicesPage({
                 {visibleRows.map((r) => (
                   <li
                     key={r.id}
-                    className="rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2"
+                    className="smohix-surface smohix-surface--aware px-3 py-2.5"
                   >
                     <div className="flex flex-wrap items-start justify-between gap-2">
                       <div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex flex-wrap items-center gap-2">
                           <p className="font-medium text-foreground/90">{r.name}</p>
                           {(() => {
                             const state = latestBurnStates.get(r.id) ?? "healthy";
-                            const tone =
-                              state === "critical"
-                                ? "border-danger/40 bg-danger/10 text-danger"
-                                : state === "warning"
-                                  ? "border-amber-400/40 bg-amber-500/10 text-amber-300"
-                                  : "border-emerald-400/30 bg-emerald-500/10 text-emerald-300";
-                            return (
-                              <span className={`rounded-full border px-2 py-0.5 text-[10px] uppercase tracking-wide ${tone}`}>
-                                {state} burn (7d)
-                              </span>
-                            );
+                            return <StateBeacon {...burnStateBeacon(state)} title={`${state} burn (7d)`} />;
                           })()}
                         </div>
                         {r.environment ? (
