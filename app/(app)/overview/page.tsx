@@ -113,7 +113,6 @@ export default async function OverviewPage() {
     reasoning: isShBackendConfigured(),
   };
 
-  const setupDone = Object.values(setup).filter(Boolean).length;
   const connectorsConfigured = connectors.filter((c) => c.baseUrl).length;
   const connectorsUp = connectors.filter((c) => c.ok === true).length;
   const approvalDecisions = approvals.recent.length;
@@ -268,49 +267,46 @@ export default async function OverviewPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Operations"
+        eyebrow="Home"
         title="Command center"
-        description="Prioritize decisions: what requires human approval, what executed safely, and where readiness constraints are blocking delivery."
+        description="What requires attention right now — critical incidents, pending approvals, service health, and recent activity."
       />
 
       <ConsoleAmbientBanner snapshot={ambient} />
 
       <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="smohix-glass rounded-2xl p-5">
-          <p className={`${appMeta} font-medium`}>Incidents</p>
-          <p className="mt-1 text-2xl font-semibold text-foreground">{incidents.length}</p>
+        <Link href="/incidents" className="smohix-glass rounded-2xl p-5 transition-colors hover:border-accent/30">
+          <p className={`${appMeta} font-medium`}>Open incidents</p>
+          <p className="mt-1 text-2xl font-semibold text-foreground">{open}</p>
           <p className={`mt-1 ${appMeta}`}>
-            {open} open · {resolved} resolved
+            {hot} high / critical · {resolved} resolved
           </p>
-        </div>
-        <div className="smohix-glass rounded-2xl p-5">
-          <p className={`${appMeta} font-medium`}>High / critical</p>
-          <p className="mt-1 text-2xl font-semibold text-foreground">{hot}</p>
-          <p className={`mt-1 ${appMeta}`}>Requires active response</p>
-        </div>
-        <div className="smohix-glass rounded-2xl p-5">
-          <p className={`${appMeta} font-medium`}>Connectors</p>
+        </Link>
+        <Link href="/approvals" className="smohix-glass rounded-2xl p-5 transition-colors hover:border-accent/30">
+          <p className={`${appMeta} font-medium`}>Pending approvals</p>
+          <p className="mt-1 text-2xl font-semibold text-foreground">{approvalsPending}</p>
+          <p className={`mt-1 ${appMeta}`}>{pendingRiskLabel}</p>
+        </Link>
+        <Link href="/services" className="smohix-glass rounded-2xl p-5 transition-colors hover:border-accent/30">
+          <p className={`${appMeta} font-medium`}>Service health</p>
           <p className="mt-1 text-2xl font-semibold text-foreground">
-            {connectorsUp}
-            <span className={`${appPanelTitle} font-normal text-muted`}>
-              {" "}
-              / {connectorsConfigured}
-            </span>
+            {criticalBurnServices > 0 ? `${criticalBurnServices} critical` : `${connectorsUp} up`}
           </p>
           <p className={`mt-1 ${appMeta}`}>
-            {connectorsConfigured === 0
-              ? "No connector endpoints configured"
-              : "Healthy endpoints of configured total"}
+            {errorBudgetServices > 0
+              ? `${warningBurnServices} warning · ${errorBudgetServices} with SLO`
+              : connectorsConfigured === 0
+                ? "No monitoring linked yet"
+                : `${connectorsUp} / ${connectorsConfigured} connectors healthy`}
           </p>
-        </div>
-        <div className="smohix-glass rounded-2xl p-5">
-          <p className={`${appMeta} font-medium`}>Setup checklist</p>
-          <p className="mt-1 text-2xl font-semibold text-foreground">
-            {setupDone}
-            <span className={`${appPanelTitle} font-normal text-muted`}> / 4</span>
+        </Link>
+        <Link href="/automations" className="smohix-glass rounded-2xl p-5 transition-colors hover:border-accent/30">
+          <p className={`${appMeta} font-medium`}>Automation confidence</p>
+          <p className="mt-1 text-2xl font-semibold text-foreground">{dryRunSuccessRate}%</p>
+          <p className={`mt-1 ${appMeta}`}>
+            Dry-run success · {successfulDryRuns}/{dryRuns.length || 0} runs
           </p>
-          <p className={`mt-1 ${appMeta}`}>Operational readiness</p>
-        </div>
+        </Link>
       </div>
 
       <OverviewDecisionSurface command={command} recentIncidents={incidents.slice(0, 8)} />
@@ -507,10 +503,10 @@ export default async function OverviewPage() {
           </div>
           <ul className={`mt-4 space-y-2 ${appBody} text-foreground/90`}>
             {[
-              { ok: setup.accounts, label: "Accounts & database", href: "/settings" },
-              { ok: setup.openai, label: "Copilot cloud model", href: "/copilot" },
-              { ok: setup.reasoning, label: "Extended reasoning", href: "/settings/connectors" },
-              { ok: setup.robot, label: "Automation connector", href: "/settings/connectors" },
+              { ok: setup.accounts, label: "Workspace accounts", href: "/settings" },
+              { ok: setup.openai, label: "Copilot advanced reasoning", href: "/settings/connectors" },
+              { ok: setup.reasoning, label: "Reasoning integration", href: "/settings/connectors" },
+              { ok: setup.robot, label: "Automation integration", href: "/settings/connectors" },
             ].map((item) => (
               <li key={item.label}>
                 <Link
@@ -536,8 +532,8 @@ export default async function OverviewPage() {
             ))}
           </ul>
           <p className={`mt-4 ${appMeta}`}>
-            Paid plans sync through billing webhooks after you configure keys; until then billing
-            views stay inactive while the rest of the console runs on session or database data.
+            Configuration details and environment setup live under Settings → Integrations. Self-serve
+            checkout remains deferred — Contact or Pilot for Pro / Team access.
           </p>
         </section>
       </div>

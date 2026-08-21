@@ -28,7 +28,7 @@ assert(hubPage.includes("HubOnboardingPanel"), "hub page must render HubOnboardi
 assert(hubPage.includes("hasOrganization"), "hub must load organization context");
 assert(hubPage.includes("orgName"), "hub must surface org name when present");
 
-assert(onboarding.includes("Start here"), "onboarding heading");
+assert(onboarding.includes("Needs attention and quick start"), "onboarding heading");
 assert(onboarding.includes("/settings#setup-wizard"), "setup wizard quick start");
 assert(onboarding.includes("/docs"), "docs quick start");
 assert(onboarding.includes("/docs/api"), "API docs quick start");
@@ -50,7 +50,8 @@ assert(!onboarding.includes("Subscribe — Pro"), "no Subscribe Pro CTA in hub o
 assert(!onboarding.includes("Subscribe — Team"), "no Subscribe Team CTA in hub onboarding");
 assert(onboarding.includes("Self-serve checkout remains deferred"), "payment deferred note");
 
-assert(quickActions.includes("/settings#setup-wizard"), "quick actions prefer setup over billing CTA");
+assert(quickActions.includes("/services#svc-name"), "quick actions include add service");
+assert(quickActions.includes("/copilot"), "quick actions include copilot");
 assert(!quickActions.includes('label: "Billing"'), "billing shortcut removed from hub quick actions");
 
 assert(FLAGSHIP_PRODUCTS.some((p) => p.id === "smohix-ai" && p.status === "live"), "AI live");

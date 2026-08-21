@@ -8,7 +8,12 @@ import { AppIcon } from "@/components/icons/AppIcon";
 import { getConsoleBreadcrumbs } from "@/lib/console-breadcrumbs";
 import { mergeIdleJumpModules } from "@/lib/console/hub-personalization";
 import { appMeta } from "@/lib/app-typography";
-import { CONSOLE_MODULES } from "@/lib/console-nav";
+import {
+  CONSOLE_MODULES,
+  CONSOLE_NAV_GROUPS,
+  moduleBadgeLabel,
+  shouldShowModuleBadge,
+} from "@/lib/console-nav";
 
 const HUB_PREFS_STORAGE_KEY = "smohix.hub.personalization";
 const LEGACY_HUB_PREFS_STORAGE_KEY = "zentro.hub.personalization";
@@ -62,8 +67,8 @@ type SearchEntry = {
   maturity?: (typeof CONSOLE_MODULES)[number]["maturity"];
 };
 
-function maturityLabel(maturity: NonNullable<SearchEntry["maturity"]>): string {
-  return maturity === "core" ? "Core" : maturity === "beta" ? "Beta" : maturity === "internal" ? "Internal" : "Planned";
+function maturityLabel(maturity: NonNullable<SearchEntry["maturity"]>): string | null {
+  return shouldShowModuleBadge(maturity) ? moduleBadgeLabel(maturity) : null;
 }
 
 function fuzzyScore(query: string, text: string): number {
@@ -250,14 +255,6 @@ export function ConsoleNavPanel({ pinnedNavHrefs = [] }: { pinnedNavHrefs?: read
     });
   }, [pathname, recordRecentModule]);
 
-  const goBack = useCallback(() => {
-    router.back();
-  }, [router]);
-
-  const goForward = useCallback(() => {
-    router.forward();
-  }, [router]);
-
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       const isQuickOpen = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k";
@@ -275,32 +272,11 @@ export function ConsoleNavPanel({ pinnedNavHrefs = [] }: { pinnedNavHrefs?: read
   return (
     <nav
       className="sticky top-0 z-30 -mx-4 mb-4 border-b border-white/[0.08] bg-[rgba(8,10,15,0.92)] px-3 py-2.5 shadow-[0_8px_32px_-20px_rgba(0,0,0,0.85)] backdrop-blur-xl md:-mx-8 md:px-6"
-      aria-label="Page and history navigation"
+      aria-label="Page navigation"
     >
       <div className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-3">
-        <div className="flex flex-wrap items-center gap-2">
-          <button
-            type="button"
-            onClick={goBack}
-            className={`inline-flex h-9 items-center gap-1.5 rounded-lg border border-white/[0.1] bg-white/[0.04] px-3 font-semibold text-foreground/90 transition-colors hover:border-accent/35 hover:bg-white/[0.07] hover:text-accent ${appMeta}`}
-            aria-label="Go back in browser history"
-          >
-            <AppIcon name="chevronLeft" size={14} className="text-muted" aria-hidden />
-            Back
-          </button>
-          <button
-            type="button"
-            onClick={goForward}
-            className={`inline-flex h-9 items-center gap-1.5 rounded-lg border border-white/[0.1] bg-white/[0.04] px-3 font-semibold text-foreground/90 transition-colors hover:border-accent/35 hover:bg-white/[0.07] hover:text-accent ${appMeta}`}
-            aria-label="Go forward in browser history"
-          >
-            Forward
-            <AppIcon name="chevronRight" size={14} className="text-muted" aria-hidden />
-          </button>
-        </div>
-
         <div
-          className="flex min-w-0 flex-1 flex-wrap items-center gap-x-1 gap-y-0.5 text-[13px] sm:justify-center"
+          className="flex min-w-0 flex-1 flex-wrap items-center gap-x-1 gap-y-0.5 text-[13px]"
           aria-label="Breadcrumb"
         >
           {crumbs.map((c, i) => (
@@ -431,8 +407,8 @@ export function ConsoleNavPanel({ pinnedNavHrefs = [] }: { pinnedNavHrefs?: read
                           <span className="ml-1 text-muted">
                             ({renderHighlightedText(m.description, searchQuery)})
                           </span>
-                          {m.maturity ? (
-                            <span className="ml-1 rounded bg-white/[0.07] px-1 py-0.5 font-mono text-[9px] uppercase tracking-wide text-muted">
+                          {m.maturity && maturityLabel(m.maturity) ? (
+                            <span className="ml-1 rounded bg-amber-400/14 px-1 py-0.5 font-mono text-[9px] uppercase tracking-wide text-amber-200/95">
                               {maturityLabel(m.maturity)}
                             </span>
                           ) : null}
@@ -482,10 +458,15 @@ export function ConsoleNavPanel({ pinnedNavHrefs = [] }: { pinnedNavHrefs?: read
             className={`h-9 max-w-[11rem] cursor-pointer rounded-lg border border-white/[0.1] bg-white/[0.04] px-2 font-medium text-foreground/90 outline-none ring-accent/25 focus:border-accent/40 focus:ring-2 sm:max-w-[14rem] ${appMeta}`}
           >
             <option value="">Jump to…</option>
-            {CONSOLE_MODULES.map((m) => (
-              <option key={m.href} value={m.href}>
-                {m.label} · {maturityLabel(m.maturity)}
-              </option>
+            {CONSOLE_NAV_GROUPS.map((group) => (
+              <optgroup key={group.id} label={group.label}>
+                {CONSOLE_MODULES.filter((m) => m.group === group.id).map((m) => (
+                  <option key={m.href} value={m.href}>
+                    {m.label}
+                    {maturityLabel(m.maturity) ? ` · ${maturityLabel(m.maturity)}` : ""}
+                  </option>
+                ))}
+              </optgroup>
             ))}
           </select>
         </div>

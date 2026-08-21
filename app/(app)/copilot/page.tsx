@@ -12,11 +12,17 @@ import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
-  title: "Incident Copilot",
+  title: "Smohix Copilot",
   description: "AI-assisted triage and next steps with human oversight.",
 };
 
 export const dynamic = "force-dynamic";
+
+const SUGGESTED_PROMPTS = [
+  "What should I check first on a high-severity API latency incident?",
+  "Summarize pending approvals that block automation.",
+  "Which runbook fits a burn-budget warning?",
+] as const;
 
 export default async function CopilotPage({
   searchParams,
@@ -43,27 +49,50 @@ export default async function CopilotPage({
   return (
     <>
       <PageHeader
-        eyebrow="Operations"
-        title="Incident Copilot"
-        description="Triage and next steps in plain language. Copilot drafts hypotheses, checks, and actions — you stay in control. Signed-in workspaces can keep conversation history when persistence is on."
+        eyebrow="Intelligence"
+        title="Smohix Copilot"
+        description="Ask about incidents, services, changes, runbooks, and operational risk. Copilot drafts hypotheses and next steps — you stay in control."
+        actions={
+          <Link
+            href="/settings/connectors"
+            className={`inline-flex h-10 items-center justify-center rounded-xl border border-white/[0.12] px-4 font-medium text-muted transition-colors hover:border-accent/35 hover:text-foreground ${appMeta}`}
+          >
+            Configure Copilot
+          </Link>
+        }
       />
       <ConsoleAmbientBanner snapshot={ambient} />
-      <ConnectionStatus />
       <div className="grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2">
+        <div className="space-y-4 lg:col-span-2">
           <ConsolePanel title="Conversation">
             {incidentId ? (
               <p className={`mb-4 rounded-xl border border-accent/25 bg-accent-dim/40 px-3 py-2 text-accent ${appMeta}`}>
                 Incident context attached:{" "}
-                <Link href={`/incidents/${encodeURIComponent(incidentId)}`} className="font-medium underline-offset-2 hover:underline">
+                <Link
+                  href={`/incidents/${encodeURIComponent(incidentId)}`}
+                  className="font-medium underline-offset-2 hover:underline"
+                >
                   {incidentId}
                 </Link>
               </p>
             ) : null}
             <CopilotChat persistSession={persistSession} incidentId={incidentId || null} />
           </ConsolePanel>
+          <ConnectionStatus />
         </div>
         <div className="space-y-4">
+          <ConsolePanel title="Suggested prompts">
+            <ul className={`space-y-2 ${appBody}`}>
+              {SUGGESTED_PROMPTS.map((prompt) => (
+                <li
+                  key={prompt}
+                  className="rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2.5 text-muted"
+                >
+                  {prompt}
+                </li>
+              ))}
+            </ul>
+          </ConsolePanel>
           <ConsolePanel title="Shortcuts">
             <ul className={`space-y-1 ${appBody}`}>
               <li>
@@ -71,20 +100,20 @@ export default async function CopilotPage({
                   href="/approvals"
                   className="flex items-center justify-between gap-3 rounded-lg px-2 py-2.5 text-foreground/90 transition-colors hover:bg-surface-elevated/60 hover:text-accent"
                 >
-                  <span className="font-medium">Dry-run rollback canary</span>
+                  <span className="font-medium">Pending approvals</span>
                   <span className={`shrink-0 rounded-md bg-warning-dim px-2 py-0.5 font-semibold uppercase tracking-wide text-warning ${appMeta}`}>
-                    Approval
+                    Review
                   </span>
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/runbooks/api-latency"
+                  href="/runbooks"
                   className="flex items-center justify-between gap-3 rounded-lg px-2 py-2.5 text-foreground/90 transition-colors hover:bg-surface-elevated/60 hover:text-accent"
                 >
-                  <span className="font-medium">API latency runbook</span>
+                  <span className="font-medium">Runbooks</span>
                   <span className={`shrink-0 rounded-md bg-accent-dim px-2 py-0.5 font-semibold uppercase tracking-wide text-accent ${appMeta}`}>
-                    Runbook
+                    Browse
                   </span>
                 </Link>
               </li>
@@ -93,20 +122,12 @@ export default async function CopilotPage({
                   href="/automations"
                   className="flex items-center justify-between gap-3 rounded-lg px-2 py-2.5 text-foreground/90 transition-colors hover:bg-surface-elevated/60 hover:text-accent"
                 >
-                  <span className="font-medium">Playbook dry-runs</span>
+                  <span className="font-medium">Automations</span>
                   <span className={`shrink-0 rounded-md bg-accent-dim px-2 py-0.5 font-semibold uppercase tracking-wide text-accent ${appMeta}`}>
-                    Automate
+                    Dry-run
                   </span>
                 </Link>
               </li>
-            </ul>
-          </ConsolePanel>
-          <ConsolePanel title="Available today">
-            <ul className={`space-y-2 text-muted ${appBody}`}>
-              <li>Incident-scoped context when launched from an incident.</li>
-              <li>Conversation persistence for signed-in Supabase workspaces.</li>
-              <li>Fallback guided replies when cloud AI is not configured.</li>
-              <li>Rate limits and access checks before requests reach the model.</li>
             </ul>
           </ConsolePanel>
         </div>

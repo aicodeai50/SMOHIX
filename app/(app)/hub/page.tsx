@@ -60,9 +60,6 @@ export default async function HubPage() {
 
   const signedIn = Boolean(displayName);
   const title = signedIn && firstName ? `Welcome back, ${firstName}` : "Welcome to Smohix";
-  const description = signedIn
-    ? "Your operations command center — start with setup, products, docs, or Smohix AI."
-    : "Core flows work without accounts. Sign in for shared sessions, organizations, and durable history.";
   const guidedFlow = [
     "Alert opens incident",
     "System proposes guarded action",
@@ -90,7 +87,15 @@ export default async function HubPage() {
 
   return (
     <>
-      <PageHeader eyebrow={SITE_BRAND_NAME} title={title} description={description} />
+      <PageHeader
+        eyebrow="Home"
+        title={title}
+        description={
+          signedIn
+            ? "Your Smohix Platform workspace — health, setup, products, and where to continue."
+            : "Core flows work without accounts. Sign in for organizations, shared history, and setup."
+        }
+      />
       <ConsoleAmbientBanner snapshot={ambient} />
       <HubOnboardingPanel
         orgName={orgName}
@@ -98,15 +103,31 @@ export default async function HubPage() {
         hasOrganization={hasOrganization}
         signedIn={signedIn}
       />
-      <DashboardStats userId={userId} />
+      <section className="mt-6" aria-labelledby="hub-health-heading">
+        <h2 id="hub-health-heading" className={appPanelTitle}>
+          Workspace health
+        </h2>
+        <p className={`mt-1 ${appBody} text-muted`}>
+          Active load across incidents, approvals, and plan status.
+        </p>
+        <DashboardStats userId={userId} />
+      </section>
       <QuickActions />
-      <HubQuickLinksPanel
-        quickLinks={hubPersonalization.quickLinks}
-        pinnedHrefs={hubPersonalization.pinnedHrefs}
-        availableModules={availableModules}
-        canPersistServer={Boolean(userId && hasSupabaseAuth())}
-        customized={hubPersonalization.customized}
-      />
+      <section className="mt-6" aria-labelledby="hub-continue-heading">
+        <h2 id="hub-continue-heading" className={appPanelTitle}>
+          Continue working
+        </h2>
+        <p className={`mt-1 mb-3 ${appBody} text-muted`}>
+          Personalized module shortcuts — pin what you use most.
+        </p>
+        <HubQuickLinksPanel
+          quickLinks={hubPersonalization.quickLinks}
+          pinnedHrefs={hubPersonalization.pinnedHrefs}
+          availableModules={availableModules}
+          canPersistServer={Boolean(userId && hasSupabaseAuth())}
+          customized={hubPersonalization.customized}
+        />
+      </section>
       <section className="smohix-glass mt-6 rounded-2xl p-5 md:p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>

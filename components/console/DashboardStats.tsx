@@ -98,10 +98,10 @@ export async function DashboardStats({ userId }: { userId: string | null }) {
 
 export function QuickActions() {
   const actions = [
-    { href: "/incidents/new", label: "New incident", icon: "alertTriangle" as const },
-    { href: "/automations", label: "Automations", icon: "workflow" as const },
-    { href: "/copilot", label: "Ask Copilot", icon: "bot" as const },
-    { href: "/settings#setup-wizard", label: "Setup wizard", icon: "settings" as const },
+    { href: "/incidents/new", label: "Create incident", icon: "alertTriangle" as const },
+    { href: "/services#svc-name", label: "Add service", icon: "server" as const },
+    { href: "/automations", label: "Create automation", icon: "workflow" as const },
+    { href: "/copilot", label: "Open Copilot", icon: "bot" as const },
   ];
 
   return (

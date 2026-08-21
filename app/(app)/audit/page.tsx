@@ -212,12 +212,8 @@ export default async function AuditPage({
         </p>
       ) : hasSupabaseAuth() && userId && rows.length === 0 ? (
         <p className={`smohix-glass-subtle mb-4 rounded-xl px-4 py-3 ${appMeta}`}>
-          No events yet. Ensure{" "}
-          <code className="rounded bg-surface px-1 font-mono text-accent">
-            supabase/migrations/20260418140000_console_extensions.sql
-          </code>{" "}
-          is applied and <span className="font-mono">SUPABASE_SERVICE_ROLE_KEY</span> is set so the
-          app can append audit rows.
+          No events yet. Approvals, API key changes, billing sync, and automation evidence appear here
+          as your workspace generates activity.
         </p>
       ) : null}
       {rows.length === 0 ? (
@@ -225,8 +221,8 @@ export default async function AuditPage({
           title={source === "session" ? "Sign in to see audit history" : "No audit events yet"}
           description={
             source === "session"
-              ? "The audit log is stored per account in Supabase. Sign in to load append-only events."
-              : "When the service role can append, status changes, API keys, billing sync, and automation events appear here."
+              ? "The audit log is stored per account. Sign in to load append-only evidence events."
+              : "When operators approve changes, rotate keys, or run automations, those events appear here as durable evidence."
           }
           ctas={
             source === "session"
@@ -237,15 +233,15 @@ export default async function AuditPage({
                 ]
           }
           footnote={
-            source === "session" ? null : (
-              <>
-                Apply{" "}
-                <code className="rounded bg-surface px-1 font-mono text-accent">
-                  supabase/migrations/20260418140000_console_extensions.sql
-                </code>{" "}
-                and set <span className="font-mono">SUPABASE_SERVICE_ROLE_KEY</span> for append paths.
-              </>
-            )
+            source !== "session" ? (
+              <span>
+                Technical retention and append configuration lives under{" "}
+                <a href="/settings/deployment" className="font-medium text-accent hover:underline">
+                  Settings → Security &amp; residency
+                </a>
+                .
+              </span>
+            ) : undefined
           }
         />
       ) : (

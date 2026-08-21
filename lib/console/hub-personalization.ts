@@ -110,6 +110,7 @@ export function resolveHubQuickLinks(
       icon: "scrollText",
       live: true,
       maturity: "beta",
+      group: "knowledge",
     });
   }
   const pinnedSet = new Set(prefs.pinnedHrefs);

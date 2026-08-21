@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { PageHeader } from "@/components/app/PageHeader";
 import { ConsoleAmbientBanner } from "@/components/console/ConsoleAmbientBanner";
-import { appBody, appMeta, appPanelTitle } from "@/lib/app-typography";
+import { appBody, appMeta, appOverline, appPanelTitle } from "@/lib/app-typography";
 import { loadConsoleAmbientSnapshot } from "@/lib/console/load-ambient-status";
 import { getConnectorHealthRows } from "@/lib/connectors-health";
 import { AccountDeletionPanel } from "@/components/settings/AccountDeletionPanel";
@@ -19,34 +19,58 @@ export const metadata: Metadata = {
 
 const cards = [
   {
-    href: "/settings/billing",
-    title: "Billing",
-    description: "Plan, PayPal checkout, balance top-ups, and transaction history.",
-  },
-  {
+    group: "Workspace",
     href: "/settings/members",
-    title: "Members & roles",
-    description: "Organization RBAC, delegated approvers, and security reviewers.",
+    title: "Organization",
+    description: "Active organization, workspace context, and membership.",
   },
   {
+    group: "Workspace",
+    href: "/settings/members",
+    title: "Members & access",
+    description: "Roles, delegated approvers, and security reviewers.",
+  },
+  {
+    group: "Integrations",
+    href: "/settings/connectors",
+    title: "Integrations",
+    description: "Monitoring ingest, reasoning, and automation endpoints.",
+  },
+  {
+    group: "Integrations",
     href: "/settings/api-keys",
     title: "API keys",
     description: "Keys for automation and integrations calling your deployment.",
   },
   {
+    group: "AI",
     href: "/settings/connectors",
-    title: "Connectors",
-    description: "Reasoning and automation endpoints plus health checks.",
+    title: "AI / Copilot",
+    description: "Configure Copilot and reasoning connectors for this workspace.",
   },
   {
+    group: "Account",
+    href: "#notification-settings",
+    title: "Notifications",
+    description: "Email and in-product preference controls on this page.",
+  },
+  {
+    group: "Account",
+    href: "/settings/billing",
+    title: "Billing",
+    description: "Plan status and contact paths for Pro / Team (checkout deferred).",
+  },
+  {
+    group: "Security",
     href: "/settings/deployment",
-    title: "Deployment & residency",
+    title: "Security & residency",
     description: "Region pins, data boundaries, and retention controls.",
   },
   {
-    href: "/vision",
-    title: "Vision & roadmap",
-    description: "Product direction and upcoming capabilities.",
+    group: "Security",
+    href: "/security",
+    title: "Security center",
+    description: "Public security posture and practices.",
   },
 ] as const;
 
@@ -219,7 +243,7 @@ export default async function SettingsIndexPage({
     <>
       <PageHeader
         title="Settings"
-        description="Billing and service links for this workspace. Runbooks and audit live under their own modules in the rail."
+        description="Workspace, organization, integrations, and account controls for this Smohix Platform environment."
       />
       <ConsoleAmbientBanner snapshot={ambient} />
       <section id="setup-wizard" className="smohix-glass mb-6 rounded-2xl p-5 md:p-6">
@@ -461,18 +485,29 @@ export default async function SettingsIndexPage({
           </div>
         </section>
       ) : null}
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {cards.map((c) => (
-          <Link
-            key={c.href}
-            href={c.href}
-            className="smohix-glass group flex flex-col rounded-2xl p-5 transition-[border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-[0_0_40px_-14px_rgba(94,225,255,0.2)]"
-          >
-            <h2 className={`${appPanelTitle} group-hover:text-accent`}>{c.title}</h2>
-            <p className={`mt-2 flex-1 text-muted ${appBody}`}>{c.description}</p>
-            <span className={`mt-4 font-medium text-accent ${appBody}`}>Open →</span>
-          </Link>
-        ))}
+      <div className="space-y-8">
+        {(["Workspace", "Integrations", "AI", "Account", "Security"] as const).map((group) => {
+          const groupCards = cards.filter((c) => c.group === group);
+          if (groupCards.length === 0) return null;
+          return (
+            <section key={group}>
+              <h2 className={`${appOverline} mb-3 text-muted`}>{group}</h2>
+              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                {groupCards.map((c) => (
+                  <Link
+                    key={`${c.group}-${c.title}`}
+                    href={c.href}
+                    className="smohix-glass group flex flex-col rounded-2xl p-5 transition-[border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-[0_0_40px_-14px_rgba(94,225,255,0.2)]"
+                  >
+                    <h3 className={`${appPanelTitle} group-hover:text-accent`}>{c.title}</h3>
+                    <p className={`mt-2 flex-1 text-muted ${appBody}`}>{c.description}</p>
+                    <span className={`mt-4 font-medium text-accent ${appBody}`}>Open →</span>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          );
+        })}
       </div>
     </>
   );

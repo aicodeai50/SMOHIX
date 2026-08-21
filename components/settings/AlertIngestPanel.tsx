@@ -115,10 +115,19 @@ export function AlertIngestPanel({
         </p>
       ) : null}
       {!serviceRoleConfigured ? (
-        <p className={`rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-amber-100/90 ${appBody}`}>
-          Set <span className="font-mono">SUPABASE_SERVICE_ROLE_KEY</span> so the alert webhook can
-          verify tokens and create incidents.
-        </p>
+        <div className={`rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-amber-100/90 ${appBody}`}>
+          <p className="font-medium text-amber-50">Monitoring isn’t fully configured</p>
+          <p className={`mt-1 ${appMeta}`}>
+            Connect monitoring so alerts can create incidents automatically. Technical setup lives under
+            Settings → Integrations.
+          </p>
+          <a
+            href="/settings/connectors"
+            className="mt-2 inline-flex font-semibold text-amber-50 underline-offset-2 hover:underline"
+          >
+            Configure integration →
+          </a>
+        </div>
       ) : null}
       {loadErr ? (
         <p className={`rounded-lg border border-border bg-surface px-3 py-2 text-muted ${appBody}`}>
@@ -210,7 +219,15 @@ export function AlertIngestPanel({
 
       <ul className={`space-y-2 ${appBody}`}>
         {active.length === 0 ? (
-          <li className="text-muted">No active ingest tokens yet.</li>
+          <li className="rounded-xl border border-dashed border-white/[0.12] bg-white/[0.02] px-4 py-5">
+            <p className="font-medium text-foreground/90">No monitoring connections yet</p>
+            <p className={`mt-1 text-muted ${appMeta}`}>
+              Connect a monitoring source to send alerts into Smohix and create incidents automatically.
+            </p>
+            <p className={`mt-2 text-muted ${appMeta}`}>
+              Create an ingest token above, then point your tools at the alert webhook.
+            </p>
+          </li>
         ) : (
           active.map((t) => (
             <li

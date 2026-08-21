@@ -102,9 +102,9 @@ export function HubOnboardingPanel({
         <p className={`${appMeta} uppercase tracking-wide text-accent/90`}>
           Welcome to {SITE_BRAND_NAME}
         </p>
-        <h2 id="hub-onboarding-heading" className={`mt-1 ${appPanelTitle}`}>
-          Start here
-        </h2>
+          <h2 id="hub-onboarding-heading" className={`mt-1 ${appPanelTitle}`}>
+            Needs attention and quick start
+          </h2>
         <p className={`mt-2 max-w-2xl ${appBody} text-muted`}>
           Your signed-in Hub is the operations console. Use the paths below to configure your
           workspace, open products, and reach docs or Smohix AI — without guessing where to go next.

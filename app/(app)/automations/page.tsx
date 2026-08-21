@@ -143,7 +143,7 @@ export default async function AutomationsPage({
     <>
       <PageHeader
         title="Automations"
-        description="Playbooks with dry-runs against your robot service when REACT_APP_ROBOT_BACKEND is set; otherwise simulated runs are recorded. Signed-in accounts persist dry-runs and emit audit events when the automation_dry_runs migration is applied."
+        description="Playbooks with guarded dry-runs and evidence. Connect automation under Settings → Integrations for live robot execution; otherwise simulated runs are recorded."
       />
       <ConsoleAmbientBanner snapshot={ambient} />
       <AutomationsConsole

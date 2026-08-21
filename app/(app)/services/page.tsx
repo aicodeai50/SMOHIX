@@ -134,7 +134,15 @@ export default async function ServicesPage({
       <PageHeader
         eyebrow="Operations"
         title="Services"
-        description="Catalog systems you operate, attach them to incidents, and accept monitoring webhooks. SLO burn and dependency edges are shared when an organization is active."
+        description="Catalog the systems you operate, monitor health, and connect monitoring to create incidents automatically."
+        actions={
+          <a
+            href="#svc-name"
+            className={`inline-flex h-10 items-center justify-center rounded-xl bg-accent px-4 font-semibold text-background ${appBody}`}
+          >
+            Add service
+          </a>
+        }
       />
       <ConsoleAmbientBanner snapshot={ambient} />
       {err ? (
@@ -147,6 +155,7 @@ export default async function ServicesPage({
         <ConsolePanel title="Catalog">
           <div className="mb-4 grid gap-3 sm:grid-cols-3">
             <div className="rounded-lg border border-white/[0.08] bg-white/[0.02] px-3 py-2">
+
               <p className={appMeta}>SLO-covered services</p>
               <p className="text-lg font-semibold text-foreground">{sloSummary.servicesWithSlo}</p>
             </div>
@@ -288,9 +297,12 @@ export default async function ServicesPage({
             {rows.length === 0 ? (
               <div className="mt-4">
                 <ConsoleEmptyState
-                  title="No services in the catalog"
-                  description="Add a system you operate so incidents can link to it and ingest can resolve service_name."
-                  ctas={[{ href: "#svc-name", label: "Fill form above" }]}
+                  title="No services yet"
+                  description="Add a service to track ownership, health, and incident linkage. Monitoring can create incidents automatically once integrations are connected."
+                  ctas={[
+                    { href: "#svc-name", label: "Add service" },
+                    { href: "/settings/connectors", label: "Connect monitoring", variant: "secondary" },
+                  ]}
                 />
               </div>
             ) : visibleRows.length === 0 ? (
