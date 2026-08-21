@@ -1,5 +1,5 @@
 /** Console routes — require a Supabase session when auth env is configured. */
-const PROTECTED_PREFIXES = [
+export const PROTECTED_PREFIXES = [
   "/hub",
   "/vision",
   "/overview",
@@ -10,6 +10,7 @@ const PROTECTED_PREFIXES = [
   "/runbooks",
   "/approvals",
   "/audit",
+  "/governance",
   "/settings",
   "/admin",
 ] as const;

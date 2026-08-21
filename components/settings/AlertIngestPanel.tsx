@@ -143,21 +143,32 @@ export function AlertIngestPanel({
       <div>
         <h3 className={`${appPanelTitle} text-foreground/95`}>Alert → incident webhook</h3>
         <p className={`mt-1 text-muted ${appMeta}`}>
-          POST JSON to{" "}
-          <code className="rounded bg-background/50 px-1 font-mono text-[11px] text-accent/90">
-            {origin}/api/integrations/alerts
-          </code>{" "}
-          with{" "}
-          <code className="rounded bg-background/50 px-1 font-mono text-[11px]">Authorization: Bearer</code>{" "}
-          and your ingest token. Body:{" "}
-          <code className="font-mono text-[11px]">title</code> (required), optional{" "}
-          <code className="font-mono text-[11px]">severity</code>,{" "}
-          <code className="font-mono text-[11px]">status</code>,{" "}
-          <code className="font-mono text-[11px]">summary</code>,{" "}
-          <code className="font-mono text-[11px]">service_id</code> /{" "}
-          <code className="font-mono text-[11px]">service_name</code>,{" "}
-          <code className="font-mono text-[11px]">dedupe_key</code>.
+          Connect monitoring tools with an ingest token so alerts can open or dedupe incidents
+          automatically.
         </p>
+        <details className="mt-3 rounded-lg border border-white/[0.08] bg-black/20 px-3 py-2">
+          <summary className={`cursor-pointer font-medium text-foreground/85 ${appMeta}`}>
+            Webhook endpoint details
+          </summary>
+          <p className={`mt-2 text-muted ${appMeta}`}>
+            POST JSON to{" "}
+            <code className="rounded bg-background/50 px-1 font-mono text-[11px] text-accent/90">
+              {origin}/api/integrations/alerts
+            </code>{" "}
+            with{" "}
+            <code className="rounded bg-background/50 px-1 font-mono text-[11px]">
+              Authorization: Bearer
+            </code>{" "}
+            and your ingest token. Body:{" "}
+            <code className="font-mono text-[11px]">title</code> (required), optional{" "}
+            <code className="font-mono text-[11px]">severity</code>,{" "}
+            <code className="font-mono text-[11px]">status</code>,{" "}
+            <code className="font-mono text-[11px]">summary</code>,{" "}
+            <code className="font-mono text-[11px]">service_id</code> /{" "}
+            <code className="font-mono text-[11px]">service_name</code>,{" "}
+            <code className="font-mono text-[11px]">dedupe_key</code>.
+          </p>
+        </details>
       </div>
 
       {minted ? (

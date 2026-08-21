@@ -359,12 +359,12 @@ export function AppShell({
           <ProductWorkspaceSwitcher />
         </div>
         <nav
-          className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto overscroll-contain p-2"
+          className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-y-auto overscroll-contain p-2"
           aria-label="Console navigation"
         >
           {grouped.map((group) => (
             <div key={group.id}>
-              <p className={`px-2 pb-1 ${appOverline}`}>{group.label}</p>
+              <p className={`px-2 pb-0.5 ${appOverline}`}>{group.label}</p>
               <div className="flex flex-col gap-0.5">
                 {group.modules.map((item) => (
                   <NavRailLink key={item.href} {...item} pinned={pinnedSet.has(item.href)} />

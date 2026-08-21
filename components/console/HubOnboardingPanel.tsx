@@ -80,6 +80,141 @@ const TRUST_LINKS = [
   { href: "/status", label: "Status" },
 ] as const;
 
+function QuickStartGrid() {
+  return (
+    <ul className="mt-3 grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+      {QUICK_START.map((item) => {
+        const className = `flex items-start gap-3 rounded-xl border border-white/[0.08] bg-white/[0.02] px-3 py-3 transition-colors hover:border-accent/35 hover:bg-accent/[0.04] ${appBody}`;
+        const body = (
+          <>
+            <AppIcon name={item.icon} size={18} className="mt-0.5 shrink-0 text-accent" />
+            <span>
+              <span className="font-medium text-foreground">
+                {item.label}
+                {"external" in item && item.external ? " ↗" : ""}
+              </span>
+              <span className={`mt-0.5 block text-muted ${appMeta}`}>{item.detail}</span>
+            </span>
+          </>
+        );
+        return (
+          <li key={item.href}>
+            {"external" in item && item.external ? (
+              <a href={item.href} target="_blank" rel="noopener noreferrer" className={className}>
+                {body}
+              </a>
+            ) : (
+              <Link href={item.href} className={className}>
+                {body}
+              </Link>
+            )}
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+function ProductStatusPanel({ compact = false }: { compact?: boolean }) {
+  return (
+    <div>
+      <div className="flex flex-wrap items-end justify-between gap-2">
+        <h3 className={`${appMeta} uppercase tracking-wide text-muted`}>
+          {compact ? "Products" : "Product status"}
+        </h3>
+        <Link href="/products" className={`font-medium text-accent hover:underline ${appMeta}`}>
+          All products →
+        </Link>
+      </div>
+      <ul className={`mt-3 grid gap-3 ${compact ? "sm:grid-cols-2 lg:grid-cols-4" : "md:grid-cols-2"}`}>
+        {FLAGSHIP_PRODUCTS.map((product) => {
+          const external = isExternalUrl(product.workspaceUrl);
+          const openLabel =
+            product.id === "smohix-platform"
+              ? "Open Hub"
+              : product.id === "smohix-ai"
+                ? "Open Smohix AI ↗"
+                : "Open ↗";
+          return (
+            <li
+              key={product.id}
+              className={`flex flex-col rounded-xl border border-white/[0.08] bg-white/[0.02] ${compact ? "p-3" : "p-4"}`}
+            >
+              <div className="flex items-start justify-between gap-2">
+                <p className="font-medium text-foreground">{product.name}</p>
+                <MaturityBadge maturity={product.status} />
+              </div>
+              {!compact ? (
+                <p className={`mt-2 flex-1 ${appMeta} text-muted`}>{product.description}</p>
+              ) : null}
+              <div className={`flex flex-wrap gap-2 ${compact ? "mt-2" : "mt-3"}`}>
+                {external ? (
+                  <a
+                    href={product.workspaceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`rounded-lg bg-accent/15 px-3 py-1.5 font-medium text-accent transition-colors hover:bg-accent/25 ${appMeta}`}
+                  >
+                    {openLabel}
+                  </a>
+                ) : (
+                  <Link
+                    href={product.workspaceUrl}
+                    className={`rounded-lg bg-accent/15 px-3 py-1.5 font-medium text-accent transition-colors hover:bg-accent/25 ${appMeta}`}
+                  >
+                    {openLabel}
+                  </Link>
+                )}
+                {!compact ? (
+                  <Link
+                    href={product.href}
+                    className={`rounded-lg border border-white/[0.1] px-3 py-1.5 font-medium text-muted transition-colors hover:border-accent/35 hover:text-foreground ${appMeta}`}
+                  >
+                    Overview
+                  </Link>
+                ) : null}
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
+
+function ResourceLinks() {
+  return (
+    <div className="flex flex-col gap-3 border-t border-white/[0.06] pt-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+      <div className="flex flex-wrap gap-2">
+        <Link
+          href="/settings/api-keys"
+          className={`rounded-lg border border-white/[0.1] px-3 py-1.5 font-medium text-muted transition-colors hover:border-accent/35 hover:text-foreground ${appMeta}`}
+        >
+          API keys
+        </Link>
+        <Link
+          href="/developers"
+          className={`rounded-lg border border-white/[0.1] px-3 py-1.5 font-medium text-muted transition-colors hover:border-accent/35 hover:text-foreground ${appMeta}`}
+        >
+          Developers
+        </Link>
+        {TRUST_LINKS.map((link) => (
+          <Link
+            key={link.href}
+            href={link.href}
+            className={`rounded-lg border border-white/[0.1] px-3 py-1.5 font-medium text-muted transition-colors hover:border-accent/35 hover:text-foreground ${appMeta}`}
+          >
+            {link.label}
+          </Link>
+        ))}
+      </div>
+      <p className={`${appMeta} text-muted`}>
+        Self-serve checkout remains deferred — use Contact or Pilot for Pro / Team access.
+      </p>
+    </div>
+  );
+}
+
 export function HubOnboardingPanel({
   orgName,
   orgRole,
@@ -92,22 +227,24 @@ export function HubOnboardingPanel({
   signedIn: boolean;
 }) {
   const roleLabel = formatRoleLabel(orgRole);
+  const configuredWorkspace = signedIn && hasOrganization;
 
   return (
     <section
-      className="smohix-glass mt-6 space-y-6 rounded-2xl p-5 md:p-6"
+      className={`smohix-glass mt-6 rounded-2xl p-5 md:p-6 ${configuredWorkspace ? "space-y-4" : "space-y-6"}`}
       aria-labelledby="hub-onboarding-heading"
     >
       <div>
         <p className={`${appMeta} uppercase tracking-wide text-accent/90`}>
-          Welcome to {SITE_BRAND_NAME}
+          {configuredWorkspace ? "Workspace" : `Welcome to ${SITE_BRAND_NAME}`}
         </p>
-          <h2 id="hub-onboarding-heading" className={`mt-1 ${appPanelTitle}`}>
-            Needs attention and quick start
-          </h2>
+        <h2 id="hub-onboarding-heading" className={`mt-1 ${appPanelTitle}`}>
+          {configuredWorkspace ? "Organization context" : "Needs attention and quick start"}
+        </h2>
         <p className={`mt-2 max-w-2xl ${appBody} text-muted`}>
-          Your signed-in Hub is the operations console. Use the paths below to configure your
-          workspace, open products, and reach docs or Smohix AI — without guessing where to go next.
+          {configuredWorkspace
+            ? "Your organization is connected. Use health, quick actions, and products below to continue work."
+            : "Your signed-in Hub is the operations console. Use the paths below to configure your workspace, open products, and reach docs or Smohix AI."}
         </p>
       </div>
 
@@ -150,130 +287,34 @@ export function HubOnboardingPanel({
         )}
       </div>
 
-      <div>
-        <h3 className={`${appMeta} uppercase tracking-wide text-muted`}>Quick start</h3>
-        <ul className="mt-3 grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
-          {QUICK_START.map((item) => {
-            const className = `flex items-start gap-3 rounded-xl border border-white/[0.08] bg-white/[0.02] px-3 py-3 transition-colors hover:border-accent/35 hover:bg-accent/[0.04] ${appBody}`;
-            const body = (
-              <>
-                <AppIcon name={item.icon} size={18} className="mt-0.5 shrink-0 text-accent" />
-                <span>
-                  <span className="font-medium text-foreground">
-                    {item.label}
-                    {"external" in item && item.external ? " ↗" : ""}
-                  </span>
-                  <span className={`mt-0.5 block text-muted ${appMeta}`}>{item.detail}</span>
-                </span>
-              </>
-            );
-            return (
-              <li key={item.href}>
-                {"external" in item && item.external ? (
-                  <a
-                    href={item.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={className}
-                  >
-                    {body}
-                  </a>
-                ) : (
-                  <Link href={item.href} className={className}>
-                    {body}
-                  </Link>
-                )}
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-
-      <div>
-        <div className="flex flex-wrap items-end justify-between gap-2">
-          <h3 className={`${appMeta} uppercase tracking-wide text-muted`}>Product status</h3>
-          <Link href="/products" className={`font-medium text-accent hover:underline ${appMeta}`}>
-            All products →
-          </Link>
-        </div>
-        <ul className="mt-3 grid gap-3 md:grid-cols-2">
-          {FLAGSHIP_PRODUCTS.map((product) => {
-            const external = isExternalUrl(product.workspaceUrl);
-            const openLabel =
-              product.id === "smohix-platform"
-                ? "Open Hub"
-                : product.id === "smohix-ai"
-                  ? "Open Smohix AI ↗"
-                  : "Open workspace ↗";
-            return (
-              <li
-                key={product.id}
-                className="flex flex-col rounded-xl border border-white/[0.08] bg-white/[0.02] p-4"
-              >
-                <div className="flex items-start justify-between gap-2">
-                  <p className="font-medium text-foreground">{product.name}</p>
-                  <MaturityBadge maturity={product.status} />
-                </div>
-                <p className={`mt-2 flex-1 ${appMeta} text-muted`}>{product.description}</p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <Link
-                    href={product.href}
-                    className={`rounded-lg border border-white/[0.1] px-3 py-1.5 font-medium text-muted transition-colors hover:border-accent/35 hover:text-foreground ${appMeta}`}
-                  >
-                    Overview
-                  </Link>
-                  {external ? (
-                    <a
-                      href={product.workspaceUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={`rounded-lg bg-accent/15 px-3 py-1.5 font-medium text-accent transition-colors hover:bg-accent/25 ${appMeta}`}
-                    >
-                      {openLabel}
-                    </a>
-                  ) : (
-                    <Link
-                      href={product.workspaceUrl}
-                      className={`rounded-lg bg-accent/15 px-3 py-1.5 font-medium text-accent transition-colors hover:bg-accent/25 ${appMeta}`}
-                    >
-                      {openLabel}
-                    </Link>
-                  )}
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-
-      <div className="flex flex-col gap-3 border-t border-white/[0.06] pt-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
-        <div className="flex flex-wrap gap-2">
-          <Link
-            href="/settings/api-keys"
-            className={`rounded-lg border border-white/[0.1] px-3 py-1.5 font-medium text-muted transition-colors hover:border-accent/35 hover:text-foreground ${appMeta}`}
-          >
-            API keys
-          </Link>
-          <Link
-            href="/developers"
-            className={`rounded-lg border border-white/[0.1] px-3 py-1.5 font-medium text-muted transition-colors hover:border-accent/35 hover:text-foreground ${appMeta}`}
-          >
-            Developers
-          </Link>
-          {TRUST_LINKS.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`rounded-lg border border-white/[0.1] px-3 py-1.5 font-medium text-muted transition-colors hover:border-accent/35 hover:text-foreground ${appMeta}`}
+      {configuredWorkspace ? (
+        <>
+          <ProductStatusPanel compact />
+          <details className="rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3">
+            <summary
+              className={`cursor-pointer list-none font-medium text-foreground marker:content-none [&::-webkit-details-marker]:hidden ${appBody}`}
             >
-              {link.label}
-            </Link>
-          ))}
-        </div>
-        <p className={`${appMeta} text-muted`}>
-          Self-serve checkout remains deferred — use Contact or Pilot for Pro / Team access.
-        </p>
-      </div>
+              Resources and quick links
+              <span className={`ml-2 font-normal text-muted ${appMeta}`}>Docs, setup, pilot, contact</span>
+            </summary>
+            <div className="mt-3 border-t border-white/[0.06] pt-3">
+              <QuickStartGrid />
+              <div className="mt-4">
+                <ResourceLinks />
+              </div>
+            </div>
+          </details>
+        </>
+      ) : (
+        <>
+          <div>
+            <h3 className={`${appMeta} uppercase tracking-wide text-muted`}>Quick start</h3>
+            <QuickStartGrid />
+          </div>
+          <ProductStatusPanel />
+          <ResourceLinks />
+        </>
+      )}
     </section>
   );
 }

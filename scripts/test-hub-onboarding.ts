@@ -28,7 +28,9 @@ assert(hubPage.includes("HubOnboardingPanel"), "hub page must render HubOnboardi
 assert(hubPage.includes("hasOrganization"), "hub must load organization context");
 assert(hubPage.includes("orgName"), "hub must surface org name when present");
 
-assert(onboarding.includes("Needs attention and quick start"), "onboarding heading");
+assert(onboarding.includes("Needs attention and quick start") || onboarding.includes("Organization context"), "onboarding heading");
+assert(onboarding.includes("configuredWorkspace") || onboarding.includes("hasOrganization"), "configured workspace collapse path");
+assert(onboarding.includes("Resources and quick links"), "configured hub collapses resources");
 assert(onboarding.includes("/settings#setup-wizard"), "setup wizard quick start");
 assert(onboarding.includes("/docs"), "docs quick start");
 assert(onboarding.includes("/docs/api"), "API docs quick start");
