@@ -37,8 +37,8 @@ function NavTile({ href, label, description, icon, maturity, pinned }: ModuleIte
       href={href}
       className={`flex min-w-0 shrink-0 flex-col rounded-xl border px-3 py-2.5 transition-[border-color,background-color,color,box-shadow] ${
         active
-          ? "border-accent/50 bg-accent-dim/95 text-foreground shadow-[0_0_0_1px_rgba(94,225,255,0.15),0_0_28px_-10px_rgba(94,225,255,0.22)]"
-          : "border-white/[0.06] bg-white/[0.02] text-muted hover:border-accent/35 hover:bg-white/[0.04] hover:text-foreground hover:shadow-[0_0_20px_-12px_rgba(94,225,255,0.18)]"
+          ? "border-accent/45 bg-accent-dim/90 text-foreground shadow-[0_0_0_1px_rgba(16,185,129,0.12),0_0_24px_-12px_rgba(16,185,129,0.2)]"
+          : "border-white/[0.06] bg-white/[0.02] text-muted hover:border-accent/30 hover:bg-white/[0.04] hover:text-foreground"
       }`}
     >
       <div className="flex items-center justify-between gap-1">
@@ -75,10 +75,10 @@ function NavRailLink({
       title={`${label} — ${description}${pinned ? " (pinned)" : ""}`}
       className={`flex min-h-0 items-center gap-2.5 rounded-lg border px-2.5 py-1.5 transition-colors ${
         active
-          ? "border-accent/40 bg-accent-dim/70 text-foreground shadow-[0_0_0_1px_rgba(94,225,255,0.12)]"
+          ? "smohix-instrument-rail-active border-accent/35 bg-accent-dim/60 text-foreground"
           : pinned
-            ? "border-accent/20 bg-accent/[0.04] text-muted hover:border-accent/30 hover:bg-accent/[0.07] hover:text-foreground"
-            : "border-transparent text-muted hover:border-white/[0.08] hover:bg-white/[0.04] hover:text-foreground"
+            ? "border-accent/15 bg-accent/[0.03] text-muted hover:border-accent/28 hover:bg-accent/[0.06] hover:text-foreground"
+            : "border-transparent text-muted hover:border-white/[0.08] hover:bg-white/[0.035] hover:text-foreground"
       }`}
     >
       <AppIcon
@@ -234,7 +234,7 @@ export function AppShell({
       title={userEmail}
     >
       <span
-        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-accent/35 via-accent/15 to-violet-500/25 text-xs font-semibold tracking-tight text-foreground shadow-[0_0_20px_-6px_rgba(94,225,255,0.45)]"
+        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-accent/30 via-accent/12 to-emerald-500/20 text-xs font-semibold tracking-tight text-foreground shadow-[0_0_18px_-8px_rgba(16,185,129,0.4)]"
         aria-hidden
       >
         {accountInitial(showName, userEmail)}
@@ -345,7 +345,7 @@ export function AppShell({
         </div>
       ) : null}
 
-      <aside className="hidden h-full w-[17.5rem] shrink-0 flex-col border-r border-white/[0.06] bg-[rgba(10,12,18,0.94)] shadow-[inset_-1px_0_0_rgba(94,225,255,0.05)] backdrop-blur-xl backdrop-saturate-[1.35] lg:flex">
+      <aside className="smohix-instrument-rail hidden h-full w-[17.5rem] shrink-0 flex-col backdrop-blur-xl backdrop-saturate-[1.2] lg:flex">
         <div className="flex h-14 shrink-0 items-center border-b border-white/[0.06] px-3">
           <Link
             href="/hub"

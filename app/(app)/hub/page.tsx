@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { launchGuidedScenarioAction } from "./actions";
 
+import { CommandSection, CoordinateDivider, SmohixHorizon, SmohixSurface } from "@/components/architecture";
 import { PageHeader } from "@/components/app/PageHeader";
 import { ConsoleAmbientBanner } from "@/components/console/ConsoleAmbientBanner";
 import { DashboardStats, QuickActions } from "@/components/console/DashboardStats";
@@ -16,12 +17,12 @@ import { filterConsoleModulesForRole } from "@/lib/org/auditor-workspace";
 import { getOrgContextForUser } from "@/lib/org/context";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { appBody, appMeta, appPanelTitle } from "@/lib/app-typography";
+import { appBody, appMeta } from "@/lib/app-typography";
 import { SITE_BRAND_NAME } from "@/lib/site-brand";
 
 export const metadata: Metadata = {
   title: "Platform",
-  description: `${SITE_BRAND_NAME} console — command center and modules.`,
+  description: `${SITE_BRAND_NAME} console — command environment and modules.`,
 };
 
 export const dynamic = "force-dynamic";
@@ -88,14 +89,20 @@ export default async function HubPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Home"
+        eyebrow="Command environment"
         title={title}
         description={
           signedIn
-            ? "Your Smohix Platform workspace — health, setup, products, and where to continue."
+            ? "System state, attention, and next actions — your Smohix operating workspace."
             : "Core flows work without accounts. Sign in for organizations, shared history, and setup."
         }
       />
+      <div className="mb-5 max-w-xl">
+        <SmohixHorizon />
+        <p className={`mt-2 font-mono text-[10px] tracking-[0.18em] text-muted/60`}>
+          STATE · ATTENTION · OPERATIONS · INTELLIGENCE
+        </p>
+      </div>
       <ConsoleAmbientBanner snapshot={ambient} />
       <HubOnboardingPanel
         orgName={orgName}
@@ -103,23 +110,26 @@ export default async function HubPage() {
         hasOrganization={hasOrganization}
         signedIn={signedIn}
       />
-      <section className="mt-6" aria-labelledby="hub-health-heading">
-        <h2 id="hub-health-heading" className={appPanelTitle}>
-          Workspace health
-        </h2>
-        <p className={`mt-1 ${appBody} text-muted`}>
-          Active load across incidents, approvals, and plan status.
-        </p>
+
+      <CoordinateDivider />
+
+      <CommandSection
+        id="hub-health"
+        title="System state"
+        description="Active load across incidents, approvals, and plan status."
+      >
         <DashboardStats userId={userId} />
-      </section>
-      <QuickActions />
-      <section className="mt-6" aria-labelledby="hub-continue-heading">
-        <h2 id="hub-continue-heading" className={appPanelTitle}>
-          Continue working
-        </h2>
-        <p className={`mt-1 mb-3 ${appBody} text-muted`}>
-          Personalized module shortcuts — pin what you use most.
-        </p>
+      </CommandSection>
+
+      <CommandSection id="hub-actions" title="Next actions" description="Where to continue operating.">
+        <QuickActions />
+      </CommandSection>
+
+      <CommandSection
+        id="hub-continue"
+        title="Operations rail"
+        description="Personalized module shortcuts — pin what you use most."
+      >
         <HubQuickLinksPanel
           quickLinks={hubPersonalization.quickLinks}
           pinnedHrefs={hubPersonalization.pinnedHrefs}
@@ -127,13 +137,16 @@ export default async function HubPage() {
           canPersistServer={Boolean(userId && hasSupabaseAuth())}
           customized={hubPersonalization.customized}
         />
-      </section>
-      <section className="smohix-glass mt-6 rounded-2xl p-5 md:p-6">
+      </CommandSection>
+
+      <SmohixSurface tone="aware" className="mt-8 p-5 md:p-6" as="section">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <h2 className={appPanelTitle}>Demo scenario flow</h2>
-              <span className={`rounded-md border border-amber-400/25 bg-amber-400/10 px-2 py-0.5 font-semibold uppercase tracking-wide text-amber-200 ${appMeta}`}>
+              <h2 className="text-lg font-semibold tracking-tight text-foreground">Demo scenario flow</h2>
+              <span
+                className={`rounded-md border border-amber-400/25 bg-amber-400/10 px-2 py-0.5 font-semibold uppercase tracking-wide text-amber-200 ${appMeta}`}
+              >
                 Demo data
               </span>
             </div>
@@ -144,29 +157,30 @@ export default async function HubPage() {
           <form action={launchGuidedScenarioAction}>
             <button
               type="submit"
-              className={`inline-flex h-10 items-center justify-center rounded-xl bg-accent px-4 font-semibold text-background shadow-[0_0_28px_-8px_rgba(94,225,255,0.45)] transition-[opacity,box-shadow] hover:opacity-95 hover:shadow-[0_0_36px_-6px_rgba(94,225,255,0.55)] ${appBody}`}
+              className={`inline-flex h-10 items-center justify-center rounded-lg bg-accent px-4 font-semibold text-background shadow-[0_0_24px_-10px_rgba(16,185,129,0.45)] transition-opacity hover:opacity-95 ${appBody}`}
             >
               Create demo scenario
             </button>
           </form>
         </div>
-        <ol className={`mt-3 list-inside list-decimal space-y-1 ${appMeta}`}>
+        <ol className={`mt-4 list-inside list-decimal space-y-1 ${appMeta}`}>
           {guidedFlow.map((step) => (
             <li key={step}>{step}</li>
           ))}
         </ol>
-      </section>
-      <p className={`mt-6 max-w-2xl text-pretty ${appBody} text-muted`}>
-        Start from{" "}
+      </SmohixSurface>
+
+      <p className={`mt-8 max-w-2xl text-pretty ${appBody} text-muted`}>
+        Operational path:{" "}
         <Link href="/services" className="font-medium text-accent hover:underline">
           Services
-        </Link>{" "}
-        when something needs response, then move through incidents, runbooks, automations, approvals,
-        Copilot, and audit.{" "}
+        </Link>
+        {" → "}
+        incidents → runbooks → automations → approvals → Copilot → audit.{" "}
         <Link href="/vision" className="font-medium text-accent hover:underline">
           Vision & roadmap
-        </Link>{" "}
-        describes where the product is headed.
+        </Link>
+        .
       </p>
     </>
   );

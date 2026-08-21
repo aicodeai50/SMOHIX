@@ -16,7 +16,13 @@ export const appBody = "text-[0.9375rem] leading-relaxed";
 export const appMeta = "text-[13px] leading-relaxed text-muted";
 
 /** Uppercase rail / group label. */
-export const appOverline = "text-[11px] font-semibold uppercase tracking-[0.12em] text-muted";
+export const appOverline = "text-[11px] font-semibold uppercase tracking-[0.14em] text-muted";
+
+/** System metric / numeric emphasis. */
+export const appMetric = "font-mono text-[1.125rem] font-semibold tracking-tight text-foreground tabular-nums";
+
+/** Status chip label (pair with tone classes — never color alone). */
+export const appStatus = "text-[10px] font-semibold uppercase tracking-[0.12em]";
 
 /** Form field label (13px, muted). */
 export const appLabel = "text-[13px] font-medium text-muted";

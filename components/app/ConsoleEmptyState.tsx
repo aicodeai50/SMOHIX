@@ -21,7 +21,7 @@ export function ConsoleEmptyState({
   footnote?: ReactNode;
 }) {
   return (
-    <div className="rounded-2xl border border-dashed border-white/[0.12] bg-white/[0.02] px-6 py-12 text-center sm:px-10">
+    <div className="smohix-surface smohix-surface--dormant rounded-2xl border-dashed px-6 py-12 text-center sm:px-10">
       <h3 className={appPanelTitle}>{title}</h3>
       <p className={`mx-auto mt-2 max-w-md text-muted ${appBody}`}>{description}</p>
       {ctas?.length ? (
