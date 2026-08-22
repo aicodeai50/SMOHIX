@@ -56,7 +56,7 @@ export default function DocsApiPage() {
     <>
       <Header />
       <main className="flex-1 border-b border-white/[0.06]">
-        <div className="mx-auto w-full min-w-0 max-w-4xl px-4 py-12 sm:px-6 sm:py-16">
+        <div className="mx-auto w-full min-w-0 max-w-4xl break-words px-4 py-12 [overflow-wrap:anywhere] sm:px-6 sm:py-16">
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">API documentation</p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
             HTTP API reference
@@ -166,21 +166,29 @@ export default function DocsApiPage() {
                     {g.operations.map((op) => (
                       <li
                         key={`${op.method}-${op.path}`}
-                        className="rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3"
+                        className="min-w-0 rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3"
                       >
-                        <div className="flex flex-wrap items-center gap-2">
+                        <div className="flex min-w-0 flex-wrap items-center gap-2">
                           <span className="rounded-md bg-accent/15 px-2 py-0.5 font-mono text-[11px] font-semibold text-accent">
                             {op.method}
                           </span>
-                          <code className="break-all font-mono text-sm text-foreground/90">{op.path}</code>
+                          <code className="min-w-0 break-all font-mono text-sm text-foreground/90">
+                            {op.path}
+                          </code>
                         </div>
-                        <p className="mt-2 text-sm text-muted">{op.summary}</p>
+                        <p className="mt-2 break-words text-sm text-muted [overflow-wrap:anywhere]">
+                          {op.summary}
+                        </p>
                         {op.auth ? (
-                          <p className="mt-1 text-xs text-muted">
+                          <p className="mt-1 break-words text-xs text-muted [overflow-wrap:anywhere]">
                             <span className="font-medium text-foreground/80">Auth:</span> {op.auth}
                           </p>
                         ) : null}
-                        {op.notes ? <p className="mt-1 text-xs text-muted">{op.notes}</p> : null}
+                        {op.notes ? (
+                          <p className="mt-1 break-words text-xs text-muted [overflow-wrap:anywhere]">
+                            {op.notes}
+                          </p>
+                        ) : null}
                       </li>
                     ))}
                   </ul>
