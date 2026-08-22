@@ -31,8 +31,7 @@ export function Hero() {
         <div className="smohix-oe-hero__compose">
           <div className="smohix-oe-hero__intro relative z-[1] min-w-0">
             <div className="smohix-oe-hero__identity">
-              <p className="smohix-oe-hero__identity-primary">{SITE_COMPANY_NAME}</p>
-              <p className="smohix-oe-hero__identity-secondary">Intelligent operating environment</p>
+              <p className="smohix-oe-hero__identity-primary">{SITE_COMPANY_NAME} HQ</p>
             </div>
             <h1 className={`${mDisplay} smohix-oe-hero__headline mt-6`}>
               <span className="block">Intelligent software for</span>
