@@ -1482,6 +1482,69 @@ body {
 }
 .smohix-oe-hero__headline {
   max-width: 11.5em;
+  letter-spacing: -0.032em;
+}
+.smohix-oe-hero__headline-emphasis {
+  color: rgba(244, 244, 245, 0.96);
+}
+.smohix-oe-hero__identity {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.smohix-oe-hero__identity-primary {
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(244, 244, 245, 0.88);
+}
+.smohix-oe-hero__identity-secondary {
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(156, 163, 175, 0.72);
+}
+.smohix-oe-hero__lede {
+  color: rgba(161, 161, 170, 0.92);
+  line-height: 1.65;
+}
+.smohix-oe-hero__cta-row {
+  gap: 0.75rem;
+}
+.smohix-oe-hero__capability-rail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  list-style: none;
+  margin: 0;
+}
+.smohix-oe-hero__capability-rail__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: rgba(161, 161, 170, 0.88);
+}
+.smohix-oe-hero__capability-mark {
+  display: block;
+  width: 5px;
+  height: 5px;
+  border-radius: 1px;
+  background: rgba(16, 185, 129, 0.55);
+  box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.12);
+  flex-shrink: 0;
+}
+.smohix-oe-hero__returning {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: rgba(113, 113, 122, 0.85);
 }
 @media (min-width: 640px) {
   .smohix-oe-hero__headline {
@@ -1546,29 +1609,38 @@ body {
   }
 }
 
-/* Live Command 2.0 — system instrument */
+/* Live Command — operational instrument */
 .smohix-live-command {
   min-width: 0;
   max-width: 100%;
 }
+.smohix-live-command__operational-label {
+  margin-bottom: 0.65rem;
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(156, 163, 175, 0.7);
+}
 .smohix-live-command__frame {
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-left: 2px solid rgba(16, 185, 129, 0.45);
-  background: linear-gradient(165deg, rgba(8, 10, 14, 0.96) 0%, rgba(5, 6, 9, 0.98) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-left: 1px solid rgba(16, 185, 129, 0.28);
+  background: linear-gradient(165deg, rgba(9, 11, 15, 0.97) 0%, rgba(6, 7, 10, 0.98) 100%);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.04),
-    0 28px 64px -48px rgba(0, 0, 0, 0.85);
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 20px 48px -40px rgba(0, 0, 0, 0.8);
 }
 .smohix-live-command__frame::before {
   content: "";
   position: absolute;
   top: 0;
   right: 0;
-  width: 42%;
+  width: 36%;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.35));
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08));
   pointer-events: none;
 }
 .smohix-live-command__header {
@@ -1576,20 +1648,18 @@ body {
   align-items: flex-start;
   justify-content: space-between;
   gap: 1rem;
-  padding: 1rem 1.15rem 0.85rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 0.9rem 1.1rem 0.8rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 .smohix-live-command__region {
   font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
   font-size: 10px;
-  letter-spacing: 0.08em;
-  color: rgba(156, 163, 175, 0.85);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(156, 163, 175, 0.8);
 }
 .smohix-live-command__coord {
-  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  color: rgba(16, 185, 129, 0.55);
+  display: none;
 }
 .smohix-live-command__metrics {
   display: grid;
@@ -1625,7 +1695,7 @@ body {
   margin-top: 0.15rem;
   font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
   font-size: 10px;
-  color: rgba(16, 185, 129, 0.85);
+  color: rgba(156, 163, 175, 0.75);
 }
 .smohix-live-command__signal {
   padding: 1rem 1.15rem 0.85rem;
@@ -1643,22 +1713,13 @@ body {
   font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
   font-size: 12px;
   line-height: 1.55;
-  transition: opacity 0.35s ease;
 }
-.smohix-live-command__signal-queue {
-  display: flex;
-  gap: 0.35rem;
+.smohix-live-command__preview-note {
   margin-top: 0.75rem;
-}
-.smohix-live-command__signal-ghost {
-  display: block;
-  height: 2px;
-  width: 1.75rem;
-  border-radius: 1px;
-  background: rgba(255, 255, 255, 0.08);
-}
-.smohix-live-command__signal-ghost.is-active {
-  background: rgba(16, 185, 129, 0.55);
+  text-align: center;
+  font-size: 11px;
+  line-height: 1.45;
+  color: rgba(113, 113, 122, 0.8);
 }
 .smohix-live-command__footer {
   display: flex;

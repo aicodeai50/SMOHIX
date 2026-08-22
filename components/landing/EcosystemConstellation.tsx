@@ -80,7 +80,7 @@ export function EcosystemConstellation() {
     <div className="smohix-ecosystem-field">
       <div className="smohix-ecosystem-field__spine" aria-hidden>
         <SmohixHorizon className="mx-auto max-w-md" />
-        <p className={`mt-3 text-center ${mSystemMeta} text-muted/75`}>Smohix HQ · ecosystem spine</p>
+        <p className={`mt-3 text-center ${mSystemMeta} text-muted/75`}>Product workspaces · one ecosystem</p>
       </div>
 
       <div className="smohix-ecosystem-field__platform">

@@ -5,11 +5,11 @@ import { useEffect, useState } from "react";
 import { StateBeacon } from "@/components/architecture";
 
 const FEED = [
-  { tone: "text-accent", text: "ingest · webhook collapsed into incident #8841" },
+  { tone: "text-foreground/88", text: "ingest · webhook collapsed into incident #8841" },
   { tone: "text-foreground/85", text: "surface · 3 critical paths on auth-api" },
-  { tone: "text-accent", text: "guard · approval gate · rollback armed" },
+  { tone: "text-foreground/88", text: "guard · approval gate · rollback armed" },
   { tone: "text-warning", text: "exposure · cert api-gateway expires in 12d" },
-  { tone: "text-accent", text: "audit · append-only · governance.staffing_sla_*" },
+  { tone: "text-foreground/88", text: "audit · append-only · governance.staffing_sla_*" },
   { tone: "text-foreground/85", text: "execute · dry-run passed · awaiting operator" },
 ] as const;
 
@@ -21,6 +21,14 @@ const METRICS = [
 ] as const;
 
 const REGIONS = ["us-east", "eu-west", "ap-south", "global"] as const;
+
+function formatRegion(region: string): string {
+  return region.toUpperCase();
+}
+
+function formatHealth(health: number): string {
+  return health >= 99.9 ? "healthy" : `${health.toFixed(2)}%`;
+}
 
 export function FutureCommandCore() {
   const [lineIndex, setLineIndex] = useState(0);
@@ -43,20 +51,19 @@ export function FutureCommandCore() {
   }, []);
 
   const activeLine = FEED[lineIndex];
+  const region = REGIONS[regionIndex];
 
   return (
     <div className="smohix-live-command relative mx-auto w-full min-w-0 max-w-xl lg:max-w-none">
+      <p className="smohix-live-command__operational-label">Operational command</p>
       <div className="smohix-live-command__frame">
         <header className="smohix-live-command__header">
-          <div className="flex min-w-0 flex-wrap items-center gap-3">
+          <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2">
             <StateBeacon label="Live command" tone="active" />
             <span className="smohix-live-command__region">
-              {REGIONS[regionIndex]} · {health.toFixed(2)}% health
+              {formatRegion(region)} · {formatHealth(health)}
             </span>
           </div>
-          <span className="smohix-live-command__coord" aria-hidden>
-            CMD·01
-          </span>
         </header>
 
         <div className="smohix-live-command__metrics">
@@ -72,14 +79,6 @@ export function FutureCommandCore() {
         <div className="smohix-live-command__signal">
           <p className="smohix-live-command__signal-label">Current signal</p>
           <p className={`smohix-live-command__signal-line ${activeLine.tone}`}>{activeLine.text}</p>
-          <div className="smohix-live-command__signal-queue" aria-hidden>
-            {FEED.slice(0, 3).map((line, i) => (
-              <span
-                key={line.text}
-                className={`smohix-live-command__signal-ghost ${i === lineIndex % 3 ? "is-active" : ""}`}
-              />
-            ))}
-          </div>
         </div>
 
         <footer className="smohix-live-command__footer">
@@ -88,7 +87,7 @@ export function FutureCommandCore() {
           <span>Guarded execution</span>
         </footer>
       </div>
-      <p className="mt-3 text-center text-[11px] text-muted/75">
+      <p className="smohix-live-command__preview-note">
         Command console preview — sign in for your org
       </p>
     </div>
