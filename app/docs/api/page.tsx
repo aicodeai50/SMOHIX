@@ -3,7 +3,8 @@ import Link from "next/link";
 
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
-import { CodeSurface } from "@/components/architecture";
+import { CodeSurface, SmohixHorizon } from "@/components/architecture";
+import { EndpointRail } from "@/components/developers/DeveloperCoreField";
 import {
   DEVELOPER_AUTH,
   DEVELOPER_ERROR_HANDLING,
@@ -13,7 +14,7 @@ import {
 } from "@/lib/developer-journey";
 import { API_GROUPS } from "@/lib/docs/api-catalog";
 import { getSiteUrl } from "@/lib/site";
-import { SITE_BRAND_NAME } from "@/lib/site-brand";
+import { SITE_BRAND_NAME, SITE_COMPANY_NAME } from "@/lib/site-brand";
 import { SMOHIX_AI_PUBLIC_URL } from "@/lib/product-registry";
 
 export const metadata: Metadata = {
@@ -56,8 +57,14 @@ export default function DocsApiPage() {
     <>
       <Header />
       <main className="flex-1 border-b border-white/[0.06]">
-        <div className="mx-auto w-full min-w-0 max-w-4xl break-words px-4 py-12 [overflow-wrap:anywhere] sm:px-6 sm:py-16">
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">API documentation</p>
+        <div className="mx-auto w-full min-w-0 max-w-4xl break-words px-4 py-12 [overflow-wrap:anywhere] sm:px-6 sm:py-16 smohix-docs-api">
+          <div className="smohix-docs-api__opening">
+            <SmohixHorizon className="max-w-sm" />
+            <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.14em] text-muted/70">
+              {SITE_COMPANY_NAME} HQ · developer system
+            </p>
+          </div>
+          <p className="mt-8 text-xs font-semibold uppercase tracking-[0.14em] text-muted">API documentation</p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
             HTTP API reference
           </h1>
@@ -65,6 +72,15 @@ export default function DocsApiPage() {
             Catalog derived from <code className="font-mono text-xs text-accent/90">app/api</code> route
             handlers in this repository. Base URL:{" "}
             <span className="break-all font-mono text-xs text-foreground/85">{base}</span>
+          </p>
+          <p className="mt-2 text-sm text-muted">
+            <Link href="/developers" className="font-medium text-accent hover:underline">
+              Developer platform →
+            </Link>
+            {" · "}
+            <Link href="/auth/sign-in?next=/settings/api-keys" className="font-medium text-accent hover:underline">
+              Manage API keys →
+            </Link>
           </p>
 
           <nav
@@ -162,33 +178,15 @@ export default function DocsApiPage() {
                   {g.description ? (
                     <p className="mt-1 text-sm text-muted">{g.description}</p>
                   ) : null}
-                  <ul className="mt-4 space-y-4">
+                  <ul className="mt-4 space-y-2">
                     {g.operations.map((op) => (
-                      <li
-                        key={`${op.method}-${op.path}`}
-                        className="min-w-0 rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3"
-                      >
-                        <div className="flex min-w-0 flex-wrap items-center gap-2">
-                          <span className="rounded-md bg-accent/15 px-2 py-0.5 font-mono text-[11px] font-semibold text-accent">
-                            {op.method}
-                          </span>
-                          <code className="min-w-0 break-all font-mono text-sm text-foreground/90">
-                            {op.path}
-                          </code>
-                        </div>
-                        <p className="mt-2 break-words text-sm text-muted [overflow-wrap:anywhere]">
-                          {op.summary}
-                        </p>
-                        {op.auth ? (
-                          <p className="mt-1 break-words text-xs text-muted [overflow-wrap:anywhere]">
-                            <span className="font-medium text-foreground/80">Auth:</span> {op.auth}
-                          </p>
-                        ) : null}
-                        {op.notes ? (
-                          <p className="mt-1 break-words text-xs text-muted [overflow-wrap:anywhere]">
-                            {op.notes}
-                          </p>
-                        ) : null}
+                      <li key={`${op.method}-${op.path}`} className="min-w-0">
+                        <EndpointRail
+                          method={op.method}
+                          path={op.path}
+                          auth={op.auth ?? "See handler"}
+                          purpose={op.notes ? `${op.summary} ${op.notes}` : op.summary}
+                        />
                       </li>
                     ))}
                   </ul>

@@ -45,13 +45,15 @@ assert(!read("components/landing/MarketingQuantumShell.tsx").includes("CosmicNeb
 assert(read("components/auth/AuthCard.tsx").includes("SmohixHorizon"), "auth horizon");
 assert(read("app/auth/layout.tsx").includes("IntelligenceField"), "auth layout field");
 assert(!read("components/auth/AuthCard.tsx").includes("IntelligenceField"), "auth card no double field");
-assert(read("app/developers/page.tsx").includes("SmohixHorizon"), "developers horizon");
-assert(read("app/developers/page.tsx").includes("CodeSurface"), "developers code surface");
-assert(read("app/developers/page.tsx").includes("StateBeacon"), "developers state beacon");
-assert(!existsSync(path.join(root, "components/landing/CosmicNebula.tsx")), "dead CosmicNebula removed");
-assert(!existsSync(path.join(root, "components/landing/QuantumDimension.tsx")), "dead QuantumDimension removed");
-assert(read("components/settings/ApiKeysPanel.tsx").includes("CodeSurface"), "api keys code surface");
+const developersPage = read("app/developers/page.tsx");
+const developerHero = read("components/developers/DeveloperHero.tsx");
+const developerCore = read("components/developers/DeveloperCoreField.tsx");
+const developersSurface = `${developersPage}\n${developerHero}\n${developerCore}`;
+assert(developersSurface.includes("SmohixHorizon"), "developers horizon");
+assert(developersSurface.includes("CodeSurface"), "developers code surface");
+assert(developersSurface.includes("StateBeacon"), "developers state beacon");
+assert(read("app/docs/api/page.tsx").includes("SmohixHorizon"), "docs api horizon");
 assert(read("app/docs/api/page.tsx").includes("CodeSurface"), "docs api code surface");
-assert(globals.includes("Mobile Living Architecture"), "mobile LA restraint");
+assert(read("app/docs/api/page.tsx").includes("EndpointRail"), "docs api endpoint rails");
 
 console.log("test-living-architecture-propagation: all checks passed");

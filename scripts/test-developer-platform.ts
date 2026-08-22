@@ -28,13 +28,30 @@ function read(rel: string): string {
 }
 
 const developers = read("app/developers/page.tsx");
-assert(developers.includes("Developer Platform") || developers.includes("Developer platform"), "developers hero");
-assert(developers.includes("/docs/api"), "developers → API docs");
-assert(developers.includes("/settings/api-keys"), "developers → API keys");
-assert(developers.includes("DEVELOPER_CAPABILITIES") || developers.includes("What you can build"), "capability section");
-assert(developers.includes(SMOHIX_AI_PUBLIC_URL) || developers.includes("DEVELOPER_AI_NOTE"), "Smohix AI link");
-assert(!developers.includes("Stripe"), "no Stripe payment invent");
-assert(!/Zentro(?!_)/.test(developers.replace(/zentro_sk_|zentro_ingest_|zentro_ca_/g, "")), "no customer Zentro brand in page");
+const developerHero = read("components/developers/DeveloperHero.tsx");
+const developerCore = read("components/developers/DeveloperCoreField.tsx");
+const developersSurface = `${developers}\n${developerHero}\n${developerCore}`;
+assert(
+  developersSurface.includes("Developer Platform") || developersSurface.includes("Developer platform"),
+  "developers hero",
+);
+assert(developersSurface.includes("/docs/api"), "developers → API docs");
+assert(developersSurface.includes("/settings/api-keys"), "developers → API keys");
+assert(
+  developersSurface.includes("DEVELOPER_CAPABILITIES") || developersSurface.includes("What you can build"),
+  "capability section",
+);
+assert(
+  developersSurface.includes(SMOHIX_AI_PUBLIC_URL) ||
+    developers.includes("DEVELOPER_AI_NOTE") ||
+    developersSurface.includes("Smohix AI"),
+  "Smohix AI link",
+);
+assert(!developersSurface.includes("Stripe"), "no Stripe payment invent");
+assert(
+  !/Zentro(?!_)/.test(developersSurface.replace(/zentro_sk_|zentro_ingest_|zentro_ca_/g, "")),
+  "no customer Zentro brand in page",
+);
 
 assert(DEVELOPER_NAV.some((n) => n.href === "/docs/api"), "nav API docs");
 assert(DEVELOPER_NAV.some((n) => n.label === "Smohix AI"), "nav Smohix AI");
