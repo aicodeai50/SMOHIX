@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { SmohixHorizon, SystemLabel } from "@/components/architecture";
 import { RealStatusPanel } from "@/components/status/RealStatusPanel";
+import { AssuranceRail } from "@/components/trust/AssuranceRail";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
 import { fetchSiteHealthView } from "@/lib/status/adapters";
 import { buildMarketingMetadata } from "@/lib/metadata";
-import { mArticle, mBody, mH1, mLinkInline, mPanelShell } from "@/lib/marketing-layout";
+import { mArticle, mBody, mH1, mLinkInline, mPanelShell, mSystemMeta } from "@/lib/marketing-layout";
 import { getSiteUrl } from "@/lib/site";
 
 export const metadata: Metadata = buildMarketingMetadata({
@@ -24,16 +26,21 @@ export default async function StatusPage() {
   return (
     <>
       <Header />
-      <main className="flex-1 border-b border-white/[0.06]">
+      <main className="smohix-trust-authority flex-1 border-b border-white/[0.06]">
         <div className={mArticle}>
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent/90">
-            Service status
+          <SmohixHorizon className="max-w-md" />
+          <p className={`mt-3 ${mSystemMeta} text-muted/70`}>
+            Operational availability · probe evidence only
           </p>
+          <SystemLabel className="mt-6">Service status</SystemLabel>
           <h1 className={`mt-2 ${mH1}`}>Product &amp; service status</h1>
           <p className={`mt-4 ${mBody}`}>
             Server-side health probes against allowlisted public endpoints. We do not publish uptime
             percentages without stored historical data.
           </p>
+          <div className="mt-6">
+            <AssuranceRail active="status" />
+          </div>
 
           <div
             className={`mt-8 p-5 ${mPanelShell} ${
@@ -73,6 +80,14 @@ export default async function StatusPage() {
           </section>
 
           <p className={`mt-10 ${mBody}`}>
+            <Link href="/security" className={mLinkInline}>
+              Security →
+            </Link>
+            {" · "}
+            <Link href="/trust" className={mLinkInline}>
+              Trust →
+            </Link>
+            {" · "}
             <Link href="/products" className={mLinkInline}>
               Product Access →
             </Link>
