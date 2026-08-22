@@ -17,7 +17,7 @@ import { filterConsoleModulesForRole } from "@/lib/org/auditor-workspace";
 import { getOrgContextForUser } from "@/lib/org/context";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { appBody, appMeta } from "@/lib/app-typography";
+import { appBody, appMeta, appPanelTitle, appSignal } from "@/lib/app-typography";
 import { SITE_BRAND_NAME } from "@/lib/site-brand";
 
 export const metadata: Metadata = {
@@ -97,91 +97,103 @@ export default async function HubPage() {
             : "Core flows work without accounts. Sign in for organizations, shared history, and setup."
         }
       />
-      <div className="mb-5 max-w-xl">
-        <SmohixHorizon />
-        <p className={`mt-2 font-mono text-[10px] tracking-[0.18em] text-muted/60`}>
-          STATE · ATTENTION · OPERATIONS · INTELLIGENCE
-        </p>
-      </div>
-      <ConsoleAmbientBanner snapshot={ambient} />
-      <HubOnboardingPanel
-        orgName={orgName}
-        orgRole={orgRole}
-        hasOrganization={hasOrganization}
-        signedIn={signedIn}
-      />
 
-      <CoordinateDivider />
-
-      <CommandSection
-        id="hub-health"
-        title="System state"
-        description="Active load across incidents, approvals, and plan status."
-      >
-        <DashboardStats userId={userId} />
-      </CommandSection>
-
-      <CommandSection id="hub-actions" title="Next actions" description="Where to continue operating.">
-        <QuickActions />
-      </CommandSection>
-
-      <CommandSection
-        id="hub-continue"
-        title="Operations rail"
-        description="Personalized module shortcuts — pin what you use most."
-      >
-        <HubQuickLinksPanel
-          quickLinks={hubPersonalization.quickLinks}
-          pinnedHrefs={hubPersonalization.pinnedHrefs}
-          availableModules={availableModules}
-          canPersistServer={Boolean(userId && hasSupabaseAuth())}
-          customized={hubPersonalization.customized}
-        />
-      </CommandSection>
-
-      <SmohixSurface tone="aware" className="mt-8 p-5 md:p-6" as="section">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <div className="flex flex-wrap items-center gap-2">
-              <h2 className="text-lg font-semibold tracking-tight text-foreground">Demo scenario flow</h2>
-              <span
-                className={`rounded-md border border-amber-400/25 bg-amber-400/10 px-2 py-0.5 font-semibold uppercase tracking-wide text-amber-200 ${appMeta}`}
-              >
-                Demo data
-              </span>
-            </div>
-            <p className={`mt-1 ${appBody} text-muted`}>
-              Seed a clearly labeled local scenario to evaluate the incident-to-approval evidence loop.
+      <div className="smohix-hub-command">
+        <div className="smohix-hub-command__status smohix-hub-command__band">
+          <ConsoleAmbientBanner snapshot={ambient} />
+          <div className="mt-4 max-w-xl">
+            <SmohixHorizon />
+            <p className={`mt-2 ${appSignal} text-muted/70`}>
+              STATE · ATTENTION · OPERATIONS · INTELLIGENCE · NEXT ACTIONS
             </p>
           </div>
-          <form action={launchGuidedScenarioAction}>
-            <button
-              type="submit"
-              className={`inline-flex h-10 items-center justify-center rounded-lg bg-accent px-4 font-semibold text-background shadow-[0_0_24px_-10px_rgba(16,185,129,0.45)] transition-opacity hover:opacity-95 ${appBody}`}
-            >
-              Create demo scenario
-            </button>
-          </form>
+          <HubOnboardingPanel
+            orgName={orgName}
+            orgRole={orgRole}
+            hasOrganization={hasOrganization}
+            signedIn={signedIn}
+          />
         </div>
-        <ol className={`mt-4 list-inside list-decimal space-y-1 ${appMeta}`}>
-          {guidedFlow.map((step) => (
-            <li key={step}>{step}</li>
-          ))}
-        </ol>
-      </SmohixSurface>
 
-      <p className={`mt-8 max-w-2xl text-pretty ${appBody} text-muted`}>
-        Operational path:{" "}
-        <Link href="/services" className="font-medium text-accent hover:underline">
-          Services
-        </Link>
-        {" → "}
-        incidents → runbooks → automations → approvals → Copilot → audit.{" "}
-        <Link href="/vision" className="font-medium text-accent hover:underline">
-          Vision & roadmap
-        </Link>
-        .
-      </p>
+        <div className="smohix-hub-command__primary smohix-hub-command__band">
+          <CommandSection
+            id="hub-health"
+            title="System state"
+            description="Active load across incidents, approvals, and plan status."
+          >
+            <DashboardStats userId={userId} />
+          </CommandSection>
+        </div>
+
+        <div className="smohix-hub-command__side smohix-hub-command__band">
+          <CommandSection
+            id="hub-continue"
+            title="Operations rail"
+            description="Personalized module shortcuts — pin what you use most."
+          >
+            <HubQuickLinksPanel
+              quickLinks={hubPersonalization.quickLinks}
+              pinnedHrefs={hubPersonalization.pinnedHrefs}
+              availableModules={availableModules}
+              canPersistServer={Boolean(userId && hasSupabaseAuth())}
+              customized={hubPersonalization.customized}
+            />
+          </CommandSection>
+        </div>
+
+        <div className="smohix-hub-command__actions smohix-hub-command__band">
+          <CommandSection id="hub-actions" title="Next actions" description="Where to continue operating.">
+            <QuickActions />
+          </CommandSection>
+        </div>
+
+        <div className="smohix-hub-command__full">
+          <CoordinateDivider />
+          <SmohixSurface tone="aware" className="mt-2 p-5 md:p-6" as="section">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <h2 className={appPanelTitle}>Demo scenario flow</h2>
+                  <span
+                    className={`rounded-md border border-amber-400/25 bg-amber-400/10 px-2 py-0.5 font-semibold uppercase tracking-wide text-amber-200 ${appMeta}`}
+                  >
+                    Demo data
+                  </span>
+                </div>
+                <p className={`mt-1 ${appBody} text-muted`}>
+                  Seed a clearly labeled local scenario to evaluate the incident-to-approval evidence loop.
+                </p>
+              </div>
+              <form action={launchGuidedScenarioAction}>
+                <button
+                  type="submit"
+                  className={`inline-flex h-10 items-center justify-center rounded-lg bg-accent px-4 font-semibold text-background shadow-[0_0_24px_-10px_rgba(16,185,129,0.45)] transition-opacity hover:opacity-95 ${appBody}`}
+                >
+                  Create demo scenario
+                </button>
+              </form>
+            </div>
+            <ol className={`mt-4 list-inside list-decimal space-y-1 ${appMeta}`}>
+              {guidedFlow.map((step) => (
+                <li key={step}>{step}</li>
+              ))}
+            </ol>
+          </SmohixSurface>
+
+          <p className={`mt-8 max-w-2xl text-pretty ${appBody} text-muted`}>
+            Operational path:{" "}
+            <Link href="/services" className="font-medium text-accent hover:underline">
+              Services
+            </Link>
+            {" → "}
+            incidents → runbooks → automations → approvals → Copilot → audit.{" "}
+            <Link href="/vision" className="font-medium text-accent hover:underline">
+              Vision & roadmap
+            </Link>
+            .
+          </p>
+        </div>
+      </div>
     </>
   );
 }

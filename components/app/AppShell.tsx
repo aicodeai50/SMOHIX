@@ -73,9 +73,9 @@ function NavRailLink({
     <Link
       href={href}
       title={`${label} — ${description}${pinned ? " (pinned)" : ""}`}
-      className={`flex min-h-0 items-center gap-2.5 rounded-lg border px-2.5 py-1.5 transition-colors ${
+      className={`flex min-h-0 items-center gap-2.5 rounded-lg border px-2.5 py-1.5 transition-colors smohix-rail-node ${
         active
-          ? "smohix-instrument-rail-active border-accent/35 bg-accent-dim/60 text-foreground"
+          ? "smohix-rail-node--active smohix-instrument-rail-active border-accent/35 bg-accent-dim/60 text-foreground"
           : pinned
             ? "border-accent/15 bg-accent/[0.03] text-muted hover:border-accent/28 hover:bg-accent/[0.06] hover:text-foreground"
             : "border-transparent text-muted hover:border-white/[0.08] hover:bg-white/[0.035] hover:text-foreground"
@@ -282,7 +282,7 @@ export function AppShell({
   );
 
   return (
-    <div className="flex min-h-screen flex-col bg-background lg:h-[100dvh] lg:flex-row lg:overflow-hidden">
+    <div className="smohix-oe-canvas flex min-h-screen flex-col bg-background lg:h-[100dvh] lg:flex-row lg:overflow-hidden">
       <div className="sticky top-0 z-50 shrink-0 border-b border-white/[0.08] bg-[rgba(8,10,15,0.96)] backdrop-blur-xl lg:hidden">
         <div className="flex h-14 items-center justify-between gap-3 px-3">
           <Link
@@ -345,8 +345,8 @@ export function AppShell({
         </div>
       ) : null}
 
-      <aside className="smohix-instrument-rail hidden h-full w-[17.5rem] shrink-0 flex-col backdrop-blur-xl backdrop-saturate-[1.2] lg:flex">
-        <div className="flex h-14 shrink-0 items-center border-b border-white/[0.06] px-3">
+      <aside className="smohix-instrument-rail hidden h-full w-[15.5rem] shrink-0 flex-col backdrop-blur-xl backdrop-saturate-[1.2] xl:w-[16.5rem] lg:flex">
+        <div className="flex h-[3.75rem] shrink-0 items-center border-b border-white/[0.06] px-3">
           <Link
             href="/hub"
             className="min-w-0 text-foreground no-underline transition-opacity hover:opacity-90"

@@ -82,7 +82,7 @@ export default function TrustPage() {
   return (
     <>
       <Header />
-      <main className="flex-1 border-b border-white/[0.06]">
+      <main className="smohix-trust-authority flex-1 border-b border-white/[0.06]">
         <article className={mArticle}>
           <MarketingReveal as="div">
             <p className={`${mEyebrow} text-accent/80`}>Trust center</p>

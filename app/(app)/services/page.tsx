@@ -315,10 +315,18 @@ export default async function ServicesPage({
               </p>
             ) : (
               <ul className={`mt-3 space-y-2 ${appBody}`}>
-                {visibleRows.map((r) => (
+                {visibleRows.map((r) => {
+                  const burnState = latestBurnStates.get(r.id) ?? "healthy";
+                  const objectClass =
+                    burnState === "critical"
+                      ? "smohix-service-object smohix-service-object--critical"
+                      : burnState === "warning"
+                        ? "smohix-service-object smohix-service-object--warning"
+                        : "smohix-service-object";
+                  return (
                   <li
                     key={r.id}
-                    className="smohix-surface smohix-surface--aware px-3 py-2.5"
+                    className={`${objectClass} px-3 py-2.5`}
                   >
                     <div className="flex flex-wrap items-start justify-between gap-2">
                       <div>
@@ -416,7 +424,8 @@ export default async function ServicesPage({
                       </p>
                     </form>
                   </li>
-                ))}
+                  );
+                })}
               </ul>
             )}
           </div>

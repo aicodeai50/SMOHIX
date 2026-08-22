@@ -91,7 +91,7 @@ export default async function CopilotPage({
           </p>
         </div>
       </div>
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="smohix-intelligence-workspace grid gap-6 lg:grid-cols-3">
         <div className="space-y-4 lg:col-span-2">
           <ConsolePanel title="Conversation">
             {incidentId ? (

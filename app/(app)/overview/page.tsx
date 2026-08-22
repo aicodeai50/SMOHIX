@@ -7,7 +7,7 @@ import { PageHeader } from "@/components/app/PageHeader";
 import { ConsoleAmbientBanner } from "@/components/console/ConsoleAmbientBanner";
 import { AppIcon } from "@/components/icons/AppIcon";
 import { OverviewDecisionSurface } from "@/components/overview/OverviewDecisionSurface";
-import { appBody, appMeta, appPanelTitle } from "@/lib/app-typography";
+import { appBody, appMeta, appMetric, appPanelTitle } from "@/lib/app-typography";
 import {
   buildConsoleAmbientSnapshot,
 } from "@/lib/console/ambient-status";
@@ -274,22 +274,22 @@ export default async function OverviewPage() {
 
       <ConsoleAmbientBanner snapshot={ambient} />
 
-      <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Link href="/incidents" className="smohix-glass rounded-2xl p-5 transition-colors hover:border-accent/30">
+      <div className="mb-8 smohix-metric-band-grid">
+        <Link href="/incidents" className="smohix-metric-band group">
           <p className={`${appMeta} font-medium`}>Open incidents</p>
-          <p className="mt-1 text-2xl font-semibold text-foreground">{open}</p>
+          <p className={`mt-2 ${appMetric}`}>{open}</p>
           <p className={`mt-1 ${appMeta}`}>
             {hot} high / critical · {resolved} resolved
           </p>
         </Link>
-        <Link href="/approvals" className="smohix-glass rounded-2xl p-5 transition-colors hover:border-accent/30">
+        <Link href="/approvals" className="smohix-metric-band group">
           <p className={`${appMeta} font-medium`}>Pending approvals</p>
-          <p className="mt-1 text-2xl font-semibold text-foreground">{approvalsPending}</p>
+          <p className={`mt-2 ${appMetric}`}>{approvalsPending}</p>
           <p className={`mt-1 ${appMeta}`}>{pendingRiskLabel}</p>
         </Link>
-        <Link href="/services" className="smohix-glass rounded-2xl p-5 transition-colors hover:border-accent/30">
+        <Link href="/services" className="smohix-metric-band group">
           <p className={`${appMeta} font-medium`}>Service health</p>
-          <p className="mt-1 text-2xl font-semibold text-foreground">
+          <p className={`mt-2 ${appMetric}`}>
             {criticalBurnServices > 0 ? `${criticalBurnServices} critical` : `${connectorsUp} up`}
           </p>
           <p className={`mt-1 ${appMeta}`}>
@@ -300,9 +300,9 @@ export default async function OverviewPage() {
                 : `${connectorsUp} / ${connectorsConfigured} connectors healthy`}
           </p>
         </Link>
-        <Link href="/automations" className="smohix-glass rounded-2xl p-5 transition-colors hover:border-accent/30">
+        <Link href="/automations" className="smohix-metric-band group">
           <p className={`${appMeta} font-medium`}>Automation confidence</p>
-          <p className="mt-1 text-2xl font-semibold text-foreground">{dryRunSuccessRate}%</p>
+          <p className={`mt-2 ${appMetric}`}>{dryRunSuccessRate}%</p>
           <p className={`mt-1 ${appMeta}`}>
             Dry-run success · {successfulDryRuns}/{dryRuns.length || 0} runs
           </p>
@@ -312,7 +312,8 @@ export default async function OverviewPage() {
       <OverviewDecisionSurface command={command} recentIncidents={incidents.slice(0, 8)} />
 
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
-        <section className="smohix-glass rounded-2xl p-5 md:p-6">
+        <section className="smohix-data-plane relative">
+          <span className="smohix-data-plane__edge" aria-hidden />
           <h2 className={appPanelTitle}>Operational trust metrics</h2>
           <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-7">
             <div className="rounded-xl border border-white/[0.08] bg-black/20 px-4 py-3">
@@ -451,7 +452,8 @@ export default async function OverviewPage() {
             ) : null}
           </div>
         </section>
-        <section className="smohix-glass rounded-2xl p-5 md:p-6">
+        <section className="smohix-data-plane relative">
+          <span className="smohix-data-plane__edge" aria-hidden />
           <h2 className={appPanelTitle}>Integrations</h2>
           <ul className={`mt-4 space-y-3 ${appBody} text-foreground/90`}>
             {connectors.map((c) => (
@@ -491,7 +493,8 @@ export default async function OverviewPage() {
           </Link>
         </section>
 
-        <section className="smohix-glass rounded-2xl p-5 md:p-6">
+        <section className="smohix-data-plane relative">
+          <span className="smohix-data-plane__edge" aria-hidden />
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h2 className={appPanelTitle}>Deployment checklist</h2>
             <Link

@@ -10,31 +10,47 @@ import {
   COMPANY_HERO_HEADLINE,
   COMPANY_HERO_SUBHEADING,
 } from "@/lib/company-identity";
-import { mBody, mContainer, mEyebrow, mHeroLede, mStaggerGrid } from "@/lib/marketing-layout";
-import { SITE_BRAND_BYLINE } from "@/lib/site-brand";
+import {
+  mBody,
+  mContainer,
+  mDisplay,
+  mEyebrow,
+  mHeroLede,
+  mStaggerGrid,
+  mSystemMeta,
+} from "@/lib/marketing-layout";
+import { SITE_BRAND_BYLINE, SITE_BRAND_NAME } from "@/lib/site-brand";
 
 export function Hero() {
   return (
-    <MarketingReveal className="smohix-spatial-grid relative overflow-hidden border-b border-white/[0.06]">
-      <IntelligenceField className="opacity-70" animate withNodes />
+    <MarketingReveal className="smohix-oe-hero smohix-spatial-grid relative overflow-hidden">
+      <IntelligenceField className="opacity-75" animate withNodes />
       <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_45%_at_50%_-10%,rgba(16,185,129,0.07),transparent_55%)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_55%_40%_at_18%_20%,rgba(16,185,129,0.09),transparent_58%)]"
         aria-hidden
       />
-      <div className={`relative py-16 sm:py-24 lg:py-28 ${mContainer}`}>
-        <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-14">
-          <div>
-            <p className={`${mEyebrow} text-accent/80`}>{SITE_BRAND_BYLINE}</p>
-            <h1 className="smohix-headline mt-4 max-w-3xl text-4xl font-bold tracking-tight sm:text-5xl lg:text-[3.25rem] lg:leading-[1.08]">
+      <div className={`smohix-oe-hero__canvas relative py-14 sm:py-20 lg:py-24 ${mContainer}`}>
+        <div className="grid items-end gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:gap-16 xl:gap-20">
+          <div className="relative z-[1] lg:pb-6">
+            <p className={mEyebrow}>{SITE_BRAND_BYLINE}</p>
+            <p className={`mt-3 ${mSystemMeta} text-muted/80`}>
+              {SITE_BRAND_NAME} · 2050 operating environment
+            </p>
+            <h1 className={`${mDisplay} mt-5 max-w-[14ch] sm:max-w-none`}>
               {COMPANY_HERO_HEADLINE}
             </h1>
-            <p className={`${mHeroLede} mt-5 max-w-xl`}>{COMPANY_HERO_SUBHEADING}</p>
+            <p className={`${mHeroLede} mt-6 max-w-xl text-[1rem] sm:text-lg`}>
+              {COMPANY_HERO_SUBHEADING}
+            </p>
 
-            <div className="mt-7 max-w-md">
+            <div className="mt-8 max-w-lg">
               <SmohixHorizon />
-              <p className={`mt-3 font-mono text-[11px] tracking-[0.16em] text-muted/70`}>
-                HQ · PLATFORM · PRODUCTS · INTELLIGENCE
-              </p>
+              <div className="smohix-oe-hero__meta-rail">
+                <span>HQ platform</span>
+                <span>Intelligence layer</span>
+                <span>Human authority</span>
+                <span>Live systems</span>
+              </div>
             </div>
 
             <div className={`mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap ${mStaggerGrid}`}>
@@ -53,7 +69,7 @@ export function Hero() {
               </TrackableLink>
             </div>
 
-            <ul className={`mt-8 flex flex-wrap gap-x-6 gap-y-2 ${mBody} text-muted`}>
+            <ul className={`mt-8 flex flex-wrap gap-x-6 gap-y-2 border-t border-white/[0.06] pt-6 ${mBody} text-muted`}>
               <li className="flex items-center gap-2">
                 <AppIcon name="check" size={16} className="text-accent" aria-hidden />
                 AI products
@@ -79,11 +95,17 @@ export function Hero() {
             </p>
           </div>
 
-          <div id="preview" className="relative lg:justify-self-end" aria-hidden={false}>
-            <div className="pointer-events-none absolute -inset-6 rounded-[1.25rem] opacity-60 sm:-inset-8">
-              <IntelligenceField animate={false} />
+          <div
+            id="preview"
+            className="relative z-[1] lg:-mr-4 lg:translate-y-2 lg:justify-self-end xl:mr-0"
+            aria-hidden={false}
+          >
+            <div className="pointer-events-none absolute -inset-8 rounded-[1rem] opacity-50 sm:-inset-10">
+              <IntelligenceField animate={false} withNodes />
             </div>
-            <FutureCommandCore />
+            <div className="relative border border-white/[0.08] bg-[rgba(6,8,12,0.65)] p-1 shadow-[0_40px_100px_-60px_rgba(0,0,0,0.9)]">
+              <FutureCommandCore />
+            </div>
           </div>
         </div>
       </div>

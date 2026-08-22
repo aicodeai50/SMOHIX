@@ -1,11 +1,13 @@
 import type { ReactNode } from "react";
 
+import { appBody, appDisplay, appSignal } from "@/lib/app-typography";
+
 export function PageHeader({
   title,
   description,
   eyebrow,
   actions,
-  className = "mb-8",
+  className = "",
 }: {
   title: string;
   description?: string;
@@ -16,21 +18,13 @@ export function PageHeader({
   className?: string;
 }) {
   return (
-    <header className={className}>
+    <header className={`smohix-oe-page-header ${className}`}>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0 flex-1">
-          {eyebrow ? (
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-accent/80">
-              {eyebrow}
-            </p>
-          ) : null}
-          <h1
-            className={`smohix-headline max-w-4xl text-2xl font-semibold tracking-tight md:text-[1.85rem] md:leading-snug ${eyebrow ? "mt-2" : ""}`}
-          >
-            {title}
-          </h1>
+          {eyebrow ? <p className={`${appSignal} text-accent/85`}>{eyebrow}</p> : null}
+          <h1 className={`${appDisplay} max-w-4xl ${eyebrow ? "mt-3" : ""}`}>{title}</h1>
           {description ? (
-            <p className="mt-3 max-w-2xl text-pretty text-[0.9375rem] leading-relaxed text-muted">
+            <p className={`mt-4 max-w-2xl text-pretty text-[1rem] leading-relaxed text-muted ${appBody}`}>
               {description}
             </p>
           ) : null}

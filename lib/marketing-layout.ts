@@ -15,11 +15,14 @@ export const mContainer = "mx-auto max-w-6xl px-4 sm:px-6";
 /** Narrow article shell (why, trust, status, changelog) — matches console reading width. */
 export const mArticle = "mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16";
 
-/** H1 — 32px mobile, 40px desktop (aligned with --dl-type-h1). */
-export const mH1 = "text-[2rem] font-semibold tracking-tight text-foreground sm:text-[2.5rem] sm:leading-tight";
+/** H1 — 34px mobile, 44px desktop (Phase 25 display scale). */
+export const mH1 = "text-[2.125rem] font-semibold tracking-tight text-foreground sm:text-[2.75rem] sm:leading-[1.08]";
 
-/** H2 — 24px section titles. */
-export const mH2 = "text-2xl font-semibold tracking-tight text-foreground";
+/** Display — homepage / hero only. */
+export const mDisplay = "smohix-display smohix-headline";
+
+/** H2 — section titles with stronger presence. */
+export const mH2 = "text-[1.625rem] font-semibold tracking-tight text-foreground";
 export const mH2Sm = "text-lg font-semibold tracking-tight text-foreground sm:text-xl";
 export const mH3 = "text-lg font-semibold tracking-tight text-foreground";
 
@@ -41,7 +44,10 @@ export const mCard = `${mPanelShell} p-6 ${mCardMotion} hover:border-white/[0.12
 export const mCardLink = `group flex flex-col ${mPanelShell} p-6 ${mCardMotion} hover:border-white/[0.14] hover:bg-white/[0.035]`;
 
 /** Accent eyebrow — product / narrative labels (hero, long-form). */
-export const mEyebrow = "text-xs font-semibold uppercase tracking-[0.14em] text-accent/90";
+export const mEyebrow = "smohix-signal-meta text-accent/90";
+
+/** System metadata strip (hero, hub). */
+export const mSystemMeta = "smohix-signal-meta";
 
 /** Footer and in-page dense column labels. */
 export const mFooterLabel =

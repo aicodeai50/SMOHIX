@@ -49,11 +49,19 @@
   --dl-space-3: 1.5rem;
   --dl-space-4: 2rem;
   --dl-radius-card: var(--la-radius-lg);
-  --dl-type-h1: 2rem;
-  --dl-type-h1-lg: 2.5rem;
-  --dl-type-h2: 1.5rem;
-  --dl-type-h3: 1.125rem;
+  --dl-type-display: 3.75rem;
+  --dl-type-display-lg: 4.5rem;
+  --dl-type-h1: 2.125rem;
+  --dl-type-h1-lg: 2.75rem;
+  --dl-type-h2: 1.625rem;
+  --dl-type-h3: 1.25rem;
   --dl-type-body: 0.9375rem;
+  --dl-type-signal: 0.6875rem;
+  --dl-type-metric: 2rem;
+  --oe-spine: rgba(16, 185, 129, 0.42);
+  --oe-spine-soft: rgba(16, 185, 129, 0.08);
+  --oe-plane-edge: rgba(255, 255, 255, 0.09);
+  --oe-plane-fill: rgba(10, 12, 16, 0.82);
   --dl-shadow-card-hover: 0 18px 48px -30px rgba(0, 0, 0, 0.65);
 }
 
@@ -83,9 +91,11 @@
 body {
   background-color: var(--background);
   background-image:
-    linear-gradient(180deg, #07080b 0%, #0a0c10 42%, #07080b 100%),
-    radial-gradient(ellipse 90% 50% at 50% -30%, rgba(16, 185, 129, 0.06), transparent 55%),
-    radial-gradient(ellipse 40% 30% at 100% 0%, rgba(125, 211, 252, 0.03), transparent 50%);
+    linear-gradient(180deg, #050608 0%, #0a0c10 38%, #07080b 72%, #050608 100%),
+    linear-gradient(90deg, transparent 0%, rgba(16, 185, 129, 0.018) 50%, transparent 100%),
+    radial-gradient(ellipse 95% 55% at 50% -28%, rgba(16, 185, 129, 0.09), transparent 58%),
+    radial-gradient(ellipse 42% 32% at 100% 0%, rgba(125, 211, 252, 0.045), transparent 52%),
+    radial-gradient(ellipse 35% 28% at 0% 100%, rgba(16, 185, 129, 0.035), transparent 48%);
   color: var(--foreground);
   font-family: var(--font-inter), system-ui, sans-serif;
 }
@@ -255,9 +265,29 @@ body {
 
 .smohix-instrument-rail {
   position: relative;
-  background: rgba(8, 10, 14, 0.96);
-  border-right: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: inset -1px 0 0 rgba(16, 185, 129, 0.06);
+  background:
+    linear-gradient(180deg, rgba(6, 8, 12, 0.98) 0%, rgba(8, 10, 14, 0.96) 100%);
+  border-right: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow:
+    inset -1px 0 0 var(--oe-spine-soft),
+    4px 0 32px -24px rgba(0, 0, 0, 0.65);
+}
+.smohix-instrument-rail::after {
+  content: "";
+  position: absolute;
+  top: 3.5rem;
+  bottom: 0;
+  left: 0;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    var(--oe-spine) 8%,
+    var(--oe-spine) 92%,
+    transparent 100%
+  );
+  opacity: 0.55;
+  pointer-events: none;
 }
 .smohix-instrument-rail-active {
   position: relative;
@@ -266,12 +296,14 @@ body {
   content: "";
   position: absolute;
   left: 0;
-  top: 20%;
-  bottom: 20%;
-  width: 2px;
-  border-radius: 1px;
-  background: var(--la-horizon);
-  box-shadow: 0 0 12px -2px var(--la-horizon-soft);
+  top: 12%;
+  bottom: 12%;
+  width: 3px;
+  border-radius: 0 2px 2px 0;
+  background: linear-gradient(180deg, transparent, var(--la-horizon) 18%, var(--la-horizon) 82%, transparent);
+  box-shadow:
+    0 0 16px -2px var(--la-horizon-soft),
+    2px 0 12px -4px rgba(16, 185, 129, 0.35);
 }
 
 .smohix-command-section {
@@ -405,19 +437,35 @@ body {
 /* Human authority — approvals */
 .smohix-human-authority {
   position: relative;
-  border: 1px solid rgba(252, 211, 77, 0.28);
-  background: linear-gradient(165deg, rgba(28, 24, 16, 0.55) 0%, rgba(10, 12, 16, 0.92) 100%);
+  border: 1px solid rgba(252, 211, 77, 0.32);
+  background: linear-gradient(168deg, rgba(32, 28, 18, 0.62) 0%, rgba(8, 10, 14, 0.94) 100%);
   border-radius: var(--la-radius-lg);
-  box-shadow: inset 0 1px 0 rgba(252, 211, 77, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(252, 211, 77, 0.1),
+    inset 3px 0 0 rgba(252, 211, 77, 0.45),
+    0 24px 64px -48px rgba(0, 0, 0, 0.75);
+}
+.smohix-human-authority::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 40%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(252, 211, 77, 0.35));
+  pointer-events: none;
 }
 
 /* Copilot intelligence environment */
 .smohix-copilot-env {
   position: relative;
   isolation: isolate;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--la-radius-lg);
-  background: linear-gradient(168deg, rgba(14, 16, 22, 0.92) 0%, rgba(8, 10, 14, 0.97) 100%);
+  background: linear-gradient(168deg, rgba(12, 14, 20, 0.94) 0%, rgba(6, 8, 12, 0.98) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    inset 0 -1px 0 rgba(16, 185, 129, 0.08);
   overflow: hidden;
 }
 
@@ -459,15 +507,17 @@ body {
 /* Page titles — architectural clarity (restrained) */
 .smohix-headline {
   background: linear-gradient(
-    115deg,
-    #fafafa 0%,
-    #e4e4e7 42%,
-    #a7f3d0 88%,
-    #fafafa 100%
+    108deg,
+    #ffffff 0%,
+    #f4f4f5 28%,
+    #d1fae5 62%,
+    #fafafa 88%,
+    #ffffff 100%
   );
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  letter-spacing: -0.025em;
 }
 
 /* Futuristic marketing hero — grid + slow aurora */
@@ -856,15 +906,33 @@ body {
   }
 }
 .smohix-header-living {
+  position: relative;
+  isolation: isolate;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
   box-shadow:
-    0 1px 0 rgba(94, 225, 255, 0.14),
-    0 0 48px -12px rgba(94, 225, 255, 0.22),
-    0 8px 32px -16px rgba(167, 139, 250, 0.18);
+    0 1px 0 rgba(16, 185, 129, 0.12),
+    0 12px 40px -28px rgba(0, 0, 0, 0.75);
   background: linear-gradient(
     180deg,
-    rgba(6, 7, 11, 0.88) 0%,
-    rgba(6, 7, 11, 0.72) 100%
+    rgba(5, 6, 9, 0.94) 0%,
+    rgba(7, 9, 13, 0.88) 100%
   ) !important;
+}
+.smohix-header-living::before {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(16, 185, 129, 0.35) 22%,
+    rgba(16, 185, 129, 0.55) 50%,
+    rgba(16, 185, 129, 0.35) 78%,
+    transparent 100%
+  );
+  opacity: 0.65;
+  pointer-events: none;
 }
 
 /* Layered marketing atmosphere */
@@ -1019,10 +1087,11 @@ body {
   background:
     linear-gradient(var(--la-grid) 1px, transparent 1px),
     linear-gradient(90deg, var(--la-grid) 1px, transparent 1px),
-    radial-gradient(ellipse 80% 45% at 50% -20%, var(--la-horizon-soft), transparent 55%),
-    radial-gradient(ellipse 35% 30% at 100% 100%, rgba(125, 211, 252, 0.03), transparent 50%);
-  background-size: 64px 64px, 64px 64px, auto, auto;
-  opacity: 0.55;
+    radial-gradient(ellipse 85% 50% at 50% -18%, rgba(16, 185, 129, 0.08), transparent 58%),
+    radial-gradient(ellipse 40% 35% at 100% 100%, rgba(125, 211, 252, 0.04), transparent 50%),
+    linear-gradient(180deg, rgba(16, 185, 129, 0.02) 0%, transparent 28%);
+  background-size: 72px 72px, 72px 72px, auto, auto, auto;
+  opacity: 0.62;
   animation: smohix-console-ambient 36s ease-in-out infinite alternate;
 }
 
@@ -1220,5 +1289,488 @@ body {
   .smohix-modal-backdrop,
   .smohix-modal-panel {
     animation: none;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Phase 25 — Smohix 2050 Operating Environment (visible transformation)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.smohix-display {
+  font-size: clamp(2.5rem, 6vw, var(--dl-type-display-lg));
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+}
+
+.smohix-system-title {
+  font-size: clamp(1.125rem, 2.5vw, 1.375rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.smohix-signal-meta {
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: var(--dl-type-signal);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(156, 163, 175, 0.85);
+}
+
+/* ── Homepage: 2050 architectural hero ── */
+.smohix-oe-hero {
+  position: relative;
+  isolation: isolate;
+  min-height: min(88vh, 920px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+.smohix-oe-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(105deg, transparent 42%, rgba(16, 185, 129, 0.04) 58%, transparent 72%),
+    linear-gradient(180deg, transparent 55%, rgba(5, 6, 9, 0.85) 100%);
+  z-index: 1;
+}
+.smohix-oe-hero > .smohix-oe-hero__canvas {
+  position: relative;
+  z-index: 2;
+}
+.smohix-oe-hero__meta-rail {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+  padding: 0.65rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  margin-top: 2rem;
+}
+.smohix-oe-hero__meta-rail span {
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(156, 163, 175, 0.75);
+}
+.smohix-oe-hero__meta-rail span::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 0.45rem;
+  border-radius: 1px;
+  background: var(--la-horizon);
+  vertical-align: middle;
+  opacity: 0.8;
+}
+
+/* ── Public navigation: architectural rail ── */
+.smohix-nav-rail {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+  padding: 0.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 0.625rem;
+  background: rgba(255, 255, 255, 0.02);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+.smohix-nav-rail__link {
+  position: relative;
+  padding: 0.45rem 0.75rem;
+  border-radius: 0.45rem;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  transition: color 0.18s ease, background-color 0.18s ease;
+}
+.smohix-nav-rail__link:hover {
+  color: var(--foreground);
+  background: rgba(255, 255, 255, 0.04);
+}
+.smohix-nav-rail__link--active {
+  color: var(--foreground);
+  background: rgba(16, 185, 129, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(16, 185, 129, 0.22);
+}
+.smohix-nav-rail__link--active::after {
+  content: "";
+  position: absolute;
+  bottom: 0.2rem;
+  left: 50%;
+  width: 1rem;
+  height: 2px;
+  transform: translateX(-50%);
+  border-radius: 1px;
+  background: var(--la-horizon);
+}
+
+/* ── Console: operating canvas ── */
+.smohix-oe-canvas {
+  position: relative;
+  isolation: isolate;
+}
+.smohix-oe-page-header {
+  position: relative;
+  padding-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.smohix-oe-page-header::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 4.5rem;
+  height: 2px;
+  background: linear-gradient(90deg, var(--la-horizon), transparent);
+}
+
+/* ── Hub: command environment composition ── */
+.smohix-hub-command {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 1024px) {
+  .smohix-hub-command {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    grid-template-rows: auto auto auto;
+    gap: 1.5rem;
+  }
+  .smohix-hub-command__status {
+    grid-column: 1 / -1;
+  }
+  .smohix-hub-command__primary {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .smohix-hub-command__side {
+    grid-column: 2;
+    grid-row: 2 / span 2;
+  }
+  .smohix-hub-command__actions {
+    grid-column: 1;
+    grid-row: 3;
+  }
+  .smohix-hub-command__full {
+    grid-column: 1 / -1;
+  }
+}
+.smohix-hub-command__band {
+  position: relative;
+  padding: 1.25rem 1.35rem;
+  border: 1px solid var(--oe-plane-edge);
+  background: var(--oe-plane-fill);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.045),
+    0 28px 80px -56px rgba(0, 0, 0, 0.85);
+}
+.smohix-hub-command__band::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--la-horizon), transparent 85%);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+/* ── Metric bands (Overview, Hub stats) ── */
+.smohix-metric-band {
+  position: relative;
+  display: block;
+  padding: 1.15rem 1.25rem 1.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 3px solid rgba(16, 185, 129, 0.45);
+  background: linear-gradient(135deg, rgba(14, 17, 22, 0.88) 0%, rgba(8, 10, 14, 0.94) 100%);
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+.smohix-metric-band:hover {
+  border-color: rgba(16, 185, 129, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 20px 48px -36px rgba(16, 185, 129, 0.25);
+}
+.smohix-metric-band__value {
+  font-size: var(--dl-type-metric);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+.smohix-metric-band-grid {
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (min-width: 1024px) {
+  .smohix-metric-band-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* ── Data planes (replace generic cards) ── */
+.smohix-data-plane {
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: linear-gradient(168deg, rgba(12, 14, 18, 0.9) 0%, rgba(7, 9, 12, 0.96) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  padding: 1.25rem 1.35rem;
+}
+@media (min-width: 768px) {
+  .smohix-data-plane {
+    padding: 1.5rem 1.65rem;
+  }
+}
+.smohix-data-plane__edge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 35%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12));
+  pointer-events: none;
+}
+
+/* ── Services: live system objects ── */
+.smohix-service-object {
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 3px solid rgba(16, 185, 129, 0.35);
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.04) 0%, rgba(10, 12, 16, 0.92) 18%);
+  padding: 0.85rem 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.smohix-service-object:hover {
+  border-color: rgba(16, 185, 129, 0.28);
+  box-shadow: inset 3px 0 0 rgba(16, 185, 129, 0.45);
+}
+.smohix-service-object--critical {
+  border-left-color: rgba(251, 113, 133, 0.65);
+  background: linear-gradient(90deg, rgba(251, 113, 133, 0.08) 0%, rgba(10, 12, 16, 0.94) 22%);
+}
+.smohix-service-object--warning {
+  border-left-color: rgba(252, 211, 77, 0.55);
+  background: linear-gradient(90deg, rgba(252, 211, 77, 0.06) 0%, rgba(10, 12, 16, 0.92) 20%);
+}
+
+/* ── Incidents: signal gravity ── */
+.smohix-incident-gravity {
+  position: relative;
+}
+.smohix-incident-gravity--critical {
+  background: linear-gradient(90deg, rgba(251, 113, 133, 0.1) 0%, transparent 28%);
+  box-shadow: inset 3px 0 0 rgba(251, 113, 133, 0.55);
+}
+.smohix-incident-gravity--critical td:first-child {
+  font-weight: 600;
+}
+.smohix-incident-gravity--high {
+  background: linear-gradient(90deg, rgba(252, 211, 77, 0.07) 0%, transparent 24%);
+  box-shadow: inset 2px 0 0 rgba(252, 211, 77, 0.4);
+}
+
+/* ── Copilot: intelligence workspace ── */
+.smohix-intelligence-workspace {
+  position: relative;
+  isolation: isolate;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(168deg, rgba(10, 12, 16, 0.95) 0%, rgba(6, 8, 11, 0.98) 100%);
+  padding: 1rem;
+}
+@media (min-width: 1024px) {
+  .smohix-intelligence-workspace {
+    padding: 1.25rem;
+  }
+}
+.smohix-intelligence-workspace::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--la-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--la-grid) 1px, transparent 1px);
+  background-size: 48px 48px;
+  opacity: 0.35;
+  mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, black 10%, transparent 75%);
+}
+
+/* ── Products: constellation ── */
+.smohix-product-constellation {
+  position: relative;
+  display: grid;
+  gap: 1.25rem;
+}
+@media (min-width: 1024px) {
+  .smohix-product-constellation {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    grid-template-rows: auto auto;
+    gap: 1.5rem 1.75rem;
+  }
+  .smohix-product-constellation__anchor {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
+  .smohix-product-constellation__node {
+    align-self: start;
+  }
+}
+.smohix-product-constellation__anchor {
+  position: relative;
+  padding: 1.75rem 1.5rem;
+  border: 1px solid rgba(16, 185, 129, 0.22);
+  background: linear-gradient(165deg, rgba(16, 185, 129, 0.06) 0%, rgba(8, 10, 14, 0.94) 100%);
+  box-shadow: inset 0 1px 0 rgba(16, 185, 129, 0.12);
+}
+.smohix-product-constellation__node {
+  position: relative;
+  padding-left: 1rem;
+  border-left: 1px dashed rgba(255, 255, 255, 0.12);
+}
+@media (min-width: 1024px) {
+  .smohix-product-constellation__node::before {
+    content: "";
+    position: absolute;
+    left: -1.875rem;
+    top: 50%;
+    width: 1.875rem;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* ── Auth: entry portal ── */
+.smohix-auth-portal {
+  position: relative;
+  min-height: 100vh;
+}
+.smohix-auth-portal__context {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .smohix-auth-portal {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 26rem);
+    align-items: stretch;
+  }
+  .smohix-auth-portal__context {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 3rem 2.5rem;
+    border-right: 1px solid rgba(255, 255, 255, 0.07);
+    background: linear-gradient(165deg, rgba(10, 12, 16, 0.98) 0%, rgba(6, 8, 11, 1) 100%);
+  }
+  .smohix-auth-portal__form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2.5rem 2rem;
+  }
+}
+.smohix-auth-portal__form-plane {
+  position: relative;
+  width: 100%;
+  max-width: 24rem;
+  margin: 0 auto;
+  padding: 1.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(8, 10, 14, 0.92);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 32px 80px -48px rgba(0, 0, 0, 0.85);
+}
+
+/* ── Trust / Security: high-authority ── */
+.smohix-trust-authority {
+  position: relative;
+}
+.smohix-trust-authority::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--la-horizon) 0%, transparent 55%);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* ── Quick action rail ── */
+.smohix-action-rail {
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (min-width: 1024px) {
+  .smohix-action-rail {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+.smohix-action-rail__item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-bottom: 2px solid rgba(16, 185, 129, 0.25);
+  background: rgba(255, 255, 255, 0.02);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: rgba(244, 244, 245, 0.9);
+  transition: border-color 0.18s ease, background-color 0.18s ease, transform 0.18s ease;
+}
+.smohix-action-rail__item:hover {
+  border-color: rgba(16, 185, 129, 0.35);
+  background: rgba(16, 185, 129, 0.06);
+  transform: translateY(-1px);
+}
+
+/* ── Rail node (sidebar links) ── */
+.smohix-rail-node {
+  position: relative;
+  border-radius: 0.5rem;
+  border: 1px solid transparent;
+  transition: border-color 0.18s ease, background-color 0.18s ease, color 0.18s ease;
+}
+.smohix-rail-node:hover {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.035);
+}
+.smohix-rail-node--active {
+  border-color: rgba(16, 185, 129, 0.32) !important;
+  background: rgba(16, 185, 129, 0.08) !important;
+}
+
+/* ── Mobile OE ── */
+@media (max-width: 1023px) {
+  .smohix-oe-hero {
+    min-height: auto;
+  }
+  .smohix-hub-command__band {
+    padding: 1rem;
+  }
+  .smohix-metric-band-grid {
+    grid-template-columns: 1fr;
+  }
+  .smohix-product-constellation__node {
+    padding-left: 0;
+    border-left: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .smohix-metric-band:hover,
+  .smohix-action-rail__item:hover {
+    transform: none;
   }
 }

@@ -12,6 +12,7 @@ export const metadata: Metadata = {
 export default function SecurityPage() {
   return (
     <LegalLayout title="Security" lastUpdated="May 2026">
+      <div className="smohix-trust-authority -mx-1 px-1 pt-1">
       <div className="mb-6 max-w-md">
         <SystemLabel>Trust boundary</SystemLabel>
         <div className="mt-2">
@@ -66,6 +67,7 @@ export default function SecurityPage() {
         Additional policy details are available in <a href="/trust">Trust &amp; governance</a>{" "}
         and the repository <code>SECURITY.md</code> document.
       </p>
+      </div>
     </LegalLayout>
   );
 }

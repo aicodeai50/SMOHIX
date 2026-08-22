@@ -1,8 +1,7 @@
 import Link from "next/link";
 
 import { AppIcon } from "@/components/icons/AppIcon";
-import { Card } from "@/components/ui/Card";
-import { appBody, appMeta, appPanelTitle } from "@/lib/app-typography";
+import { appMetric, appPanelTitle, appSignal } from "@/lib/app-typography";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
@@ -76,20 +75,18 @@ export async function DashboardStats({ userId }: { userId: string | null }) {
   ];
 
   return (
-    <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <div className="smohix-metric-band-grid mt-4">
       {stats.map((s) => (
         <Link key={s.label} href={s.href} className="group block">
-          <Card className="transition-[border-color,transform] group-hover:-translate-y-0.5 group-hover:border-accent/30">
+          <div className="smohix-metric-band h-full">
             <div className="flex items-start justify-between gap-2">
               <div>
-                <p className={`${appMeta} uppercase tracking-wide text-muted`}>{s.label}</p>
-                <p className={`mt-2 ${s.isText ? appPanelTitle : "text-3xl font-bold"} text-foreground`}>
-                  {s.value}
-                </p>
+                <p className={`${appSignal} text-muted`}>{s.label}</p>
+                <p className={`mt-2 ${s.isText ? appPanelTitle : appMetric}`}>{s.value}</p>
               </div>
               <AppIcon name={s.icon} size={20} className="text-accent/80" aria-hidden />
             </div>
-          </Card>
+          </div>
         </Link>
       ))}
     </div>
@@ -105,17 +102,12 @@ export function QuickActions() {
   ];
 
   return (
-    <section className="mt-6">
-      <h2 className={appPanelTitle}>Quick actions</h2>
-      <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+    <section className="mt-2">
+      <div className="smohix-action-rail">
         {actions.map((a) => (
-          <Link
-            key={a.href}
-            href={a.href}
-            className={`flex items-center gap-3 rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3 ${appBody} transition-colors hover:border-accent/35 hover:bg-accent/[0.04]`}
-          >
+          <Link key={a.href} href={a.href} className="smohix-action-rail__item">
             <AppIcon name={a.icon} size={18} className="text-accent" />
-            <span className="font-medium text-foreground/90">{a.label}</span>
+            <span>{a.label}</span>
           </Link>
         ))}
       </div>

@@ -107,10 +107,17 @@ export default async function IncidentsPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-white/[0.05]">
-            {rows.map((row) => (
+            {rows.map((row) => {
+              const gravityClass =
+                row.severity === "critical"
+                  ? "smohix-incident-gravity smohix-incident-gravity--critical"
+                  : row.severity === "high"
+                    ? "smohix-incident-gravity smohix-incident-gravity--high"
+                    : "";
+              return (
                 <tr
                   key={row.id}
-                  className="transition-colors hover:bg-white/[0.03]"
+                  className={`transition-colors hover:bg-white/[0.03] ${gravityClass}`}
                 >
                   <td className={`px-4 py-3 font-mono text-accent ${appMeta}`}>
                     <Link href={`/incidents/${row.id}`} className="hover:underline">
@@ -152,7 +159,8 @@ export default async function IncidentsPage() {
                   </td>
                   <td className="px-4 py-3 text-muted">{row.updated}</td>
                 </tr>
-              ))}
+              );
+            })}
           </tbody>
         </table>
       </div>
