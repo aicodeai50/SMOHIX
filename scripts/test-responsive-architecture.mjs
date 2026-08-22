@@ -15,7 +15,7 @@ import { chromium } from "playwright";
 
 const BASE = (process.env.SMOHIX_QA_BASE_URL ?? "http://127.0.0.1:3000").replace(/\/$/, "");
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const OUT = join(__dirname, "..", ".phase27-qa");
+const OUT = join(__dirname, "..", process.env.SMOHIX_QA_OUT_DIR ?? ".phase27-qa");
 const CAPTURE = process.env.SMOHIX_QA_CAPTURE === "1";
 
 const PUBLIC_ROUTES = [
@@ -34,14 +34,17 @@ const PUBLIC_ROUTES = [
 
 const VIEWPORTS = [
   { name: "1440x1000", width: 1440, height: 1000 },
+  { name: "1280x900", width: 1280, height: 900 },
   { name: "1024x900", width: 1024, height: 900 },
   { name: "768x1024", width: 768, height: 1024 },
+  { name: "430x932", width: 430, height: 932 },
   { name: "390x844", width: 390, height: 844 },
+  { name: "375x812", width: 375, height: 812 },
 ];
 
 const SCREENSHOT_TARGETS = [
-  { route: "/", name: "home", widths: [1440, 768, 390] },
-  { route: "/products", name: "products", widths: [1440, 768, 390] },
+  { route: "/", name: "home", widths: [1440, 1280, 768, 390] },
+  { route: "/products", name: "products", widths: [1440, 390] },
   { route: "/docs/api", name: "docs-api", widths: [1440, 390] },
   { route: "/auth/sign-in", name: "auth", widths: [1440, 390] },
 ];
@@ -180,6 +183,18 @@ async function main() {
         await page.waitForTimeout(500);
         const file = join(OUT, `${target.name}-${vp.width}.png`);
         await page.screenshot({ path: file, fullPage: false });
+
+        if (target.route === "/" && vp.width >= 768) {
+          const section = await page.$("#flagship-products-heading");
+          if (section) {
+            await section.scrollIntoViewIfNeeded();
+            await page.waitForTimeout(400);
+            await page.screenshot({
+              path: join(OUT, `home-ecosystem-${vp.width}.png`),
+              fullPage: false,
+            });
+          }
+        }
       }
     }
 
