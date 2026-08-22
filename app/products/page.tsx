@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { SmohixHorizon } from "@/components/architecture";
 import { ProductAccessHub } from "@/components/products/ProductAccessHub";
 import { MarketingReveal } from "@/components/marketing/MarketingReveal";
 import { Footer } from "@/components/site/Footer";
@@ -13,6 +14,7 @@ import {
   mLede,
   mLinkInline,
   mSection,
+  mSystemMeta,
 } from "@/lib/marketing-layout";
 import { SITE_COMPANY_NAME } from "@/lib/site-brand";
 
@@ -27,9 +29,13 @@ export default function ProductsPage() {
     <>
       <Header />
       <main id="main-content" className="flex-1">
-        <MarketingReveal className={mSection}>
+        <MarketingReveal className={`${mSection} smohix-products-page-hero`}>
           <div className={mContainer}>
-            <p className={`${mEyebrow} text-accent/80`}>Products</p>
+            <div className="smohix-products-page-hero__opening">
+              <SmohixHorizon className="max-w-md" />
+              <p className={`mt-3 ${mSystemMeta} text-muted/75`}>Smohix ecosystem · product system</p>
+            </div>
+            <p className={`${mEyebrow} mt-8 text-accent/80`}>Products</p>
             <h1 className={`mt-2 ${mH1}`}>Smohix Technologies products</h1>
             <p className={mLede}>
               Flagship workspaces and platform capabilities — each card links to a real destination
