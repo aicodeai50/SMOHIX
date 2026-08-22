@@ -1,116 +1,8 @@
 import Link from "next/link";
 
-import { LivingPulse } from "@/components/landing/LivingPulse";
 import { MarketingReveal } from "@/components/marketing/MarketingReveal";
-import {
-  mArticle,
-  mCardLink,
-  mEyebrow,
-  mH2,
-} from "@/lib/marketing-layout";
+import { mBodySm, mCardLink, mH2, mSystemMeta } from "@/lib/marketing-layout";
 import { SITE_BRAND_NAME } from "@/lib/site-brand";
-
-const MODULES = [
-  {
-    title: "Connectors",
-    body: "Alert ingest and connector health checks.",
-    href: "/auth/sign-in?next=/settings/connectors",
-    cta: "Open connectors",
-  },
-  {
-    title: "Services Catalog",
-    body: "Track service ownership, context, and incident linkage.",
-    href: "/auth/sign-in?next=/services",
-    cta: "Open services",
-  },
-  {
-    title: "Incidents",
-    body: "Open, triage, link actions, resolve.",
-    href: "/auth/sign-in?next=/incidents",
-    cta: "Open incidents",
-  },
-  {
-    title: "Automations",
-    body: "Dry-run first, then approve and execute.",
-    href: "/auth/sign-in?next=/automations",
-    cta: "Open automations",
-  },
-  {
-    title: "Runbooks",
-    body: "Structured procedures for live operations.",
-    href: "/auth/sign-in?next=/runbooks",
-    cta: "Browse runbooks",
-  },
-  {
-    title: "Reasoning",
-    body: "Contextual suggestions for safer next steps.",
-    href: "/auth/sign-in?next=/copilot",
-    cta: "Open reasoning",
-  },
-  {
-    title: "Approvals",
-    body: "Approval-first gate for high-impact changes.",
-    href: "/auth/sign-in?next=/approvals",
-    cta: "Open approvals",
-  },
-  {
-    title: "Audit",
-    body: "One evidence stream for key actions.",
-    href: "/auth/sign-in?next=/audit",
-    cta: "Open audit",
-  },
-  {
-    title: "Network & exposure",
-    body: "Devices, config drift, certificates, and secrets inventory.",
-    href: "/auth/sign-in?next=/assets/network",
-    cta: "Open assets",
-  },
-  {
-    title: "Access governance",
-    body: "MFA posture, policy rules, and high-risk execution blocks.",
-    href: "/auth/sign-in?next=/governance/access",
-    cta: "Open governance",
-  },
-  {
-    title: "Settings & keys",
-    body: "API keys, billing, connectors, and execution posture.",
-    href: "/auth/sign-in?next=/settings",
-    cta: "Open settings",
-  },
-] as const;
-
-const IT_SURFACES = [
-  {
-    title: "Connectors Health",
-    body: "Check reasoning and robot endpoint reachability.",
-    href: "/auth/sign-in?next=/settings/connectors",
-    cta: "Check connectors",
-  },
-  {
-    title: "API Docs",
-    body: "Integration-facing routes and capability reference.",
-    href: "/docs/api",
-    cta: "View API docs",
-  },
-  {
-    title: "System Status",
-    body: "Public platform posture and reliability communication.",
-    href: "/status",
-    cta: "Open status",
-  },
-  {
-    title: "API Keys",
-    body: "Manage operator credentials for proxy-backed calls.",
-    href: "/auth/sign-in?next=/settings/api-keys",
-    cta: "Manage keys",
-  },
-  {
-    title: "Billing Control",
-    body: "Plan state, checkout path, and subscription visibility.",
-    href: "/auth/sign-in?next=/settings/billing",
-    cta: "Open billing",
-  },
-] as const;
 
 const NEXT_CAPABILITIES = [
   "On-call schedules",
@@ -158,97 +50,44 @@ const EQUIPMENT_NEXT_FIVE = [
   "Maintenance windows and change calendar",
 ] as const;
 
+/** Planned capability bands — calmer than primary platform layers. */
 export function PlatformSurfaceMap() {
   return (
-    <MarketingReveal as="article" className={`${mArticle} smohix-quantum-section`}>
-      <LivingPulse />
-      <p className={`${mEyebrow} smohix-eyebrow-cyber`}>⟡ Platform map</p>
-      <h1 className="smohix-living-headline mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-        Operational surfaces — one console
-      </h1>
-      <p className="mt-2 text-sm leading-6 text-foreground/80 sm:text-base sm:leading-7">
-        {SITE_BRAND_NAME} is a controlled operations console: incidents, automations, approvals, audit,
-        runbooks, connectors, governance, and reasoning in one place.
-      </p>
-      <p className="mt-1.5 text-sm leading-6 text-foreground/80 sm:text-base sm:leading-7">
-        Start here: open an incident, connect alert ingest, run your first dry-run.
-      </p>
-
-      <section className="mt-6">
-        <h2 className={mH2}>Module map</h2>
-        <ul className="mt-3 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
-          {MODULES.map((item) => (
-            <li key={item.title}>
-              <Link href={item.href} className={`${mCardLink} min-h-40 p-3.5`}>
-                <span className="text-[13px] font-semibold text-foreground sm:text-sm">{item.title}</span>
-                <span className="mt-1 flex-1 text-[13px] leading-5 text-foreground/80 sm:text-sm sm:leading-6">
-                  {item.body}
-                </span>
-                <span className="mt-2.5 text-[11px] font-semibold text-accent/90 group-hover:underline sm:text-xs">
-                  {item.cta} →
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section className="mt-7">
-        <h2 className={mH2}>IT operations toolkit</h2>
-        <p className="mt-1.5 text-sm leading-6 text-foreground/80 sm:text-base sm:leading-7">
-          Core IT surfaces for reliability, integrations, and controlled execution.
-        </p>
-        <ul className="mt-3 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
-          {IT_SURFACES.map((item) => (
-            <li key={item.title}>
-              <Link href={item.href} className={`${mCardLink} min-h-36 p-3.5`}>
-                <span className="text-[13px] font-semibold text-foreground sm:text-sm">{item.title}</span>
-                <span className="mt-1 flex-1 text-[13px] leading-5 text-foreground/80 sm:text-sm sm:leading-6">
-                  {item.body}
-                </span>
-                <span className="mt-2.5 text-[11px] font-semibold text-accent/90 group-hover:underline sm:text-xs">
-                  {item.cta} →
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section className="mt-7">
-        <h2 className={mH2}>Next IT capabilities</h2>
-        <p className="mt-1.5 text-sm leading-6 text-foreground/80 sm:text-base sm:leading-7">
+    <MarketingReveal as="article" className="smohix-platform-roadmap">
+      <section className="smohix-platform-roadmap__band" aria-labelledby="platform-next-heading">
+        <p className={`${mSystemMeta} text-muted/65`}>Planned · roadmap</p>
+        <h2 id="platform-next-heading" className={mH2}>
+          Next IT capabilities
+        </h2>
+        <p className={`mt-2 ${mBodySm} text-muted/85`}>
           Planned additions to round out enterprise operations workflows.
         </p>
-        <ul className="mt-3 flex flex-wrap gap-2">
+        <ul className="mt-4 flex flex-wrap gap-2">
           {NEXT_CAPABILITIES.map((item) => (
-            <li
-              key={item}
-              className="rounded-full border border-white/15 bg-white/[0.02] px-2.5 py-1 text-xs font-medium text-foreground/80"
-            >
+            <li key={item} className="smohix-platform-roadmap__chip">
               {item}
             </li>
           ))}
         </ul>
       </section>
 
-      <section className="mt-7">
-        <h2 className={mH2}>Vendor integrations roadmap</h2>
-        <p className="mt-1.5 text-sm leading-6 text-foreground/80 sm:text-base sm:leading-7">
-          Planned first-party connectors and supported webhook targets. These are roadmap targets,
-          not live claims.
+      <section className="smohix-platform-roadmap__band" aria-labelledby="platform-vendor-heading">
+        <h2 id="platform-vendor-heading" className={mH2}>
+          Vendor integrations roadmap
+        </h2>
+        <p className={`mt-2 ${mBodySm} text-muted/85`}>
+          Planned first-party connectors and supported webhook targets. These are roadmap targets, not live
+          claims.
         </p>
-        <ul className="mt-3 grid gap-2.5 sm:grid-cols-2">
+        <ul className="mt-4 grid gap-3 sm:grid-cols-2">
           {VENDOR_ROADMAP.map((item) => (
-            <li key={item.category} className={`${mCardLink} min-h-24 p-3.5`}>
-              <span className="text-[13px] font-semibold text-foreground sm:text-sm">{item.category}</span>
-              <span className="mt-1 text-[13px] leading-5 text-foreground/80 sm:text-sm sm:leading-6">
-                {item.vendors}
-              </span>
+            <li key={item.category} className="smohix-platform-roadmap__plane">
+              <span className="smohix-platform-roadmap__plane-title">{item.category}</span>
+              <span className="smohix-platform-roadmap__plane-body">{item.vendors}</span>
             </li>
           ))}
         </ul>
-        <p className="mt-3 text-sm leading-6 text-foreground/75 sm:text-base sm:leading-7">
+        <p className={`mt-4 ${mBodySm} text-muted/80`}>
           <Link href="/integrations" className="font-medium text-accent hover:underline">
             Open integrations roadmap
           </Link>
@@ -259,50 +98,51 @@ export function PlatformSurfaceMap() {
         </p>
       </section>
 
-      <section className="mt-7">
-        <h2 className={mH2}>Equipment operations roadmap</h2>
-        <p className="mt-1.5 text-sm leading-6 text-foreground/80 sm:text-base sm:leading-7">
+      <section className="smohix-platform-roadmap__band" aria-labelledby="platform-equipment-heading">
+        <h2 id="platform-equipment-heading" className={mH2}>
+          Equipment operations roadmap
+        </h2>
+        <p className={`mt-2 ${mBodySm} text-muted/85`}>
           Professional IT asset coverage to extend incidents, automations, approvals, and audit with
           equipment-level context.
         </p>
-
-        <div className="mt-3 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
-          <div className={`${mCardLink} min-h-36 p-3.5`}>
-            <p className="text-[13px] font-semibold text-foreground sm:text-sm">Phase 1: Core inventory</p>
-            <ul className="mt-1.5 space-y-1 text-[13px] leading-5 text-foreground/80 sm:text-sm sm:leading-6">
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <div className={`${mCardLink} smohix-platform-roadmap__phase p-4`}>
+            <p className="smohix-platform-roadmap__plane-title">Phase 1: Core inventory</p>
+            <ul className="mt-2 space-y-1 text-sm text-muted/85">
               {EQUIPMENT_PHASE_1.map((item) => (
-                <li key={item}>- {item}</li>
+                <li key={item}>— {item}</li>
               ))}
             </ul>
           </div>
-          <div className={`${mCardLink} min-h-36 p-3.5`}>
-            <p className="text-[13px] font-semibold text-foreground sm:text-sm">Phase 2: Reliability and security</p>
-            <ul className="mt-1.5 space-y-1 text-[13px] leading-5 text-foreground/80 sm:text-sm sm:leading-6">
+          <div className={`${mCardLink} smohix-platform-roadmap__phase p-4`}>
+            <p className="smohix-platform-roadmap__plane-title">Phase 2: Reliability and security</p>
+            <ul className="mt-2 space-y-1 text-sm text-muted/85">
               {EQUIPMENT_PHASE_2.map((item) => (
-                <li key={item}>- {item}</li>
+                <li key={item}>— {item}</li>
               ))}
             </ul>
           </div>
-          <div className={`${mCardLink} min-h-36 p-3.5`}>
-            <p className="text-[13px] font-semibold text-foreground sm:text-sm">Phase 3: Enterprise depth</p>
-            <ul className="mt-1.5 space-y-1 text-[13px] leading-5 text-foreground/80 sm:text-sm sm:leading-6">
+          <div className={`${mCardLink} smohix-platform-roadmap__phase p-4`}>
+            <p className="smohix-platform-roadmap__plane-title">Phase 3: Enterprise depth</p>
+            <ul className="mt-2 space-y-1 text-sm text-muted/85">
               {EQUIPMENT_PHASE_3.map((item) => (
-                <li key={item}>- {item}</li>
+                <li key={item}>— {item}</li>
               ))}
             </ul>
           </div>
-          <div className={`${mCardLink} min-h-36 p-3.5`}>
-            <p className="text-[13px] font-semibold text-foreground sm:text-sm">Next 5 to implement</p>
-            <ul className="mt-1.5 space-y-1 text-[13px] leading-5 text-foreground/80 sm:text-sm sm:leading-6">
+          <div className={`${mCardLink} smohix-platform-roadmap__phase p-4`}>
+            <p className="smohix-platform-roadmap__plane-title">Next 5 to implement</p>
+            <ul className="mt-2 space-y-1 text-sm text-muted/85">
               {EQUIPMENT_NEXT_FIVE.map((item) => (
-                <li key={item}>- {item}</li>
+                <li key={item}>— {item}</li>
               ))}
             </ul>
           </div>
         </div>
       </section>
 
-      <p className="mt-8 text-sm leading-6 text-foreground/75 sm:text-base sm:leading-7">
+      <p className={`mt-8 ${mBodySm} text-muted/80`}>
         <Link href="/platform/overview" className="font-medium text-accent hover:underline">
           Platform overview
         </Link>

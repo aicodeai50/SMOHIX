@@ -2329,6 +2329,262 @@ body {
   pointer-events: none;
 }
 
+/* ── Platform page spatial architecture ── */
+.smohix-platform-page-hero {
+  position: relative;
+  overflow-x: clip;
+}
+.smohix-platform-page-hero__opening {
+  position: relative;
+  max-width: 100%;
+}
+.smohix-platform-page-hero__opening::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: min(100%, 28rem);
+  height: 1px;
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.35), transparent);
+  pointer-events: none;
+}
+.smohix-platform-core-field {
+  position: relative;
+  display: grid;
+  gap: 1.5rem;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: clip;
+}
+.smohix-platform-core-field__spine {
+  position: relative;
+}
+.smohix-platform-core-field__axis {
+  margin: 1rem auto 0;
+  width: 1px;
+  height: 1.75rem;
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0.45), rgba(255, 255, 255, 0.08));
+  pointer-events: none;
+}
+.smohix-platform-core-field__operating-plane {
+  position: relative;
+  padding: 1.5rem 1.35rem;
+  border-color: rgba(16, 185, 129, 0.24);
+  background: linear-gradient(165deg, rgba(16, 185, 129, 0.05) 0%, rgba(8, 10, 14, 0.94) 100%);
+}
+.smohix-platform-core-field__headline {
+  margin-top: 0.5rem;
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--foreground);
+}
+.smohix-platform-core-field__layers {
+  display: grid;
+  gap: 1.25rem;
+  min-width: 0;
+}
+@media (min-width: 1024px) {
+  .smohix-platform-core-field__layers {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem 1.5rem;
+  }
+  .smohix-platform-layer[data-layer="operations"] {
+    grid-column: 1 / -1;
+  }
+}
+.smohix-platform-layer {
+  position: relative;
+  min-width: 0;
+  padding: 1.15rem 1.1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.015);
+  overflow: hidden;
+}
+.smohix-platform-layer--primary {
+  border-color: rgba(16, 185, 129, 0.2);
+  background: linear-gradient(165deg, rgba(16, 185, 129, 0.04) 0%, rgba(8, 10, 14, 0.92) 100%);
+}
+.smohix-platform-layer--institutional {
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(8, 10, 14, 0.88);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+.smohix-platform-layer__title {
+  margin-top: 0.35rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--foreground);
+}
+.smohix-platform-layer__grid {
+  margin-top: 1rem;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.65rem;
+}
+@media (min-width: 640px) {
+  .smohix-platform-layer--primary .smohix-platform-layer__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .smohix-platform-layer[data-layer="developers"] .smohix-platform-layer__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.smohix-platform-layer__footer {
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+.smohix-platform-capability-plane {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding: 0.85rem 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-left: 2px solid rgba(16, 185, 129, 0.28);
+  background: rgba(255, 255, 255, 0.02);
+  transition: border-color 0.18s ease, background-color 0.18s ease;
+}
+.smohix-platform-capability-plane:hover {
+  border-color: rgba(16, 185, 129, 0.35);
+  background: rgba(16, 185, 129, 0.05);
+}
+.smohix-platform-capability-plane__title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+.smohix-platform-capability-plane__body {
+  margin-top: 0.35rem;
+  flex: 1;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: rgba(161, 161, 170, 0.92);
+}
+.smohix-platform-capability-plane__cta {
+  margin-top: 0.65rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(16, 185, 129, 0.85);
+}
+.smohix-platform-control-layer {
+  position: relative;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: clip;
+}
+.smohix-platform-control-layer__intro {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+@media (min-width: 768px) {
+  .smohix-platform-control-layer__intro {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+    gap: 1.25rem;
+  }
+}
+.smohix-platform-control-layer__rail {
+  width: 3px;
+  min-height: 3.5rem;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0.45), rgba(255, 255, 255, 0.06));
+  pointer-events: none;
+}
+.smohix-platform-control-layer__grid {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0;
+  list-style: none;
+  min-width: 0;
+}
+@media (min-width: 768px) {
+  .smohix-platform-control-layer__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1280px) {
+  .smohix-platform-control-layer__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.smohix-platform-control-plane {
+  display: block;
+  padding: 0.95rem 1rem;
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.012);
+  transition: border-color 0.18s ease, background-color 0.18s ease;
+}
+.smohix-platform-control-plane:hover {
+  border-color: rgba(16, 185, 129, 0.28);
+  background: rgba(16, 185, 129, 0.04);
+}
+.smohix-platform-control-plane__title {
+  display: block;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+.smohix-platform-control-plane__body {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: rgba(161, 161, 170, 0.9);
+}
+.smohix-platform-roadmap {
+  position: relative;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: clip;
+}
+.smohix-platform-roadmap__band {
+  padding-top: 1.5rem;
+  margin-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+.smohix-platform-roadmap__band:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+.smohix-platform-roadmap__chip {
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: rgba(161, 161, 170, 0.92);
+  background: rgba(255, 255, 255, 0.015);
+}
+.smohix-platform-roadmap__plane {
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.012);
+}
+.smohix-platform-roadmap__plane-title {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+.smohix-platform-roadmap__plane-body {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: rgba(161, 161, 170, 0.9);
+}
+.smohix-platform-roadmap__phase {
+  border-style: dashed;
+  opacity: 0.92;
+}
+
 /* ── Auth: entry portal ── */
 .smohix-auth-portal {
   position: relative;
