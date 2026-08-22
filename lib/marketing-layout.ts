@@ -10,10 +10,10 @@ export const mSection = `${mBorderB} py-16 sm:py-20`;
 export const mSectionTight = `${mBorderB} py-12 sm:py-14`;
 export const mSectionPreview = `${mBorderB} py-14 sm:py-16`;
 
-export const mContainer = "mx-auto max-w-6xl px-4 sm:px-6";
+export const mContainer = "mx-auto min-w-0 max-w-6xl px-4 sm:px-6";
 
 /** Narrow article shell (why, trust, status, changelog) — matches console reading width. */
-export const mArticle = "mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16";
+export const mArticle = "mx-auto min-w-0 max-w-3xl overflow-x-clip px-4 py-12 sm:px-6 sm:py-16";
 
 /** H1 — 34px mobile, 44px desktop (Phase 25 display scale). */
 export const mH1 = "text-[2.125rem] font-semibold tracking-tight text-foreground sm:text-[2.75rem] sm:leading-[1.08]";

@@ -18,7 +18,7 @@ export function IntelligenceField({
     >
       {withNodes ? (
         <svg
-          className="absolute inset-0 h-full w-full opacity-40"
+          className="absolute inset-0 h-full w-full max-w-full opacity-40 [overflow:hidden]"
           viewBox="0 0 400 240"
           preserveAspectRatio="xMidYMid slice"
           aria-hidden

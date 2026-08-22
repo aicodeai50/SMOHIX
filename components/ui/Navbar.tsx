@@ -7,6 +7,7 @@ import { type ReactNode } from "react";
 import { Logo } from "@/components/site/Logo";
 import { MarketingMobileNav } from "@/components/site/MarketingMobileNav";
 import { MarketingNavRail } from "@/components/site/MarketingNavRail";
+import { MarketingNavRailCompact } from "@/components/site/MarketingNavRailCompact";
 import { SiteHeaderActions } from "@/components/site/SiteHeaderActions";
 import { mFocusRing } from "@/lib/marketing-layout";
 
@@ -17,14 +18,20 @@ export function Navbar({
 }) {
   return (
     <header className="smohix-header-living sticky top-0 z-50 backdrop-blur-xl">
-      <div className="mx-auto flex h-[4.25rem] max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
-        <Link href="/" className="shrink-0 text-foreground no-underline">
+      <div className="mx-auto flex h-[4.25rem] min-w-0 max-w-6xl items-center gap-2 px-4 sm:gap-3 sm:px-6">
+        <Link href="/" className="min-w-0 shrink-0 text-foreground no-underline">
           <Logo />
         </Link>
 
-        <MarketingNavRail />
+        <div className="hidden min-w-0 flex-1 md:block lg:hidden">
+          <MarketingNavRailCompact />
+        </div>
 
-        <div className="flex items-center gap-2">
+        <div className="hidden min-w-0 flex-1 justify-center lg:flex">
+          <MarketingNavRail />
+        </div>
+
+        <div className="ml-auto flex min-w-0 shrink items-center gap-1.5 sm:gap-2">
           <MarketingMobileNav />
           {userEmail ? (
             <Link

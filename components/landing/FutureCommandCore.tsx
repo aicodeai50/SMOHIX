@@ -47,13 +47,13 @@ export function FutureCommandCore() {
   }, []);
 
   return (
-    <div className="relative mx-auto w-full max-w-xl lg:max-w-none">
+    <div className="relative mx-auto w-full min-w-0 max-w-xl overflow-hidden lg:max-w-none">
       <div
-        className="smohix-orbit-ring pointer-events-none absolute -right-10 -top-10 h-44 w-44 opacity-70"
+        className="smohix-orbit-ring pointer-events-none absolute -right-10 -top-10 hidden h-44 w-44 opacity-70 lg:block"
         aria-hidden
       />
       <div
-        className="smohix-orbit-ring pointer-events-none absolute -left-6 bottom-8 h-28 w-28 opacity-40"
+        className="smohix-orbit-ring pointer-events-none absolute -left-6 bottom-8 hidden h-28 w-28 opacity-40 lg:block"
         style={{ animationDirection: "reverse", animationDuration: "32s" }}
         aria-hidden
       />
