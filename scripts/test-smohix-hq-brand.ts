@@ -66,6 +66,8 @@ const brandTs = read("lib/brand.ts");
 assert(brandTs.includes("Flow Mark") || brandTs.includes("HQ_CONCEPT_NAME"), "brand.ts references HQ concept");
 assert(brandTs.includes(HQ_ASSET_PATHS.masterMark), "brand.ts uses HQ master mark URL");
 assert(brandTs.includes("getBrandLogoUrl"), "brand.ts exports JSON-LD logo helper");
+assert(brandTs.includes("markPng"), "JSON-LD logo uses 512px PNG mark");
+assert(brandTs.includes("shortcut"), "metadata icons include shortcut favicon");
 
 // Header/footer wired through BrandLogo → SmohixHqWordmark
 const brandLogo = read("components/brand/BrandLogo.tsx");

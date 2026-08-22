@@ -3,7 +3,7 @@
  * Run: npx tsx scripts/test-smohix-rebrand.ts
  */
 
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -192,8 +192,19 @@ assert(!/zentro/i.test(icon), "icon.svg must not reference zentro");
 assert(!/<text[\s>]/i.test(icon), "icon.svg must not contain SVG text elements");
 assert(!icon.includes(".run"), "icon.svg must not contain .run");
 assert(icon.includes("M 23 4.2"), "icon.svg must use Flow Mark micro S upper stroke");
+assert(icon.includes("#5ee1ff") || icon.includes("5ee1ff"), "icon.svg must include accent dot");
+assert(!/shynvo/i.test(icon), "icon.svg must not reference shynvo");
 
-// 10) Redirects for legacy product paths
+// 9b) Search / browser brand icon sources
+const brandTs = read("lib/brand.ts");
+assert(brandTs.includes("markPng"), "JSON-LD logo must use square PNG mark");
+assert(!brandTs.includes('new URL(BRAND_ASSETS.markSvg'), "JSON-LD must not use SVG-only logo URL");
+assert(existsSync(path.join(root, "public/favicon.ico")), "public/favicon.ico must exist");
+assert(existsSync(path.join(root, "public/icon.png")), "public/icon.png must exist");
+assert(existsSync(path.join(root, "public/icon-48.png")), "public/icon-48.png must exist");
+assert(existsSync(path.join(root, "public/icon-192.png")), "public/icon-192.png must exist");
+assert(manifest.includes("/favicon.ico"), "manifest must reference favicon.ico");
+assert(!/shynvo/i.test(manifest), "webmanifest must not reference shynvo");
 const nextConfig = read("next.config.ts");
 assert(nextConfig.includes("/products/zentro-ai"), "legacy product redirect present");
 assert(nextConfig.includes("destination: \"/products/smohix-ai\""), "smohix-ai redirect target");

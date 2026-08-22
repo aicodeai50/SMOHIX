@@ -51,19 +51,22 @@ export const BRAND_MARK_COLORS = {
 
 export const BRAND_MARK_VIEWBOX = 32 as const;
 
-/** Organization / WebSite JSON-LD logo — primary HQ symbol mark. */
+/** Organization / WebSite JSON-LD logo — square PNG (512px) derived from HQ Flow Mark micro symbol. */
 export function getBrandLogoUrl(siteUrl: string): string {
-  return new URL(BRAND_ASSETS.markSvg, siteUrl).href;
+  return new URL(BRAND_ASSETS.markPng, siteUrl).href;
 }
 
 /** HQ micro-mark favicon assets — S symbol only at small sizes. */
 export function getBrandMetadataIcons(): NonNullable<Metadata["icons"]> {
   return {
     icon: [
-      { url: BRAND_ASSETS.favicon, sizes: "48x48" },
+      { url: BRAND_ASSETS.favicon, sizes: "48x48", type: "image/x-icon" },
+      { url: "/icon-48.png", sizes: "48x48", type: "image/png" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
       { url: BRAND_ASSETS.markPng, sizes: "512x512", type: "image/png" },
       { url: BRAND_ASSETS.faviconSvg, type: "image/svg+xml" },
     ],
+    shortcut: [{ url: BRAND_ASSETS.favicon, type: "image/x-icon" }],
     apple: [{ url: BRAND_ASSETS.appleIcon, sizes: "180x180", type: "image/png" }],
   };
 }
