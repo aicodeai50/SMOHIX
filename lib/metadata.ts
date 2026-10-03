@@ -51,7 +51,7 @@ export function buildMarketingMetadata(input: {
   const images = socialImages(siteUrl);
 
   return {
-    title: fullTitle,
+    title: { absolute: fullTitle },
     description: input.description,
     keywords: [...SITE_SEO_KEYWORDS],
     alternates: { canonical },

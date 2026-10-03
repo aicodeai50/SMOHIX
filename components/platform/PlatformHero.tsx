@@ -1,7 +1,6 @@
 import Link from "next/link";
 
 import { SmohixHorizon } from "@/components/architecture";
-import { Button } from "@/components/ui/Button";
 import {
   mBody,
   mContainer,
@@ -27,26 +26,21 @@ export function PlatformHero() {
           </p>
         </div>
         <p className={`${mEyebrow} mt-8 text-accent/80`}>Platform</p>
-        <h1 className={`mt-2 ${mH1}`}>Platform overview — then Hub when you sign in</h1>
+        <h1 className={`mt-2 max-w-3xl ${mH1}`}>Run operations with clarity and control.</h1>
         <p className={mLede}>
-          <strong className="font-medium text-foreground">/platform</strong> explains Smohix Platform
-          capabilities. <strong className="font-medium text-foreground">/hub</strong> is the authenticated
-          working console (incidents, automation, governance, settings). Same product — public overview
-          versus signed-in workspace.
+          Bring incidents, service ownership, guarded automation, approvals, and audit evidence into one
+          operating workspace. Understand what needs attention, review the next action, and keep people
+          in control of execution.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
-          <Link href="/auth/sign-in?next=/hub" className={mFocusRing}>
-            <Button size="lg">Sign in to Hub</Button>
+          <Link href="/auth/sign-in?next=/hub" className={`inline-flex min-h-11 items-center rounded-lg bg-accent px-5 text-sm font-semibold text-background ${mFocusRing}`}>
+            Sign in to Hub
           </Link>
-          <Link href="/products/smohix-platform" className={mFocusRing}>
-            <Button size="lg" variant="secondary">
-              Product overview
-            </Button>
+          <Link href="#platform-operations" className={`inline-flex min-h-11 items-center rounded-lg border border-border px-5 text-sm font-semibold ${mFocusRing}`}>
+            Explore capabilities
           </Link>
-          <Link href="/docs" className={mFocusRing}>
-            <Button size="lg" variant="secondary">
-              Documentation
-            </Button>
+          <Link href="/docs" className={`inline-flex min-h-11 items-center rounded-lg border border-border px-5 text-sm font-semibold ${mFocusRing}`}>
+            Documentation
           </Link>
         </div>
         <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm">
@@ -63,22 +57,33 @@ export function PlatformHero() {
             Pilot →
           </Link>
         </div>
-        <p className={`mt-4 ${mBody} text-muted/80`}>
-          Operating core of the{" "}
+        <p className={`mt-4 ${mBody}`}>
+          Your organization’s records and controls are available after sign-in. Part of the{" "}
           <Link href="/products" className="font-medium text-accent hover:underline">
             Smohix product ecosystem
           </Link>
-          . Smohix AI lives at{" "}
+          . For general AI assistance, open{" "}
           <a
             href={SMOHIX_WORKSPACE_URLS.ai}
             className="font-medium text-accent hover:underline"
             target="_blank"
             rel="noopener noreferrer"
           >
-            ai.smohix.run
+            Smohix AI ↗
           </a>{" "}
-          — a separate flagship product, not the same surface as Platform Copilot routes.
+          .
         </p>
+        <ol aria-label="Operational workflow" className="mt-10 grid gap-4 border-t border-border pt-6 sm:grid-cols-3">
+          {[
+            ['01', 'Understand the signal', 'Connect an alert to a service, owner, and incident.'],
+            ['02', 'Review the action', 'Use runbooks and dry-runs before requesting approval.'],
+            ['03', 'Keep the evidence', 'Follow the decision and its execution in the audit trail.'],
+          ].map(([number, title, description]) => <li key={number}>
+            <span className={`${mSystemMeta} text-accent`}>{number}</span>
+            <h2 className="mt-2 text-base font-semibold">{title}</h2>
+            <p className={`mt-2 ${mBody}`}>{description}</p>
+          </li>)}
+        </ol>
       </div>
     </section>
   );

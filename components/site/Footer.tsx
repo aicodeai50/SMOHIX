@@ -29,7 +29,7 @@ function FooterLink({
   label: string;
   external?: boolean;
 }) {
-  const className = "w-fit text-sm text-muted transition-colors hover:text-foreground md:ml-auto";
+  const className = "w-fit text-sm text-muted transition-colors hover:text-foreground";
   if (external) {
     return (
       <a href={href} className={className} target="_blank" rel="noopener noreferrer">
@@ -50,7 +50,7 @@ export function Footer({ adaptiveBrand = false }: { adaptiveBrand?: boolean }) {
     <footer className="border-t border-white/[0.06] bg-surface/40">
       <div className={`${mContainer} py-12`}>
         <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between">
-          <div className="max-w-sm space-y-3">
+          <div className="max-w-sm space-y-3 lg:max-w-xs lg:shrink-0">
             <Logo tone={adaptiveBrand ? "mono" : "dark"} />
             <p className={mBody}>
               {SITE_COMPANY_NAME} builds AI products, developer platforms, APIs, and enterprise
@@ -61,7 +61,7 @@ export function Footer({ adaptiveBrand = false }: { adaptiveBrand?: boolean }) {
             </p>
           </div>
 
-          <div className="grid flex-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 lg:gap-8 md:text-right">
+          <div className="grid min-w-0 flex-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
             <div className="space-y-3">
               <FooterHeading>Experience</FooterHeading>
               <nav className="flex flex-col gap-2" aria-label="Experience">

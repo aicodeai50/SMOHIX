@@ -3,7 +3,7 @@
  * Run: npx --yes tsx scripts/test-platform-spatial-composition.ts
  */
 
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -32,10 +32,12 @@ assert(page.includes("PlatformControlLayer"), "platform page composes control la
 assert(page.includes("PlatformHero"), "platform page composes hero");
 assert(!page.includes("MarketingQuantumShell"), "quantum shell removed from platform page");
 
-assert(hero.includes("Platform overview — then Hub when you sign in"), "hero title preserved");
+assert(hero.includes("Run operations with clarity and control."), "hero explains product value");
 assert(hero.includes("Sign in to Hub"), "primary CTA preserved");
 assert(hero.includes("SmohixHorizon"), "hero uses horizon");
-assert(hero.includes("ai.smohix.run"), "AI separation cue preserved");
+assert(hero.includes("SMOHIX_WORKSPACE_URLS.ai"), "AI destination preserved");
+assert(!hero.includes("<Button"), "navigation links do not nest buttons");
+assert(control.includes("registryMaturityLabel"), "control maturity comes from registry");
 
 assert(core.includes("smohix-platform-core-field"), "core field css hook");
 assert(core.includes("Operations layer"), "operations layer present");

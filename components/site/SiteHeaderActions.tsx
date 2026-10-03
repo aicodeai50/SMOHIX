@@ -1,6 +1,5 @@
 import Link from "next/link";
 
-import { Button } from "@/components/ui/Button";
 import { mFocusRing } from "@/lib/marketing-layout";
 import { HEADER_ACTIONS } from "@/lib/site-nav";
 
@@ -25,12 +24,10 @@ export function SiteHeaderActions({ compact = false }: { compact?: boolean }) {
         href={HEADER_ACTIONS.openAi.href}
         target="_blank"
         rel="noopener noreferrer"
-        className="hidden min-[480px]:inline-flex sm:inline-flex"
+        className={`hidden h-8 max-w-[9.5rem] items-center justify-center rounded-lg px-2.5 text-xs font-semibold min-[480px]:inline-flex sm:max-w-none sm:px-3 ${compact ? 'bg-accent text-background hover:brightness-110' : 'border border-border bg-surface text-foreground hover:border-accent/40'} ${mFocusRing}`}
       >
-        <Button size="sm" variant={compact ? "primary" : "secondary"} className="max-w-[9.5rem] truncate px-2.5 sm:max-w-none sm:px-3">
           <span className="hidden sm:inline">{HEADER_ACTIONS.openAi.label}</span>
           <span className="sm:hidden">AI ↗</span>
-        </Button>
       </a>
     </div>
   );

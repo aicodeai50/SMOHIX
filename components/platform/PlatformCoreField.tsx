@@ -116,7 +116,7 @@ const DEVELOPER_INTEGRATION: Capability[] = [
   },
   {
     title: "Billing Control",
-    body: "Plan state, checkout path, and subscription visibility.",
+    body: "View subscription status and billing settings. Self-serve checkout is coming soon.",
     href: "/auth/sign-in?next=/settings/billing",
     cta: "Open billing",
   },
@@ -164,6 +164,7 @@ function PlatformLayer({
 }) {
   return (
     <section
+      id={`platform-${id}`}
       className={`smohix-platform-layer smohix-platform-layer--${variant}`}
       aria-labelledby={`platform-layer-${id}`}
       data-layer={id}
@@ -205,7 +206,7 @@ export function PlatformCoreField() {
           runbooks, connectors, governance, and reasoning in one place.
         </p>
         <p className={`mt-2 max-w-3xl ${mBodySm} text-muted/85`}>
-          Start here: open an incident, connect alert ingest, run your first dry-run.
+          Start with service ownership and alert ingest, then review an incident and its proposed actions.
         </p>
       </div>
 
@@ -223,7 +224,7 @@ export function PlatformCoreField() {
           id="intelligence"
           label="Intelligence layer"
           title="Assisted reasoning in console"
-          description="Copilot and reasoning routes inside the signed-in workspace — separate from the Smohix AI product."
+          description="Use incident context to draft and review next steps with Copilot. Availability depends on your workspace configuration."
           items={INTELLIGENCE}
           footer={
             <p className={`${mBodySm} text-muted/80`}>
@@ -236,7 +237,7 @@ export function PlatformCoreField() {
               >
                 Open Smohix AI ↗
               </a>{" "}
-              · Console Copilot uses Platform API routes, not the standalone AI app API.
+              · Use Platform Copilot for operational context and Smohix AI for broader assistance.
             </p>
           }
         />

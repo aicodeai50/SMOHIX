@@ -8,7 +8,7 @@ import { ConsoleAmbientBanner } from "@/components/console/ConsoleAmbientBanner"
 import { DashboardStats, QuickActions } from "@/components/console/DashboardStats";
 import { HubOnboardingPanel } from "@/components/console/HubOnboardingPanel";
 import { HubQuickLinksPanel } from "@/components/console/HubQuickLinksPanel";
-import { getUserDisplayName, getUserFirstName } from "@/lib/auth/display-name";
+import { getUserFirstName } from "@/lib/auth/display-name";
 import { buildHubPersonalizationState } from "@/lib/console/hub-personalization";
 import { loadHubPersonalizationPrefs } from "@/lib/console/hub-personalization-db";
 import { loadConsoleAmbientSnapshot } from "@/lib/console/load-ambient-status";
@@ -29,7 +29,6 @@ export const dynamic = "force-dynamic";
 
 export default async function HubPage() {
   let firstName: string | null = null;
-  let displayName: string | null = null;
   let userId: string | null = null;
   let orgRole = null as import("@/lib/org/roles").OrgRole | null;
   let orgName: string | null = null;
@@ -42,7 +41,6 @@ export default async function HubPage() {
         data: { user },
       } = await supabase.auth.getUser();
       firstName = getUserFirstName(user);
-      displayName = getUserDisplayName(user);
       userId = user?.id ?? null;
       if (user) {
         const org = await getOrgContextForUser(user.id);
@@ -52,14 +50,13 @@ export default async function HubPage() {
       }
     } catch {
       firstName = null;
-      displayName = null;
       userId = null;
       orgName = null;
       hasOrganization = false;
     }
   }
 
-  const signedIn = Boolean(displayName);
+  const signedIn = Boolean(userId);
   const title = signedIn && firstName ? `Welcome back, ${firstName}` : "Welcome to Smohix";
   const guidedFlow = [
     "Service or alert opens incident",
@@ -94,7 +91,7 @@ export default async function HubPage() {
         description={
           signedIn
             ? "System state, attention, and next actions — your Smohix operating workspace."
-            : "Core flows work without accounts. Sign in for organizations, shared history, and setup."
+            : "Sign in to view your workspace. Local evaluation scenarios are available when account services are disabled."
         }
       />
 
@@ -119,7 +116,7 @@ export default async function HubPage() {
           <CommandSection
             id="hub-health"
             title="System state"
-            description="Active load across incidents, approvals, and plan status."
+            description="Your recorded incidents, pending approvals, and subscription status."
           >
             <DashboardStats userId={userId} />
           </CommandSection>
@@ -128,7 +125,7 @@ export default async function HubPage() {
         <div className="smohix-hub-command__side smohix-hub-command__band">
           <CommandSection
             id="hub-continue"
-            title="Operations rail"
+            title="Your shortcuts"
             description="Personalized module shortcuts — pin what you use most."
           >
             <HubQuickLinksPanel
@@ -149,11 +146,13 @@ export default async function HubPage() {
 
         <div className="smohix-hub-command__full">
           <CoordinateDivider />
-          <SmohixSurface tone="aware" className="mt-2 p-5 md:p-6" as="section">
+          <details className="mt-2 rounded-xl border border-border p-5 md:p-6">
+            <summary className="cursor-pointer text-sm font-semibold focus-visible:outline-2 focus-visible:outline-accent">Evaluate a demo scenario</summary>
+          <SmohixSurface tone="aware" className="mt-4 p-5 md:p-6" as="section">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <div className="flex flex-wrap items-center gap-2">
-                  <h2 className={appPanelTitle}>Demo scenario flow</h2>
+                  <h2 className={appPanelTitle}>Incident-to-evidence walkthrough</h2>
                   <span
                     className={`rounded-md border border-amber-400/25 bg-amber-400/10 px-2 py-0.5 font-semibold uppercase tracking-wide text-amber-200 ${appMeta}`}
                   >
@@ -161,7 +160,8 @@ export default async function HubPage() {
                   </span>
                 </div>
                 <p className={`mt-1 ${appBody} text-muted`}>
-                  Seed a clearly labeled local scenario to evaluate the incident-to-approval evidence loop.
+                  Creates a demo incident, approval request, and dry-run record in your current workspace.
+                  Use an evaluation workspace. This does not execute the proposed automation.
                 </p>
               </div>
               <form action={launchGuidedScenarioAction}>
@@ -179,6 +179,7 @@ export default async function HubPage() {
               ))}
             </ol>
           </SmohixSurface>
+          </details>
 
           <p className={`mt-8 max-w-2xl text-pretty ${appBody} text-muted`}>
             Operational path:{" "}

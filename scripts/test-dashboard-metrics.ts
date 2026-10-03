@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import { confirmedMetricCount } from '../lib/console/metric-state';
+import { buildMarketingMetadata } from '../lib/metadata';
+assert.equal(confirmedMetricCount({count: 0, error: null}), 0);
+assert.equal(confirmedMetricCount({count: 2500, error: null}), 2500);
+assert.equal(confirmedMetricCount({count: 0, error: new Error('unavailable')}), null);
+assert.equal(confirmedMetricCount({count: null, error: null}), null);
+assert.equal(confirmedMetricCount({count: -1, error: null}), null);
+assert.equal(confirmedMetricCount({count: NaN, error: null}), null);
+const metadata = buildMarketingMetadata({title:'Platform',description:'Operations',path:'/platform'});
+assert.deepEqual(metadata.title, {absolute: 'Platform · Smohix'});
+assert.equal(metadata.openGraph?.title, 'Platform · Smohix');
+console.log('test-dashboard-metrics: all checks passed');

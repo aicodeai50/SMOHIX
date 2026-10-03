@@ -17,7 +17,7 @@ import {
   shouldShowModuleBadge,
   type ConsoleModuleMaturity,
 } from "@/lib/console-nav";
-import { SMOHIX_WORKSPACE_URLS } from "@/lib/ecosystem-workspaces";
+import { FLAGSHIP_PRODUCTS, SMOHIX_WORKSPACE_URLS } from "@/lib/ecosystem-workspaces";
 
 type ModuleItem = (typeof CONSOLE_MODULES)[number];
 
@@ -132,10 +132,10 @@ function ManageLink({
 
 function IntelligenceExternalLinks() {
   const links = [
-    { href: SMOHIX_WORKSPACE_URLS.ai, label: "Smohix AI", status: "Live" as const },
-    { href: SMOHIX_WORKSPACE_URLS.assistant, label: "Assistant", status: "Preview" as const },
-    { href: SMOHIX_WORKSPACE_URLS.privateAi, label: "PRI", status: "Preview" as const },
-  ];
+    { href: SMOHIX_WORKSPACE_URLS.ai, label: "Smohix AI" },
+    { href: SMOHIX_WORKSPACE_URLS.assistant, label: "Assistant" },
+    { href: SMOHIX_WORKSPACE_URLS.privateAi, label: "PRI" },
+  ].map((link) => ({ ...link, status: FLAGSHIP_PRODUCTS.find((product) => product.workspaceUrl === link.href)?.status ?? 'planned' }));
   return (
     <ul className="space-y-0.5">
       {links.map((link) => (
@@ -151,7 +151,7 @@ function IntelligenceExternalLinks() {
             </span>
             <span
               className={`shrink-0 rounded-md px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider ${
-                link.status === "Live"
+                link.status === "live"
                   ? "bg-emerald-500/16 text-emerald-300/95"
                   : "bg-amber-400/14 text-amber-200/95"
               }`}

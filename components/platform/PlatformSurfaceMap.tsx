@@ -71,13 +71,14 @@ export function PlatformSurfaceMap() {
         </ul>
       </section>
 
-      <section className="smohix-platform-roadmap__band" aria-labelledby="platform-vendor-heading">
-        <h2 id="platform-vendor-heading" className={mH2}>
+      <details className="smohix-platform-roadmap__band">
+        <summary className="cursor-pointer py-2 text-base font-semibold focus-visible:outline-2 focus-visible:outline-accent">Vendor integrations roadmap</summary>
+        <h2 id="platform-vendor-heading" className="sr-only">
           Vendor integrations roadmap
         </h2>
         <p className={`mt-2 ${mBodySm} text-muted/85`}>
-          Planned first-party connectors and supported webhook targets. These are roadmap targets, not live
-          claims.
+          Planned connectors and integration targets. Listed vendors do not imply an available connector
+          or partnership. Configure current integrations in your workspace.
         </p>
         <ul className="mt-4 grid gap-3 sm:grid-cols-2">
           {VENDOR_ROADMAP.map((item) => (
@@ -96,10 +97,11 @@ export function PlatformSurfaceMap() {
             Configure live connectors
           </Link>
         </p>
-      </section>
+      </details>
 
-      <section className="smohix-platform-roadmap__band" aria-labelledby="platform-equipment-heading">
-        <h2 id="platform-equipment-heading" className={mH2}>
+      <details className="smohix-platform-roadmap__band">
+        <summary className="cursor-pointer py-2 text-base font-semibold focus-visible:outline-2 focus-visible:outline-accent">Equipment operations roadmap</summary>
+        <h2 id="platform-equipment-heading" className="sr-only">
           Equipment operations roadmap
         </h2>
         <p className={`mt-2 ${mBodySm} text-muted/85`}>
@@ -132,7 +134,7 @@ export function PlatformSurfaceMap() {
             </ul>
           </div>
           <div className={`${mCardLink} smohix-platform-roadmap__phase p-4`}>
-            <p className="smohix-platform-roadmap__plane-title">Next 5 to implement</p>
+            <p className="smohix-platform-roadmap__plane-title">Areas for deeper coverage</p>
             <ul className="mt-2 space-y-1 text-sm text-muted/85">
               {EQUIPMENT_NEXT_FIVE.map((item) => (
                 <li key={item}>— {item}</li>
@@ -140,7 +142,7 @@ export function PlatformSurfaceMap() {
             </ul>
           </div>
         </div>
-      </section>
+      </details>
 
       <p className={`mt-8 ${mBodySm} text-muted/80`}>
         <Link href="/platform/overview" className="font-medium text-accent hover:underline">
