@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { Paperclip, Plus, Send } from 'lucide-react';
+import { MessageCircle, Paperclip, Plus, Send, X } from 'lucide-react';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { answerHqQuestion, type GuideDocument, type GuideAnswer } from '@/lib/hq/guide-search';
 type Exchange = { question: string; answer: GuideAnswer };
@@ -8,6 +8,8 @@ const EMPTY_EXCHANGES: Exchange[] = [];
 type Thread = { id: number; exchanges: Exchange[] };
 const PROMPTS = ['Which products are live?', 'What is Smohix PRI?', 'How do I manage API keys?', 'What are the prices?'];
 export function HqGuide({ documents }: { documents: GuideDocument[] }) {
+  const [open,setOpen] = useState(false);
+  const launcher=useRef<HTMLButtonElement>(null);
   const [input,setInput] = useState('');
   const [threads,setThreads] = useState<Thread[]>([{id:0,exchanges:[]}]);
   const [active,setActive] = useState(0);
@@ -18,6 +20,13 @@ export function HqGuide({ documents }: { documents: GuideDocument[] }) {
   const conversation=useRef<HTMLDivElement>(null);
   const exchanges=threads.find(thread=>thread.id===active)?.exchanges ?? EMPTY_EXCHANGES;
   useEffect(()=>{const panel=conversation.current;if(panel) panel.scrollTop=panel.scrollHeight;},[exchanges]);
+  useEffect(()=>{
+    function followAnchor(){if(window.location.hash==='#hq-guide')setOpen(true);}
+    followAnchor();window.addEventListener('hashchange',followAnchor);
+    return ()=>window.removeEventListener('hashchange',followAnchor);
+  },[]);
+  useEffect(()=>{if(open)field.current?.focus({preventScroll:true});},[open]);
+  function closeChat(){setOpen(false);launcher.current?.focus({preventScroll:true});}
   function newChat(){const id=counter.current++;setThreads(all=>[{id,exchanges:[]},...all].slice(0,5));setActive(id);setInput('');setNotice(null);field.current?.focus();}
   function ask(question:string){
     const clean=question.trim().slice(0,800);if(!clean)return;
@@ -34,12 +43,13 @@ export function HqGuide({ documents }: { documents: GuideDocument[] }) {
     catch{setNotice('Could not read that text file. Try another file.');}
     finally{if(fileField.current)fileField.current.value='';}
   }
-  return <section id="hq-guide" className="hq-guide" aria-labelledby="hq-guide-heading">
-    <div className="mx-auto max-w-6xl px-4 sm:px-6"><div className="hq-guide__layout">
-      <div><p className="smohix-signal-meta">Your way into Smohix</p>
-        <h2 id="hq-guide-heading" className="mt-3 font-semibold tracking-tight">Ask Smohix HQ.</h2>
-        <p className="mt-4 max-w-2xl leading-relaxed text-muted">Explore products, pricing, APIs, and availability with answers linked to our published sources.</p>
-      </div>
+  return <div className="hq-widget">
+    <button ref={launcher} type="button" className="hq-widget__launcher" aria-expanded={open} aria-controls="hq-guide" onClick={()=>open?closeChat():setOpen(true)}>
+      <span className="hq-widget__icon"><MessageCircle size={22} aria-hidden/></span>
+      <span>Smohix Assistant</span><span className="hq-widget__status" aria-hidden/>
+    </button>
+    <section id="hq-guide" className="hq-widget__window" hidden={!open} role="dialog" aria-modal="false" aria-labelledby="hq-guide-heading" onKeyDown={event=>{if(event.key==='Escape'){event.stopPropagation();closeChat();}}}>
+      <header className="hq-widget__header"><div><h2 id="hq-guide-heading" className="text-base font-semibold">Smohix Assistant</h2><p className="mt-1 text-xs text-muted">Your guide to Smohix HQ</p></div><button type="button" onClick={closeChat} aria-label="Close Smohix Assistant" className="rounded-lg p-2 text-muted hover:text-foreground"><X size={20} aria-hidden/></button></header>
       <div className="hq-guide__panel hq-chat-layout">
         <aside className="hq-chat-sidebar" aria-label="Recent chats">
           <button type="button" onClick={newChat} className="flex min-h-10 w-full items-center justify-center gap-2 rounded-lg border border-border text-sm font-semibold"><Plus size={16} aria-hidden/>New chat</button>
@@ -70,6 +80,6 @@ export function HqGuide({ documents }: { documents: GuideDocument[] }) {
           <p className="mt-3 text-xs leading-relaxed text-muted">Published-source guidance. No credential storage or file uploads. Check service status for runtime availability.</p>
         </div>
       </div>
-    </div></div>
-  </section>;
+    </section>
+  </div>;
 }
