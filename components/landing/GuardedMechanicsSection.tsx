@@ -40,7 +40,7 @@ const MECHANICS = [
   {
     title: "Team roles beyond owner",
     status: "Roadmap",
-    body: "Today isolation is per Supabase user with RLS; delegated approvers and scoped roles are planned next.",
+    body: "Workspace access is controlled by sign-in and permissions. Capabilities vary by workspace.",
     href: "/integrations",
   },
   {

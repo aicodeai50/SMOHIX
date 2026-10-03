@@ -36,8 +36,8 @@ export function Hero() {
             </div>
             <h1 className={`${mDisplay} smohix-oe-hero__headline mt-6`}>
               <span className="block">Intelligent software for</span>
-              <span className="block">organizations that need to move</span>
-              <span className="block smohix-oe-hero__headline-emphasis">fast — with control</span>
+              <span className="block">organizations that need to</span>
+              <span className="block smohix-oe-hero__headline-emphasis">move fast — with control.</span>
             </h1>
             <p className={`${mHeroLede} smohix-oe-hero__lede mt-5 max-w-[34rem] text-[1rem] sm:text-lg`}>
               {COMPANY_HERO_SUBHEADING}

@@ -28,11 +28,11 @@ export const FAQ_GROUPS: readonly FaqGroup[] = [
     items: [
       {
         q: "Where is the API reference?",
-        a: "Full catalog at /docs/api — routes mirror handlers in this repository.",
+        a: "The API reference at /docs/api documents available integrations and authentication.",
       },
       {
         q: "How do I authenticate API requests?",
-        a: "Browser: Supabase session cookies. Scripts: Authorization: Bearer smohix_sk_… Smohix API keys. Ingest: dedicated ingest tokens per route docs.",
+        a: "Sign in for browser access. For integrations, create an API key in Settings and follow the authentication instructions in the API reference. Never share your key in chat.",
       },
       {
         q: "Is there a public health check?",
@@ -64,7 +64,7 @@ export const FAQ_GROUPS: readonly FaqGroup[] = [
       },
       {
         q: "Where are secrets stored?",
-        a: "Server environment variables only — never in client bundles or public repos.",
+        a: "Credentials are managed securely and are not published on the website. Never paste passwords or API keys into the HQ chat.",
       },
     ],
   },

@@ -22,7 +22,7 @@ function availability(status?: OperationalStatus) {
   }
 }
 export function FutureCommandCore({ products }: { products: CommandProduct[] }) {
-  const [view, setView] = useState<'workflow' | 'services' | 'activity'>('workflow');
+  const [view, setView] = useState<'workflow' | 'services' | 'activity'>('activity');
   const [step, setStep] = useState(0);
   const [statuses, setStatuses] = useState<ProductStatusResult[]>([]);
   const [pending, setPending] = useState(false);
@@ -45,7 +45,7 @@ export function FutureCommandCore({ products }: { products: CommandProduct[] }) 
     <p className="smohix-live-command__operational-label">Operational command</p>
     <div className="smohix-live-command__frame hq-command">
       <header className="hq-command__top">
-        <div><p className="hq-command__eyebrow">Smohix Platform</p><p className="hq-command__title">One command environment.</p></div>
+        <div><p className="hq-command__eyebrow">Smohix Platform</p><p className="hq-command__title"><span className="hq-command__live-dot" aria-hidden />Live command</p></div>
         <StateBeacon label={view === 'workflow' ? 'Workflow preview' : view === 'activity' ? 'Simulation' : 'Public checks'} tone="aware" />
       </header>
       <div className="hq-command__views" aria-label="Command views">

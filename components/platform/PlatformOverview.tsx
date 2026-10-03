@@ -42,7 +42,7 @@ const SURFACE = [
   },
   {
     title: "Connectors",
-    body: "Optional HTTP backends for health checks, automation, and alerting integrations.",
+    body: "Connected services for availability checks, automation, and alerting.",
     href: "/auth/sign-in?next=/settings/connectors",
   },
   {
@@ -252,11 +252,7 @@ export function PlatformOverview() {
           <div>
             <dt className={mH3}>Automation and execution</dt>
             <dd className={`mt-1 ${mBody}`}>
-              Console automations + dry-run API; optional proxies to reasoning and robot backends —{" "}
-              <code className="font-mono text-xs text-accent/90">/automations</code>,{" "}
-              <code className="font-mono text-xs text-accent/90">/api/automations/dry-run</code>,{" "}
-              <code className="font-mono text-xs text-accent/90">/api/reasoning/*</code>,{" "}
-              <code className="font-mono text-xs text-accent/90">/api/robot/*</code>.
+              Preview automations, review their impact, and use approval controls before execution.
             </dd>
           </div>
           <div>
@@ -299,14 +295,10 @@ export function PlatformOverview() {
         <h2 className={mH2}>Runtime modes (trust)</h2>
         <ul className={`mt-3 space-y-3 ${mBody}`}>
           <li>
-            <strong className="text-foreground/90">Production mode</strong> — Supabase-backed auth, per-user data,
-            RLS, incidents in Postgres, audit append when the service role is configured, billing webhooks when
-            Lemon Squeezy is wired.
+            <strong className="text-foreground/90">Operational workspace</strong> — Sign in to access your workspace records and available controls.
           </li>
           <li>
-            <strong className="text-foreground/90">Evaluation mode</strong> — When Supabase is not
-            configured, parts of the console run in an isolated browser session so teams can explore
-            workflows without provisioning a database.
+            <strong className="text-foreground/90">Evaluation experience</strong> — Explore example workflows separately from production records.
           </li>
         </ul>
       </section>
@@ -332,33 +324,11 @@ export function PlatformOverview() {
       </section>
 
       <section id="architecture" className="mt-12 scroll-mt-24">
-        <h2 className={mH2}>Architecture (text)</h2>
+        <h2 className={mH2}>Operational flow</h2>
         <pre
           className={`mt-4 overflow-x-auto p-4 font-mono text-[11px] leading-relaxed text-foreground/80 sm:text-xs ${mPanelShell} bg-black/45`}
         >
-{`Users & webhooks
-       │
-       ▼
-┌──────────────────┐
-│   API layer      │  /api/integrations/alerts, /api/copilot/*,
-│                  │  /api/automations/dry-run, /api/user/*, …
-└────────┬─────────┘
-         │
-         ▼
-┌────────────────────────────────────────┐
-│  Console modules                        │
-│  Incidents · Automations · Approvals   │
-│  Audit · Runbooks · Copilot · Settings │
-└────────┬───────────────────────────────┘
-         │
-         ▼
-┌──────────────────┐       ┌─────────────┐
-│  Supabase / DB   │       │  Connectors  │  (optional HTTP backends)
-│  + audit append  │       │  reasoning   │
-└────────┬─────────┘       │  robot       │
-         │                 └─────────────┘
-         ▼
-   Export & review   (incident markdown, audit views)`}
+{`Alert → Incident context → Dry-run → Human approval → Controlled execution → Audit evidence → Review`}
         </pre>
       </section>
 

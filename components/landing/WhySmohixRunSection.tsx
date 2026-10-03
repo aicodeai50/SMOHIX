@@ -15,7 +15,7 @@ const BRAND_POINTS = [
   },
   {
     title: "Shared intelligence layer",
-    body: "Copilot and reasoning routes through same-origin APIs with optional private backends.",
+    body: "Copilot and reasoning assistance support your operational workflows.",
   },
   {
     title: "Shared developer platform",

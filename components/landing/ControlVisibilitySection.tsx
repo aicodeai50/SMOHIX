@@ -20,7 +20,7 @@ const ITEMS = [
   },
   {
     title: "Per-incident timeline",
-    body: "Status and context updates flow into a single thread when audit append is configured — fewer scattered threads.",
+    body: "Status and context updates stay together in one activity thread — fewer scattered conversations.",
     href: "/auth/sign-in?next=/incidents",
   },
   {
