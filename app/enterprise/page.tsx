@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { PublicExperience } from "@/components/marketing/PublicExperience";
 import Link from "next/link";
 
 import { DimensionGate } from "@/components/landing/DimensionGate";
@@ -37,7 +38,7 @@ const packages = [
 
 export default function EnterprisePage() {
   return (
-    <>
+    <PublicExperience>
       <Header />
       <MarketingQuantumShell>
         <main className="flex-1 border-b border-white/[0.06]">
@@ -117,6 +118,6 @@ export default function EnterprisePage() {
         </main>
       </MarketingQuantumShell>
       <Footer />
-    </>
+    </PublicExperience>
   );
 }

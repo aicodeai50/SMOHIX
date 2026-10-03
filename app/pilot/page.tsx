@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { PublicExperience } from "@/components/marketing/PublicExperience";
 import Link from "next/link";
 
 import { CommercialPaths } from "@/components/marketing/CommercialPaths";
@@ -25,7 +26,7 @@ export const metadata: Metadata = buildMarketingMetadata({
 
 export default function PilotPage() {
   return (
-    <>
+    <PublicExperience>
       <MarketingJsonLd graph={pilotPageJsonLd()} />
       <Header />
       <main id="main-content" className="flex-1">
@@ -137,6 +138,6 @@ export default function PilotPage() {
         </section>
       </main>
       <Footer />
-    </>
+    </PublicExperience>
   );
 }

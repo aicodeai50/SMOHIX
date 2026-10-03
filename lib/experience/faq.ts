@@ -14,7 +14,7 @@ export const FAQ_GROUPS: readonly FaqGroup[] = [
       },
       {
         q: "Does the site simulate products?",
-        a: "No. Smohix.run links to real products, documentation, and console routes. The API request builder at /playground generates copyable examples only — it does not execute requests.",
+        a: "Smohix.run links to product destinations, documentation, and console routes. The HQ command activity demo is explicitly simulated. The developer playground generates protected-request examples and can run the public health check.",
       },
       {
         q: "How do I try live functionality?",
@@ -46,7 +46,7 @@ export const FAQ_GROUPS: readonly FaqGroup[] = [
     items: [
       {
         q: "Where are plans documented?",
-        a: "See /pricing for current plan structure. Billing uses PayPal when configured server-side.",
+        a: "Published plans are on /pricing. Self-serve checkout is coming soon; contact the team or request a pilot for paid access.",
       },
       {
         q: "Is usage-based billing advertised?",

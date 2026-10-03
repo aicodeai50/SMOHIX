@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { PublicExperience } from "@/components/marketing/PublicExperience";
 import Link from "next/link";
 
 import { MarketingQuantumShell } from "@/components/landing/MarketingQuantumShell";
@@ -97,7 +98,7 @@ const HORIZON_STYLE: Record<Horizon, { badge: string; glow: string }> = {
 
 export default function NextPage() {
   return (
-    <>
+    <PublicExperience>
       <Header />
       <MarketingQuantumShell>
         <main className="flex-1 border-b border-white/[0.06]">
@@ -189,6 +190,6 @@ export default function NextPage() {
         </main>
       </MarketingQuantumShell>
       <Footer />
-    </>
+    </PublicExperience>
   );
 }

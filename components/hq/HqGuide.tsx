@@ -1,59 +1,75 @@
-"use client";
+'use client';
 import Link from 'next/link';
+import { Paperclip, Plus, Send } from 'lucide-react';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { answerHqQuestion, type GuideDocument, type GuideAnswer } from '@/lib/hq/guide-search';
 type Exchange = { question: string; answer: GuideAnswer };
+const EMPTY_EXCHANGES: Exchange[] = [];
+type Thread = { id: number; exchanges: Exchange[] };
 const PROMPTS = ['Which products are live?', 'What is Smohix PRI?', 'How do I manage API keys?', 'What are the prices?'];
 export function HqGuide({ documents }: { documents: GuideDocument[] }) {
-  const [input, setInput] = useState('');
-  const [exchanges, setExchanges] = useState<Exchange[]>([]);
-  const field = useRef<HTMLInputElement>(null);
-  const conversation = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const panel = conversation.current;
-    if (panel) panel.scrollTop = panel.scrollHeight;
-  }, [exchanges]);
-  function ask(question: string) {
-    const clean = question.trim().slice(0, 800);
-    if (!clean) return;
-    const previous = exchanges.at(-1)?.answer.sources[0]?.id;
-    const answer = answerHqQuestion(clean, documents, previous);
-    const safeQuestion = /\b(sk-[a-z0-9_-]{12,}|smohix_sk_[a-z0-9_-]{8,})\b/i.test(clean) ? 'API key question (key omitted)' : clean;
-    setExchanges((history) => [...history, { question: safeQuestion, answer }].slice(-6));
-    setInput('');
-    field.current?.focus();
+  const [input,setInput] = useState('');
+  const [threads,setThreads] = useState<Thread[]>([{id:0,exchanges:[]}]);
+  const [active,setActive] = useState(0);
+  const [notice,setNotice] = useState<string | null>(null);
+  const counter=useRef(1);
+  const field=useRef<HTMLInputElement>(null);
+  const fileField=useRef<HTMLInputElement>(null);
+  const conversation=useRef<HTMLDivElement>(null);
+  const exchanges=threads.find(thread=>thread.id===active)?.exchanges ?? EMPTY_EXCHANGES;
+  useEffect(()=>{const panel=conversation.current;if(panel) panel.scrollTop=panel.scrollHeight;},[exchanges]);
+  function newChat(){const id=counter.current++;setThreads(all=>[{id,exchanges:[]},...all].slice(0,5));setActive(id);setInput('');setNotice(null);field.current?.focus();}
+  function ask(question:string){
+    const clean=question.trim().slice(0,800);if(!clean)return;
+    const answer=answerHqQuestion(clean,documents,exchanges.at(-1)?.answer.sources[0]?.id);
+    const safeQuestion=/\b(sk-[a-z0-9_-]{12,}|smohix_sk_[a-z0-9_-]{8,})\b/i.test(clean)?'API key question (key omitted)':clean;
+    setThreads(all=>all.map(thread=>thread.id===active?{...thread,exchanges:[...thread.exchanges,{question:safeQuestion,answer}].slice(-6)}:thread));
+    setInput('');setNotice(null);field.current?.focus();
   }
-  function submit(event: FormEvent) { event.preventDefault(); ask(input); }
+  function submit(event:FormEvent){event.preventDefault();ask(input);}
+  async function attach(file?:File){
+    if(!file)return;
+    if(!file.name.toLowerCase().endsWith('.txt')||file.size>16000){setNotice('Choose a .txt file smaller than 16 KB. It fills your question locally.');return;}
+    try{setInput((await file.text()).trim().slice(0,800));setNotice('Text loaded into your question locally. Review it before sending.');field.current?.focus();}
+    catch{setNotice('Could not read that text file. Try another file.');}
+    finally{if(fileField.current)fileField.current.value='';}
+  }
   return <section id="hq-guide" className="hq-guide" aria-labelledby="hq-guide-heading">
-    <div className="mx-auto max-w-6xl px-4 sm:px-6">
-      <div className="hq-guide__layout">
-        <div>
-          <p className="smohix-signal-meta">Your way into Smohix</p>
-          <h2 id="hq-guide-heading" className="mt-3 font-semibold tracking-tight">Ask Smohix HQ.</h2>
-          <p className="mt-4 max-w-sm leading-relaxed text-muted">Find the right product, understand what’s available, and get a clear next step from our published product and help sources.</p>
-          <Link href="https://ai.smohix.run" className="mt-6 inline-block font-semibold text-accent">Open Smohix AI for broader help ↗</Link>
-        </div>
-        <div className="hq-guide__panel">
-          <div className="flex items-center justify-between gap-3 border-b border-border pb-4">
-            <span className="text-sm font-semibold">Smohix HQ guide</span>
-            {exchanges.length > 0 && <button type="button" onClick={() => { setExchanges([]); field.current?.focus(); }} className="text-sm text-muted">Clear chat</button>}
+    <div className="mx-auto max-w-6xl px-4 sm:px-6"><div className="hq-guide__layout">
+      <div><p className="smohix-signal-meta">Your way into Smohix</p>
+        <h2 id="hq-guide-heading" className="mt-3 font-semibold tracking-tight">Ask Smohix HQ.</h2>
+        <p className="mt-4 max-w-2xl leading-relaxed text-muted">Explore products, pricing, APIs, and availability with answers linked to our published sources.</p>
+      </div>
+      <div className="hq-guide__panel hq-chat-layout">
+        <aside className="hq-chat-sidebar" aria-label="Recent chats">
+          <button type="button" onClick={newChat} className="flex min-h-10 w-full items-center justify-center gap-2 rounded-lg border border-border text-sm font-semibold"><Plus size={16} aria-hidden/>New chat</button>
+          <p className="mt-5 text-xs font-semibold uppercase tracking-wide text-muted">Recent chats</p>
+          <div className="hq-chat-history">{threads.map(thread=><button type="button" key={thread.id} aria-pressed={active===thread.id} onClick={()=>{setActive(thread.id);setInput('');setNotice(null);}}>{thread.exchanges[0]?.question ?? 'New conversation'}</button>)}</div>
+          <p className="mt-5 text-xs leading-relaxed text-muted">Kept in this page session only. No paid model calls.</p>
+          <Link href="https://ai.smohix.run" className="mt-5 inline-block text-sm font-semibold text-accent">Open Smohix AI ↗</Link>
+        </aside>
+        <div className="hq-chat-main">
+          <div className="flex items-center justify-between gap-3 border-b border-border pb-4"><span className="text-sm font-semibold">Smohix HQ guide <span className="ml-2 text-xs font-normal text-accent">Source-backed</span></span>
+            {exchanges.length>0&&<button type="button" onClick={()=>{setThreads(all=>all.map(thread=>thread.id===active?{...thread,exchanges:[]}:thread));field.current?.focus();}} className="text-xs text-muted">Clear chat</button>}
           </div>
           <div ref={conversation} className="hq-guide__conversation" role="log" aria-label="HQ conversation" aria-live="polite" aria-relevant="additions">
-            {exchanges.length === 0 ? <p className="py-4 text-sm leading-relaxed text-muted">Hello. What would you like to know about Smohix?</p> : exchanges.map((exchange, index) => <div key={index} className="py-4">
-              <p className="hq-guide__question">{exchange.question}</p>
-              <p className="mt-3 whitespace-pre-line text-sm leading-relaxed">{exchange.answer.text}</p>
-              <div className="mt-3 flex flex-wrap gap-3">{exchange.answer.sources.map((source) => <Link key={source.id} href={source.href} className="text-xs font-semibold text-accent">{source.title} →</Link>)}</div>
+            {exchanges.length===0?<div className="hq-chat-response"><p className="text-xs font-semibold text-accent">SMOHIX HQ</p><p className="mt-3 text-sm leading-relaxed">Hello. Where would you like to begin? Ask about a product or choose a suggested question below.</p></div>:exchanges.map((exchange,index)=><div key={index} className="py-4">
+              <p className="hq-guide__question"><span className="sr-only">You: </span>{exchange.question}</p>
+              <div className="hq-chat-response"><p className="text-xs font-semibold text-accent">SMOHIX HQ</p><p className="mt-3 whitespace-pre-line text-sm leading-relaxed">{exchange.answer.text}</p><div className="mt-3 flex flex-wrap gap-3">{exchange.answer.sources.map(source=><Link key={source.id} href={source.href} className="text-xs font-semibold text-accent">{source.title} →</Link>)}</div></div>
             </div>)}
           </div>
-          <div className="my-4 flex flex-wrap gap-2" aria-label="Suggested questions">{PROMPTS.map((prompt) => <button key={prompt} type="button" onClick={() => ask(prompt)} className="hq-guide__prompt">{prompt}</button>)}</div>
-          <form onSubmit={submit} className="flex flex-wrap gap-2">
-            <label className="sr-only" htmlFor="hq-question">Your question about Smohix</label>
-            <input ref={field} id="hq-question" value={input} maxLength={800} onChange={(event) => setInput(event.target.value)} placeholder="Ask about products, APIs, pricing…" className="min-w-0 flex-1 rounded-xl border border-border bg-background px-3 py-3 text-sm" />
-            <button type="submit" disabled={!input.trim()} className="rounded-xl bg-accent px-4 py-3 text-sm font-semibold text-background disabled:opacity-50">Ask</button>
+          <div className="my-4 flex flex-wrap gap-2" aria-label="Suggested questions">{PROMPTS.map(prompt=><button key={prompt} type="button" onClick={()=>ask(prompt)} className="hq-guide__prompt">{prompt}</button>)}</div>
+          <form onSubmit={submit} className="flex items-center gap-2 rounded-xl border border-border bg-background p-2">
+            <input ref={fileField} type="file" accept=".txt,text/plain" className="hidden" aria-label="Text file for your question" onChange={event=>void attach(event.target.files?.[0])}/>
+            <button type="button" onClick={()=>fileField.current?.click()} aria-label="Attach text to question" title="Load a small text file locally" className="rounded-lg p-2 text-muted hover:text-foreground"><Paperclip size={18} aria-hidden/></button>
+            <label htmlFor="hq-question" className="sr-only">Your question about Smohix</label>
+            <input ref={field} id="hq-question" value={input} maxLength={800} onChange={event=>setInput(event.target.value)} placeholder="Ask about Smohix…" className="min-w-0 flex-1 bg-transparent py-2 text-sm"/>
+            <button type="submit" disabled={!input.trim()} className="flex items-center gap-2 rounded-lg bg-accent px-3 py-2 text-sm font-semibold text-background disabled:opacity-50"><Send size={16} aria-hidden/><span>Send</span></button>
           </form>
-          <p className="mt-3 text-xs text-muted">Answers from Smohix product and help sources. Availability can change; check Service status.</p>
+          {notice&&<p role="status" className="mt-3 text-xs text-muted">{notice}</p>}
+          <p className="mt-3 text-xs leading-relaxed text-muted">Published-source guidance. No credential storage or file uploads. Check service status for runtime availability.</p>
         </div>
       </div>
-    </div>
+    </div></div>
   </section>;
 }

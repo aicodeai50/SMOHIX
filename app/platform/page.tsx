@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { PublicExperience } from "@/components/marketing/PublicExperience";
 
 import { PlatformControlLayer } from "@/components/platform/PlatformControlLayer";
 import { PlatformCoreField } from "@/components/platform/PlatformCoreField";
@@ -19,7 +20,7 @@ export const metadata: Metadata = buildMarketingMetadata({
 
 export default function PlatformPage() {
   return (
-    <>
+    <PublicExperience>
       <Header />
       <main id="main-content" className="flex-1">
         <PlatformHero />
@@ -40,6 +41,6 @@ export default function PlatformPage() {
         </MarketingReveal>
       </main>
       <Footer />
-    </>
+    </PublicExperience>
   );
 }

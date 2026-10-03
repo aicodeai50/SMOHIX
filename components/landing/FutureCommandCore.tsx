@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { useRef, useState } from 'react';
 import { StateBeacon } from '@/components/architecture';
+import { CommandSimulation } from './CommandSimulation';
 import type { OperationalStatus, ProductStatusResult } from '@/lib/status/types';
 export type CommandProduct = { id: string; name: string; href: string };
 const STEPS = [
@@ -21,7 +22,7 @@ function availability(status?: OperationalStatus) {
   }
 }
 export function FutureCommandCore({ products }: { products: CommandProduct[] }) {
-  const [view, setView] = useState<'workflow' | 'services'>('workflow');
+  const [view, setView] = useState<'workflow' | 'services' | 'activity'>('workflow');
   const [step, setStep] = useState(0);
   const [statuses, setStatuses] = useState<ProductStatusResult[]>([]);
   const [pending, setPending] = useState(false);
@@ -45,13 +46,14 @@ export function FutureCommandCore({ products }: { products: CommandProduct[] }) 
     <div className="smohix-live-command__frame hq-command">
       <header className="hq-command__top">
         <div><p className="hq-command__eyebrow">Smohix Platform</p><p className="hq-command__title">One command environment.</p></div>
-        <StateBeacon label={view === 'workflow' ? 'Workflow preview' : 'Public checks'} tone="aware" />
+        <StateBeacon label={view === 'workflow' ? 'Workflow preview' : view === 'activity' ? 'Simulation' : 'Public checks'} tone="aware" />
       </header>
       <div className="hq-command__views" aria-label="Command views">
         <button type="button" aria-pressed={view === 'workflow'} onClick={() => setView('workflow')}>Workflow</button>
         <button type="button" aria-pressed={view === 'services'} onClick={() => setView('services')}>Service availability</button>
+        <button type="button" aria-pressed={view === 'activity'} onClick={() => setView('activity')}>Activity demo</button>
       </div>
-      {view === 'workflow' ? <div className="hq-command__body">
+      {view === 'activity' ? <CommandSimulation /> : view === 'workflow' ? <div className="hq-command__body">
         <p className="hq-command__eyebrow">Illustrative incident-to-evidence flow</p>
         <ol className="hq-command__steps">{STEPS.map((item, index) => <li key={item.label}>
           <button type="button" aria-current={step === index ? 'step' : undefined} onClick={() => setStep(index)}><span>{item.metric}</span>{item.label}</button>

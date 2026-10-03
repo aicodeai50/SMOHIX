@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { PublicExperience } from "@/components/marketing/PublicExperience";
 import Link from "next/link";
 
 import { CodeSurface } from "@/components/architecture";
@@ -28,7 +29,7 @@ export const metadata: Metadata = buildMarketingMetadata({
 
 export default function DevelopersPage() {
   return (
-    <>
+    <PublicExperience>
       <MarketingJsonLd graph={developersPageJsonLd()} />
       <Header />
       <main id="main-content" className="flex-1">
@@ -125,6 +126,6 @@ export default function DevelopersPage() {
         </MarketingReveal>
       </main>
       <Footer />
-    </>
+    </PublicExperience>
   );
 }

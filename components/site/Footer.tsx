@@ -120,7 +120,7 @@ export function Footer({ adaptiveBrand = false }: { adaptiveBrand?: boolean }) {
                 ))}
                 <a
                   href={getMailtoHref()}
-                  className="w-fit font-mono text-[13px] text-foreground/90 underline-offset-2 hover:text-accent hover:underline md:ml-auto"
+                  className="w-fit font-mono text-[13px] text-foreground/90 underline-offset-2 hover:text-accent hover:underline"
                 >
                   {SITE_EMAIL_CONTACT}
                 </a>
@@ -142,6 +142,7 @@ export function Footer({ adaptiveBrand = false }: { adaptiveBrand?: boolean }) {
           <p className="text-xs text-muted/60">
             © {year} {SITE_COMPANY_NAME}. All rights reserved.
           </p>
+          <a href={getMailtoHref()} className="text-xs text-muted hover:text-accent">{SITE_EMAIL_CONTACT}</a>
           <Link href="/" className="text-xs text-muted hover:text-foreground">
             Back to home
           </Link>

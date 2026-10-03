@@ -31,6 +31,8 @@ export function HomepagePricingSection() {
             return (
               <Card
                 key={plan.id}
+                data-plan={plan.id}
+                data-highlighted={plan.highlight ? "true" : "false"}
                 className={`flex flex-col ${
                   plan.highlight
                     ? "border-accent/35 ring-1 ring-accent/20"

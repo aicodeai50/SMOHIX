@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { PublicExperience } from "@/components/marketing/PublicExperience";
 import Link from "next/link";
 
 import { Footer } from "@/components/site/Footer";
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
 
 export default function PricingPage() {
   return (
-    <>
+    <PublicExperience>
       <Header />
       <main className="flex-1 border-b border-white/[0.06]">
         <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
@@ -55,6 +56,6 @@ export default function PricingPage() {
         </div>
       </main>
       <Footer />
-    </>
+    </PublicExperience>
   );
 }

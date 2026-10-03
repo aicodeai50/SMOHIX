@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { PublicExperience } from "@/components/marketing/PublicExperience";
 import Link from "next/link";
 
 import { SmohixHorizon } from "@/components/architecture";
@@ -26,7 +27,7 @@ export const metadata: Metadata = buildMarketingMetadata({
 
 export default function ProductsPage() {
   return (
-    <>
+    <PublicExperience>
       <Header />
       <main id="main-content" className="flex-1">
         <MarketingReveal className={`${mSection} smohix-products-page-hero`}>
@@ -61,6 +62,6 @@ export default function ProductsPage() {
         </MarketingReveal>
       </main>
       <Footer />
-    </>
+    </PublicExperience>
   );
 }
