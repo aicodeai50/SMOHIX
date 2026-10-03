@@ -20,6 +20,20 @@ assert(answerHqQuestion('What are the prices?', documents).text.includes('$29'))
 assert(answerHqQuestion('Tell me about LAB', documents).text.includes('does not yet have a verified'));
 assert(answerHqQuestion('quantum banana portal', documents).text.includes('do not have a verified answer'));
 assert(!answerHqQuestion('My key is sk-private123456789abcdef', documents).text.includes('private123'));
+for(const question of ['what is smohix about','What is Smohix?','Tell me about Smohix','What does Smohix do?','What does Smohix offer?','Explain Smohix.run',"What's Smohix?",'What is the purpose of Smohix?']){
+  const answer=answerHqQuestion(question,documents);
+  assert.equal(answer.sources[0]?.id,'site-overview',`Missing company introduction: ${question}`);
+  assert(answer.text.includes('Smohix Technologies'));
+}
+assert.notEqual(answerHqQuestion('What is Smohix AI?',documents).sources[0]?.id,'site-overview');
+const comparison=answerHqQuestion('What is the difference between Smohix AI and Assistant?',documents);
+assert(comparison.sources.some(source=>source.id==='smohix-ai'));
+assert(comparison.sources.some(source=>source.id==='smohix-assistant'));
+assert(answerHqQuestion('Where can I open PRI?',documents).text.includes('https://pri.smohix.run'));
+assert(answerHqQuestion('Explain the Smohix ecosystem domains',documents).text.includes('https://assistant.smohix.run'));
+assert(answerHqQuestion('What is the HQ chatbot?',documents).text.includes('separate personal productivity workspace'));
+assert(documents.some(doc=>doc.id==='service-workflow-automation'));
+assert(documents.some(doc=>doc.id==='solution-enterprise-ai'));
 for(const page of SEARCH_INDEX.filter(entry=>entry.category!=='product')){
   assert(documents.some(doc=>doc.href===page.href),`Missing site page ${page.href}`);
 }

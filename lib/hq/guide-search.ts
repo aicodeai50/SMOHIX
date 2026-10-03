@@ -12,6 +12,12 @@ export function answerHqQuestion(question: string, documents: GuideDocument[], p
   if (/\b(hello|hi|hey)\b/i.test(question) && tokens.length <= 1) {
     return { text: 'Welcome to Smohix HQ. Ask about AI, Assistant, PRI, Platform, APIs, pricing, security, or product availability.', sources: [] };
   }
+  // Brand words are ignored for product ranking, but identify introduction questions.
+  const introductionWords = new Set(['s','run','site','website','company','business','overview','introduction','introduce','explain','describe','offer','offers','offering','offerings','provide','provides','purpose','mission','built','build','building','who']);
+  if (/\bsmohix(?:\.run)?\b/i.test(question) && tokens.every(token=>introductionWords.has(token))) {
+    const overview=documents.find(doc=>doc.id==='site-overview');
+    if(overview)return {text:overview.answer,sources:[overview]};
+  }
   if (/\b(lab)\b/i.test(question)) {
     return { text: 'Smohix LAB does not yet have a verified product entry in this HQ registry. Contact Smohix for its current destination and availability.', sources: documents.filter((d) => d.id === 'contact') };
   }
@@ -24,6 +30,29 @@ export function answerHqQuestion(question: string, documents: GuideDocument[], p
     const matches=documents.filter(doc=>doc.id.startsWith('api-') && doc.title.split(' ')[1]?.toLowerCase()===requestedPath.toLowerCase());
     if(matches.length){const sources=matches.slice(0,3);return {text:sources.map(doc=>doc.answer).join('\n\n'),sources};}
   }
+  if(/\b(ecosystem|subdomains?|domains?)\b/i.test(question)){
+    const ecosystem=documents.find(doc=>doc.id==='ecosystem-domains');
+    if(ecosystem)return {text:ecosystem.answer,sources:[ecosystem]};
+  }
+  if(/\b(chatbot|widget|corner|hq (assistant|guide|chat))\b/i.test(question)){
+    const guide=documents.find(doc=>doc.id==='hq-assistant');
+    if(guide)return {text:guide.answer,sources:[guide]};
+  }
+  // Named products should not lose to generic endpoint vocabulary.
+  const namedProducts: [string,RegExp][] = [
+    ['private-ai',/\b(pri|private ai)\b/i],['smohix-assistant',/\bassistant\b/i],
+    ['smohix-platform',/\bplatform\b/i],['smohix-log',/\b(log|logs)\b/i],
+    ['smohix-own-api',/\bown api\b/i],['identity',/\bidentity\b/i],
+    ['agents',/\bagents?\b/i],['analytics',/\banalytics\b/i],
+    ['projects',/\bprojects\b/i],['knowledge',/\bknowledge\b/i],
+  ];
+  const named=namedProducts.filter(([,pattern])=>pattern.test(question)).map(([id])=>documents.find(doc=>doc.id===id)).filter((doc):doc is GuideDocument=>Boolean(doc));
+  if(/\bai\b/i.test(question.replace(/private ai|own api/gi,''))){
+    const ai=documents.find(doc=>doc.id==='smohix-ai');if(ai)named.push(ai);
+  }
+  const productQuestion=/\b(what|explain|describe|about|difference|compare|versus|vs|open|find|access|use|purpose|where|live)\b/i.test(question);
+  const specificTopic=/\b(pricing|price|prices|cost|keys?|tokens?|security|privacy|billing|health|endpoint|integration|integrate|sdk)\b/i.test(question);
+  if(named.length && productQuestion && !specificTopic){const sources=named.slice(0,4);return {text:sources.map(doc=>doc.answer).join('\n\n'),sources};}
   const followUp = /\b(it|its|that|this product)\b/i.test(question);
   const ranked = documents.map((doc) => {
     const title = new Set(words(doc.title));
