@@ -37,7 +37,7 @@ export type ProductRegistryEntry = {
   productUrl?: string;
   docsUrl?: string;
   /** Same-origin path or allowlisted external health probe path. */
-  healthCheck?: { host: "smohix.run" | "ai.smohix.run"; path: string };
+  healthCheck?: { host: "smohix.run" | "ai.smohix.run" | "assistant.smohix.run" | "pri.smohix.run"; path: string };
   availableActions: readonly ProductAction[];
   capabilities: readonly string[];
   limitations: readonly string[];
@@ -88,7 +88,7 @@ export const PRODUCT_REGISTRY: readonly ProductRegistryEntry[] = [
     productPagePath: "/products/smohix-ai",
     productUrl: AI_PUBLIC,
     docsUrl: `${SITE()}/docs/api`,
-    healthCheck: { host: "ai.smohix.run", path: "/" },
+    healthCheck: { host: "ai.smohix.run", path: "/api/health" },
     availableActions: [
       { kind: "open_product", label: "Open Smohix AI", href: AI_PUBLIC, external: true },
       { kind: "sign_in", label: "Copilot in console", href: "/auth/sign-in?next=/copilot" },
@@ -117,6 +117,7 @@ export const PRODUCT_REGISTRY: readonly ProductRegistryEntry[] = [
     repository: "Smohix Assistant workspace (separate deployment)",
     productPagePath: "/products/smohix-assistant",
     productUrl: "https://assistant.smohix.run",
+    healthCheck: { host: "assistant.smohix.run", path: "/" },
     docsUrl: `${SITE()}/developers`,
     availableActions: [
       { kind: "open_product", label: "Open Assistant", href: "https://assistant.smohix.run", external: true },
@@ -138,6 +139,7 @@ export const PRODUCT_REGISTRY: readonly ProductRegistryEntry[] = [
     repository: "Smohix PRI workspace (separate deployment)",
     productPagePath: "/products/private-ai",
     productUrl: "https://pri.smohix.run",
+    healthCheck: { host: "pri.smohix.run", path: "/" },
     docsUrl: `${SITE()}/enterprise`,
     availableActions: [
       { kind: "open_product", label: "Open Smohix PRI", href: "https://pri.smohix.run", external: true },

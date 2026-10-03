@@ -12,10 +12,10 @@ function isExternalWorkspace(url: string): boolean {
 
 type Product = (typeof FLAGSHIP_PRODUCTS)[number];
 
-function nodeRole(id: Product["id"]): "core" | "flagship" | "preview" {
+function nodeRole(id: Product["id"]): "core" | "flagship" | "workspace" {
   if (id === "smohix-platform") return "core";
   if (id === "smohix-ai") return "flagship";
-  return "preview";
+  return "workspace";
 }
 
 function openLabel(product: Product): string {
@@ -41,8 +41,8 @@ function ProductNode({ product }: { product: Product }) {
           {role === "flagship" ? (
             <p className={`${mSystemMeta} text-accent/75`}>Flagship intelligence</p>
           ) : null}
-          {role === "preview" ? (
-            <p className={`${mSystemMeta} text-muted/70`}>Preview workspace</p>
+          {role === "workspace" ? (
+            <p className={`${mSystemMeta} text-muted/70`}>Product workspace</p>
           ) : null}
           <h3 className="smohix-ecosystem-node__title">{product.name}</h3>
         </div>
@@ -99,7 +99,7 @@ export function EcosystemConstellation() {
           <ProductNode product={pri} />
         </div>
         <p className={`mt-4 ${mBodySm} text-muted/80`}>
-          Preview workspaces share HQ identity — maturity labels reflect current availability.
+          Product workspaces share HQ identity — maturity labels reflect current availability.
         </p>
       </div>
     </div>

@@ -13,14 +13,16 @@ import { mFocusRing } from "@/lib/marketing-layout";
 
 export function Navbar({
   userEmail,
+  adaptiveBrand = false,
 }: {
   userEmail?: string | null;
+  adaptiveBrand?: boolean;
 }) {
   return (
     <header className="smohix-header-living sticky top-0 z-50 backdrop-blur-xl">
       <div className="mx-auto flex h-[4.25rem] min-w-0 max-w-6xl items-center gap-2 px-4 sm:gap-3 sm:px-6">
         <Link href="/" className="min-w-0 shrink-0 text-foreground no-underline">
-          <Logo />
+          <Logo tone={adaptiveBrand ? "mono" : "dark"} />
         </Link>
 
         <div className="hidden min-w-0 flex-1 md:block lg:hidden">

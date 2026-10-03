@@ -1,3 +1,7 @@
+import "./hq.css";
+import { CommandExperience } from "@/components/landing/CommandExperience";
+import { HqGuide } from "@/components/hq/HqGuide";
+import { buildHqGuideDocuments } from "@/lib/hq/guide-data";
 import { Footer } from "@/components/site/Footer";
 import { AboutCompanySection } from "@/components/landing/AboutCompanySection";
 import { CommercialOpportunitySection } from "@/components/landing/CommercialOpportunitySection";
@@ -21,14 +25,15 @@ export const dynamic = "force-dynamic";
 
 export default function Home() {
   return (
-    <>
+    <div className="smohix-hq flex min-h-screen flex-1 flex-col">
       <HomePageJsonLd />
-      <Navbar />
+      <Navbar adaptiveBrand />
       <main id="main-content" className="flex-1">
         <Hero />
-        <AboutCompanySection />
         <FlagshipProductsSection />
+        <AboutCompanySection />
         <EcosystemSection />
+        <CommandExperience />
         <WhyChooseSection />
         <WhoWeBuildForSection />
         <CommercialOpportunitySection />
@@ -36,9 +41,10 @@ export default function Home() {
         <HomepageTrustSection />
         <HomepagePricingSection />
         <RoadmapSection />
+        <HqGuide documents={buildHqGuideDocuments()} />
         <CTASection />
       </main>
-      <Footer />
-    </>
+      <Footer adaptiveBrand />
+    </div>
   );
 }

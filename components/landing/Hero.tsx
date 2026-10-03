@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getAllRegistryProducts } from "@/lib/product-registry";
 
 import { IntelligenceField, SmohixHorizon } from "@/components/architecture";
 import { FutureCommandCore } from "@/components/landing/FutureCommandCore";
@@ -69,7 +70,7 @@ export function Hero() {
             <div className="pointer-events-none absolute -inset-6 hidden overflow-hidden opacity-35 lg:block">
               <IntelligenceField animate={false} withNodes />
             </div>
-            <FutureCommandCore />
+            <FutureCommandCore products={getAllRegistryProducts().filter((product) => ["smohix-platform", "smohix-ai", "smohix-assistant", "private-ai"].includes(product.id)).map((product) => ({ id: product.id, name: product.publicName, href: product.productPagePath }))} />
           </div>
 
           <div className="smohix-oe-hero__support relative z-[1] min-w-0">
@@ -81,6 +82,7 @@ export function Hero() {
                 </li>
               ))}
             </ul>
+            <Link href="/#hq-guide" className="mt-4 inline-block text-sm font-semibold text-accent hover:underline">Ask the HQ guide →</Link>
             <p className="smohix-oe-hero__returning mt-4">
               Already onboarded?{" "}
               <Link href="/auth/sign-in?next=/hub" className="text-muted/80 hover:text-accent hover:underline">

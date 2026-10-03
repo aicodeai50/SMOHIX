@@ -8,11 +8,13 @@ import {
 import { getSiteUrl } from "@/lib/site";
 
 import type { OperationalStatus, ProductStatusResult } from "./types";
+import { healthPayloadStatus } from "./probe";
 
 const PROBE_TIMEOUT_MS = 5_000;
 const CACHE_TTL_MS = 60_000;
 
 let cache: { at: number; results: ProductStatusResult[] } | null = null;
+let inFlight: Promise<ProductStatusResult[]> | null = null;
 
 function maturityDefaultStatus(m: RegistryMaturity): OperationalStatus {
   switch (m) {
@@ -33,18 +35,18 @@ function isAllowlistedHost(hostname: string): boolean {
   if (ALLOWLISTED_PUBLIC_HOSTS.includes(h as (typeof ALLOWLISTED_PUBLIC_HOSTS)[number])) {
     return true;
   }
-  return h === "ai.smohix.run" || h.endsWith(".smohix.run");
+  return false;
 }
 
 function resolveProbeUrl(entry: ProductRegistryEntry): string | null {
   if (!entry.healthCheck) return null;
   const base =
-    entry.healthCheck.host === "ai.smohix.run"
-      ? "https://ai.smohix.run"
-      : getSiteUrl().replace(/\/$/, "");
+    entry.healthCheck.host === "smohix.run"
+      ? getSiteUrl().replace(/\/$/, "")
+      : `https://${entry.healthCheck.host}`;
   try {
     const u = new URL(entry.healthCheck.path, base);
-    if (!isAllowlistedHost(u.hostname)) return null;
+    if (!isAllowlistedHost(u.hostname) || u.origin !== new URL(base).origin) return null;
     if (u.protocol !== "https:" && u.hostname !== "localhost" && u.hostname !== "127.0.0.1") {
       return null;
     }
@@ -54,16 +56,21 @@ function resolveProbeUrl(entry: ProductRegistryEntry): string | null {
   }
 }
 
-async function probeUrl(url: string): Promise<"operational" | "unavailable"> {
+async function probeUrl(url: string): Promise<OperationalStatus> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), PROBE_TIMEOUT_MS);
   try {
+    const structured = new URL(url).pathname === "/api/health";
     const res = await fetch(url, {
-      method: "HEAD",
+      method: structured ? "GET" : "HEAD",
+      redirect: "manual",
       cache: "no-store",
       signal: controller.signal,
       headers: { Accept: "application/json, text/html" },
     });
+    if (structured && (res.ok || res.status === 503)) {
+      return healthPayloadStatus(await res.json());
+    }
     if (res.ok || (res.status >= 300 && res.status < 400)) {
       return "operational";
     }
@@ -75,14 +82,14 @@ async function probeUrl(url: string): Promise<"operational" | "unavailable"> {
   }
 }
 
-async function statusForProduct(entry: ProductRegistryEntry): Promise<ProductStatusResult> {
+async function statusForProduct(entry: ProductRegistryEntry, probes: Map<string, Promise<OperationalStatus>>): Promise<ProductStatusResult> {
   const lastChecked = new Date().toISOString();
   const probe = resolveProbeUrl(entry);
   let status: OperationalStatus = maturityDefaultStatus(entry.maturity);
 
   if (probe && (entry.maturity === "live" || entry.maturity === "preview")) {
-    const probeResult = await probeUrl(probe);
-    status = probeResult === "operational" ? "operational" : "unavailable";
+    if (!probes.has(probe)) probes.set(probe, probeUrl(probe));
+    status = await probes.get(probe)!;
   } else if (entry.maturity === "prototype") {
     status = "prototype";
   } else if (entry.maturity === "planned") {
@@ -91,7 +98,7 @@ async function statusForProduct(entry: ProductRegistryEntry): Promise<ProductSta
 
   const detail =
     probe && entry.maturity === "live"
-      ? `Last probe: ${entry.healthCheck?.path ?? "—"} (${registryMaturityLabel(entry.maturity)}).`
+      ? `Public endpoint check: ${entry.healthCheck?.path ?? "—"}. Product maturity: ${registryMaturityLabel(entry.maturity)}. This does not verify every workspace function.`
       : `${registryMaturityLabel(entry.maturity)} — ${entry.limitations[0] ?? entry.description}`;
 
   return {
@@ -109,10 +116,12 @@ export async function fetchProductStatuses(): Promise<ProductStatusResult[]> {
   if (cache && Date.now() - cache.at < CACHE_TTL_MS) {
     return cache.results;
   }
-  const entries = getAllRegistryProducts();
-  const results = await Promise.all(entries.map(statusForProduct));
-  cache = { at: Date.now(), results };
-  return results;
+  if (inFlight) return inFlight;
+  const probes = new Map<string, Promise<OperationalStatus>>();
+  inFlight = Promise.all(getAllRegistryProducts().map((entry) => statusForProduct(entry, probes)))
+    .then((results) => { cache = { at: Date.now(), results }; return results; })
+    .finally(() => { inFlight = null; });
+  return inFlight;
 }
 
 export async function fetchSiteHealthView(): Promise<{

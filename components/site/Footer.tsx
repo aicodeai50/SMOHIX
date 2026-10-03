@@ -44,14 +44,14 @@ function FooterLink({
   );
 }
 
-export function Footer() {
+export function Footer({ adaptiveBrand = false }: { adaptiveBrand?: boolean }) {
   const year = new Date().getFullYear();
   return (
     <footer className="border-t border-white/[0.06] bg-surface/40">
       <div className={`${mContainer} py-12`}>
         <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-sm space-y-3">
-            <Logo />
+            <Logo tone={adaptiveBrand ? "mono" : "dark"} />
             <p className={mBody}>
               {SITE_COMPANY_NAME} builds AI products, developer platforms, APIs, and enterprise
               solutions across one Smohix ecosystem.

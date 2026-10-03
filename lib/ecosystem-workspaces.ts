@@ -60,7 +60,7 @@ export const FLAGSHIP_PRODUCTS = [
     description: "Personal intelligent workspace for productivity — distinct from team AI chat.",
     href: "/products/smohix-assistant",
     workspaceUrl: SMOHIX_WORKSPACE_URLS.assistant,
-    status: "preview" as const,
+    status: "live" as const,
   },
   {
     id: "private-ai",
@@ -68,7 +68,7 @@ export const FLAGSHIP_PRODUCTS = [
     description: "Private AI workspace for organizations that need greater control and deployment options.",
     href: "/products/private-ai",
     workspaceUrl: SMOHIX_WORKSPACE_URLS.privateAi,
-    status: "preview" as const,
+    status: "live" as const,
   },
 ] as const;
 

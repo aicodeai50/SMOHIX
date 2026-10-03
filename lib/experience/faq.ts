@@ -1,3 +1,5 @@
+import { getAllRegistryProducts } from "@/lib/product-registry";
+
 export type FaqItem = { q: string; a: string };
 export type FaqGroup = { id: string; title: string; items: readonly FaqItem[] };
 
@@ -8,7 +10,7 @@ export const FAQ_GROUPS: readonly FaqGroup[] = [
     items: [
       {
         q: "What products are live today?",
-        a: "Smohix Platform, Smohix AI (ai.smohix.run), Smohix Own API, and Smohix Identity are live. Analytics and Agents are preview/prototype. Projects and Knowledge are planned or prototype — see Product Access at /products.",
+        a: `${getAllRegistryProducts().filter((product) => product.maturity === "live").map((product) => product.publicName).join(", ")} are listed as live in the product registry. Other products carry their current preview, prototype, or planned labels at /products. Runtime availability is checked separately at /status.`,
       },
       {
         q: "Does the site simulate products?",
@@ -104,7 +106,7 @@ export const FAQ_GROUPS: readonly FaqGroup[] = [
       },
       {
         q: "Does analytics require consent?",
-        a: "When NEXT_PUBLIC_ANALYTICS_REQUIRES_CONSENT is set, the consent banner gates optional analytics events.",
+        a: "When consent is required, the consent banner gates optional analytics events.",
       },
     ],
   },

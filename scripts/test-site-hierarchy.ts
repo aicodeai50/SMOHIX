@@ -13,6 +13,7 @@ import {
 } from "../lib/company-identity";
 import {
   FLAGSHIP_PRODUCT_IDS,
+  FLAGSHIP_PRODUCTS,
   PRIMARY_SITE_NAV,
   SMOHIX_WORKSPACE_URLS,
 } from "../lib/ecosystem-workspaces";
@@ -39,6 +40,12 @@ assert(
   !FLAGSHIP_PRODUCT_IDS.includes("memory-pendant" as (typeof FLAGSHIP_PRODUCT_IDS)[number]),
   "Memory Pendant must not be a flagship product",
 );
+
+// Homepage maturity must match the governed registry (not older presentation copy).
+for (const product of FLAGSHIP_PRODUCTS) {
+  const registered = PRODUCT_REGISTRY.find((entry) => entry.id === product.id);
+  assert(registered?.maturity === product.status, `homepage maturity differs from registry: ${product.id}`);
+}
 
 // --- Primary navigation IA ---
 const navLabels = HEADER_NAV.map((n) => n.label);

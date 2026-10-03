@@ -47,7 +47,7 @@ const PILLARS = [
     id: "grc",
     tag: "04 · Prove",
     title: "GRC & compliance depth",
-    body: "Eight framework packs, assessor workbooks, obligation forecasting, and staffing SLAs — live in console.",
+    body: "Framework packs, assessor workbooks, obligation forecasting, and staffing SLAs — with module maturity disclosed.",
     href: "/auth/sign-in?next=/governance/compliance/program",
     cta: "Compliance program",
     span: "md:col-span-2",
@@ -81,12 +81,12 @@ export function CommandExperience() {
       <div className={mContainer}>
         <p className={`${mEyebrow} smohix-eyebrow-cyber`}>⟡ Command surface</p>
         <h2 id="command-heading" className={`smohix-living-headline mt-2 ${mH2}`}>
-          One console — not six disconnected dashboards
+          From signal to action. Every decision connected.
         </h2>
         <p className={mLede}>
           {SITE_BRAND_NAME} folds incident response, security posture, guarded automation, and
-          compliance evidence into a single operator experience. Every tile maps to a live console
-          route.
+          compliance evidence into a single operator experience. Explore the product surfaces, then sign in for your organization’s
+          operational records.
         </p>
 
         <div className="mt-10 grid gap-3 md:grid-cols-4 md:auto-rows-[minmax(7rem,auto)]">
