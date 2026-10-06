@@ -1,6 +1,28 @@
 import assert from 'node:assert/strict';
 import { healthPayloadStatus } from '../lib/status/probe';
 import { PRODUCT_REGISTRY } from '../lib/product-registry';
+import { getCommandSnapshot, commandAvailability } from '../lib/hq/command-status';
+import type { ProductStatusResult } from '../lib/status/types';
+
+const checked = Date.parse('2026-10-06T12:00:00Z');
+const monitored: ProductStatusResult[] = ['operational', 'degraded', 'unavailable', 'unknown'].map((status, index) => ({
+  productId: String(index), label: String(index), status: status as ProductStatusResult['status'],
+  detail: '', lastChecked: new Date(checked).toISOString(), href: '/status',
+}));
+const commandOptions = { now: checked, receivedAt: checked, error: false, paused: false };
+const command = getCommandSnapshot(['0', '1', '2', '3'], monitored, commandOptions);
+assert.equal(command.feed, 'live', 'a live feed can report unhealthy endpoints without claiming they are healthy');
+assert.equal(command.reachable, 1);
+assert.equal(command.attention, 2);
+assert.equal(command.verified, 3, 'unknown endpoints must not count as verified');
+assert.equal(getCommandSnapshot(['0'], monitored, { ...commandOptions, now: checked + 90_001 }).feed, 'stale');
+assert.equal(getCommandSnapshot(['0'], monitored, { ...commandOptions, receivedAt: checked + 100_000, now: checked + 100_000 }).feed, 'stale', 'receiving old cached results must not make them fresh');
+assert.equal(getCommandSnapshot(['0'], monitored, { ...commandOptions, error: true }).feed, 'stale');
+assert.equal(getCommandSnapshot(['0'], monitored, { ...commandOptions, paused: true }).feed, 'paused');
+assert.equal(getCommandSnapshot(['missing'], monitored, commandOptions).feed, 'stale');
+assert.equal(getCommandSnapshot(['0'], [], { ...commandOptions, receivedAt: null }).feed, 'connecting');
+assert.equal(getCommandSnapshot(['0'], [], { ...commandOptions, receivedAt: null, error: true }).feed, 'stale');
+assert.equal(commandAvailability('unavailable'), 'Unreachable');
 assert.equal(healthPayloadStatus({ok:true}), 'operational');
 assert.equal(healthPayloadStatus({ok:true,status:'degraded'}), 'degraded');
 assert.equal(healthPayloadStatus({ok:false}), 'degraded');

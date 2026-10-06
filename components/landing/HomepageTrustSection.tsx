@@ -1,82 +1,23 @@
 import Link from "next/link";
-
-import { AppIcon } from "@/components/icons/AppIcon";
 import { MarketingReveal } from "@/components/marketing/MarketingReveal";
-import {
-  mBody,
-  mCard,
-  mCardLink,
-  mContainer,
-  mEyebrow,
-  mFocusRing,
-  mH2,
-  mSection,
-  mSectionGlow,
-  mStaggerGrid,
-  mTrustGrid,
-} from "@/lib/marketing-layout";
-
-const TRUST_PILLARS = [
-  {
-    title: "Development progress",
-    detail: "Changelog and roadmap reflect what shipped — not marketing fiction.",
-    icon: "scrollText" as const,
-  },
-  {
-    title: "Open architecture",
-    detail: "Documented APIs, connectors, and deployment patterns you can inspect.",
-    icon: "server" as const,
-  },
-  {
-    title: "Privacy by design",
-    detail: "Server-side secrets, consent-aware analytics, and clear data boundaries.",
-    icon: "shieldCheck" as const,
-  },
-  {
-    title: "Developer first",
-    detail: "Keys, webhooks, and reference docs for teams integrating today.",
-    icon: "keyRound" as const,
-  },
-] as const;
+import { mBody, mCardLink, mContainer, mEyebrow, mFocusRing, mH2, mSection, mSectionGlow, mTrustGrid } from "@/lib/marketing-layout";
 
 const TRUST_LINKS = [
-  { href: "/trust", label: "Trust center", detail: "Security, privacy, and maturity disclosure" },
-  { href: "/status", label: "Service status", detail: "Runtime checks when configured" },
-  { href: "/security", label: "Security", detail: "Responsible disclosure and posture" },
-  { href: "/changelog", label: "Changelog", detail: "Real product progress" },
+  { href: "/trust", label: "Trust center", detail: "Data handling, access controls, and product maturity" },
+  { href: "/security", label: "Security", detail: "Responsible disclosure and security practices" },
+  { href: "/privacy", label: "Privacy", detail: "How information is collected, used, and protected" },
+  { href: "/changelog", label: "Changelog", detail: "Published updates and shipped changes" },
 ] as const;
 
 export function HomepageTrustSection() {
   return (
-    <MarketingReveal
-      id="trust"
-      className={`${mSection} ${mSectionGlow}`}
-      aria-labelledby="homepage-trust-heading"
-    >
+    <MarketingReveal id="trust" className={`${mSection} ${mSectionGlow}`} aria-labelledby="homepage-trust-heading">
       <div className={mContainer}>
         <p className={`${mEyebrow} text-primary-muted`}>Trust</p>
-        <h2 id="homepage-trust-heading" className={mH2}>
-          Built for review, honest about maturity
-        </h2>
-        <p className={`mt-3 max-w-2xl ${mBody}`}>
-          We do not claim certifications or customer metrics we have not published. See
-          what is current, in progress, or planned.
-        </p>
-
-        <ul className={`mt-10 ${mTrustGrid} ${mStaggerGrid}`}>
-          {TRUST_PILLARS.map((item) => (
-            <li key={item.title} className={mCard}>
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/[0.05]">
-                <AppIcon name={item.icon} size={18} className="text-accent" aria-hidden />
-              </div>
-              <h3 className="mt-3 text-sm font-semibold text-foreground">{item.title}</h3>
-              <p className={`mt-1.5 text-sm ${mBody}`}>{item.detail}</p>
-            </li>
-          ))}
-        </ul>
-
-        <ul className={`mt-8 ${mTrustGrid} ${mStaggerGrid}`}>
-          {TRUST_LINKS.map((item) => (
+        <h2 id="homepage-trust-heading" className={mH2}>Inspect the details before you decide</h2>
+        <p className={`mt-3 max-w-2xl ${mBody}`}>Review our published policies and product updates. Certifications and customer metrics are only claimed when documented.</p>
+        <ul className={`mt-8 ${mTrustGrid}`}>
+          {TRUST_LINKS.map(item => (
             <li key={item.href}>
               <Link href={item.href} className={`block ${mCardLink} ${mFocusRing}`}>
                 <span className="font-medium text-foreground">{item.label}</span>

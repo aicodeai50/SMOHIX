@@ -1,14 +1,12 @@
 import "./hq.css";
 import "./public-experience.css";
-import { VerifiedFoundations } from "@/components/marketing/VerifiedFoundations";
+import "./hq-command.css";
 import { CommandExperience } from "@/components/landing/CommandExperience";
 import { HqGuide } from "@/components/hq/HqGuide";
 import { buildHqGuideDocuments } from "@/lib/hq/guide-data";
 import { Footer } from "@/components/site/Footer";
 import { AboutCompanySection } from "@/components/landing/AboutCompanySection";
-import { CommercialOpportunitySection } from "@/components/landing/CommercialOpportunitySection";
 import { CTASection } from "@/components/landing/CTASection";
-import { EcosystemSection } from "@/components/landing/EcosystemSection";
 import { FlagshipProductsSection } from "@/components/landing/FlagshipProductsSection";
 import { Hero } from "@/components/landing/Hero";
 import { HomepageDevelopersSection } from "@/components/landing/HomepageDevelopersSection";
@@ -16,7 +14,6 @@ import { HomepagePricingSection } from "@/components/landing/HomepagePricingSect
 import { HomepageTrustSection } from "@/components/landing/HomepageTrustSection";
 import { RoadmapSection } from "@/components/landing/RoadmapSection";
 import { WhoWeBuildForSection } from "@/components/landing/WhoWeBuildForSection";
-import { WhyChooseSection } from "@/components/landing/WhyChooseSection";
 import { Navbar } from "@/components/ui/Navbar";
 import { HomePageJsonLd } from "@/components/site/HomePageJsonLd";
 import { homepageMetadata } from "@/lib/metadata";
@@ -34,17 +31,13 @@ export default function Home() {
         <Hero />
         <FlagshipProductsSection />
         <AboutCompanySection />
-        <EcosystemSection />
         <CommandExperience />
-        <WhyChooseSection />
         <WhoWeBuildForSection />
-        <CommercialOpportunitySection />
         <HomepageDevelopersSection />
         <HomepageTrustSection />
         <HomepagePricingSection />
         <RoadmapSection />
         <HqGuide documents={buildHqGuideDocuments()} />
-        <VerifiedFoundations />
         <CTASection />
       </main>
       <Footer adaptiveBrand />

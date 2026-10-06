@@ -63,7 +63,7 @@ export function HqGuide({ documents }: { documents: GuideDocument[] }) {
           <Link href="https://ai.smohix.run" className="mt-5 inline-block text-sm font-semibold text-accent">Open Smohix AI ↗</Link>
         </aside>
         <div className="hq-chat-main">
-          <div className="flex items-center justify-between gap-3 border-b border-border pb-4"><span className="text-sm font-semibold">Smohix HQ guide <span className="ml-2 text-xs font-normal text-accent">Site guide</span></span>
+          <div className="flex items-center justify-between gap-3 border-b border-border pb-4"><span className="text-sm font-semibold">Conversation</span>
             {exchanges.length>0&&<button type="button" onClick={()=>{setThreads(all=>all.map(thread=>thread.id===active?{...thread,exchanges:[]}:thread));field.current?.focus();}} className="text-xs text-muted">Clear chat</button>}
           </div>
           <div ref={conversation} className="hq-guide__conversation" role="log" aria-label="HQ conversation" aria-live="polite" aria-relevant="additions">

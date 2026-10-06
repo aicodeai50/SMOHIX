@@ -34,8 +34,8 @@ export function RoadmapSection() {
           for shipped work.
         </p>
 
-        <div className="mt-12 grid gap-6 lg:grid-cols-3">
-          {COMPANY_ROADMAP.map((phase) => (
+        <div className="mt-12 grid gap-6 md:grid-cols-2">
+          {COMPANY_ROADMAP.filter((phase) => phase.phase !== "now").map((phase) => (
             <article
               key={phase.phase}
               className={`rounded-2xl border p-6 ${PHASE_STYLES[phase.phase]}`}

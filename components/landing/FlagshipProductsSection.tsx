@@ -15,6 +15,7 @@ import {
 export function FlagshipProductsSection() {
   return (
     <MarketingReveal
+      id="ecosystem"
       className={`${mSection} smohix-section-approach`}
       aria-labelledby="flagship-products-heading"
     >
