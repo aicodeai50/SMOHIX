@@ -29,8 +29,8 @@ export default function PlaygroundPage() {
               <Link href="/docs/api" className={mLinkInline}>
                 /docs/api
               </Link>
-              . Nothing is executed from this page — run requests in your own terminal or server with
-              a valid API key.
+              . Run protected examples with the credential shown for each route. The public health
+              check can run here without signing in.
             </p>
             <Link href="/developers" className={`mt-4 inline-block text-sm ${mLinkInline}`}>
               Developer hub →

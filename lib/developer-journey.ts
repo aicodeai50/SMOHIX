@@ -22,16 +22,17 @@ export const DEVELOPER_SDKS: readonly SdkEntry[] = [
     detail: "Open-source web app at github.com/aicodeai50/SMOHIX — primary integration surface today.",
   },
   {
-    name: "Smohix SDK (@smohix/sdk)",
+    name: "JavaScript / TypeScript source client",
     status: "preview",
     detail:
-      "Preferred TypeScript package name for the Smohix API client. Publishing is in progress — use the documented REST catalog and API keys until the package is released.",
+      "Downloadable source preview with TypeScript declarations for health, product status, reasoning health, and alert ingest. Not an npm package.",
   },
   {
-    name: "Python SDK",
-    status: "coming-soon",
-    detail: "Planned — use the Smohix HTTP API and API keys until published.",
+    name: "Python source client",
+    status: "preview",
+    detail: "Downloadable standard-library source preview for the same documented endpoints. Not a PyPI package.",
   },
+  { name: "Go SDK", status: "planned", detail: "Not implemented in this preview; use the documented HTTP API." },
   {
     name: "CLI",
     status: "planned",
@@ -193,11 +194,16 @@ export type DeveloperExample = {
   notes?: string;
   /** When true, JS/TS snippets may include an API key header. */
   usesApiKey?: boolean;
+  path: string;
+  method?: "GET" | "POST";
+  auth?: "api-key" | "ingest-token" | "session";
+  body?: Record<string, string>;
 };
 
 export const DEVELOPER_EXAMPLES: readonly DeveloperExample[] = [
   {
     id: "health",
+    path: "/api/health",
     title: "Health check",
     description: "Public liveness — no authentication.",
     request: `curl -s ${SITE}/api/health`,
@@ -210,6 +216,8 @@ export const DEVELOPER_EXAMPLES: readonly DeveloperExample[] = [
   },
   {
     id: "reasoning-proxy",
+    path: "/api/reasoning/health",
+    auth: "api-key",
     title: "Reasoning proxy (API key)",
     description: "Authenticate /api/reasoning/* with a Smohix API key from Settings.",
     request: `curl -s ${SITE}/api/reasoning/health \\
@@ -222,6 +230,10 @@ export const DEVELOPER_EXAMPLES: readonly DeveloperExample[] = [
   },
   {
     id: "alert-ingest",
+    path: "/api/integrations/alerts",
+    method: "POST",
+    auth: "ingest-token",
+    body: { title: "High CPU", severity: "warning", service: "api-gateway" },
     title: "Alert ingest",
     description: "POST alert with a workspace ingest token — see Integrations.",
     request: `curl -s -X POST ${SITE}/api/integrations/alerts \\
@@ -237,12 +249,16 @@ export const DEVELOPER_EXAMPLES: readonly DeveloperExample[] = [
   },
   {
     id: "dry-run",
+    path: "/api/automations/dry-run",
+    method: "POST",
+    auth: "session",
+    body: { playbookId: "pb-restart-workers" },
     title: "Automation dry-run",
     description: "Simulate a playbook with a signed-in console session.",
     request: `curl -s -X POST ${SITE}/api/automations/dry-run \\
   -H "Cookie: …session…" \\
   -H "Content-Type: application/json" \\
-  -d '{"playbookId":"…","incidentId":"…"}'`,
+  -d '{"playbookId":"pb-restart-workers"}'`,
     response: `# Shape depends on playbook — see route handler
 # Human approval remains required for guarded execution`,
     notes: "Session cookie auth on console routes — not Smohix API keys.",
@@ -250,6 +266,7 @@ export const DEVELOPER_EXAMPLES: readonly DeveloperExample[] = [
   },
   {
     id: "auth-errors",
+    path: "/api/reasoning/health",
     title: "Authentication errors",
     description: "Common HTTP statuses from documented routes.",
     request: `# Missing credentials on a protected proxy route

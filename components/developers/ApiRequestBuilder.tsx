@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 
+import { buildDeveloperCode } from "@/lib/developer-request-code";
 import { DEVELOPER_EXAMPLES } from "@/lib/developer-journey";
 import { getSiteUrl } from "@/lib/site";
 import { mBody, mBodySm } from "@/lib/marketing-layout";
@@ -9,33 +10,6 @@ import { mBody, mBodySm } from "@/lib/marketing-layout";
 function HighlightedCode({text}: {text: string}) { return <code>{text.split(/("[^"\n]*"|https?:\/\/[^\s]+|\btrue\b|\bfalse\b|\bnull\b)/g).map((token,index)=>index%2?<span key={index} className="public-code-token">{token}</span>:token)}</code>; }
 
 type Format = "curl" | "javascript" | "typescript";
-
-function buildJavaScript(example: (typeof DEVELOPER_EXAMPLES)[number], base: string): string {
-  const urlMatch = example.request.match(/https?:\/\/[^\s\\]+/);
-  const url = urlMatch?.[0]?.replace(/https:\/\/smohix\.run/g, base) ?? `${base}/api/health`;
-  if (example.usesApiKey) {
-    return `const key = process.env.SMOHIX_API_KEY; // smohix_sk_example_not_a_real_secret
-if (!key) throw new Error("Missing SMOHIX_API_KEY");
-
-const res = await fetch("${url}", {
-  headers: {
-    Authorization: \`Bearer \${key}\`,
-  },
-});
-if (!res.ok) throw new Error(\`HTTP \${res.status}\`);
-const data = await res.json();
-console.log(data);`;
-  }
-  return `const res = await fetch("${url}");
-if (!res.ok) throw new Error(\`HTTP \${res.status}\`);
-const data = await res.json();
-console.log(data);`;
-}
-
-function buildTypeScript(example: (typeof DEVELOPER_EXAMPLES)[number], base: string): string {
-  return `${buildJavaScript(example, base)}
-// TypeScript SDK publishing is in progress — use REST until published.`;
-}
 
 export function ApiRequestBuilder() {
   const [activeId, setActiveId] = useState(DEVELOPER_EXAMPLES[0].id);
@@ -58,9 +32,9 @@ export function ApiRequestBuilder() {
       case "curl":
         return example.request.replace(/https:\/\/smohix\.run/g, base);
       case "javascript":
-        return buildJavaScript(example, base);
+        return buildDeveloperCode(example, base);
       case "typescript":
-        return buildTypeScript(example, base);
+        return buildDeveloperCode(example, base, true);
     }
   }, [example, format, base]);
 
@@ -68,7 +42,7 @@ export function ApiRequestBuilder() {
     <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] overflow-hidden">
       <div className="border-b border-white/[0.08] px-5 py-4">
         <p className={mBody}>
-          API request builder — generates copyable examples only. Protected requests are examples only. Use your own server with a valid API key. The public health check below can be run here without a key.
+          Generate copyable examples for protected routes. API keys, workspace ingest tokens, and signed-in sessions are separate credentials; follow the selected example. The public health check can run here without a key.
         </p>
       </div>
       <div className="flex gap-1 overflow-x-auto border-b border-white/[0.08] p-2">

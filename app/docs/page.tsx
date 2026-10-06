@@ -12,6 +12,7 @@ export const metadata: Metadata = {
 };
 
 const CARDS = [
+  { title: "SDK source preview", body: "Download JavaScript, TypeScript declarations, and Python clients for documented endpoints.", href: "/docs/sdk" },
   {
     title: "Developer platform",
     body: "API documentation entry, quick start, API keys, and secure integration guidance.",

@@ -6,6 +6,7 @@ import { getRobotBackendUrl } from "@/lib/backend-urls";
 import { getOrgContextForUser } from "@/lib/org/context";
 import { insertAutomationDryRun } from "@/lib/automations/dry-runs-db";
 import { recordDryRun } from "@/lib/automations/runs-dev";
+import { getPlaybookById } from "@/lib/automations/playbooks";
 import { appendAuditEvent } from "@/lib/audit/append";
 import { billingPlanFromSummary, getSubscriptionSummary } from "@/lib/billing/plan";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
@@ -87,6 +88,9 @@ export async function POST(req: NextRequest) {
   }
   if (!playbookId) {
     return NextResponse.json({ error: "playbookId_required" }, { status: 400 });
+  }
+  if (!getPlaybookById(playbookId)) {
+    return NextResponse.json({ error: "unknown_playbook" }, { status: 404 });
   }
 
   if (incidentId && ctx.mode === "auth") {

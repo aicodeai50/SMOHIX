@@ -30,6 +30,7 @@ export async function consumeCopilotSse(
           } catch {
             continue;
           }
+          if (!ev || typeof ev !== "object") continue;
           if (ev.type === "delta" && typeof ev.text === "string") {
             onDelta(ev.text);
           }
@@ -56,6 +57,7 @@ export async function consumeCopilotSse(
             message?: string;
             source?: string;
           };
+          if (!ev || typeof ev !== "object") continue;
           if (ev.type === "delta" && typeof ev.text === "string") onDelta(ev.text);
           if (ev.type === "error") {
             return { ok: false, message: ev.message ?? "stream_error" };
@@ -69,8 +71,9 @@ export async function consumeCopilotSse(
       }
     }
 
-    return { ok: true };
+    return { ok: false, message: "The response was interrupted before completion. Please try again." };
   } finally {
+    await reader.cancel().catch(() => {});
     reader.releaseLock();
   }
 }

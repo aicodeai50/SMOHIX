@@ -293,6 +293,7 @@ export function DeveloperCoreField() {
             ))}
           </ul>
           <p className={`mt-4 ${mBodySm} text-muted/85`}>{DEVELOPER_VERSIONING.body}</p>
+          <Link href="/docs/sdk" className="mt-4 inline-block font-medium text-accent hover:underline">Download SDK source and examples →</Link>
         </section>
 
         <section className="smohix-developer-webhook-arch" aria-labelledby="webhook-arch-heading">

@@ -87,6 +87,8 @@ async function main() {
   });
 
   const sourceFiles = [];
+  const publicFiles = await listFilesRecursive(path.join(root, "public"));
+  const publicPaths = new Set(publicFiles.map((file) => `/${path.relative(path.join(root, "public"), file).replace(/\\/g, "/")}`));
   for (const srcDir of SOURCE_DIRS) {
     const dir = path.join(root, srcDir);
     const files = await listFilesRecursive(dir);
@@ -102,7 +104,7 @@ async function main() {
     for (const href of hrefs) {
       const target = normalizeHref(href);
       if (!target) continue;
-      const found = routePatterns.some((pattern) => pattern.regex.test(target));
+      const found = publicPaths.has(target) || routePatterns.some((pattern) => pattern.regex.test(target));
       if (!found) {
         failures.push({
           file: path.relative(root, sourceFile).replace(/\\/g, "/"),

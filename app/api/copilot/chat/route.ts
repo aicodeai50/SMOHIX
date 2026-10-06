@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { enforceCopilotChatAccess } from "@/lib/copilot/chat-guard";
+import { parseCopilotInput } from "@/lib/copilot/chat-input";
 import { buildIncidentCopilotContext } from "@/lib/copilot/incident-context";
 import { buildOfflineReply } from "@/lib/copilot/offline-reply";
 import { completeOpenAIChat, streamOpenAIChatDeltas } from "@/lib/copilot/openai";
@@ -13,8 +14,6 @@ export const runtime = "nodejs";
 function sseLine(obj: unknown): Uint8Array {
   return new TextEncoder().encode(`data: ${JSON.stringify(obj)}\n\n`);
 }
-
-type ChatTurn = { role: "user" | "assistant"; content: string };
 
 /**
  * Copilot chat: OpenAI when OPENAI_API_KEY is set; else reasoning service when
@@ -38,34 +37,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "invalid_json" }, { status: 400 });
   }
 
-  const b = body as {
-    messages?: { role?: string; content?: string }[];
-    message?: string;
-    stream?: boolean;
-    incidentId?: string;
-  };
-
-  const messages = Array.isArray(b.messages) ? b.messages : [];
-  const lastFromArray = [...messages].reverse().find((m) => m.role === "user" && m.content);
-  const lastUser =
-    (typeof b.message === "string" && b.message.trim()) ||
-    (typeof lastFromArray?.content === "string" ? lastFromArray.content.trim() : "");
-
-  if (!lastUser) {
-    return NextResponse.json({ error: "message_required" }, { status: 400 });
-  }
-
-  const thread: ChatTurn[] =
-    messages.length > 0
-      ? messages
-          .filter((m) => (m.role === "user" || m.role === "assistant") && m.content)
-          .map((m) => ({
-            role: m.role as "user" | "assistant",
-            content: String(m.content),
-          }))
-      : [{ role: "user", content: lastUser }];
-
-  const incidentId = typeof b.incidentId === "string" ? b.incidentId.trim() : "";
+  const input = parseCopilotInput(body);
+  if (!input.ok) return NextResponse.json({ error: input.error }, { status: input.status });
+  const { thread, lastUser, incidentId } = input;
   if (incidentId && hasSupabaseAuth()) {
     const supabase = await createServerSupabaseClient();
     const {
@@ -83,7 +57,7 @@ export async function POST(req: Request) {
     }
   }
 
-  const wantStream = b.stream === true;
+  const wantStream = input.stream;
 
   if (wantStream) {
     const stream = new ReadableStream<Uint8Array>({
