@@ -97,3 +97,16 @@ body .smohix-hq .hq-command-panel .hq-command__services li::before { content: ''
   body .smohix-hq .hq-command-panel .hq-command__services::before { left: 0; }
   body .smohix-hq .hq-command-panel .hq-command__services li::before { left: -.6rem; width: .5rem; }
 }
+
+body .smohix-hq .hq-command-panel .hq-command__time-details { width: 100%; }
+body .smohix-hq .hq-command-panel .hq-command__time-info { margin-top: .55rem; padding: .85rem; border: 1px solid #ccd5e6; border-radius: .75rem; background: #f8faff; color: #47546a; }
+body .smohix-hq .hq-command-panel .hq-command__time-info dl { display: grid; gap: .65rem; }
+body .smohix-hq .hq-command-panel .hq-command__time-info dt { font-size: .6rem; font-weight: 500; color: #47546a; }
+body .smohix-hq .hq-command-panel .hq-command__time-info dd { margin-top: .15rem; color: #171c32; font-size: .7rem; overflow-wrap: anywhere; }
+body .smohix-hq .hq-command-panel .hq-command__time-info p { margin-top: .75rem; font-size: .6rem; line-height: 1.6; }
+body .smohix-hq .hq-command-panel .hq-command__time-row { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+body .smohix-hq .hq-command-panel .hq-command__time-button { display: inline-flex; align-items: center; gap: .25rem; border: 1px solid #bac8df; border-radius: 999px; padding: .2rem .5rem; background: #f8faff; color: #34416b; font-size: .6rem; font-weight: 500; cursor: pointer; }
+body .smohix-hq .hq-command-panel .hq-command__time-button:hover { border-color: #3549af; background: #eef2fc; }
+body .smohix-hq .hq-command-panel .hq-command__time-button:focus-visible { outline: 2px solid #3549af; outline-offset: 3px; }
+body .smohix-hq .hq-command-panel .hq-command__time-button[aria-expanded="true"] svg { transform: rotate(180deg); }
+body .smohix-hq .hq-command-panel .hq-command__time-info[hidden] { display: none; }

@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowUpRight, RefreshCw } from "lucide-react";
+import { ArrowUpRight, ChevronDown, RefreshCw } from "lucide-react";
 import { SmohixHqMark } from "@/components/brand/hq/SmohixHqMark";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { AppIcon, type AppIconName } from "@/components/icons/AppIcon";
 import { getCommandSnapshot, commandAvailability } from "@/lib/hq/command-status";
 import type { ProductStatusResult } from "@/lib/status/types";
@@ -171,10 +171,13 @@ export function FutureCommandCore({ products }: { products: CommandProduct[] }) 
               </li>
             ))}
           </ul>
-          <div className="hq-command__update" role="status" aria-live="polite">
-            {error ?? (receivedAt === null ? "Waiting for the first check…"
-              : feed === "stale" ? "Previous results shown. Refresh for current availability."
-              : snapshot.checkedAt !== null ? <><span>Last checked</span> <time dateTime={new Date(snapshot.checkedAt).toISOString()}>{new Date(snapshot.checkedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}</time></> : "No monitored endpoints were verified.")}
+          <div className="hq-command__update">
+            {snapshot.checkedAt !== null && <CheckedTime timestamp={snapshot.checkedAt} />}
+            <span role="status" aria-live="polite">
+              {error ?? (receivedAt === null ? "Waiting for the first check…"
+                : feed === "stale" ? "Previous results shown. Refresh for current availability."
+                : snapshot.checkedAt === null ? "No monitored endpoints were verified." : null)}
+            </span>
           </div>
           <p className="hq-command__status-note">Checks refresh every minute while visible. Endpoint reachability does not verify every product function.</p>
         </div>
@@ -185,4 +188,39 @@ export function FutureCommandCore({ products }: { products: CommandProduct[] }) 
       </div>
     </div>
   );
+}
+
+function CheckedTime({ timestamp }: { timestamp: number }) {
+  const [expanded, setExpanded] = useState(false);
+  const detailsId = useId();
+  const date = new Date(timestamp);
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+  const time = new Intl.DateTimeFormat(undefined, {
+    timeZone, hour: "2-digit", minute: "2-digit", second: "2-digit",
+  }).format(date);
+  const localDate = new Intl.DateTimeFormat(undefined, {
+    timeZone, year: "numeric", month: "short", day: "numeric",
+    hour: "2-digit", minute: "2-digit", second: "2-digit", timeZoneName: "long",
+  }).format(date);
+  const offset = new Intl.DateTimeFormat("en", { timeZone, timeZoneName: "longOffset" })
+    .formatToParts(date).find(part => part.type === "timeZoneName")?.value.replace("GMT", "UTC") ?? "UTC";
+
+  return <div className="hq-command__time-details">
+    <div className="hq-command__time-row">
+      <span>Last checked</span>
+      <time dateTime={date.toISOString()}>{time}</time>
+      <button type="button" className="hq-command__time-button" aria-expanded={expanded}
+        aria-controls={detailsId} onClick={() => setExpanded(value => !value)}>
+        Time zone <ChevronDown size={11} aria-hidden />
+      </button>
+    </div>
+    <div id={detailsId} className="hq-command__time-info" hidden={!expanded}>
+      <dl>
+        <div><dt>Time zone</dt><dd>{timeZone.replaceAll("_", " ")} · {offset}</dd></div>
+        <div><dt>Local check time</dt><dd>{localDate}</dd></div>
+        <div><dt>UTC check time</dt><dd><time dateTime={date.toISOString()}>{date.toISOString().replace("T", " ").replace(/\.\d{3}Z$/, " UTC")}</time></dd></div>
+      </dl>
+      <p>Time of the oldest check in this snapshot. Your browser’s time zone determines the local display; UTC is the worldwide reference.</p>
+    </div>
+  </div>;
 }
