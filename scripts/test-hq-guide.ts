@@ -47,3 +47,9 @@ assert(answerHqQuestion('Where do I login?',documents).sources.some(source=>sour
 assert(answerHqQuestion('Where is the roadmap?',documents).sources.some(source=>source.href==='/next'));
 assert(answerHqQuestion('Where are the careers?',documents).sources.some(source=>source.href==='/careers'));
 console.log(`test-hq-guide: all checks passed (${documents.length} public source entries)`);
+
+for (const question of ['What is Smohix Workshop?', 'Can Smohix build a company project from scratch?']) {
+  const result = answerHqQuestion(question, documents);
+  assert(result.sources.some((source) => source.id === 'smohix-workshop'), `Missing Workshop guidance: ${question}`);
+  assert(result.text.includes('planned'));
+}

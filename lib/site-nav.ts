@@ -34,6 +34,7 @@ export const FOOTER_PRODUCTS = [
   { href: "/products/smohix-platform", label: "Smohix Platform" },
   { href: "/products/smohix-assistant", label: "Smohix Assistant" },
   { href: "/products/private-ai", label: "Smohix PRI" },
+  { href: "/workshop", label: "Smohix Workshop" },
   { href: "/products/smohix-own-api", label: "Smohix Own API" },
   { href: "/pilot", label: "Pilot program" },
   { href: "/architecture", label: "Architecture" },

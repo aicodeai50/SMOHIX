@@ -4,7 +4,8 @@
  */
 
 import { getSiteUrl } from "@/lib/site";
-import { ECOSYSTEM_PUBLIC_HOSTS } from "@/lib/ecosystem-workspaces";
+import { ECOSYSTEM_PUBLIC_HOSTS } from "@/lib/ecosystem-hosts";
+import { FAMILY_PROJECTS } from "@/lib/family-projects";
 
 export type RegistryMaturity = "live" | "preview" | "prototype" | "internal" | "planned";
 
@@ -52,6 +53,39 @@ const AI_PUBLIC = (process.env.SMOHIX_AI_PUBLIC_URL ?? process.env.ZENTRO_AI_PUB
 export const SMOHIX_AI_PUBLIC_URL = AI_PUBLIC;
 
 export const PRODUCT_REGISTRY: readonly ProductRegistryEntry[] = [
+  ...FAMILY_PROJECTS.map((project): ProductRegistryEntry => ({
+    id: project.id,
+    name: project.name,
+    publicName: project.name,
+    description: project.purpose,
+    maturity: project.status,
+    repository: "Smohix research projects",
+    productPagePath: `/family/${project.slug}`,
+    availableActions: [{ kind: "product_page", label: "Explore project", href: `/family/${project.slug}` }],
+    capabilities: [project.description],
+    limitations: [project.limitations],
+    dependencies: [],
+    pilotAvailable: false,
+    lastVerifiedAt: "2026-10-04",
+  })),
+  {
+    id: "smohix-workshop",
+    name: "Smohix Workshop",
+    publicName: "Smohix Workshop",
+    description: "Company projects, from the first brief to design, development and handover — part of the Smohix family.",
+    maturity: "planned",
+    repository: "Smohix HQ (public overview and project inquiry)",
+    productPagePath: "/workshop",
+    availableActions: [
+      { kind: "product_page", label: "Explore Workshop", href: "/workshop" },
+      { kind: "contact", label: "Discuss a project", href: "/contact?inquiry=enterprise&product=smohix-workshop" },
+    ],
+    capabilities: ["Public project-delivery overview", "Project inquiries through Smohix contact"],
+    limitations: ["Dedicated client workspace is planned", "Scope, pricing, delivery dates and ownership must be agreed for each project"],
+    dependencies: ["Smohix professional services", "Existing contact intake"],
+    pilotAvailable: false,
+    lastVerifiedAt: "2026-10-04",
+  },
   {
     id: "smohix-platform",
     name: "Smohix Platform",
@@ -117,16 +151,16 @@ export const PRODUCT_REGISTRY: readonly ProductRegistryEntry[] = [
     repository: "Smohix Assistant workspace (separate deployment)",
     productPagePath: "/products/smohix-assistant",
     productUrl: "https://assistant.smohix.run",
-    healthCheck: { host: "assistant.smohix.run", path: "/" },
-    docsUrl: `${SITE()}/developers`,
+    healthCheck: { host: "assistant.smohix.run", path: "/api/ping" },
+    docsUrl: "https://assistant.smohix.run/docs",
     availableActions: [
       { kind: "open_product", label: "Open Assistant", href: "https://assistant.smohix.run", external: true },
       { kind: "product_page", label: "Product overview", href: "/products/smohix-assistant" },
-      { kind: "read_docs", label: "Developers", href: "/developers" },
+      { kind: "read_docs", label: "Assistant documentation", href: "https://assistant.smohix.run/docs", external: true },
     ],
-    capabilities: ["Personal productivity workspace", "Smohix identity sign-in", "Ecosystem integration"],
-    limitations: ["Separate workspace from Smohix AI team chat"],
-    dependencies: ["Smohix identity"],
+    capabilities: ["Tasks, notes, daily brief and explicit personal memory", "Account sign-in", "Limited public chat and account AI when configured"],
+    limitations: ["Some data is device-local; cloud sync depends on configuration", "Calendar integration and shared ecosystem sign-in are planned"],
+    dependencies: ["Supabase Auth", "Configured intelligence backend for account AI"],
     pilotAvailable: false,
     lastVerifiedAt: "2026-08-03",
   },
@@ -139,16 +173,16 @@ export const PRODUCT_REGISTRY: readonly ProductRegistryEntry[] = [
     repository: "Smohix PRI workspace (separate deployment)",
     productPagePath: "/products/private-ai",
     productUrl: "https://pri.smohix.run",
-    healthCheck: { host: "pri.smohix.run", path: "/" },
+    healthCheck: { host: "pri.smohix.run", path: "/api/health" },
     docsUrl: `${SITE()}/enterprise`,
     availableActions: [
       { kind: "open_product", label: "Open Smohix PRI", href: "https://pri.smohix.run", external: true },
       { kind: "product_page", label: "Product overview", href: "/products/private-ai" },
       { kind: "contact", label: "Enterprise contact", href: "/contact?inquiry=enterprise" },
     ],
-    capabilities: ["Organization-scoped private AI workspace", "Enterprise deployment discussions"],
-    limitations: ["Not a replacement for all Smohix AI use cases", "Deployment options vary by engagement"],
-    dependencies: ["Smohix identity", "Enterprise governance (where enabled)"],
+    capabilities: ["Signed-in private chat with explicit processing modes when configured", "Workspace, model and retention preferences", "Enterprise deployment discussions"],
+    limitations: ["Multi-role organization access is not implemented in PRI", "Indexed private knowledge is planned", "Conversation data is device-local; account metadata sync is limited"],
+    dependencies: ["Supabase Auth", "Configured private or cloud intelligence route"],
     pilotAvailable: true,
     lastVerifiedAt: "2026-08-03",
   },

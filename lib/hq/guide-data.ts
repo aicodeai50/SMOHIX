@@ -15,7 +15,7 @@ export function buildHqGuideDocuments(): GuideDocument[] {
     title: product.publicName,
     answer: `${product.publicName}: ${product.description}\n\nRegistered maturity: ${registryMaturityLabel(product.maturity)}. ${product.capabilities.join('. ')}. ${product.limitations.join('. ')}. Runtime availability is checked separately on Service status.\n\n${product.productUrl ? `Open product: ${product.productUrl}.` : ''}${product.docsUrl ? ` Documentation: ${product.docsUrl}.` : ''}\nAccess options: ${product.availableActions.map(action=>`${action.label}: ${action.href}`).join('; ')}.`,
     href: product.productPagePath,
-    keywords: [product.id, product.publicName, ...(product.id === 'private-ai' ? ['PRI private AI deployment'] : [])],
+    keywords: [product.id, product.publicName, ...(product.id === 'private-ai' ? ['PRI private AI deployment'] : []), ...(product.id === 'smohix-workshop' ? ['company project custom software build from scratch delivery milestones client'] : [])],
   }));
   const groupLinks: Record<string, string> = { products: '/products', developers: '/docs/api', pricing: '/pricing', security: '/security', enterprise: '/enterprise', pilots: '/pilot', privacy: '/privacy' };
   const faqs = FAQ_GROUPS.flatMap((group) => group.items.map((item, index) => ({

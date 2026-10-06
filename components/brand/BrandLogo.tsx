@@ -13,7 +13,7 @@ export type BrandLogoProps = Omit<SmohixHqWordmarkProps, "symbolSize" | "height"
  */
 export function BrandLogo({
   className = "",
-  tone = "dark",
+  tone = "mono",
   height = 28,
   decorative = false,
   ...rest

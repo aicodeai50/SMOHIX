@@ -3,6 +3,9 @@
  * not independent companies.
  */
 
+import { getRegistryProduct, registryToEcosystemStatus } from "@/lib/product-registry";
+export { ECOSYSTEM_PUBLIC_HOSTS } from "@/lib/ecosystem-hosts";
+
 export const SMOHIX_WORKSPACE_URLS = {
   headquarters: "https://smohix.run",
   platform: "https://platform.smohix.run",
@@ -36,7 +39,7 @@ export const FLAGSHIP_PRODUCT_IDS = [
 
 export type FlagshipProductId = (typeof FLAGSHIP_PRODUCT_IDS)[number];
 
-export const FLAGSHIP_PRODUCTS = [
+const FLAGSHIP_DEFINITIONS = [
   {
     id: "smohix-ai",
     name: "Smohix AI",
@@ -71,6 +74,12 @@ export const FLAGSHIP_PRODUCTS = [
     status: "live" as const,
   },
 ] as const;
+
+/** Display maturity follows the registry instead of a second hardcoded label. */
+export const FLAGSHIP_PRODUCTS = FLAGSHIP_DEFINITIONS.map((product) => ({
+  ...product,
+  status: registryToEcosystemStatus(getRegistryProduct(product.id)!.maturity),
+}));
 
 export const DEVELOPER_SURFACE = [
   { href: "/docs/api", label: "API" },
@@ -118,21 +127,6 @@ export const SERVICE_OFFERINGS = [
   { id: "platform-engineering", title: "Platform Engineering" },
   { id: "ai-consulting", title: "AI Consulting" },
   { id: "custom-software", title: "Custom Software" },
-] as const;
-
-/** Hostnames allowed in public product URLs and health probes. */
-export const ECOSYSTEM_PUBLIC_HOSTS = [
-  "smohix.run",
-  "www.smohix.run",
-  "platform.smohix.run",
-  "ai.smohix.run",
-  "assistant.smohix.run",
-  "pri.smohix.run",
-  "log.smohix.run",
-  "identity.smohix.run",
-  "system.smohix.run",
-  "localhost",
-  "127.0.0.1",
 ] as const;
 
 export function isFlagshipProduct(id: string): id is FlagshipProductId {

@@ -30,8 +30,8 @@ export default function ContactPage() {
               Get in touch
             </h1>
             <p className={`mt-4 max-w-2xl ${mBody}`}>
-              Submit a qualified inquiry below. We use a mailto fallback until server-side
-              intake is connected — your email client will open with a pre-filled message.
+              Tell us about your goals, timeframe and requirements. The team will review
+              your inquiry and follow up by email. You can also contact us directly below.
             </p>
             <p className={`mt-4 text-sm ${mBody}`}>
               Prefer email directly?{" "}

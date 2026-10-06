@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { CommercialPaths } from "@/components/marketing/CommercialPaths";
 import { MarketingReveal } from "@/components/marketing/MarketingReveal";
-import { Button } from "@/components/ui/Button";
+import { buttonClassName } from "@/components/ui/Button";
 import { mBody, mContainer, mEyebrow, mH2, mLede, mSection } from "@/lib/marketing-layout";
 
 export function CommercialOpportunitySection() {
@@ -25,12 +25,8 @@ export function CommercialOpportunitySection() {
         <CommercialPaths className="mt-10" />
 
         <div className="mt-10 flex flex-wrap gap-3">
-          <Link href="/pilot">
-            <Button>Pilot program</Button>
-          </Link>
-          <Link href="/professional-services">
-            <Button variant="secondary">Professional services</Button>
-          </Link>
+          <Link href="/pilot" className={buttonClassName({  })}>Pilot program</Link>
+          <Link href="/professional-services" className={buttonClassName({ variant: "secondary" })}>Professional services</Link>
         </div>
 
         <p className={`mt-6 text-sm ${mBody}`}>

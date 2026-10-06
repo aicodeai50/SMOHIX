@@ -45,9 +45,9 @@ export default function AuthLayout({
         </div>
       </aside>
 
-      <div className="smohix-auth-portal__form relative z-[1] flex flex-1 flex-col items-center justify-center px-4 py-10 sm:px-6">
+      <main id="main-content" className="smohix-auth-portal__form relative z-[1] flex flex-1 flex-col items-center justify-center px-4 py-10 sm:px-6">
         <div className="smohix-auth-portal__form-plane">{children}</div>
-      </div>
+      </main>
     </div>
   );
 }

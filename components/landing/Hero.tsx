@@ -6,7 +6,7 @@ import { FutureCommandCore } from "@/components/landing/FutureCommandCore";
 import { HeroSystemRail } from "@/components/landing/HeroSystemRail";
 import { MarketingReveal } from "@/components/marketing/MarketingReveal";
 import { TrackableLink } from "@/components/marketing/TrackableLink";
-import { Button } from "@/components/ui/Button";
+import { buttonClassName } from "@/components/ui/Button";
 import { COMPANY_HERO_SUBHEADING } from "@/lib/company-identity";
 import {
   mContainer,
@@ -24,7 +24,7 @@ export function Hero() {
       <IntelligenceField className="opacity-55" animate />
       <div className="smohix-oe-hero__architectural-field" aria-hidden />
       <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_45%_at_72%_42%,rgba(16,185,129,0.05),transparent_55%)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_45%_at_72%_42%,rgba(104,113,241,0.06),transparent_55%)]"
         aria-hidden
       />
 
@@ -35,9 +35,8 @@ export function Hero() {
               <p className="smohix-oe-hero__identity-primary">{SITE_COMPANY_NAME} HQ</p>
             </div>
             <h1 className={`${mDisplay} smohix-oe-hero__headline mt-6`}>
-              <span className="block">Intelligent software for</span>
-              <span className="block">organizations that need to</span>
-              <span className="block smohix-oe-hero__headline-emphasis">move fast — with control.</span>
+              Intelligent software for organizations that need to{" "}
+              <span className="smohix-oe-hero__headline-emphasis">move fast — with control.</span>
             </h1>
             <p className={`${mHeroLede} smohix-oe-hero__lede mt-5 max-w-[34rem] text-[1rem] sm:text-lg`}>
               {COMPANY_HERO_SUBHEADING}
@@ -46,19 +45,9 @@ export function Hero() {
 
           <div className={`smohix-oe-hero__actions relative z-[1] min-w-0 ${mStaggerGrid}`}>
             <div className="smohix-oe-hero__cta-row flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-              <TrackableLink href="/platform" event="explore_platform">
-                <Button size="lg">Explore Platform</Button>
-              </TrackableLink>
-              <TrackableLink href="/products" event="explore_products">
-                <Button size="lg" variant="secondary">
-                  Explore products
-                </Button>
-              </TrackableLink>
-              <TrackableLink href="/pilot" event="start_pilot">
-                <Button size="md" variant="ghost" className="sm:px-4">
-                  Start a pilot
-                </Button>
-              </TrackableLink>
+              <TrackableLink href="/platform" event="explore_platform" className={buttonClassName({ size: "lg" })}>Explore Platform</TrackableLink>
+              <TrackableLink href="/products" event="explore_products" className={buttonClassName({ size: "lg", variant: "secondary" })}>Explore products</TrackableLink>
+              <TrackableLink href="/pilot" event="start_pilot" className={buttonClassName({ size: "md", variant: "ghost", className: "sm:px-4" })}>Start a pilot</TrackableLink>
             </div>
           </div>
 

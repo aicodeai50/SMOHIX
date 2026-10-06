@@ -40,6 +40,7 @@ export default function ProfessionalServicesPage() {
               </Link>{" "}
               in the console, sign in and open Services.
             </p>
+            <p className={`mt-4 ${mBody}`}>Building a new product for your company? <Link href="/workshop" className="text-accent hover:underline">Explore Smohix Workshop →</Link></p>
             <Link href="/pilot" className="mt-8 inline-block">
               <Button size="lg">Start a pilot</Button>
             </Link>

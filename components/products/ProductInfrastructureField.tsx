@@ -89,7 +89,7 @@ function InfraNode({ product }: { product: ProductRegistryEntry }) {
 /** Extended registry products — architecture planes, not equal card grid. */
 export function ProductInfrastructureField() {
   const products = getAllRegistryProducts()
-    .filter((p) => !isFlagshipProduct(p.id))
+    .filter((p) => !isFlagshipProduct(p.id) && !["smohix-workshop", "smohix-labs"].includes(p.id))
     .sort((a, b) => {
       const order = { live: 0, preview: 1, prototype: 2, internal: 3, planned: 4 } as const;
       const diff = order[a.maturity] - order[b.maturity];

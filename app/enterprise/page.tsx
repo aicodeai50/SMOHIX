@@ -41,7 +41,7 @@ export default function EnterprisePage() {
     <PublicExperience>
       <Header />
       <MarketingQuantumShell>
-        <main className="flex-1 border-b border-white/[0.06]">
+        <main id="main-content" className="flex-1 border-b border-white/[0.06]">
           <div className="smohix-hero-future smohix-quantum-section border-b border-white/[0.06]">
             <article className={`${mArticle} max-w-4xl`}>
               <LivingPulse />

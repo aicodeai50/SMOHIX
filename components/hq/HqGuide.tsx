@@ -26,7 +26,11 @@ export function HqGuide({ documents }: { documents: GuideDocument[] }) {
     return ()=>window.removeEventListener('hashchange',followAnchor);
   },[]);
   useEffect(()=>{if(open)field.current?.focus({preventScroll:true});},[open]);
-  function closeChat(){setOpen(false);launcher.current?.focus({preventScroll:true});}
+  function closeChat(){
+    setOpen(false);
+    if(window.location.hash==='#hq-guide')window.history.replaceState(window.history.state,'',window.location.pathname+window.location.search);
+    launcher.current?.focus({preventScroll:true});
+  }
   function newChat(){const id=counter.current++;setThreads(all=>[{id,exchanges:[]},...all].slice(0,5));setActive(id);setInput('');setNotice(null);field.current?.focus();}
   function ask(question:string){
     const clean=question.trim().slice(0,800);if(!clean)return;
@@ -55,11 +59,11 @@ export function HqGuide({ documents }: { documents: GuideDocument[] }) {
           <button type="button" onClick={newChat} className="flex min-h-10 w-full items-center justify-center gap-2 rounded-lg border border-border text-sm font-semibold"><Plus size={16} aria-hidden/>New chat</button>
           <p className="mt-5 text-xs font-semibold uppercase tracking-wide text-muted">Recent chats</p>
           <div className="hq-chat-history">{threads.map(thread=><button type="button" key={thread.id} aria-pressed={active===thread.id} onClick={()=>{setActive(thread.id);setInput('');setNotice(null);}}>{thread.exchanges[0]?.question ?? 'New conversation'}</button>)}</div>
-          <p className="mt-5 text-xs leading-relaxed text-muted">Kept in this page session only. No paid model calls.</p>
+          <p className="mt-5 text-xs leading-relaxed text-muted">Recent chats stay available during this visit.</p>
           <Link href="https://ai.smohix.run" className="mt-5 inline-block text-sm font-semibold text-accent">Open Smohix AI ↗</Link>
         </aside>
         <div className="hq-chat-main">
-          <div className="flex items-center justify-between gap-3 border-b border-border pb-4"><span className="text-sm font-semibold">Smohix HQ guide <span className="ml-2 text-xs font-normal text-accent">Source-backed</span></span>
+          <div className="flex items-center justify-between gap-3 border-b border-border pb-4"><span className="text-sm font-semibold">Smohix HQ guide <span className="ml-2 text-xs font-normal text-accent">Site guide</span></span>
             {exchanges.length>0&&<button type="button" onClick={()=>{setThreads(all=>all.map(thread=>thread.id===active?{...thread,exchanges:[]}:thread));field.current?.focus();}} className="text-xs text-muted">Clear chat</button>}
           </div>
           <div ref={conversation} className="hq-guide__conversation" role="log" aria-label="HQ conversation" aria-live="polite" aria-relevant="additions">
@@ -77,7 +81,7 @@ export function HqGuide({ documents }: { documents: GuideDocument[] }) {
             <button type="submit" disabled={!input.trim()} className="flex items-center gap-2 rounded-lg bg-accent px-3 py-2 text-sm font-semibold text-background disabled:opacity-50"><Send size={16} aria-hidden/><span>Send</span></button>
           </form>
           {notice&&<p role="status" className="mt-3 text-xs text-muted">{notice}</p>}
-          <p className="mt-3 text-xs leading-relaxed text-muted">Published-source guidance. No credential storage or file uploads. Check service status for runtime availability.</p>
+          <p className="mt-3 text-xs leading-relaxed text-muted">Answers based on published Smohix information. View service status for availability.</p>
         </div>
       </div>
     </section>

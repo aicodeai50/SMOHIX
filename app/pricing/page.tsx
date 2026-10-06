@@ -18,7 +18,7 @@ export default function PricingPage() {
   return (
     <PublicExperience>
       <Header />
-      <main className="flex-1 border-b border-white/[0.06]">
+      <main id="main-content" className="flex-1 border-b border-white/[0.06]">
         <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
           <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
             Pricing
@@ -28,7 +28,7 @@ export default function PricingPage() {
             coming soon — reach out via contact or pilot for Pro and Team access.
           </p>
         </div>
-        <HomepagePricingSection />
+        <HomepagePricingSection showIntro={false} />
         <div className="mx-auto max-w-6xl px-4 pb-16 sm:px-6">
           <PricingFeatureMatrix />
 

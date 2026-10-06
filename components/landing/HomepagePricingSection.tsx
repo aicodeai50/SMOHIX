@@ -6,24 +6,24 @@ import { Card } from "@/components/ui/Card";
 import { mBody, mContainer, mEyebrow, mH2, mLede, mSection } from "@/lib/marketing-layout";
 import { PRICING_TIERS } from "@/lib/product-identity";
 
-export function HomepagePricingSection() {
+export function HomepagePricingSection({ showIntro = true }: { showIntro?: boolean }) {
   return (
     <MarketingReveal
       id="pricing"
-      className={`${mSection} border-b border-white/[0.06]`}
+      className={`${showIntro ? mSection : "pb-16 sm:pb-20"} border-b border-white/[0.06]`}
       aria-labelledby="pricing-heading"
     >
       <div className={mContainer}>
-        <p className={`${mEyebrow} text-accent/80`}>Pricing</p>
-        <h2 id="pricing-heading" className={`mt-2 ${mH2}`}>
+        {showIntro ? <p className={`${mEyebrow} text-accent/80`}>Pricing</p> : null}
+        <h2 id="pricing-heading" className={showIntro ? `mt-2 ${mH2}` : "sr-only"}>
           Plans that scale with your team
         </h2>
-        <p className={`${mLede} mt-3 max-w-2xl`}>
+        {showIntro ? <p className={`${mLede} mt-3 max-w-2xl`}>
           Transparent published tiers. Self-serve checkout is coming soon —
           contact us or start a pilot for Pro and Team access today.
-        </p>
+        </p> : null}
 
-        <div className="mt-12 grid gap-6 lg:grid-cols-3">
+        <div className={`${showIntro ? "mt-12 " : ""}grid gap-6 lg:grid-cols-3`}>
           {PRICING_TIERS.map((plan) => {
             const href =
               plan.id === "free" ? "/auth/sign-in?next=/hub" : "/contact";
@@ -43,7 +43,7 @@ export function HomepagePricingSection() {
                   <h3 className="text-lg font-semibold text-foreground">{plan.name}</h3>
                   <p className="text-2xl font-bold text-foreground">
                     {plan.price}
-                    <span className="text-sm font-normal text-muted">{plan.period}</span>
+                    <span className="ml-1 text-sm font-normal text-muted">{plan.period}</span>
                   </p>
                 </div>
                 <p className={`mt-3 ${mBody} text-muted`}>{plan.description}</p>

@@ -51,7 +51,7 @@ export function Footer({ adaptiveBrand = false }: { adaptiveBrand?: boolean }) {
       <div className={`${mContainer} py-12`}>
         <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-sm space-y-3 lg:max-w-xs lg:shrink-0">
-            <Logo tone={adaptiveBrand ? "mono" : "dark"} />
+            <Logo tone={adaptiveBrand ? "mono" : undefined} />
             <p className={mBody}>
               {SITE_COMPANY_NAME} builds AI products, developer platforms, APIs, and enterprise
               solutions across one Smohix ecosystem.

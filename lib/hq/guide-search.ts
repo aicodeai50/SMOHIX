@@ -40,7 +40,8 @@ export function answerHqQuestion(question: string, documents: GuideDocument[], p
   }
   // Named products should not lose to generic endpoint vocabulary.
   const namedProducts: [string,RegExp][] = [
-    ['private-ai',/\b(pri|private ai)\b/i],['smohix-assistant',/\bassistant\b/i],
+    ['smohix-labs',/\blabs?\b/i],
+    ['smohix-workshop',/\bworkshop\b/i],['private-ai',/\b(pri|private ai)\b/i],['smohix-assistant',/\bassistant\b/i],
     ['smohix-platform',/\bplatform\b/i],['smohix-log',/\b(log|logs)\b/i],
     ['smohix-own-api',/\bown api\b/i],['identity',/\bidentity\b/i],
     ['agents',/\bagents?\b/i],['analytics',/\banalytics\b/i],

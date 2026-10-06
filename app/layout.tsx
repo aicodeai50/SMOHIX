@@ -13,6 +13,7 @@ import { SiteJsonLd } from "@/components/site/SiteJsonLd";
 import { AnalyticsConsentBanner } from "@/components/consent/AnalyticsConsentBanner";
 import { getCanonicalUrl, PRODUCTION_SITE_URL } from "@/lib/site";
 import "./globals.css";
+import "./readability.css";
 
 const inter = Inter({
   variable: "--font-inter",

@@ -179,3 +179,17 @@ for (const m of maturities) {
 }
 
 console.log("test-product-registry: all checks passed");
+
+const workshop = PRODUCT_REGISTRY.find((product) => product.id === "smohix-workshop");
+assert(workshop?.maturity === "planned", "Workshop client workspace must remain planned until implemented");
+assert(!workshop.productUrl && !workshop.healthCheck, "Workshop must not publish an unverified workspace or health endpoint");
+assert(workshop.productPagePath === "/workshop", "Workshop should link to its implemented public overview");
+assert(!PRODUCT_REGISTRY.some((entry) => entry.id === "chatloop"), "ChatLoop must remain separate from the HQ product ecosystem");
+for (const [id, maturity] of [["smohix-labs", "planned"]]) {
+  const project = PRODUCT_REGISTRY.find((entry) => entry.id === id);
+  assert(project?.maturity === maturity, `${id} must retain its verified availability`);
+  assert(!project.productUrl && !project.healthCheck, `${id} must not publish unverified operational endpoints`);
+}
+const workshopInquiry = workshop.availableActions.find((action) => action.kind === "contact");
+const workshopInquiryUrl = new URL(workshopInquiry?.href ?? "", "https://smohix.run");
+assert(workshopInquiryUrl.pathname === "/contact" && workshopInquiryUrl.searchParams.get("product") === "smohix-workshop", "Workshop must use existing product-aware contact intake");

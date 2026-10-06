@@ -19,6 +19,10 @@ const sizeClasses: Record<Size, string> = {
   lg: "h-11 min-h-11 px-5 text-sm sm:min-h-[2.75rem]",
 };
 
+export function buttonClassName({ variant = "primary", size = "md", className = "" }: { variant?: Variant; size?: Size; className?: string } = {}) {
+  return `inline-flex items-center justify-center rounded-lg font-semibold transition-[transform,box-shadow,border-color,background-color,filter] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent active:scale-[0.98] motion-reduce:transition-none motion-reduce:active:scale-100 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 ${variantClasses[variant]} ${sizeClasses[size]} ${className}`;
+}
+
 export function Button({
   variant = "primary",
   size = "md",
@@ -33,7 +37,7 @@ export function Button({
   return (
     <button
       type="button"
-      className={`inline-flex items-center justify-center rounded-lg font-semibold transition-[transform,box-shadow,border-color,background-color,filter] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent active:scale-[0.98] motion-reduce:transition-none motion-reduce:active:scale-100 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
+      className={`${buttonClassName({ variant, size, className })}`}
       {...props}
     >
       {children}

@@ -60,7 +60,7 @@ async function probeUrl(url: string): Promise<OperationalStatus> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), PROBE_TIMEOUT_MS);
   try {
-    const structured = new URL(url).pathname === "/api/health";
+    const structured = ["/api/health", "/api/ping"].includes(new URL(url).pathname);
     const res = await fetch(url, {
       method: structured ? "GET" : "HEAD",
       redirect: "manual",

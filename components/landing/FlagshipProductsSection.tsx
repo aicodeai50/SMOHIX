@@ -24,8 +24,9 @@ export function FlagshipProductsSection() {
           Workspaces in one architecture
         </h2>
         <p className={`${mLede} mt-3 max-w-2xl`}>
-          Smohix.run is headquarters. Each product opens a workspace — same company, same identity.
-          Status labels show what is live, in preview, or planned.
+          Smohix.run is headquarters. Choose a workspace for your work — intelligence, operations,
+          personal productivity, private processing or company project delivery.
+          Products share the Smohix identity; account access and synchronization vary by product.
         </p>
 
         <div className="mt-10">

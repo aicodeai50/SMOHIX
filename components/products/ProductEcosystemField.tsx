@@ -1,9 +1,10 @@
 import Link from "next/link";
+import { WorkshopOverviewCard } from "@/components/products/WorkshopOverviewCard";
+import { EmergingFamilyLinks } from "@/components/products/EmergingFamilyLinks";
 
 import { SmohixHorizon } from "@/components/architecture";
 import { MaturityBadge } from "@/components/marketing/MaturityBadge";
 import { Button } from "@/components/ui/Button";
-import { FLAGSHIP_PRODUCTS } from "@/lib/ecosystem-workspaces";
 import type { ProductMaturity } from "@/lib/ecosystem-graph";
 import { mBody, mBodySm, mFocusRing, mSystemMeta } from "@/lib/marketing-layout";
 import {
@@ -22,12 +23,10 @@ function nodeRole(id: string): "core" | "flagship" | "preview" {
 function roleLabel(role: ReturnType<typeof nodeRole>): string {
   if (role === "core") return "Operating core";
   if (role === "flagship") return "Flagship intelligence";
-  return "Preview workspace";
+  return "Product workspace";
 }
 
 function displayMaturity(product: ProductRegistryEntry): ProductMaturity {
-  const flagship = FLAGSHIP_PRODUCTS.find((p) => p.id === product.id);
-  if (flagship) return flagship.status;
   return registryToEcosystemStatus(product.maturity);
 }
 
@@ -142,8 +141,10 @@ export function ProductEcosystemField() {
           <EcosystemNode product={assistant} />
           <EcosystemNode product={pri} />
         </div>
+        <WorkshopOverviewCard />
+        <EmergingFamilyLinks />
         <p className={`mt-4 ${mBodySm} text-muted/80`}>
-          Preview workspaces share HQ identity — maturity labels reflect current availability.
+          Product workspaces share HQ identity — maturity labels reflect current availability.
         </p>
       </div>
     </div>

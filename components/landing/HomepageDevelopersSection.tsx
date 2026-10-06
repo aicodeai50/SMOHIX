@@ -1,6 +1,6 @@
 import { MarketingReveal } from "@/components/marketing/MarketingReveal";
 import { TrackableLink } from "@/components/marketing/TrackableLink";
-import { Button } from "@/components/ui/Button";
+import { buttonClassName } from "@/components/ui/Button";
 import { mBody, mContainer, mEyebrow, mH2, mSection } from "@/lib/marketing-layout";
 
 export function HomepageDevelopersSection() {
@@ -22,15 +22,9 @@ export function HomepageDevelopersSection() {
           </p>
         </div>
         <div className="flex flex-wrap gap-3">
-          <TrackableLink href="/developers" event="developer_quick_start">
-            <Button>Developer hub</Button>
-          </TrackableLink>
-          <TrackableLink href="/docs" event="documentation_link">
-            <Button variant="secondary">Docs</Button>
-          </TrackableLink>
-          <TrackableLink href="/docs/api" event="api_reference_link">
-            <Button variant="secondary">API reference</Button>
-          </TrackableLink>
+          <TrackableLink href="/developers" event="developer_quick_start" className={buttonClassName({  })}>Developer hub</TrackableLink>
+          <TrackableLink href="/docs" event="documentation_link" className={buttonClassName({ variant: "secondary" })}>Docs</TrackableLink>
+          <TrackableLink href="/docs/api" event="api_reference_link" className={buttonClassName({ variant: "secondary" })}>API reference</TrackableLink>
         </div>
       </div>
     </MarketingReveal>

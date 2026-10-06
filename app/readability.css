@@ -1,0 +1,164 @@
+/* Shared presentation for public pages, authentication and operational workspaces.
+   Keep semantic colors opaque: text must not depend on a visitor's OS theme. */
+body {
+  color-scheme: light;
+  --on-accent: #ffffff;
+}
+
+body :is(.smohix-public, .smohix-hq) {
+  --background: #f7f8fc;
+  --foreground: #171c32;
+  --muted: #48546b;
+  --surface: #ffffff;
+  --surface-elevated: #edf1f8;
+  --border: #cbd3e1;
+  --accent: #3549af;
+  --accent-muted: #3549af;
+  --primary: #3549af;
+  --primary-muted: #3549af;
+  --ring: #3549af;
+  --success: #14733c;
+  --warning: #805500;
+  --danger: #b42340;
+  --cyber: #176388;
+  --scan: #14733c;
+  --la-grid: rgba(23, 28, 50, .04);
+  --oe-plane-fill: var(--surface);
+  --oe-plane-edge: var(--border);
+  --hq-chrome: rgba(247, 248, 252, .96);
+  color: var(--foreground);
+  color-scheme: light;
+}
+
+/* Legacy utility classes also appear on console tables, warnings and menus. */
+body [class*="border-white/"] { border-color: var(--border); }
+body [class*="bg-white/"] { background-color: var(--surface); }
+body [class*="bg-black/"]:not(.smohix-modal-backdrop) { background-color: var(--surface-elevated); }
+body [class*="text-muted/"] { color: var(--muted); }
+body [class*="text-foreground/"] { color: var(--foreground); }
+body [class*="text-accent/"] { color: var(--accent); }
+body :is([class*="text-emerald-"], [class*="text-green-"], [class*="text-[#6ee7b7]"], [class*="text-[#86efac]"]) { color: var(--success); }
+body :is([class*="text-amber-"], [class*="text-yellow-"]) { color: var(--warning); }
+body :is([class*="text-red-"], [class*="text-rose-"]) { color: var(--danger); }
+body :is([class*="text-sky-"], [class*="text-cyan-"]) { color: var(--cyber); }
+body :is([class*="text-indigo-"], [class*="text-violet-"], [class*="text-purple-"], [class*="text-[#c4b5fd]"]) { color: var(--accent); }
+body [class*="bg-accent"][class*="text-background"] { color: var(--on-accent); }
+body [class*="bg-danger"][class*="text-white"] { color: #fff; }
+
+body .smohix-header-living {
+  background: rgba(247, 248, 252, .96) !important;
+  border-color: var(--border) !important;
+  box-shadow: 0 1px 0 var(--border);
+  overflow: visible;
+}
+body .smohix-nav-rail { background: var(--surface); border-color: var(--border); box-shadow: none; }
+body .smohix-nav-rail__link { color: var(--muted); }
+body .smohix-nav-rail__link:hover,
+body .smohix-nav-rail__link--active { color: var(--accent); background: var(--accent-dim); }
+body #marketing-mobile-nav { background: var(--surface); border-color: var(--border); }
+body footer { background: var(--surface); }
+body :is(a, button, input, select, textarea, summary):focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
+}
+body :is(input, select, textarea) { color-scheme: light; }
+body :is(input, textarea)::placeholder { color: var(--muted); opacity: 1; }
+body button:disabled { opacity: .75; }
+
+/* The console's fixed chrome previously retained hardcoded black backgrounds. */
+body :is(.smohix-oe-canvas > .sticky, #console-mobile-modules, .smohix-console-main > .sticky) {
+  background: var(--surface);
+  border-color: var(--border);
+}
+body [class*="bg-[rgba(10,12,18"] { background: var(--surface); }
+body .smohix-instrument-rail { background: var(--surface); box-shadow: 1px 0 0 var(--border); }
+body .smohix-console-main { background: var(--background); }
+/* The scrolling flex column must not squeeze banners and hide their last lines. */
+body .smohix-console-main > * { flex-shrink: 0; }
+body .smohix-console-main::before { opacity: .2; }
+body .smohix-oe-page-header h1 {
+  font-size: clamp(2rem, 2.6vw, 2.35rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -.035em;
+  text-wrap: balance;
+}
+body .smohix-table-wrap { box-shadow: 0 8px 28px -20px rgba(23,28,50,.22); }
+body :is(.smohix-surface, .smohix-glass, .smohix-holo-panel) {
+  box-shadow: 0 8px 28px -20px rgba(23,28,50,.22);
+}
+body .smohix-auth-portal__form-plane { border-radius: 1rem; box-shadow: 0 20px 60px -40px rgba(23,28,50,.25); }
+
+/* A heading is real text, never a pale decorative gradient. */
+body :is(.smohix-headline, .smohix-living-headline, .smohix-brand-wordmark) {
+  color: var(--foreground);
+  background: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  animation: none;
+}
+body :is(.smohix-signal-meta, .smohix-eyebrow-cyber) { color: var(--accent); }
+body .smohix-living-pulse { background: var(--surface); box-shadow: none; }
+body :is(.smohix-beacon--active, .smohix-beacon--verified, .smohix-beacon--processing) { color: var(--success); }
+body .smohix-beacon--attention { color: var(--warning); }
+body .smohix-beacon--critical { color: var(--danger); }
+body .smohix-public main h1 { line-height: 1.15; text-wrap: balance; }
+body .smohix-public main :is(h2, h3) { line-height: 1.3; }
+body .smohix-public main p { overflow-wrap: break-word; }
+
+/* Content remains visible before hydration, with JavaScript disabled, and while
+   scrolling long sections. Animate decorative fields rather than readable text. */
+body .m-marketing-section-enter.m-marketing-section-enter,
+body .m-marketing-section-enter.m-marketing-section-enter .m-marketing-stagger-grid > * {
+  opacity: 1;
+  transform: none;
+  animation: none;
+}
+
+/* All HQ instruments use the same light, readable palette as the surrounding UI. */
+body .smohix-public :is(#command, .hq-widget__window, .hq-guide__panel, .smohix-live-command__frame, .public-code-grid pre, .public-activity) {
+  --background: #f7f8fc;
+  --foreground: #171c32;
+  --muted: #48546b;
+  --accent: #3549af;
+  --primary-muted: #3549af;
+  --border: #cbd3e1;
+  --surface: #ffffff;
+  --surface-elevated: #edf1f8;
+  --warning: #805500;
+  color: var(--foreground);
+  background: var(--surface);
+  border-color: var(--border);
+  color-scheme: light;
+}
+body .smohix-public :is(.hq-widget__launcher, .hq-chat-sidebar, .hq-chat-response, .hq-guide__question) {
+  color: var(--foreground);
+  background: var(--surface-elevated);
+  border-color: var(--border);
+}
+body .smohix-public .hq-widget__launcher { box-shadow: 0 8px 30px -16px rgba(23,28,50,.3); }
+body .smohix-public .hq-widget__window { box-shadow: 0 20px 70px -30px rgba(23,28,50,.3); }
+body .smohix-public :is(.hq-command__eyebrow, .hq-command__metrics dt, .hq-command__metrics dd span,
+  .hq-command__views button, .hq-command__steps button, .hq-command__steps span,
+  .hq-command__services span, .hq-command__signal > p:last-child, .hq-command__status-note) { color: var(--muted); }
+body .smohix-public :is(.hq-command__title, .hq-command__metrics dd, .public-activity li) { color: var(--foreground); }
+body .smohix-public :is(.hq-command__actions, .hq-command__step-number, .hq-command__check) { color: var(--accent); }
+body .smohix-public :is(.hq-command__views button[aria-pressed="true"], .hq-chat-history button[aria-pressed="true"]) {
+  color: var(--accent); background: var(--accent-dim);
+}
+body .smohix-public .hq-command__steps button[aria-current="step"] { color: var(--accent); border-color: var(--accent); }
+body .smohix-public #command .smohix-surface { background: var(--surface); }
+body .smohix-public .hq-widget [class*="bg-accent"][class*="text-background"] { color: var(--on-accent); }
+body .smohix-public .public-code-token { color: var(--success); }
+body .smohix-public #pricing [data-plan] { background: var(--surface); border-color: var(--border); box-shadow: 0 8px 28px -20px rgba(23,28,50,.22); }
+body .smohix-public #pricing [data-highlighted="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+
+@media (max-width: 767px) {
+  body .smohix-public .hq-widget__window { width: min(44rem, calc(100vw - 2rem)); }
+  body .smohix-public .smohix-oe-hero__headline > span { white-space: normal; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+body .smohix-public #command .smohix-signal-meta { color: var(--accent); }
+body .smohix-public .hq-command__check:disabled { opacity: .85; }

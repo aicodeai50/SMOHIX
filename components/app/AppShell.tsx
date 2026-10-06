@@ -380,7 +380,7 @@ export function AppShell({
         <div className="shrink-0 border-t border-white/[0.06] p-3">{accountSection}</div>
       </aside>
 
-      <main className="flex min-h-0 min-w-0 flex-1 flex-col lg:overflow-hidden">
+      <main id="main-content" className="flex min-h-0 min-w-0 flex-1 flex-col lg:overflow-hidden">
         <div className="smohix-console-main mx-auto flex min-h-0 w-full max-w-7xl flex-1 flex-col overflow-y-auto overscroll-contain p-4 md:p-8 md:pb-10">
           <ConsoleNavPanel pinnedNavHrefs={pinnedNavHrefs} />
           {!authEnabled ? (

@@ -28,6 +28,7 @@ export function AlertIngestPanel({
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [loadErr, setLoadErr] = useState<string | null>(null);
+  const [origin, setOrigin] = useState("https://your-deployment");
 
   const refresh = useCallback(async () => {
     const r = await fetch("/api/user/alert-ingest-tokens", { credentials: "include" });
@@ -47,6 +48,7 @@ export function AlertIngestPanel({
 
   useEffect(() => {
     queueMicrotask(() => {
+      setOrigin(window.location.origin);
       void refresh();
     });
   }, [refresh]);
@@ -101,8 +103,6 @@ export function AlertIngestPanel({
   const active = tokens.filter((t) => !t.revoked_at);
   const inIngestWizardStep =
     setupStep === "ingest-token" && typeof returnHref === "string" && returnHref.startsWith("/");
-  const origin =
-    typeof window !== "undefined" ? window.location.origin : "https://your-deployment";
 
   return (
     <div className="space-y-6">

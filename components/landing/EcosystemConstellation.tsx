@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { WorkshopOverviewCard } from "@/components/products/WorkshopOverviewCard";
+import { EmergingFamilyLinks } from "@/components/products/EmergingFamilyLinks";
 
 import { SmohixHorizon } from "@/components/architecture";
 import { MaturityBadge } from "@/components/marketing/MaturityBadge";
@@ -98,6 +100,8 @@ export function EcosystemConstellation() {
           <ProductNode product={assistant} />
           <ProductNode product={pri} />
         </div>
+        <WorkshopOverviewCard />
+        <EmergingFamilyLinks />
         <p className={`mt-4 ${mBodySm} text-muted/80`}>
           Product workspaces share HQ identity — maturity labels reflect current availability.
         </p>

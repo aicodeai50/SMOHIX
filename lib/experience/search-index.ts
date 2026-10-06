@@ -8,6 +8,8 @@ export type SearchEntry = {
 };
 
 export const SEARCH_INDEX: readonly SearchEntry[] = [
+  { id: "smohix-labs", title: "Smohix Labs", description: "Research and experiments · planned", href: "/family/labs", category: "product", keywords: ["labs", "research", "memory pendant", "experiments"] },
+  { id: "smohix-workshop", title: "Smohix Workshop", description: "Company projects from brief to build and handover; client workspace planned", href: "/workshop", category: "product", keywords: ["workshop", "build", "company project", "custom software", "delivery", "from scratch"] },
   { id: "home", title: "Home", description: "Smohix Technologies homepage", href: "/", category: "page", keywords: ["home", "smohix"] },
   { id: "products", title: "Product Access", description: "Open live Smohix products", href: "/products", category: "page", keywords: ["products", "access", "ecosystem"] },
   { id: "explore", title: "Explore Smohix", description: "Product orientation", href: "/explore", category: "page", keywords: ["explore", "tour", "orientation"] },
