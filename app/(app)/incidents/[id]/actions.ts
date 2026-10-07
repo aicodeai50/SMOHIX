@@ -310,11 +310,10 @@ export async function runIncidentRemediationAction(formData: FormData) {
 
   const playbookId = String(formData.get("playbook_id") ?? "").trim() || "pb-restart-workers";
   const approvalNote =
-    String(formData.get("approval_note") ?? "").trim() ||
-    "two-person approval | change window | senior on-call acknowledged";
+    String(formData.get("approval_note") ?? "").trim();
   const rollbackPlan =
-    String(formData.get("rollback_plan") ?? "").trim() ||
-    "Rollback by restoring last stable release and validating service health checks.";
+    String(formData.get("rollback_plan") ?? "").trim();
+  if (!approvalNote || !rollbackPlan) redirect(`/incidents/${encodeURIComponent(id)}?error=${encodeURIComponent("Provide your approval context and rollback plan before execution.")}`);
 
   const supabase = await createServerSupabaseClient();
   const {
@@ -334,6 +333,7 @@ export async function runIncidentRemediationAction(formData: FormData) {
     rollbackPlan,
     incidentId: id,
     triggerSource: "incident",
+    approvalId: String(formData.get("approval_id") ?? "").trim() || null,
     orgId: orgContext.orgId,
   });
 
@@ -353,6 +353,7 @@ export async function runIncidentRemediationAction(formData: FormData) {
   revalidatePath(`/incidents/${id}`);
   revalidatePath("/overview");
   if (result.ok) {
+    if (result.warning) redirect(`/incidents/${id}?error=${encodeURIComponent(result.warning)}`);
     redirect(`/incidents/${id}?remediation=1`);
   }
   redirect(

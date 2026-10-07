@@ -399,8 +399,12 @@ export default async function IncidentDetailPage({ params, searchParams }: Props
           <form action={runIncidentRemediationAction} className="mt-3">
             <input type="hidden" name="id" value={row.id} />
             <input type="hidden" name="playbook_id" value="pb-restart-workers" />
-            <input type="hidden" name="approval_note" value="two-person approval | change window | senior on-call acknowledged" />
-            <input type="hidden" name="rollback_plan" value="Rollback by restoring last stable release and validating service health checks." />
+            <label className={`mb-3 block ${appMeta}`}>Approval context
+              <textarea name="approval_note" required maxLength={300} placeholder="Describe the review and approved change window." className="mt-1 block w-full rounded-lg border border-border bg-surface px-3 py-2 text-foreground" />
+            </label>
+            <label className={`mb-3 block ${appMeta}`}>Rollback plan
+              <textarea name="rollback_plan" required maxLength={500} placeholder="Explain how you will undo this change and verify recovery." className="mt-1 block w-full rounded-lg border border-border bg-surface px-3 py-2 text-foreground" />
+            </label>
             <button
               type="submit"
               className={`h-10 rounded-xl border border-accent/40 bg-accent/15 px-5 font-semibold text-accent hover:bg-accent/20 ${appBody}`}

@@ -7,6 +7,7 @@ import type {
   PolicySuggestion,
 } from "@/lib/decision-intelligence";
 import { orgScopeOrFilter } from "@/lib/org/scope";
+import { dataUnavailable } from "@/lib/data-unavailable";
 
 export type ExecutionDbRow = {
   id: string;
@@ -36,8 +37,8 @@ export async function insertAutomationExecution(
     incidentId?: string | null;
     decisionBrief: DecisionBrief;
     expectedOutcome: ExpectedOutcome;
-    actualOutcome: ActualOutcome;
-    decisionAccuracyScore: number;
+    actualOutcome: ActualOutcome | null;
+    decisionAccuracyScore: number | null;
     policySuggestions: PolicySuggestion[];
     orgId?: string | null;
   },
@@ -96,7 +97,7 @@ export async function listAutomationExecutionsForUser(
   }
 
   const { data, error } = await query;
-  if (error || !data) return [];
+  if (error || !data) dataUnavailable("automation executions", error);
 
   return data.map((row) => ({
     id: String(row.id),

@@ -9,11 +9,10 @@ import { Header } from "@/components/site/Header";
 import { fetchSiteHealthView } from "@/lib/status/adapters";
 import { buildMarketingMetadata } from "@/lib/metadata";
 import { mArticle, mBody, mH1, mLinkInline, mPanelShell, mSystemMeta } from "@/lib/marketing-layout";
-import { getSiteUrl } from "@/lib/site";
 
 export const metadata: Metadata = buildMarketingMetadata({
   title: "Status",
-  description: "Real-time product and service status for Smohix Technologies — server-side health probes only.",
+  description: "Current product and service availability for Smohix Technologies.",
   path: "/status",
 });
 
@@ -30,13 +29,12 @@ export default async function StatusPage() {
         <div className={mArticle}>
           <SmohixHorizon className="max-w-md" />
           <p className={`mt-3 ${mSystemMeta} text-muted/70`}>
-            Operational availability · probe evidence only
+            Current service availability
           </p>
           <SystemLabel className="mt-6">Service status</SystemLabel>
           <h1 className={`mt-2 ${mH1}`}>Product &amp; service status</h1>
           <p className={`mt-4 ${mBody}`}>
-            Server-side health probes against allowlisted public endpoints. We do not publish uptime
-            percentages without stored historical data.
+            Current availability across the Smohix ecosystem. Individual features may have separate availability.
           </p>
           <div className="mt-6">
             <AssuranceRail active="status" />
@@ -50,24 +48,11 @@ export default async function StatusPage() {
             }`}
           >
             <p className="text-sm font-semibold text-foreground">
-              {ok ? "smohix.run health endpoint operational" : "Health check failed or unreachable"}
+              {ok ? "Smohix HQ is available" : "Smohix HQ availability could not be confirmed"}
             </p>
             <p className={`mt-2 ${mBody}`}>
-              Canonical host: <span className="font-mono text-xs">{getSiteUrl()}</span>
+              {ok ? "The latest service check completed successfully." : "Please try again shortly for an updated status."}
             </p>
-            {statusView ? (
-              <pre className="mt-4 overflow-x-auto rounded-xl border border-white/[0.06] bg-black/40 p-4 font-mono text-xs text-foreground/85">
-                {JSON.stringify(statusView, null, 2)}
-              </pre>
-            ) : (
-              <p className={`mt-4 ${mBody}`}>
-                Could not reach{" "}
-                <a href="/api/health" className="text-accent hover:underline">
-                  /api/health
-                </a>{" "}
-                from this build.
-              </p>
-            )}
           </div>
 
           <section className="mt-10" aria-labelledby="products-status-heading">

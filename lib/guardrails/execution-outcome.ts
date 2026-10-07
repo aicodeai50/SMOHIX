@@ -16,7 +16,7 @@ export function dryRunOutcomePresentation(
     return { kind: "review", label: "Requires review", tone: "warn" };
   }
   if (robotConfigured) {
-    return { kind: "safe", label: "Safe to execute", tone: "success" };
+    return { kind: "review", label: "Connector reachable", tone: "info" };
   }
   return { kind: "review", label: "Requires review", tone: "warn" };
 }

@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useCallback, useState } from "react";
 
 import { Button } from "@/components/ui/Button";
-import { getAllRegistryProducts, registryMaturityLabel } from "@/lib/product-registry";
 import { mBody, mFocusRing, mH3 } from "@/lib/marketing-layout";
 
 const STEPS = [
@@ -25,7 +24,7 @@ const STEPS = [
   {
     id: "ai",
     title: "Smohix AI",
-    body: "The standalone AI product lives at ai.smohix.run. Console Copilot uses same-origin /api/copilot/chat when signed in.",
+    body: "Open Smohix AI for your intelligence workspace. Sign in to Platform to use Copilot within your operations workspace.",
     href: "https://ai.smohix.run",
     cta: "Open Smohix AI",
     external: true,
@@ -40,7 +39,7 @@ const STEPS = [
   {
     id: "architecture",
     title: "Architecture",
-    body: "How smohix.run, APIs, and optional backends connect — private URLs stay server-side.",
+    body: "See how Smohix products connect incidents, decisions and evidence in your workspace.",
     href: "/architecture",
     cta: "View architecture",
   },
@@ -53,11 +52,10 @@ const STEPS = [
   },
 ] as const;
 
-export function ProductOrientation() {
+export function ProductOrientation({ products }: { products: { id: string; publicName: string; maturityLabel: string }[] }) {
   const [index, setIndex] = useState(0);
   const step = STEPS[index];
   const total = STEPS.length;
-  const products = getAllRegistryProducts();
 
   const go = useCallback(
     (next: number) => setIndex(Math.max(0, Math.min(next, total - 1))),
@@ -112,7 +110,7 @@ export function ProductOrientation() {
           {products.map((p) => (
             <li key={p.id} className="flex justify-between gap-2 text-sm">
               <span>{p.publicName}</span>
-              <span className="text-muted">{registryMaturityLabel(p.maturity)}</span>
+              <span className="text-muted">{p.maturityLabel}</span>
             </li>
           ))}
         </ul>

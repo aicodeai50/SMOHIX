@@ -59,6 +59,7 @@ export async function POST(req: NextRequest) {
       supabase,
       ctx.userId,
     );
+    if (subscriptionError) return NextResponse.json({ error: "billing_unavailable", message: "Subscription access could not be verified. Try again later." }, { status: 503 });
     if (!subscriptionError && billingPlanFromSummary(summary) === "free") {
       return NextResponse.json(
         {
@@ -113,7 +114,7 @@ export async function POST(req: NextRequest) {
 
   const robotBase = getRobotBackendUrl();
   let ok = true;
-  let detail = "Simulated dry-run. Automation execution is not connected.";
+  let detail = "Simulation only. No playbook validation or infrastructure action was performed.";
 
   if (robotBase) {
     try {
@@ -125,17 +126,18 @@ export async function POST(req: NextRequest) {
       });
       ok = res.ok;
       detail = ok
-        ? `Robot health OK (${res.status})`
-        : `Robot health HTTP ${res.status}`;
-    } catch (e) {
+        ? "Automation service is reachable. This check does not validate the playbook or confirm it is safe to execute."
+        : "Automation service health check failed.";
+    } catch {
       ok = false;
-      detail = e instanceof Error ? e.message : "robot_unreachable";
+      detail = "Automation service could not be reached.";
     }
   }
 
   let id = `run-${Date.now()}`;
   let at = new Date().toISOString();
   let persisted = false;
+  let auditRecorded = false;
 
   if (ctx.mode === "auth") {
     const supabase = await createServerSupabaseClient();
@@ -160,7 +162,7 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    void appendAuditEvent({
+    const auditResult = await appendAuditEvent({
       event_type: "automation.dry_run",
       user_id: ctx.userId,
       org_id: orgContext.orgId,
@@ -171,6 +173,7 @@ export async function POST(req: NextRequest) {
         ...(incidentId ? { incident_id: incidentId } : {}),
       },
     });
+    auditRecorded = auditResult.ok;
     revalidatePath("/overview");
     if (incidentId) {
       revalidatePath(`/incidents/${incidentId}`);
@@ -186,5 +189,7 @@ export async function POST(req: NextRequest) {
     at,
     id,
     persisted,
+    auditRecorded,
+    scope: robotBase ? "connector_health" : "simulation",
   });
 }

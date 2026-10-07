@@ -7,6 +7,7 @@ import { MarketingReveal } from "@/components/marketing/MarketingReveal";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
 import { buildMarketingMetadata } from "@/lib/metadata";
+import { getAllRegistryProducts, registryMaturityLabel } from "@/lib/product-registry";
 import { mContainer, mEyebrow, mH1, mLede, mLinkInline, mSection } from "@/lib/marketing-layout";
 
 export const metadata: Metadata = buildMarketingMetadata({
@@ -36,7 +37,7 @@ export default function ExplorePage() {
         </MarketingReveal>
         <section className={mSection}>
           <div className={`${mContainer} max-w-3xl`}>
-            <ProductOrientation />
+            <ProductOrientation products={getAllRegistryProducts().map(product => ({ id: product.id, publicName: product.publicName, maturityLabel: registryMaturityLabel(product.maturity) }))} />
           </div>
         </section>
         <MarketingReveal className={`${mSection} pb-16`}>

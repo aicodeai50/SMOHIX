@@ -164,7 +164,7 @@ assert(!playgroundPage.includes("PlaygroundClient"), "playground must not use mo
 // --- Status page sanitizer preserved ---
 const statusPage = readFileSync(path.join(root, "app/status/page.tsx"), "utf8");
 assert(statusPage.includes("statusView"), "status page must keep statusView sanitizer");
-assert(statusPage.includes("JSON.stringify(statusView"), "status page must serialize sanitized view");
+assert(!statusPage.includes("JSON.stringify(statusView"), "public status page must not serialize backend diagnostics");
 
 // --- Sitemap: no /status, has /explore ---
 const sitemap = readFileSync(path.join(root, "app/sitemap.ts"), "utf8");

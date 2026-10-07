@@ -2,6 +2,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 
 import type { DryRunRecord } from "@/lib/automations/runs-dev";
 import { orgScopeOrFilter } from "@/lib/org/scope";
+import { dataUnavailable } from "@/lib/data-unavailable";
 
 type Row = {
   id: string;
@@ -87,10 +88,7 @@ export async function listAutomationDryRuns(
   const { data, error } = await query;
 
   if (error || !data) {
-    if (process.env.NODE_ENV === "development" && error) {
-      console.warn("[automation_dry_runs]", error.message);
-    }
-    return { runs: [], fromDb: false };
+    dataUnavailable("automation checks", error);
   }
 
   return { runs: (data as Row[]).map(mapRow), fromDb: true };

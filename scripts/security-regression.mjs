@@ -111,7 +111,7 @@ async function main() {
 
   // Status page must use sanitized view, not raw health dump.
   assert(statusPage.includes("const statusView ="), "status page missing statusView sanitizer");
-  assert(statusPage.includes("JSON.stringify(statusView"), "status page should render statusView");
+  assert(!statusPage.includes("JSON.stringify(statusView"), "public status page must not render backend health JSON");
   assert(!statusPage.includes("JSON.stringify(health"), "status page still renders raw health JSON");
 
   // Crawler controls for operational endpoints/pages.

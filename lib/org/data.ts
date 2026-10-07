@@ -4,6 +4,7 @@ import { createServiceSupabaseClient } from "@/lib/supabase/admin";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 import { isOrgRole, type OrgRole } from "@/lib/org/roles";
+import { dataUnavailable } from "@/lib/data-unavailable";
 
 export type OrgMembershipRow = {
   orgId: string;
@@ -26,7 +27,7 @@ export async function listOrgMembershipsForUser(userId: string): Promise<OrgMemb
       .select("org_id, role, organizations(name)")
       .eq("user_id", userId);
 
-    if (error || !data) return [];
+    if (error || !data) dataUnavailable("organization membership", error);
 
     return data
       .map((row) => {
@@ -40,8 +41,8 @@ export async function listOrgMembershipsForUser(userId: string): Promise<OrgMemb
         };
       })
       .filter((row): row is OrgMembershipRow => row !== null);
-  } catch {
-    return [];
+  } catch (error) {
+    dataUnavailable("organization membership", error);
   }
 }
 

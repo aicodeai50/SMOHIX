@@ -27,8 +27,7 @@ export function answerHqQuestion(question: string, documents: GuideDocument[], p
   }
   const requestedPath = question.match(/\/api\/[a-z0-9_/{}/.-]+/i)?.[0];
   if(requestedPath){
-    const matches=documents.filter(doc=>doc.id.startsWith('api-') && doc.title.split(' ')[1]?.toLowerCase()===requestedPath.toLowerCase());
-    if(matches.length){const sources=matches.slice(0,3);return {text:sources.map(doc=>doc.answer).join('\n\n'),sources};}
+    return { text: 'For integration instructions, visit the developer documentation. The HQ guide provides product and access guidance.', sources: documents.filter(doc=>doc.id==='api-access') };
   }
   if(/\b(ecosystem|subdomains?|domains?)\b/i.test(question)){
     const ecosystem=documents.find(doc=>doc.id==='ecosystem-domains');

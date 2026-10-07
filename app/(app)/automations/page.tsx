@@ -21,6 +21,7 @@ import { isRobotBackendConfigured } from "@/lib/backend-urls";
 import { billingPlanFromSummary, getSubscriptionSummary } from "@/lib/billing/plan";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { dataUnavailable } from "@/lib/data-unavailable";
 
 export const metadata: Metadata = {
   title: "Automations",
@@ -57,7 +58,8 @@ export default async function AutomationsPage({
       supabase,
       user.id,
     );
-    if (!subscriptionError && billingPlanFromSummary(summary) === "free") {
+    if (subscriptionError) dataUnavailable("subscription access", subscriptionError);
+    if (billingPlanFromSummary(summary) === "free") {
       return (
         <>
           <PageHeader
@@ -144,7 +146,7 @@ export default async function AutomationsPage({
       <PageHeader
         eyebrow="Operations"
         title="Automations"
-        description="Playbooks with guarded dry-runs and evidence. Connect automation under Settings → Integrations for live robot execution; otherwise simulated runs are recorded."
+        description="Playbooks with guarded checks and evidence. Connect automation under Settings → Integrations for live robot execution. Signed-in execution is blocked until the service is connected; local previews remain simulations."
       />
       <ConsoleAmbientBanner snapshot={ambient} />
       <AutomationsConsole

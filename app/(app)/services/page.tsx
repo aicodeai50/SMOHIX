@@ -13,6 +13,7 @@ import { burnStateBeacon } from "@/lib/architecture/ops-state";
 import { billingPlanFromSummary, getSubscriptionSummary } from "@/lib/billing/plan";
 import { loadConsoleAmbientSnapshot } from "@/lib/console/load-ambient-status";
 import { listServiceDependencyGraphForUser } from "@/lib/services/dependencies";
+import { dataUnavailable } from "@/lib/data-unavailable";
 import { getOrgContextForUser } from "@/lib/org/context";
 import { listServicesForUser } from "@/lib/services/data";
 import { newIncidentHrefForService } from "@/lib/workflow/incident-links";
@@ -68,8 +69,8 @@ export default async function ServicesPage({
   }
 
   const { summary, error: subscriptionError } = await getSubscriptionSummary(supabase, user.id);
-  const subscriptionGatedFree =
-    !subscriptionError && billingPlanFromSummary(summary) === "free";
+  if (subscriptionError) dataUnavailable("subscription access", subscriptionError);
+  const subscriptionGatedFree = billingPlanFromSummary(summary) === "free";
 
   const sp = await searchParams;
   const err = typeof sp.error === "string" ? sp.error : undefined;

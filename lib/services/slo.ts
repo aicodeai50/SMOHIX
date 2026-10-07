@@ -1,6 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 import { applyUserOrOrgScope } from "@/lib/org/apply-scope-query";
+import { dataUnavailable } from "@/lib/data-unavailable";
 
 type ServiceSloRow = {
   id: string;
@@ -71,7 +72,8 @@ export async function upsertDefaultSloForService(
   };
   if (orgId) row.org_id = orgId;
 
-  await supabase.from("service_slos").upsert(row, { onConflict: sloUpsertConflict(orgId) });
+  const { error } = await supabase.from("service_slos").upsert(row, { onConflict: sloUpsertConflict(orgId), ignoreDuplicates: true });
+  if (error) dataUnavailable("default service SLO", error);
 }
 
 export async function upsertServiceSloForUser(
@@ -121,7 +123,7 @@ export async function listServiceSloConfigsForUser(
   query = applyUserOrOrgScope(query, userId, orgId);
 
   const { data, error } = await query;
-  if (error || !data) return [];
+  if (error || !data) dataUnavailable("service SLO configuration", error);
   const firstByService = new Map<string, (typeof data)[number]>();
   for (const row of data) {
     const key = String(row.service_id);
@@ -163,6 +165,8 @@ export async function refreshErrorBudgetWindowsForUser(
     slosQuery,
     incidentsQuery,
   ]);
+  const sourceError = servicesRes.error || slosRes.error || incidentsRes.error;
+  if (sourceError) dataUnavailable("service budget sources", sourceError);
 
   const serviceIds = (servicesRes.data ?? []).map((r) => String(r.id));
   if (!serviceIds.length) return;
@@ -225,7 +229,8 @@ export async function refreshErrorBudgetWindowsForUser(
   }
 
   if (inserts.length > 0) {
-    await supabase.from("error_budget_windows").insert(inserts);
+    const { error } = await supabase.from("error_budget_windows").insert(inserts);
+    if (error) dataUnavailable("service budget refresh", error);
   }
 }
 
@@ -263,6 +268,8 @@ export async function getServiceSloSummary(
     sloQuery.maybeSingle(),
     windowsQuery,
   ]);
+  const summaryError = serviceRes.error || sloRes.error || windowsRes.error;
+  if (summaryError) dataUnavailable("service SLO summary", summaryError);
   if (!serviceRes.data) return null;
 
   type BudgetWindowDbRow = {
@@ -322,7 +329,8 @@ export async function getErrorBudgetOverviewSummary(
     .limit(200);
   query = applyUserOrOrgScope(query, userId, orgId);
 
-  const { data } = await query;
+  const { data, error } = await query;
+  if (error) dataUnavailable("service budget overview", error);
 
   type BudgetOverviewDbRow = {
     service_id: unknown;
@@ -370,7 +378,8 @@ export async function getLatestBurnStateForService(
     .limit(1);
   query = applyUserOrOrgScope(query, userId, orgId);
 
-  const { data } = await query.maybeSingle();
+  const { data, error } = await query.maybeSingle();
+  if (error) dataUnavailable("service burn state", error);
   const state = String(data?.state ?? "healthy");
   if (state === "critical" || state === "warning") return state;
   return "healthy";
@@ -391,7 +400,8 @@ export async function listLatestBurnStatesForUser(
     .limit(500);
   query = applyUserOrOrgScope(query, userId, orgId);
 
-  const { data } = await query;
+  const { data, error } = await query;
+  if (error) dataUnavailable("service burn states", error);
   const byService = new Map<string, ServiceBurnState>();
   for (const row of data ?? []) {
     const serviceId = String(row.service_id);

@@ -2,15 +2,15 @@
 
 import { useState } from "react";
 
-import { FAQ_GROUPS } from "@/lib/experience/faq";
+import type { FaqGroup } from "@/lib/experience/faq";
 import { mBody } from "@/lib/marketing-layout";
 
-export function FaqAccordion() {
+export function FaqAccordion({ groups }: { groups: readonly FaqGroup[] }) {
   const [openId, setOpenId] = useState<string | null>(null);
 
   return (
     <div className="space-y-10">
-      {FAQ_GROUPS.map((group) => (
+      {groups.map((group) => (
         <section key={group.id} aria-labelledby={`faq-${group.id}`}>
           <h2 id={`faq-${group.id}`} className="text-xl font-semibold text-foreground">
             {group.title}

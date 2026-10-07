@@ -39,10 +39,12 @@ for(const page of SEARCH_INDEX.filter(entry=>entry.category!=='product')){
 }
 for(const group of API_GROUPS){for(const operation of group.operations){
   const result=answerHqQuestion(`Explain ${operation.method} ${operation.path}`,documents);
-  assert(result.sources.some(source=>source.title.includes(operation.path)),`Missing API answer ${operation.path}`);
+  assert(result.sources.some(source=>source.id==='api-access'),`API question should link to documentation ${operation.path}`);
+  assert(!result.text.includes(operation.path),'HQ must not repeat backend route details');
 }}
 for(const item of USE_CASES){assert(documents.some(doc=>doc.id===`use-case-${item.id}`));}
-assert(answerHqQuestion('What technology stack does the site use?',documents).text.includes('Next.js'));
+assert(!answerHqQuestion('What technology stack does the site use?',documents).text.includes('Next.js'));
+assert(!documents.some(doc=>doc.title.includes('/api/')),'Backend operation catalog must not be serialized into the HQ guide');
 assert(answerHqQuestion('Where do I login?',documents).sources.some(source=>source.id==='workspace-access'));
 assert(answerHqQuestion('Where is the roadmap?',documents).sources.some(source=>source.href==='/next'));
 assert(answerHqQuestion('Where are the careers?',documents).sources.some(source=>source.href==='/careers'));

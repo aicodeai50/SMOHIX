@@ -2,12 +2,12 @@ import type { OperationalStatus, ProductStatusResult } from "@/lib/status/types"
 
 export function commandAvailability(status?: OperationalStatus) {
   switch (status) {
-    case "operational": return "Reachable";
+    case "operational": return "Available";
     case "degraded": return "Degraded";
-    case "unavailable": return "Unreachable";
+    case "unavailable": return "Unavailable";
     case "prototype": return "Prototype";
     case "planned": return "Planned";
-    default: return "Not verified";
+    default: return "Checking";
   }
 }
 

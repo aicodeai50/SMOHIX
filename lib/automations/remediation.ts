@@ -9,9 +9,20 @@ import { listAcceptedPolicyGuardrailsForPlaybook } from "@/lib/approvals/policy-
 import { buildDecisionBrief } from "@/lib/decision-intelligence";
 import { getLatestBurnStateForService } from "@/lib/services/slo";
 import { getRobotBackendUrl } from "@/lib/backend-urls";
+import { executeRobotAction } from "@/lib/automations/connector-execution";
+import { getPlaybookById } from "@/lib/automations/playbooks";
+import { verifyExecutionApproval } from "@/lib/automations/execution-approval";
+import { claimExecutionAudit } from "@/lib/audit/append";
+import { randomUUID } from "node:crypto";
+import { getOrgContextForUser } from "@/lib/org/context";
+import { canCreateApprovalRequest } from "@/lib/org/roles";
+import { billingPlanFromSummary, getSubscriptionSummary } from "@/lib/billing/plan";
+import { applyUserOrOrgScope } from "@/lib/org/apply-scope-query";
+import { dataUnavailable } from "@/lib/data-unavailable";
 
 export type GuardedRemediationResult = {
   ok: boolean;
+  warning?: string;
   blockedReason: string | null;
   runId: string | null;
   checks: {
@@ -21,11 +32,7 @@ export type GuardedRemediationResult = {
   };
 };
 
-type RobotExecutionReceipt = {
-  ok: boolean;
-  steps?: { label?: string; status?: string; output?: unknown }[];
-  receipt?: Record<string, unknown>;
-};
+type RobotExecutionReceipt = { steps?: { label?: string; status?: string; output?: unknown }[] };
 
 export type RemediationRunRow = {
   id: string;
@@ -52,7 +59,22 @@ export async function runGuardedRemediation(input: {
   incidentId?: string | null;
   triggerSource: "incident" | "automation" | "manual";
   orgId?: string | null;
+  approvalId?: string | null;
 }): Promise<GuardedRemediationResult> {
+  const context = await getOrgContextForUser(input.userId);
+  const subscription = await getSubscriptionSummary(input.supabase, input.userId);
+  const blockedAccess = context.role && !canCreateApprovalRequest(context.role)
+    ? "Your workspace role cannot execute automations."
+    : subscription.error ? "Subscription access could not be verified. Try again later."
+    : billingPlanFromSummary(subscription.summary) === "free" ? "Execution requires an active subscription." : null;
+  if (blockedAccess) return { ok: false, blockedReason: blockedAccess, runId: null,
+    checks: { dryRunFresh: false, changeWindow: false, blastRadiusAllowed: false } };
+  if (input.incidentId) {
+    const query = input.supabase.from("incidents").select("id").eq("id", input.incidentId);
+    const incident = await applyUserOrOrgScope(query, input.userId, context.orgId).maybeSingle();
+    if (incident.error || !incident.data) return { ok: false, blockedReason: "The linked incident could not be verified.", runId: null,
+      checks: { dryRunFresh: false, changeWindow: false, blastRadiusAllowed: false } };
+  }
   const recentDryRun = await input.supabase
     .from("automation_dry_runs")
     .select("ok, created_at")
@@ -63,6 +85,7 @@ export async function runGuardedRemediation(input: {
     .maybeSingle();
   const hasFreshDryRun = Boolean(
     recentDryRun.data?.ok &&
+      Date.now() >= new Date(String(recentDryRun.data.created_at ?? 0)).valueOf() &&
       Date.now() - new Date(String(recentDryRun.data.created_at ?? 0)).valueOf() <= 2 * 60 * 60 * 1000,
   );
 
@@ -89,14 +112,19 @@ export async function runGuardedRemediation(input: {
       : null,
   });
 
-  let blockedReason = enforcement.blockedReason;
+  let blockedReason = !hasFreshDryRun ? "Execution blocked: a recent successful check is required." : enforcement.blockedReason;
+  const playbook = getPlaybookById(input.playbookId);
+  if (!playbook) blockedReason = "Execution blocked: unknown playbook.";
+  if (!blockedReason && playbook?.risk === "high" && !await verifyExecutionApproval(input.supabase, input.userId, input.orgId ?? null, input.approvalId ?? null, playbook)) {
+    blockedReason = "Execution blocked: a recent approval for this playbook, decided by a different person, is required.";
+  }
   if (!blockedReason && input.incidentId) {
-    const incidentRes = await input.supabase
+    const incidentQuery = input.supabase
       .from("incidents")
       .select("service_id")
-      .eq("id", input.incidentId)
-      .eq("user_id", input.userId)
-      .maybeSingle();
+      .eq("id", input.incidentId);
+    const incidentRes = await applyUserOrOrgScope(incidentQuery, input.userId, context.orgId).maybeSingle();
+    if (incidentRes.error) blockedReason = "The service risk could not be verified.";
     const serviceId = incidentRes.data?.service_id ? String(incidentRes.data.service_id) : null;
     if (serviceId) {
       const burnState = await getLatestBurnStateForService(
@@ -115,6 +143,7 @@ export async function runGuardedRemediation(input: {
   }
   let executionMode: "simulated" | "connector" = "simulated";
   const robotBase = getRobotBackendUrl();
+  if (!robotBase && !blockedReason) blockedReason = "Execution blocked: automation execution service is not connected. No action was performed.";
   if (robotBase) {
     executionMode = "connector";
     try {
@@ -144,33 +173,18 @@ export async function runGuardedRemediation(input: {
   ];
 
   if (!blockedReason && robotBase) {
-    try {
-      const res = await fetch(`${robotBase}/v1/remediate`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({
-          playbook_id: input.playbookId,
-          incident_id: input.incidentId ?? null,
-          rollback_plan: input.rollbackPlan,
-          approval_note: input.approvalNote,
-        }),
-        cache: "no-store",
-        signal: AbortSignal.timeout(60_000),
-      });
-      const json = (await res.json().catch(() => null)) as RobotExecutionReceipt | null;
-      if (!res.ok || json?.ok === false) {
-        blockedReason = `Execution blocked: remediation connector returned ${res.status}.`;
-      } else if (json) {
-        executionReceipt = json.receipt ?? { mode: executionMode, connector_status: res.status };
-        if (Array.isArray(json.steps) && json.steps.length > 0) {
-          robotSteps = json.steps;
-        }
+    const requestId = playbook?.risk === "high" && input.approvalId ? input.approvalId : randomUUID();
+    const intent = await claimExecutionAudit({ event_type: "automation.remediation_requested", user_id: input.userId,
+      org_id: input.orgId, details: { request_id: requestId, playbook_id: input.playbookId, incident_id: input.incidentId ?? null } }, requestId);
+    if (!intent.ok) blockedReason = intent.duplicate ? "This approval has already been used. Check the previous execution before requesting a new approval."
+      : "Execution blocked: its audit record could not be saved.";
+    else {
+      const result = await executeRobotAction(robotBase, input, requestId);
+      if (!result.ok) blockedReason = result.message;
+      else {
+        executionReceipt = result.receipt;
+        if (result.steps.length) robotSteps = result.steps;
       }
-    } catch {
-      blockedReason = "Execution blocked: remediation connector execution failed.";
     }
   }
 
@@ -196,8 +210,9 @@ export async function runGuardedRemediation(input: {
     .single();
 
   const runId = insertRes.data?.id ? String(insertRes.data.id) : null;
+  let historySaved = Boolean(runId) && !insertRes.error;
   if (runId) {
-    await input.supabase.from("remediation_run_steps").insert(
+    const stepsResult = await input.supabase.from("remediation_run_steps").insert(
       robotSteps.map((step, idx) => ({
         remediation_run_id: runId,
         step_order: idx + 1,
@@ -215,10 +230,12 @@ export async function runGuardedRemediation(input: {
             : {},
       })),
     );
+    historySaved = historySaved && !stepsResult.error;
   }
 
   return {
     ok: finalExecuteOk,
+    ...(finalExecuteOk && !historySaved ? { warning: "Execution was confirmed, but its full history could not be saved. Check service activity before running it again." } : {}),
     blockedReason,
     runId,
     checks: enforcement.checks,
@@ -240,7 +257,7 @@ export async function listRemediationRunsForIncident(
     .eq("incident_id", incidentId)
     .order("created_at", { ascending: false })
     .limit(limit);
-  if (error || !data) return [];
+  if (error || !data) dataUnavailable("remediation history", error);
 
   return data.map((row) => {
     const checksRaw =

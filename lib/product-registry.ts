@@ -6,6 +6,7 @@
 import { getSiteUrl } from "@/lib/site";
 import { ECOSYSTEM_PUBLIC_HOSTS } from "@/lib/ecosystem-hosts";
 import { FAMILY_PROJECTS } from "@/lib/family-projects";
+import { SMOHIX_AI_PUBLIC_URL } from "@/lib/public-product-urls";
 
 export type RegistryMaturity = "live" | "preview" | "prototype" | "internal" | "planned";
 
@@ -48,9 +49,9 @@ export type ProductRegistryEntry = {
 };
 
 const SITE = () => getSiteUrl().replace(/\/$/, "");
-const AI_PUBLIC = (process.env.SMOHIX_AI_PUBLIC_URL ?? process.env.ZENTRO_AI_PUBLIC_URL)?.trim() || "https://ai.smohix.run";
+const AI_PUBLIC = SMOHIX_AI_PUBLIC_URL;
 
-export const SMOHIX_AI_PUBLIC_URL = AI_PUBLIC;
+export { SMOHIX_AI_PUBLIC_URL };
 
 export const PRODUCT_REGISTRY: readonly ProductRegistryEntry[] = [
   ...FAMILY_PROJECTS.map((project): ProductRegistryEntry => ({
@@ -219,7 +220,7 @@ export const PRODUCT_REGISTRY: readonly ProductRegistryEntry[] = [
     healthCheck: { host: "smohix.run", path: "/api/health" },
     availableActions: [
       { kind: "read_docs", label: "API reference", href: "/docs/api" },
-      { kind: "view_health", label: "View health", href: "/api/health" },
+      { kind: "view_health", label: "Service status", href: "/status" },
       { kind: "sign_in", label: "Create API key", href: "/auth/sign-in?next=/settings/api-keys" },
       { kind: "product_page", label: "Product overview", href: "/products/smohix-own-api" },
     ],
@@ -251,7 +252,7 @@ export const PRODUCT_REGISTRY: readonly ProductRegistryEntry[] = [
       { kind: "product_page", label: "Product overview", href: "/products/identity" },
     ],
     capabilities: ["Secure sign-in", "Org members and roles", "API keys and ingest tokens"],
-    limitations: ["Service role keys server-only"],
+    limitations: ["Account and workspace permissions determine access"],
     dependencies: ["Supabase Auth"],
     pilotAvailable: false,
     lastVerifiedAt: "2026-08-01",

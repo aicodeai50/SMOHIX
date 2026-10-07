@@ -3,7 +3,6 @@
  * not independent companies.
  */
 
-import { getRegistryProduct, registryToEcosystemStatus } from "@/lib/product-registry";
 export { ECOSYSTEM_PUBLIC_HOSTS } from "@/lib/ecosystem-hosts";
 
 export const SMOHIX_WORKSPACE_URLS = {
@@ -75,11 +74,8 @@ const FLAGSHIP_DEFINITIONS = [
   },
 ] as const;
 
-/** Display maturity follows the registry instead of a second hardcoded label. */
-export const FLAGSHIP_PRODUCTS = FLAGSHIP_DEFINITIONS.map((product) => ({
-  ...product,
-  status: registryToEcosystemStatus(getRegistryProduct(product.id)!.maturity),
-}));
+/** Browser-safe navigation. Release checks enforce maturity agreement with the server registry. */
+export const FLAGSHIP_PRODUCTS = FLAGSHIP_DEFINITIONS;
 
 export const DEVELOPER_SURFACE = [
   { href: "/docs/api", label: "API" },

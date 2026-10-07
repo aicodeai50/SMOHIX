@@ -1,6 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 import { applyUserOrOrgScope } from "@/lib/org/apply-scope-query";
+import { dataUnavailable } from "@/lib/data-unavailable";
 
 export type ServiceDependencyEdge = {
   fromServiceId: string;
@@ -37,6 +38,8 @@ export async function listServiceDependencyGraphForUser(
   edgesQuery = applyUserOrOrgScope(edgesQuery, userId, orgId);
 
   const [servicesRes, edgesRes] = await Promise.all([servicesQuery, edgesQuery]);
+  const loadError = servicesRes.error || edgesRes.error;
+  if (loadError) dataUnavailable("service dependencies", loadError);
 
   const nodes = (servicesRes.data ?? []).map((row) => ({
     id: String(row.id),

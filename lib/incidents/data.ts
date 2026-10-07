@@ -2,6 +2,7 @@ import { isRunbookSlugValid, runbookTitleForSlug } from "@/lib/runbooks/catalog"
 import { orgScopeOrFilter } from "@/lib/org/scope";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
+import { dataUnavailable } from "@/lib/data-unavailable";
 
 import {
   getDevIncident,
@@ -125,14 +126,14 @@ export async function listIncidentsForUser(
     const { data, error } = await query;
 
     if (error) {
-      return { source: "database", rows: [] };
+      dataUnavailable("incidents", error);
     }
 
     const rows = (data ?? []).map((r) => mapDbRecordToRow(r as Record<string, unknown>));
 
     return { source: "database", rows };
-  } catch {
-    return { source: "database", rows: [] };
+  } catch (error) {
+    dataUnavailable("incidents", error);
   }
 }
 

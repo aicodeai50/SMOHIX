@@ -12,8 +12,6 @@ export async function GET() {
   return NextResponse.json(
     {
       ok: true,
-      service: "smohix-web",
-      uptime_s: Math.round(process.uptime()),
     },
     {
       status: 200,

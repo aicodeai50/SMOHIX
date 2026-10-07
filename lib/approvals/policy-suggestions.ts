@@ -5,6 +5,7 @@ import {
   type BlastRadiusScope,
 } from "@/lib/approvals/policy-scope";
 import type { PolicySuggestionStatus } from "@/lib/decision-intelligence";
+import { dataUnavailable } from "@/lib/data-unavailable";
 
 export type PolicySuggestionRow = {
   id: string;
@@ -124,12 +125,13 @@ export async function listAcceptedPolicyGuardrailsForPlaybook(
 ): Promise<AcceptedPolicyGuardrails | null> {
   const { data, error } = await supabase
     .from("policy_suggestions")
-    .select("id, suggestion_key, guardrails_json, reviewer_notes")
+    .select("id, playbook_id, suggestion_key, guardrails_json, reviewer_notes")
     .eq("user_id", userId)
     .eq("playbook_id", playbookId)
     .eq("status", "accepted")
     .limit(20);
-  if (error || !data || data.length === 0) return null;
+  if (error || !data) dataUnavailable("accepted automation policy", error);
+  if (data.length === 0) return null;
   const map = aggregateAcceptedPolicyGuardrails(data as AcceptedGuardrailSourceRow[]);
   return map[playbookId] ?? null;
 }
@@ -183,7 +185,8 @@ export async function listAcceptedPolicyGuardrailsByPlaybook(
     .eq("user_id", userId)
     .eq("status", "accepted")
     .limit(200);
-  if (error || !data || data.length === 0) return {};
+  if (error || !data) dataUnavailable("accepted automation policies", error);
+  if (data.length === 0) return {};
   return aggregateAcceptedPolicyGuardrails(data as AcceptedGuardrailSourceRow[]);
 }
 

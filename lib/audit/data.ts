@@ -2,6 +2,7 @@ import { applyUserOrOrgScope } from "@/lib/org/apply-scope-query";
 import type { OrgRole } from "@/lib/org/roles";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
+import { dataUnavailable } from "@/lib/data-unavailable";
 
 import { intentTagsForEventType } from "@/lib/guardrails/audit-intent-tags";
 import { complianceControlsForAuditEvent } from "@/lib/compliance/map-audit";
@@ -123,7 +124,7 @@ export async function listAuditEntriesForUser(
     const { data, error } = await buildAuditListQuery(supabase, userId, opts).limit(100);
 
     if (error) {
-      return { source: "database", rows: [] };
+      dataUnavailable("audit", error);
     }
 
     const rows = (data ?? []).map((r) =>
@@ -137,8 +138,8 @@ export async function listAuditEntriesForUser(
     );
 
     return { source: "database", rows };
-  } catch {
-    return { source: "database", rows: [] };
+  } catch (error) {
+    dataUnavailable("audit", error);
   }
 }
 
@@ -199,12 +200,12 @@ export async function listSlackAuditEntriesForCsvExport(
     }).limit(100);
 
     if (error) {
-      return [];
+      dataUnavailable("Slack audit export", error);
     }
 
     return (data ?? []).map(mapCsvRow);
-  } catch {
-    return [];
+  } catch (error) {
+    dataUnavailable("Slack audit export", error);
   }
 }
 
@@ -224,12 +225,12 @@ export async function listAuditEntriesForCsvExport(
     const { data, error } = await buildAuditExportQuery(supabase, userId, opts).limit(100);
 
     if (error) {
-      return [];
+      dataUnavailable("audit export", error);
     }
 
     return (data ?? []).map(mapCsvRow);
-  } catch {
-    return [];
+  } catch (error) {
+    dataUnavailable("audit export", error);
   }
 }
 

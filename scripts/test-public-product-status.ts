@@ -22,7 +22,7 @@ assert.equal(getCommandSnapshot(['0'], monitored, { ...commandOptions, paused: t
 assert.equal(getCommandSnapshot(['missing'], monitored, commandOptions).feed, 'stale');
 assert.equal(getCommandSnapshot(['0'], [], { ...commandOptions, receivedAt: null }).feed, 'connecting');
 assert.equal(getCommandSnapshot(['0'], [], { ...commandOptions, receivedAt: null, error: true }).feed, 'stale');
-assert.equal(commandAvailability('unavailable'), 'Unreachable');
+assert.equal(commandAvailability('unavailable'), 'Unavailable');
 assert.equal(healthPayloadStatus({ok:true}), 'operational');
 assert.equal(healthPayloadStatus({ok:true,status:'degraded'}), 'degraded');
 assert.equal(healthPayloadStatus({ok:false}), 'degraded');
@@ -40,7 +40,7 @@ globalThis.fetch = (async (input: string | URL | Request, init?: RequestInit) =>
   if(url.includes('ai.smohix.run')) return Response.json({ok:false,status:'degraded'}, {status:503});
   if(url.includes('assistant.smohix.run')) return Response.json({ok:false,status:'unavailable'}, {status:503});
   if(url.includes('pri.smohix.run')) return Response.json({status:'operational'});
-  if(url.endsWith('/api/health')) return Response.json({ok:true});
+  if(url.endsWith('/api/health')) return Response.json({ok:true,service:'private-service-name',uptime_s:123,error:'postgres://secret@railway.internal'});
   return new Response(null, {status:200});
 }) as typeof fetch;
 try {
@@ -56,6 +56,9 @@ try {
   await fetchProductStatuses(); assert.equal(calls.length,4,'cached check should not poll');
   assert.equal(first.length, PRODUCT_REGISTRY.length);
   for (const item of first) assert.deepEqual(Object.keys(item).sort(), ['detail','href','label','lastChecked','productId','status'].sort());
+  assert.doesNotMatch(JSON.stringify(first), /\/api\/health|\/api\/ping|service role|railway\.internal|uptime_s|private-service-name|postgres:|secret/,'Public status must exclude backend diagnostics');
+  const { GET } = await import('../app/api/health/route');
+  assert.deepEqual(await (await GET()).json(),{ok:true},'Public health response must contain only the availability signal');
 } finally { globalThis.fetch=original; }
 console.log('test-public-product-status: all checks passed');
 }

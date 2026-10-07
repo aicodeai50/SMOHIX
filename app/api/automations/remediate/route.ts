@@ -7,6 +7,8 @@ import { isSloBurnPolicyBlockedReason } from "@/lib/approvals/policy";
 import { OPERATIONAL_RESPONSE_HEADERS } from "@/lib/security/operational-headers";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { canCreateApprovalRequest } from "@/lib/org/roles";
+import { billingPlanFromSummary, getSubscriptionSummary } from "@/lib/billing/plan";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -33,17 +35,20 @@ export async function POST(req: Request) {
   let approvalNote = "";
   let rollbackPlan = "";
   let incidentId: string | null = null;
+  let approvalId: string | null = null;
   try {
     const body = (await req.json()) as {
       playbookId?: string;
       approvalNote?: string;
       rollbackPlan?: string;
       incidentId?: string;
+      approvalId?: string;
     };
     playbookId = String(body.playbookId ?? "").trim();
     approvalNote = String(body.approvalNote ?? "").trim();
     rollbackPlan = String(body.rollbackPlan ?? "").trim();
     incidentId = body.incidentId ? String(body.incidentId).trim() : null;
+    approvalId = typeof body.approvalId === "string" ? body.approvalId.trim() : null;
   } catch {
     return NextResponse.json({ error: "invalid_json" }, { status: 400, headers: OPERATIONAL_RESPONSE_HEADERS });
   }
@@ -55,6 +60,10 @@ export async function POST(req: Request) {
   }
 
   const orgContext = await getOrgContextForUser(user.id);
+  if (orgContext.role && !canCreateApprovalRequest(orgContext.role)) return NextResponse.json({ error: "execution_forbidden" }, { status: 403, headers: OPERATIONAL_RESPONSE_HEADERS });
+  const subscription = await getSubscriptionSummary(supabase, user.id);
+  if (subscription.error) return NextResponse.json({ error: "billing_unavailable" }, { status: 503, headers: OPERATIONAL_RESPONSE_HEADERS });
+  if (billingPlanFromSummary(subscription.summary) === "free") return NextResponse.json({ error: "subscription_required" }, { status: 403, headers: OPERATIONAL_RESPONSE_HEADERS });
 
   const result = await runGuardedRemediation({
     supabase,
@@ -65,6 +74,7 @@ export async function POST(req: Request) {
     incidentId,
     triggerSource: incidentId ? "incident" : "manual",
     orgId: orgContext.orgId,
+    approvalId,
   });
 
   await appendAuditEvent({

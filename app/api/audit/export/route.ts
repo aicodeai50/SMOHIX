@@ -33,11 +33,14 @@ export async function GET(req: NextRequest) {
   const windowNorm = auditWindowToSinceIso(req.nextUrl.searchParams.get("window"));
   const sinceIso = auditSinceIsoFromWindow(windowNorm);
 
-  const rows = await listAuditEntriesForCsvExport(user.id, {
+  let rows: Awaited<ReturnType<typeof listAuditEntriesForCsvExport>>;
+  try { rows = await listAuditEntriesForCsvExport(user.id, {
     sinceIso,
     orgId: orgContext.orgId,
     orgRole: orgContext.role,
-  });
+  }); } catch {
+    return NextResponse.json({ error: "Audit data is temporarily unavailable. Try again later." }, { status: 503, headers: OPERATIONAL_RESPONSE_HEADERS });
+  }
   const header = ["time_utc", "event_type", "actor", "incident_id", "details_json"];
   const lines = [
     header.join(","),

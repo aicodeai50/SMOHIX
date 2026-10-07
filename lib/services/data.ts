@@ -1,6 +1,7 @@
 import { orgScopeOrFilter } from "@/lib/org/scope";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
+import { dataUnavailable } from "@/lib/data-unavailable";
 
 import { formatIncidentRelative } from "@/lib/incidents/format";
 
@@ -45,7 +46,7 @@ export async function listServicesForUser(
     const { data, error } = await query;
 
     if (error) {
-      return [];
+      dataUnavailable("services", error);
     }
 
     return (data ?? []).map((r) => ({
@@ -56,8 +57,8 @@ export async function listServicesForUser(
       ownerHint: (r.owner_hint as string | null) ?? null,
       updated: formatIncidentRelative(r.updated_at as string),
     }));
-  } catch {
-    return [];
+  } catch (error) {
+    dataUnavailable("services", error);
   }
 }
 

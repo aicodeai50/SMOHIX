@@ -3,7 +3,7 @@
  */
 
 import { getSiteUrl } from "@/lib/site";
-import { SMOHIX_AI_PUBLIC_URL } from "@/lib/product-registry";
+import { SMOHIX_AI_PUBLIC_URL } from "@/lib/public-product-urls";
 
 const SITE = getSiteUrl().replace(/\/$/, "");
 
@@ -208,9 +208,7 @@ export const DEVELOPER_EXAMPLES: readonly DeveloperExample[] = [
     description: "Public liveness — no authentication.",
     request: `curl -s ${SITE}/api/health`,
     response: `{
-  "ok": true,
-  "service": "smohix-web",
-  "uptime_s": 12345
+  "ok": true
 }`,
     usesApiKey: false,
   },

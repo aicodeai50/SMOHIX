@@ -14,7 +14,7 @@ export const FAQ_GROUPS: readonly FaqGroup[] = [
       },
       {
         q: "Does the site simulate products?",
-        a: "Smohix.run links to product destinations, documentation, and console routes. The HQ command activity demo is explicitly simulated. The developer playground generates protected-request examples and can run the public health check.",
+        a: "The HQ service panel shows current service availability. Workflow previews are illustrative; sign in to your workspace for your organization’s records.",
       },
       {
         q: "How do I try live functionality?",
@@ -36,7 +36,7 @@ export const FAQ_GROUPS: readonly FaqGroup[] = [
       },
       {
         q: "Is there a public health check?",
-        a: "Yes — GET /api/health returns JSON ok, service name, and uptime when reachable.",
+        a: "View current product and service availability on the Service status page at /status.",
       },
     ],
   },

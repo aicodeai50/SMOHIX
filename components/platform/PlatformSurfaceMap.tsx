@@ -7,10 +7,8 @@ import { SITE_BRAND_NAME } from "@/lib/site-brand";
 const NEXT_CAPABILITIES = [
   "On-call schedules",
   "Change calendar",
-  "Service dependency graph",
-  "SLO and error budget views",
   "ITSM sync (Jira/ServiceNow)",
-  "Structured alert adapters",
+  "Additional managed alert connectors",
 ] as const;
 
 const VENDOR_ROADMAP = [
@@ -60,7 +58,7 @@ export function PlatformSurfaceMap() {
           Next IT capabilities
         </h2>
         <p className={`mt-2 ${mBodySm} text-muted/85`}>
-          Planned additions to round out enterprise operations workflows.
+          Service dependencies and incident-derived budget indicators are available in the configured workspace. These are the next planned additions to operations workflows.
         </p>
         <ul className="mt-4 flex flex-wrap gap-2">
           {NEXT_CAPABILITIES.map((item) => (

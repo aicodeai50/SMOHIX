@@ -84,6 +84,7 @@ export function AutomationsConsole({
         id?: string;
         at?: string;
         persisted?: boolean;
+        auditRecorded?: boolean;
       };
       if (!r.ok) {
         setMsg(j.error ?? "Dry-run could not be completed. Review configuration and try again.");
@@ -99,15 +100,7 @@ export function AutomationsConsole({
         };
         return [entry, ...prev].slice(0, 40);
       });
-      setMsg(
-        j.persisted
-          ? j.ok
-            ? "Dry-run saved and logged to your audit trail."
-            : "Dry-run saved with issues detected. Review connector health and audit details."
-          : j.ok
-            ? "Dry-run recorded for this session."
-            : "Dry-run completed with issues. Review connector health before execution.",
-      );
+      setMsg(`${j.detail ?? "Check completed."} ${j.persisted ? "Result saved." : "Result is available for this session only."} ${j.auditRecorded ? "Audit evidence saved." : "Audit evidence was not saved."}`);
     } catch (e) {
       setMsg(e instanceof Error ? e.message : "Request failed");
     } finally {
@@ -116,9 +109,13 @@ export function AutomationsConsole({
   }
 
   async function execute(playbookId: string) {
+    const playbook = PLAYBOOKS.find(row => row.id === playbookId);
+    const approvalId = auditTrailOnDryRun && playbook?.risk === "high"
+      ? window.prompt("Approved request ID from Approvals (action must match this playbook; approved by a different person within 2 hours):")?.trim() : undefined;
+    if (auditTrailOnDryRun && playbook?.risk === "high" && !approvalId) return;
     const approvalNote = window.prompt(
       "Approval note (include reviewers and approved change window):",
-      "two-person approval | change window | senior on-call acknowledged",
+      "",
     );
     if (!approvalNote || !approvalNote.trim()) return;
     const rollbackPlan = window.prompt(
@@ -135,6 +132,7 @@ export function AutomationsConsole({
         credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          ...(approvalId ? { approvalId } : {}),
           playbookId,
           approvalNote,
           rollbackPlan,
@@ -167,7 +165,7 @@ export function AutomationsConsole({
           factors: string[];
         };
       };
-      if (!r.ok) {
+      if (!r.ok || j.ok !== true) {
         const riskHint =
           j.changeRisk && typeof j.changeRisk.score === "number"
             ? ` Risk: ${j.changeRisk.tier} (${j.changeRisk.score}).`
@@ -199,8 +197,8 @@ export function AutomationsConsole({
         ...prev,
       ]);
       setMsg(j.detail ?? "Execution recorded with audit evidence.");
-    } catch (e) {
-      setMsg(e instanceof Error ? e.message : "Execution request failed. Please try again.");
+    } catch {
+      setMsg("Execution result could not be confirmed. Check service activity before running it again.");
     } finally {
       setBusyId(null);
     }
@@ -398,11 +396,11 @@ export function AutomationsConsole({
                 ) : null}
                 {x.actualOutcome ? (
                   <p className="text-foreground/65">
-                    Actual: {x.actualOutcome.summary} ({x.actualOutcome.timeToStableMins}m)
+                    {x.mode === "simulated" ? "Simulated outcome" : "Legacy estimate (unmeasured)"}: {x.actualOutcome.summary} ({x.actualOutcome.timeToStableMins}m)
                   </p>
                 ) : null}
                 {typeof x.decisionAccuracyScore === "number" ? (
-                  <p className="text-foreground/70">Decision accuracy: {x.decisionAccuracyScore}/100</p>
+                  <p className="text-foreground/70">{x.mode === "simulated" ? "Simulation score" : "Legacy model score (unmeasured)"}: {x.decisionAccuracyScore}/100</p>
                 ) : null}
                 {x.changeRisk ? (
                   <p className="text-foreground/70">

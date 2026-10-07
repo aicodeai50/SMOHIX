@@ -98,8 +98,8 @@ async function statusForProduct(entry: ProductRegistryEntry, probes: Map<string,
 
   const detail =
     probe && entry.maturity === "live"
-      ? `Public endpoint check: ${entry.healthCheck?.path ?? "—"}. Product maturity: ${registryMaturityLabel(entry.maturity)}. This does not verify every workspace function.`
-      : `${registryMaturityLabel(entry.maturity)} — ${entry.limitations[0] ?? entry.description}`;
+      ? `Service availability checked. ${registryMaturityLabel(entry.maturity)}. Individual features may have separate availability.`
+      : `${registryMaturityLabel(entry.maturity)}. ${status === "unknown" ? "Availability has not been confirmed." : "See the product overview for availability and access."}`;
 
   return {
     productId: entry.id,
@@ -126,8 +126,6 @@ export async function fetchProductStatuses(): Promise<ProductStatusResult[]> {
 
 export async function fetchSiteHealthView(): Promise<{
   ok: boolean;
-  service: string;
-  uptime_s: number | null;
 } | null> {
   const base = getSiteUrl().replace(/\/$/, "");
   const controller = new AbortController();
@@ -142,11 +140,6 @@ export async function fetchSiteHealthView(): Promise<{
     const data = (await res.json()) as Record<string, unknown>;
     return {
       ok: data.ok === true,
-      service: typeof data.service === "string" ? data.service : "smohix-web",
-      uptime_s:
-        typeof data.uptime_s === "number" && Number.isFinite(data.uptime_s)
-          ? Math.max(0, Math.round(data.uptime_s))
-          : null,
     };
   } catch {
     return null;

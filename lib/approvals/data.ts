@@ -1,5 +1,6 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
+import { dataUnavailable } from "@/lib/data-unavailable";
 import { buildDecisionBrief, parseDecisionBrief } from "@/lib/decision-intelligence";
 import { canDecideApproval, type OrgRole } from "@/lib/org/roles";
 import { extractIncidentIdFromApprovalContext } from "@/lib/workflow/incident-links";
@@ -141,7 +142,7 @@ export async function listApprovalsForUser(
       await Promise.all([pendingQuery, recentQuery]);
 
     if (pendErr || recentErr) {
-      return { source: "database", pending: [], recent: [] };
+      dataUnavailable("approvals", pendErr ?? recentErr);
     }
 
     const pending = (pendData ?? []).map((r) =>
@@ -177,8 +178,8 @@ export async function listApprovalsForUser(
     );
 
     return { source: "database", pending, recent };
-  } catch {
-    return { source: "database", pending: [], recent: [] };
+  } catch (error) {
+    dataUnavailable("approvals", error);
   }
 }
 

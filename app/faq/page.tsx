@@ -6,6 +6,7 @@ import { MarketingReveal } from "@/components/marketing/MarketingReveal";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
 import { buildMarketingMetadata } from "@/lib/metadata";
+import { FAQ_GROUPS } from "@/lib/experience/faq";
 import { mContainer, mEyebrow, mH1, mLede, mLinkInline, mSection } from "@/lib/marketing-layout";
 
 export const metadata: Metadata = buildMarketingMetadata({
@@ -34,7 +35,7 @@ export default function FaqPage() {
         </MarketingReveal>
         <section className={`${mSection} pb-16`}>
           <div className={`${mContainer} max-w-3xl`}>
-            <FaqAccordion />
+            <FaqAccordion groups={FAQ_GROUPS} />
           </div>
         </section>
       </main>

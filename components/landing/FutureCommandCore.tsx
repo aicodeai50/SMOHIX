@@ -65,8 +65,8 @@ export function FutureCommandCore({ products }: { products: CommandProduct[] }) 
       setNow(timestamp);
       setError(null);
     } catch (err) {
-      if (!controller.signal.aborted) setError(err instanceof Error && err.name !== "TimeoutError"
-        ? err.message : "Service checks timed out. Refresh to try again.");
+      if (!controller.signal.aborted) setError(err instanceof Error && err.name === "TimeoutError"
+        ? "Service checks timed out. Refresh to try again." : "Service status is temporarily unavailable. Please try again.");
     } finally {
       if (abort.current === controller) {
         busy.current = false;
@@ -129,7 +129,7 @@ export function FutureCommandCore({ products }: { products: CommandProduct[] }) 
 
         <div className="hq-command__body">
           <div className="hq-command__summary">
-            <div className="hq-command__dial" role="img" aria-label={receivedAt === null ? "Waiting for service checks" : `${reachable} of ${products.length} monitored endpoints reachable`}>
+            <div className="hq-command__dial" role="img" aria-label={receivedAt === null ? "Waiting for service checks" : `${reachable} of ${products.length} services available`}>
               <svg viewBox="0 0 160 160" aria-hidden>
                 <circle className="hq-command__dial-guide" cx="80" cy="80" r="72" />
                 <circle className="hq-command__dial-inner" cx="80" cy="80" r="51" />
@@ -153,18 +153,18 @@ export function FutureCommandCore({ products }: { products: CommandProduct[] }) 
                   <AppIcon name={SERVICE_ICONS[product.id] ?? "server"} size={13} />
                 </span>)}
               </div>
-              <div className="hq-command__dial-value"><strong>{receivedAt === null ? "—" : reachable}<small> / {products.length}</small></strong><span>Reachable</span></div>
+              <div className="hq-command__dial-value"><strong>{receivedAt === null ? "—" : reachable}<small> / {products.length}</small></strong><span>Available</span></div>
             </div>
             <div className="hq-command__summary-copy">
-            <p className="hq-command__eyebrow">Endpoint availability</p>
+            <p className="hq-command__eyebrow">Service availability</p>
             <p className="hq-command__summary-title">
-              {verified === 0 ? "Establishing service visibility" : attention > 0
+              {verified === 0 ? "Checking service availability" : attention > 0
                 ? `${attention} ${attention === 1 ? "service needs" : "services need"} attention`
-                : reachable === products.length ? "All monitored endpoints reachable" : "Some endpoints are not verified"}
+                : reachable === products.length ? "All services are available" : "Some service checks are pending"}
             </p>
             <dl className="hq-command__metrics" aria-label="Public service check results">
               <div><dt>Attention</dt><dd>{receivedAt === null ? "—" : attention}</dd></div>
-              <div><dt>Verified</dt><dd>{receivedAt === null ? "—" : verified}<span> / {products.length}</span></dd></div>
+              <div><dt>Checked</dt><dd>{receivedAt === null ? "—" : verified}<span> / {products.length}</span></dd></div>
             </dl>
             </div>
           </div>
@@ -202,10 +202,10 @@ export function FutureCommandCore({ products }: { products: CommandProduct[] }) 
             <span role="status" aria-live="polite">
               {error ?? (receivedAt === null ? "Waiting for the first check…"
                 : feed === "stale" ? "Previous results shown. Refresh for current availability."
-                : snapshot.checkedAt === null ? "No monitored endpoints were verified." : null)}
+                : snapshot.checkedAt === null ? "Service availability has not been confirmed yet." : null)}
             </span>
           </div>
-          <p className="hq-command__status-note">Checks refresh every minute while visible. Endpoint reachability does not verify every product function.</p>
+          <p className="hq-command__status-note">Checks refresh every minute while visible. Individual features may have separate availability.</p>
           <section className="hq-command__activity" aria-label="Recent service changes">
             <div className="hq-command__activity-heading"><p className="hq-command__eyebrow">Service activity</p><span>This visit</span></div>
             <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
@@ -257,7 +257,7 @@ function CheckedTime({ timestamp }: { timestamp: number }) {
         <div><dt>Local check time</dt><dd>{localDate}</dd></div>
         <div><dt>UTC check time</dt><dd><time dateTime={date.toISOString()}>{date.toISOString().replace("T", " ").replace(/\.\d{3}Z$/, " UTC")}</time></dd></div>
       </dl>
-      <p>Time of the oldest check in this snapshot. Your browser’s time zone determines the local display; UTC is the worldwide reference.</p>
+      <p>The earliest service check shown. Times use your local time zone; UTC provides the worldwide reference.</p>
     </div>
   </div>;
 }
