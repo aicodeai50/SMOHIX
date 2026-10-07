@@ -23,6 +23,8 @@ export function FutureCommandCore({ products }: { products: CommandProduct[] }) 
   const [now, setNow] = useState(0);
   const [paused, setPaused] = useState(false);
   const [inView, setInView] = useState(false);
+  const [nextCheckAt, setNextCheckAt] = useState<number | null>(null);
+  const nextDue = useRef<number | null>(null);
   const [changes, setChanges] = useState<CommandChange[]>([]);
   const previous = useRef<ProductStatusResult[]>([]);
   const busy = useRef(false);
@@ -33,6 +35,8 @@ export function FutureCommandCore({ products }: { products: CommandProduct[] }) 
   const checkServices = useCallback(async () => {
     if (busy.current) return;
     busy.current = true;
+    nextDue.current = Date.now() + 60_000;
+    setNextCheckAt(nextDue.current);
     setPending(true);
     const controller = new AbortController();
     abort.current = controller;
@@ -84,14 +88,16 @@ export function FutureCommandCore({ products }: { products: CommandProduct[] }) 
       if (visible.current) refresh();
     });
     if (panel.current) observer.observe(panel.current);
-    const timer = window.setInterval(refresh, 60_000);
     const clock = window.setInterval(() => {
-      if (document.visibilityState === "visible") setNow(Date.now());
-    }, 15_000);
+      if (visible.current && document.visibilityState === "visible") {
+        const timestamp = Date.now();
+        setNow(timestamp);
+        if (nextDue.current !== null && timestamp >= nextDue.current) void checkServices();
+      }
+    }, 1_000);
     document.addEventListener("visibilitychange", refresh);
     return () => {
       observer.disconnect();
-      window.clearInterval(timer);
       window.clearInterval(clock);
       document.removeEventListener("visibilitychange", refresh);
       abort.current?.abort();
@@ -102,6 +108,7 @@ export function FutureCommandCore({ products }: { products: CommandProduct[] }) 
   const snapshot = getCommandSnapshot(products.map(product => product.id), statuses,
     { now, receivedAt, error: Boolean(error), paused });
   const { results, reachable, attention, verified, feed } = snapshot;
+  const secondsUntilCheck = nextCheckAt === null ? 60 : Math.max(0, Math.min(60, Math.ceil((nextCheckAt - now) / 1_000)));
 
   return (
     <div ref={panel} className="smohix-live-command hq-command-panel" data-motion={inView && !paused ? "active" : "paused"} data-checking={pending}>
@@ -160,6 +167,12 @@ export function FutureCommandCore({ products }: { products: CommandProduct[] }) 
               <div><dt>Verified</dt><dd>{receivedAt === null ? "—" : verified}<span> / {products.length}</span></dd></div>
             </dl>
             </div>
+          </div>
+
+          <div className="hq-command__monitor" data-checking={pending}>
+            <div><span className="hq-command__monitor-label" role="status">{pending ? "Checking services" : paused || !inView ? "Monitoring paused" : receivedAt === null ? "Connecting to services" : "Automatic monitoring"}</span>
+              <span className="hq-command__countdown">{pending ? "Updating availability…" : paused || !inView ? "Resumes when visible" : `Next check in ${secondsUntilCheck}s`}</span></div>
+            <progress max="60" value={pending ? 60 : 60 - secondsUntilCheck} aria-label="Progress toward next automatic service check" />
           </div>
 
           <div className="hq-command__list-heading">

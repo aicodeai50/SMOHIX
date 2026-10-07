@@ -111,6 +111,17 @@ body .smohix-hq .hq-command-panel .hq-command__time-button:focus-visible { outli
 body .smohix-hq .hq-command-panel .hq-command__time-button[aria-expanded="true"] svg { transform: rotate(180deg); }
 body .smohix-hq .hq-command-panel .hq-command__time-info[hidden] { display: none; }
 /* Restrained telemetry motion: the availability segments remain stationary. */
+body .smohix-hq .hq-command-panel .hq-command__monitor { margin: 1rem 0; padding: .7rem 0; }
+body .smohix-hq .hq-command-panel .hq-command__monitor > div { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .4rem; margin-bottom: .5rem; }
+body .smohix-hq .hq-command-panel .hq-command__monitor-label { color: #34416b; font-size: .68rem; font-weight: 550; }
+body .smohix-hq .hq-command-panel .hq-command__countdown { color: #536079; font-size: .65rem; font-variant-numeric: tabular-nums; }
+body .smohix-hq .hq-command-panel .hq-command__monitor progress { display: block; width: 100%; height: 3px; border: 0; border-radius: 999px; overflow: hidden; appearance: none; background: #d9e1eb; accent-color: #209766; }
+body .smohix-hq .hq-command-panel .hq-command__monitor progress::-webkit-progress-bar { background: #d9e1eb; border-radius: 999px; }
+body .smohix-hq .hq-command-panel .hq-command__monitor progress::-webkit-progress-value { background: #209766; border-radius: 999px; }
+body .smohix-hq .hq-command-panel .hq-command__monitor progress::-moz-progress-bar { background: #209766; }
+body .smohix-hq .hq-command-panel .hq-command__monitor[data-checking="true"] progress { accent-color: #5067b5; }
+body .smohix-hq .hq-command-panel .hq-command__monitor[data-checking="true"] progress::-webkit-progress-value { background: #5067b5; }
+body .smohix-hq .hq-command-panel .hq-command__monitor[data-checking="true"] progress::-moz-progress-bar { background: #5067b5; }
 @keyframes hq-command-scan { to { transform: rotate(360deg); } }
 body .smohix-hq .hq-command-panel .hq-command__scan { transform-origin: 80px 80px; animation: hq-command-scan 24s linear infinite; pointer-events: none; }
 body .smohix-hq .hq-command-panel .hq-command__scan-trail { fill: none; stroke: #5067b5; stroke-width: 1.2; stroke-linecap: round; opacity: .4; }
