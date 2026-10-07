@@ -1,9 +1,25 @@
 import assert from 'node:assert/strict';
+import { dataUnavailable } from '../lib/data-unavailable.ts';
 import { executeRobotAction } from '../lib/automations/connector-execution.ts';
 import { approvalMatchesExecution } from '../lib/automations/execution-approval.ts';
 import { deliverAuditRecord } from '../lib/audit/delivery.ts';
 import { upsertDefaultSloForService } from '../lib/services/slo.ts';
 import { listAcceptedPolicyGuardrailsForPlaybook } from '../lib/approvals/policy-suggestions.ts';
+
+const capturedLogs = [];
+const originalConsoleError = console.error;
+let unavailableError;
+try {
+  console.error = line => capturedLogs.push(line);
+  try { dataUnavailable('organization membership', { code: 'PGRST205', message: 'private table diagnostic' }); }
+  catch (error) { unavailableError = error; }
+  assert.ok(unavailableError instanceof Error);
+  assert.throws(() => dataUnavailable('organization membership', unavailableError), error => error === unavailableError);
+} finally { console.error = originalConsoleError; }
+assert.equal(capturedLogs.length, 1, 'Rethrowing a workspace failure must preserve its original diagnostic');
+assert.equal(JSON.parse(capturedLogs[0]).code, 'PGRST205');
+assert.doesNotMatch(unavailableError.message, /PGRST205|private table/);
+assert.doesNotMatch(capturedLogs[0], /private table/);
 
 const input = { playbookId: 'pb-test', rollbackPlan: 'Restore prior version', approvalNote: 'Reviewed' };
 let calls = 0;

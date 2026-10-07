@@ -45,8 +45,10 @@ export default async function ConsoleLayout({
         pinnedHrefs = prefs.pinnedHrefs;
       }
     } catch {
-      userEmail = null;
-      userDisplayName = null;
+      // A workspace lookup failure does not invalidate an authenticated identity.
+      // Page-level authorization still rejects unavailable membership data.
+      orgRole = null;
+      pinnedHrefs = [];
     }
   }
 

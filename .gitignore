@@ -48,3 +48,7 @@ CLAUDE.md
 
 # Local Netlify folder
 .netlify
+
+# Local Supabase CLI links and branch metadata
+/supabase/.temp/
+/supabase/.branches/
