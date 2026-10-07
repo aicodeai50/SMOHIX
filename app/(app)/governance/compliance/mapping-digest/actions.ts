@@ -1,5 +1,8 @@
 "use server";
 
+import { publicActionError } from "@/lib/security/public-action-error";
+
+
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -39,7 +42,7 @@ export async function runMappingDigestAction(formData: FormData) {
   });
 
   if (!result.ok) {
-    redirect(`${PATH}?error=${encodeURIComponent(result.reason)}`);
+    redirect(`${PATH}?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
 
   await appendAuditEvent({
@@ -89,7 +92,7 @@ export async function updateMappingDigestSettingsAction(formData: FormData) {
     .eq("id", orgContext.orgId);
 
   if (error) {
-    redirect(`${PATH}?error=${encodeURIComponent(error.message)}`);
+    redirect(`${PATH}?error=${encodeURIComponent(publicActionError(error.message))}`);
   }
 
   revalidatePath(PATH);

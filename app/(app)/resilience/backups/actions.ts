@@ -1,5 +1,8 @@
 "use server";
 
+import { publicActionError } from "@/lib/security/public-action-error";
+
+
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -30,7 +33,7 @@ export async function createBackupPolicyAction(formData: FormData) {
     ownerHint: String(formData.get("owner_hint") ?? ""),
   });
   if (!result.ok) {
-    redirect(`/resilience/backups?error=${encodeURIComponent(result.reason)}`);
+    redirect(`/resilience/backups?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
 
   await appendAuditEvent({
@@ -56,7 +59,7 @@ export async function deleteBackupPolicyAction(formData: FormData) {
   const id = String(formData.get("id") ?? "");
   const result = await deleteBackupPolicyForUser(user.id, id);
   if (!result.ok) {
-    redirect(`/resilience/backups?error=${encodeURIComponent(result.reason)}`);
+    redirect(`/resilience/backups?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
 
   await appendAuditEvent({

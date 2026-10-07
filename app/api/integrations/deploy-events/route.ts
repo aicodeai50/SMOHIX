@@ -58,7 +58,7 @@ export async function POST(req: Request) {
 
   if (error || !data) {
     return NextResponse.json(
-      { error: "create_failed", message: error?.message ?? "insert failed" },
+      { error: "create_failed", message: "The request could not complete. Please try again." },
       { status: 400 },
     );
   }

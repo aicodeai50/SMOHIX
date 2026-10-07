@@ -1,5 +1,8 @@
 "use server";
 
+import { publicActionError } from "@/lib/security/public-action-error";
+
+
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -35,7 +38,7 @@ export async function createAccessRuleAction(formData: FormData) {
     enabled: formData.get("enabled") !== "off",
   });
   if (!result.ok) {
-    redirect(`/governance/access?error=${encodeURIComponent(result.reason)}`);
+    redirect(`/governance/access?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
   await appendAuditEvent({
     event_type: "governance.access_rule.created",
@@ -58,7 +61,7 @@ export async function createAccessSnapshotAction(formData: FormData) {
     sourceSystem: String(formData.get("source_system") ?? ""),
   });
   if (!result.ok) {
-    redirect(`/governance/access?error=${encodeURIComponent(result.reason)}`);
+    redirect(`/governance/access?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
   await appendAuditEvent({
     event_type: "governance.access_snapshot.created",
@@ -81,7 +84,7 @@ export async function deleteAccessRuleAction(formData: FormData) {
   const id = String(formData.get("id") ?? "").trim();
   const result = await deleteAccessRuleForUser(user.id, id);
   if (!result.ok) {
-    redirect(`/governance/access?error=${encodeURIComponent(result.reason)}`);
+    redirect(`/governance/access?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
   await appendAuditEvent({
     event_type: "governance.access_rule.deleted",

@@ -56,7 +56,7 @@ export async function GET() {
 
   if (error) {
     return NextResponse.json(
-      { error: "list_failed", message: error.message },
+      { error: "list_failed", message: "The request could not complete. Please try again." },
       { status: 400 },
     );
   }
@@ -114,7 +114,7 @@ export async function POST(req: NextRequest) {
 
   if (error || !data) {
     return NextResponse.json(
-      { error: "create_failed", message: error?.message ?? "insert failed" },
+      { error: "create_failed", message: "The request could not complete. Please try again." },
       { status: 400 },
     );
   }

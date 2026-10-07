@@ -1,3 +1,4 @@
+import { publicActionError } from "@/lib/security/public-action-error";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
@@ -93,7 +94,7 @@ export async function POST(req: NextRequest) {
 
   if (!result.ok) {
     return NextResponse.json(
-      { error: result.reason },
+      { error: publicActionError(result.reason) },
       { status: 400, headers: OPERATIONAL_RESPONSE_HEADERS },
     );
   }

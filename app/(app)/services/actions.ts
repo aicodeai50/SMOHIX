@@ -1,5 +1,8 @@
 "use server";
 
+import { publicActionError } from "@/lib/security/public-action-error";
+
+
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -42,7 +45,7 @@ export async function createServiceAction(formData: FormData) {
   });
 
   if (!result.ok) {
-    redirect(`/services?error=${encodeURIComponent(result.reason)}`);
+    redirect(`/services?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
 
   revalidatePath("/services");
@@ -68,7 +71,7 @@ export async function deleteServiceAction(formData: FormData) {
 
   const result = await deleteServiceForUser(user.id, id);
   if (!result.ok) {
-    redirect(`/services?error=${encodeURIComponent(result.reason)}`);
+    redirect(`/services?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
 
   revalidatePath("/services");
@@ -108,7 +111,7 @@ export async function createServiceDependencyAction(formData: FormData) {
     orgId: orgContext.orgId,
   });
   if (!result.ok) {
-    redirect(`/services?error=${encodeURIComponent(result.reason)}`);
+    redirect(`/services?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
   revalidatePath("/services");
   redirect("/services");
@@ -133,7 +136,7 @@ export async function deleteServiceDependencyAction(formData: FormData) {
     orgId: orgContext.orgId,
   });
   if (!result.ok) {
-    redirect(`/services?error=${encodeURIComponent(result.reason)}`);
+    redirect(`/services?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
   revalidatePath("/services");
   redirect("/services");
@@ -163,7 +166,7 @@ export async function updateServiceSloAction(formData: FormData) {
     orgId: orgContext.orgId,
   });
   if (!result.ok) {
-    redirect(`/services?error=${encodeURIComponent(result.reason)}`);
+    redirect(`/services?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
   revalidatePath("/services");
   revalidatePath("/overview");

@@ -1,5 +1,8 @@
 "use server";
 
+import { publicActionError } from "@/lib/security/public-action-error";
+
+
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -40,7 +43,7 @@ export async function updateDeploymentProfileAction(formData: FormData) {
   });
 
   if (!result.ok) {
-    redirect(`/settings/deployment?error=${encodeURIComponent(result.reason)}`);
+    redirect(`/settings/deployment?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
 
   await appendAuditEvent({
@@ -95,7 +98,7 @@ export async function updateRetentionPolicyAction(formData: FormData) {
   });
 
   if (!result.ok) {
-    redirect(`/settings/deployment?error=${encodeURIComponent(result.reason)}`);
+    redirect(`/settings/deployment?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
 
   await appendAuditEvent({

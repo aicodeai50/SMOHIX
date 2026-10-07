@@ -25,10 +25,12 @@ export function NotificationPreferencesForm({
   });
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function save() {
     setLoading(true);
     setSaved(false);
+    setError(null);
     try {
       const res = await fetch("/api/user/notification-preferences", {
         method: "PUT",
@@ -36,6 +38,9 @@ export function NotificationPreferencesForm({
         body: JSON.stringify(prefs),
       });
       setSaved(res.ok);
+      if (!res.ok) setError("Preferences could not be saved. Please try again.");
+    } catch {
+      setError("Preferences could not be saved. Check your connection and try again.");
     } finally {
       setLoading(false);
     }
@@ -65,6 +70,7 @@ export function NotificationPreferencesForm({
         </Button>
         {saved ? <span className="text-xs text-success">Saved</span> : null}
       </div>
+      {error ? <p role="alert" className="text-sm text-muted">{error}</p> : null}
     </div>
   );
 }

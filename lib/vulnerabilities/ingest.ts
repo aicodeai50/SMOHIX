@@ -135,7 +135,7 @@ async function upsertFinding(
       .eq("id", existing.id);
 
     if (error) {
-      return { ok: false, status: 400, message: error.message };
+      return { ok: false, status: 400, message: "The finding could not be saved. Please try again." };
     }
 
     return {
@@ -156,7 +156,7 @@ async function upsertFinding(
     return {
       ok: false,
       status: 400,
-      message: insertError?.message ?? "Insert failed.",
+      message: "The finding could not be saved. Please try again.",
     };
   }
 

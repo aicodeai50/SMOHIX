@@ -1,5 +1,8 @@
 "use server";
 
+import { publicActionError } from "@/lib/security/public-action-error";
+
+
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -61,7 +64,7 @@ export async function assignControlAttestationAction(formData: FormData) {
   );
 
   if (!result.ok) {
-    redirect(`${ATTESTATIONS_PATH}?error=${encodeURIComponent(result.reason)}`);
+    redirect(`${ATTESTATIONS_PATH}?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
 
   revalidatePath(ATTESTATIONS_PATH);
@@ -115,7 +118,7 @@ export async function attestControlAction(formData: FormData) {
   );
 
   if (!result.ok) {
-    redirect(`${ATTESTATIONS_PATH}?error=${encodeURIComponent(result.reason)}`);
+    redirect(`${ATTESTATIONS_PATH}?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
 
   revalidatePath(ATTESTATIONS_PATH);

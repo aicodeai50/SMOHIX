@@ -1,5 +1,8 @@
 "use server";
 
+import { publicActionError } from "@/lib/security/public-action-error";
+
+
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -34,7 +37,7 @@ export async function runSlaRemindersAction() {
   });
 
   if (!result.ok) {
-    redirect(`/governance/compliance/sla-reminders?error=${encodeURIComponent(result.reason)}`);
+    redirect(`/governance/compliance/sla-reminders?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
 
   await appendAuditEvent({
@@ -83,7 +86,7 @@ export async function updateSlaReminderSettingsAction(formData: FormData) {
     .eq("id", orgContext.orgId);
 
   if (error) {
-    redirect(`/governance/compliance/sla-reminders?error=${encodeURIComponent(error.message)}`);
+    redirect(`/governance/compliance/sla-reminders?error=${encodeURIComponent(publicActionError(error.message))}`);
   }
 
   revalidatePath("/governance/compliance/sla-reminders");

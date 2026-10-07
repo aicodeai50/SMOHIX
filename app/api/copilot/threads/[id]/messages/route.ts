@@ -54,7 +54,7 @@ export async function GET(_req: Request, { params }: Ctx) {
 
     if (error) {
       return NextResponse.json(
-        { error: "list_failed", message: error.message },
+        { error: "list_failed", message: "The request could not complete. Please try again." },
         { status: 400 },
       );
     }
@@ -122,7 +122,7 @@ export async function POST(req: Request, { params }: Ctx) {
 
     if (insErr) {
       return NextResponse.json(
-        { error: "insert_failed", message: insErr.message },
+        { error: "insert_failed", message: "The message could not be saved. Please try again." },
         { status: 400 },
       );
     }

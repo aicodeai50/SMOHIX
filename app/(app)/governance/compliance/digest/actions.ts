@@ -1,5 +1,8 @@
 "use server";
 
+import { publicActionError } from "@/lib/security/public-action-error";
+
+
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -35,7 +38,7 @@ export async function runComplianceDigestAction() {
   });
 
   if (!result.ok) {
-    redirect(`/governance/compliance/digest?error=${encodeURIComponent(result.reason)}`);
+    redirect(`/governance/compliance/digest?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
 
   await appendAuditEvent({
@@ -80,7 +83,7 @@ export async function updateComplianceDigestWebhookAction(formData: FormData) {
     .eq("id", orgContext.orgId);
 
   if (error) {
-    redirect(`/governance/compliance/digest?error=${encodeURIComponent(error.message)}`);
+    redirect(`/governance/compliance/digest?error=${encodeURIComponent(publicActionError(error.message))}`);
   }
 
   revalidatePath("/governance/compliance/digest");

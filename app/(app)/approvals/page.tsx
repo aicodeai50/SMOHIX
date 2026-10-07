@@ -8,7 +8,6 @@ import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
 import { ConsoleAmbientBanner } from "@/components/console/ConsoleAmbientBanner";
 import { StateBeacon, SystemLabel } from "@/components/architecture";
-import { ExecutionBadge } from "@/components/guardrails/ExecutionBadge";
 import { ExecutionModeCallout } from "@/components/guardrails/ExecutionModeCallout";
 import { GuardedAutomationIdentity } from "@/components/guardrails/GuardedAutomationIdentity";
 import { listApprovalsForUser } from "@/lib/approvals/data";

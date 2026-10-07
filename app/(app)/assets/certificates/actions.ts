@@ -1,5 +1,8 @@
 "use server";
 
+import { publicActionError } from "@/lib/security/public-action-error";
+
+
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -34,7 +37,7 @@ export async function createCertificateAction(formData: FormData) {
   });
 
   if (!result.ok) {
-    redirect(`/assets/certificates?error=${encodeURIComponent(result.reason)}`);
+    redirect(`/assets/certificates?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
 
   await appendAuditEvent({
@@ -62,7 +65,7 @@ export async function deleteCertificateAction(formData: FormData) {
   const id = String(formData.get("id") ?? "").trim();
   const result = await deleteCertificateForUser(user.id, id);
   if (!result.ok) {
-    redirect(`/assets/certificates?error=${encodeURIComponent(result.reason)}`);
+    redirect(`/assets/certificates?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
 
   await appendAuditEvent({

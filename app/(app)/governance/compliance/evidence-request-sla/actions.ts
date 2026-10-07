@@ -1,5 +1,8 @@
 "use server";
 
+import { publicActionError } from "@/lib/security/public-action-error";
+
+
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -37,7 +40,7 @@ export async function deliverEvidenceRequestSlaDigestAction() {
   });
 
   if (!result.ok) {
-    redirect(`/governance/compliance/evidence-request-sla?error=${encodeURIComponent(result.reason)}`);
+    redirect(`/governance/compliance/evidence-request-sla?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
 
   revalidatePath("/governance/compliance/evidence-request-sla");

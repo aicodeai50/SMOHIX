@@ -1,3 +1,4 @@
+import { publicActionError } from "@/lib/security/public-action-error";
 import { createHash } from "node:crypto";
 
 import { appendAuditEvent } from "@/lib/audit/append";
@@ -110,7 +111,7 @@ export async function POST(request: Request) {
   const deliveryId = deliveryIdFromBody(rawBody);
   const claimed = await claimWebhookDelivery(supabase, deliveryId, eventName);
   if (!claimed.ok) {
-    return Response.json({ error: claimed.reason }, { status: 500 });
+    return Response.json({ error: publicActionError(claimed.reason) }, { status: 500 });
   }
   if (claimed.duplicate) {
     return Response.json({ received: true, duplicate: true, event: eventName });
@@ -135,7 +136,7 @@ export async function POST(request: Request) {
       });
       if (!sync.ok) {
         await releaseWebhookDelivery(supabase, deliveryId);
-        return Response.json({ error: sync.reason }, { status: 500 });
+        return Response.json({ error: publicActionError(sync.reason) }, { status: 500 });
       }
     }
 
@@ -165,7 +166,7 @@ export async function POST(request: Request) {
           });
           if (!sync.ok) {
             await releaseWebhookDelivery(supabase, deliveryId);
-            return Response.json({ error: sync.reason }, { status: 500 });
+            return Response.json({ error: publicActionError(sync.reason) }, { status: 500 });
           }
           await appendAuditEvent({
             event_type: "billing.top_up",

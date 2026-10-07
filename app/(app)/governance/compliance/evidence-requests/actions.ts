@@ -1,5 +1,8 @@
 "use server";
 
+import { publicActionError } from "@/lib/security/public-action-error";
+
+
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -60,7 +63,7 @@ export async function createEvidenceRequestAction(formData: FormData) {
     dueAtIso: dueRaw ? new Date(dueRaw).toISOString() : undefined,
   }, supabase);
 
-  if (!result.ok) redirect(`${PATH}?error=${encodeURIComponent(result.reason)}`);
+  if (!result.ok) redirect(`${PATH}?error=${encodeURIComponent(publicActionError(result.reason))}`);
 
   revalidatePath(PATH);
   redirect(`${PATH}?created=1`);

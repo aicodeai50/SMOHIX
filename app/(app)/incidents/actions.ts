@@ -1,5 +1,8 @@
 "use server";
 
+import { publicActionError } from "@/lib/security/public-action-error";
+
+
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -62,7 +65,7 @@ export async function createIncidentAction(formData: FormData) {
     orgId: orgContext.orgId,
   });
   if (!result.ok) {
-    redirect(`/incidents/new?error=${encodeURIComponent(result.reason)}`);
+    redirect(`/incidents/new?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
 
   revalidatePath("/incidents");

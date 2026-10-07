@@ -1,5 +1,8 @@
 "use server";
 
+import { publicActionError } from "@/lib/security/public-action-error";
+
+
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -65,7 +68,7 @@ export async function createThirdPartyVendorAction(formData: FormData) {
   );
 
   if (!result.ok) {
-    redirect(`${REGISTER_PATH}?error=${encodeURIComponent(result.reason)}`);
+    redirect(`${REGISTER_PATH}?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
 
   revalidatePath(REGISTER_PATH);
@@ -108,7 +111,7 @@ export async function updateThirdPartyVendorAction(formData: FormData) {
   );
 
   if (!result.ok) {
-    redirect(`${REGISTER_PATH}?error=${encodeURIComponent(result.reason)}`);
+    redirect(`${REGISTER_PATH}?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
 
   revalidatePath(REGISTER_PATH);

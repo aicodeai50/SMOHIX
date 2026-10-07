@@ -4,7 +4,6 @@ import { NextResponse } from "next/server";
 import { appendAuditEvent } from "@/lib/audit/append";
 import { buildPolicyDriftPack, policyDriftToCsv } from "@/lib/compliance/policy-drift";
 import { getOrgContextForUser } from "@/lib/org/context";
-import { isAuditorWorkspaceRole } from "@/lib/org/auditor-workspace";
 import { OPERATIONAL_RESPONSE_HEADERS } from "@/lib/security/operational-headers";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";

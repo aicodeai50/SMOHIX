@@ -16,36 +16,38 @@ export async function GET() {
       {
         ok: false,
         service: "smohix-db",
-        error: "supabase_not_configured",
+        error: "database_unavailable",
       },
       { status: 503, headers: OPERATIONAL_RESPONSE_HEADERS },
     );
   }
 
-  const { data, error } = await admin.rpc("zentro_db_health");
-  if (error) {
+  try {
+    const { data, error } = await admin.rpc("zentro_db_health");
+    if (error) {
+      return NextResponse.json(
+        {
+          ok: false,
+          service: "smohix-db",
+          error: "database_unavailable",
+        },
+        { status: 503, headers: OPERATIONAL_RESPONSE_HEADERS },
+      );
+    }
+
+    const payload = data as { ok?: boolean } | null;
+
     return NextResponse.json(
       {
-        ok: false,
+        ok: payload?.ok === true,
         service: "smohix-db",
-        error: error.message,
       },
-      { status: 503, headers: OPERATIONAL_RESPONSE_HEADERS },
+      {
+        status: payload?.ok === true ? 200 : 503,
+        headers: OPERATIONAL_RESPONSE_HEADERS,
+      },
     );
+  } catch {
+    return NextResponse.json({ ok: false, service: "smohix-db", error: "database_unavailable" }, { status: 503, headers: OPERATIONAL_RESPONSE_HEADERS });
   }
-
-  const payload = data as { ok?: boolean; postgres_version?: string; server_time?: string } | null;
-
-  return NextResponse.json(
-    {
-      ok: payload?.ok === true,
-      service: "smohix-db",
-      postgres_version: payload?.postgres_version ?? null,
-      server_time: payload?.server_time ?? null,
-    },
-    {
-      status: payload?.ok === true ? 200 : 503,
-      headers: OPERATIONAL_RESPONSE_HEADERS,
-    },
-  );
 }

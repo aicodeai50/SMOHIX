@@ -39,8 +39,8 @@ export async function GET() {
         {
           error: missingTable ? "persistence_unavailable" : "threads_load_failed",
           message: missingTable
-            ? "Conversation history is not available yet — apply the copilot_threads migration in Supabase."
-            : error.message,
+            ? "Conversation history is temporarily unavailable. Please try again later."
+            : "Conversation history could not load. Please try again.",
           threads: [],
         },
         { status: missingTable ? 503 : 500 },
@@ -88,7 +88,7 @@ export async function POST(req: Request) {
 
     if (error || !data) {
       return NextResponse.json(
-        { error: "create_failed", message: error?.message ?? "insert failed" },
+        { error: "create_failed", message: "The request could not complete. Please try again." },
         { status: 400 },
       );
     }

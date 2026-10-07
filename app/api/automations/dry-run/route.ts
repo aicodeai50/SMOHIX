@@ -113,7 +113,7 @@ export async function POST(req: NextRequest) {
 
   const robotBase = getRobotBackendUrl();
   let ok = true;
-  let detail = "Simulated dry-run (no robot URL configured).";
+  let detail = "Simulated dry-run. Automation execution is not connected.";
 
   if (robotBase) {
     try {

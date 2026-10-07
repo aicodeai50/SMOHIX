@@ -36,7 +36,7 @@ export async function DELETE(_req: Request, ctx: Ctx) {
     .eq("user_id", user.id);
 
   if (error) {
-    return NextResponse.json({ error: "revoke_failed", message: error.message }, { status: 400 });
+    return NextResponse.json({ error: "revoke_failed", message: "The request could not complete. Please try again." }, { status: 400 });
   }
 
   await appendAuditEvent({

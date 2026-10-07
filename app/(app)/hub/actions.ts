@@ -1,5 +1,8 @@
 "use server";
 
+import { publicActionError } from "@/lib/security/public-action-error";
+
+
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -42,7 +45,7 @@ export async function launchGuidedScenarioAction() {
       orgId: orgContext.orgId,
     });
     if (!incident.ok) {
-      redirect(`/hub?scenario_error=${encodeURIComponent(incident.reason)}`);
+      redirect(`/hub?scenario_error=${encodeURIComponent(publicActionError(incident.reason))}`);
     }
 
     const approval = await createApprovalRequest({
@@ -54,7 +57,7 @@ export async function launchGuidedScenarioAction() {
       orgId: orgContext.orgId,
     });
     if (!approval.ok) {
-      redirect(`/hub?scenario_error=${encodeURIComponent(approval.reason)}`);
+      redirect(`/hub?scenario_error=${encodeURIComponent(publicActionError(approval.reason))}`);
     }
 
     await insertAutomationDryRun(supabase, user.id, {

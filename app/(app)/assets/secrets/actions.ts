@@ -1,5 +1,8 @@
 "use server";
 
+import { publicActionError } from "@/lib/security/public-action-error";
+
+
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -33,7 +36,7 @@ export async function createSecretAction(formData: FormData) {
   });
 
   if (!result.ok) {
-    redirect(`/assets/secrets?error=${encodeURIComponent(result.reason)}`);
+    redirect(`/assets/secrets?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
 
   await appendAuditEvent({
@@ -61,7 +64,7 @@ export async function deleteSecretAction(formData: FormData) {
   const id = String(formData.get("id") ?? "").trim();
   const result = await deleteSecretForUser(user.id, id);
   if (!result.ok) {
-    redirect(`/assets/secrets?error=${encodeURIComponent(result.reason)}`);
+    redirect(`/assets/secrets?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
 
   await appendAuditEvent({

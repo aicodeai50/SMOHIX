@@ -761,7 +761,7 @@ export async function ingestAlertCreateIncident(
         return { ok: true, id: ex2.id as string, duplicate: true };
       }
     }
-    return { ok: false, status: 400, message: insertError.message };
+    return { ok: false, status: 400, message: "Alert ingestion could not be saved. Please try again." };
   }
 
   if (!inserted?.id) {

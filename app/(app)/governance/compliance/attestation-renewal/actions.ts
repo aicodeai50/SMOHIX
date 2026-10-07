@@ -1,5 +1,8 @@
 "use server";
 
+import { publicActionError } from "@/lib/security/public-action-error";
+
+
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -35,7 +38,7 @@ export async function runAttestationRenewalNudgesAction() {
   });
 
   if (!result.ok) {
-    redirect(`/governance/compliance/attestation-renewal?error=${encodeURIComponent(result.reason)}`);
+    redirect(`/governance/compliance/attestation-renewal?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
 
   await appendAuditEvent({

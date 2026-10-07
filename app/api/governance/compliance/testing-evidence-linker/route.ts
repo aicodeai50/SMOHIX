@@ -89,7 +89,7 @@ export async function GET(req: NextRequest) {
 }
 
 /** Record links in audit log for assessor workbook / bundle export trail. */
-export async function POST(req: NextRequest) {
+export async function POST() {
   if (!hasSupabaseAuth()) {
     return NextResponse.json(
       { error: "Not configured." },

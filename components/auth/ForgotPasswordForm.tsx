@@ -6,6 +6,8 @@ import { useState } from "react";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 
+import { publicAuthError } from "@/lib/auth/public-error";
+
 import { AuthCard } from "./AuthCard";
 
 export function ForgotPasswordForm() {
@@ -20,7 +22,7 @@ export function ForgotPasswordForm() {
     setError(null);
     setInfo(null);
     if (!configured) {
-      setError("Supabase is not configured. Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.");
+      setError("Account access is temporarily unavailable. Please try again later.");
       return;
     }
     setLoading(true);
@@ -31,13 +33,13 @@ export function ForgotPasswordForm() {
         redirectTo,
       });
       if (resetError) {
-        setError(resetError.message);
+        setError(publicAuthError(resetError));
         setLoading(false);
         return;
       }
       setInfo("If an account exists for that email, you will receive a link to choose a new password.");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      setError(publicAuthError(err));
     } finally {
       setLoading(false);
     }

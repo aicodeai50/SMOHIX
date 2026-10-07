@@ -1,5 +1,8 @@
 "use server";
 
+import { publicActionError } from "@/lib/security/public-action-error";
+
+
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -44,7 +47,7 @@ export async function updateIncidentStatusAction(formData: FormData) {
     });
     if (!result.ok) {
       redirect(
-        `/incidents/${encodeURIComponent(id)}?error=${encodeURIComponent(result.reason)}`,
+        `/incidents/${encodeURIComponent(id)}?error=${encodeURIComponent(publicActionError(result.reason))}`,
       );
     }
     revalidatePath("/incidents");
@@ -65,7 +68,7 @@ export async function updateIncidentStatusAction(formData: FormData) {
   const result = await updateIncidentStatusForUser(user.id, id, status);
   if (!result.ok) {
     redirect(
-      `/incidents/${encodeURIComponent(id)}?error=${encodeURIComponent(result.reason)}`,
+      `/incidents/${encodeURIComponent(id)}?error=${encodeURIComponent(publicActionError(result.reason))}`,
     );
   }
 
@@ -101,7 +104,7 @@ export async function updateIncidentContextAction(formData: FormData) {
     );
     if (!result.ok) {
       redirect(
-        `/incidents/${encodeURIComponent(id)}?error=${encodeURIComponent(result.reason)}`,
+        `/incidents/${encodeURIComponent(id)}?error=${encodeURIComponent(publicActionError(result.reason))}`,
       );
     }
     revalidatePath("/incidents");
@@ -126,7 +129,7 @@ export async function updateIncidentContextAction(formData: FormData) {
   });
   if (!result.ok) {
     redirect(
-      `/incidents/${encodeURIComponent(id)}?error=${encodeURIComponent(result.reason)}`,
+      `/incidents/${encodeURIComponent(id)}?error=${encodeURIComponent(publicActionError(result.reason))}`,
     );
   }
 
@@ -180,7 +183,7 @@ export async function addIncidentCommandEventAction(formData: FormData) {
   });
 
   if (!result.ok) {
-    redirect(`/incidents/${encodeURIComponent(id)}?error=${encodeURIComponent(result.reason)}`);
+    redirect(`/incidents/${encodeURIComponent(id)}?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
 
   const title =
@@ -230,7 +233,7 @@ export async function updateIncidentPostmortemAction(formData: FormData) {
   const result = await updateIncidentPostmortemForUser(user.id, id, postmortem);
   if (!result.ok) {
     redirect(
-      `/incidents/${encodeURIComponent(id)}?error=${encodeURIComponent(result.reason)}`,
+      `/incidents/${encodeURIComponent(id)}?error=${encodeURIComponent(publicActionError(result.reason))}`,
     );
   }
 
@@ -386,7 +389,7 @@ export async function setIncidentLegalHoldAction(formData: FormData) {
     reason,
   });
   if (!result.ok) {
-    redirect(`/incidents/${encodeURIComponent(id)}?error=${encodeURIComponent(result.reason)}`);
+    redirect(`/incidents/${encodeURIComponent(id)}?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
 
   await appendAuditEvent({
@@ -424,7 +427,7 @@ export async function clearIncidentLegalHoldAction(formData: FormData) {
 
   const result = await clearIncidentLegalHold(user.id, id, { orgId: orgContext.orgId });
   if (!result.ok) {
-    redirect(`/incidents/${encodeURIComponent(id)}?error=${encodeURIComponent(result.reason)}`);
+    redirect(`/incidents/${encodeURIComponent(id)}?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
 
   await appendAuditEvent({

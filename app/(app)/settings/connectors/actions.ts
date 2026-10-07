@@ -1,5 +1,8 @@
 "use server";
 
+import { publicActionError } from "@/lib/security/public-action-error";
+
+
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -315,7 +318,7 @@ export async function sendSlackTestMessageAction(formData: FormData) {
       `error=${encodeURIComponent(
         result.reason === "slack_not_configured"
           ? "Slack webhook not configured. Set SMOHIX_SLACK_WEBHOOK_URL in Railway variables."
-          : `Slack test failed: ${result.reason}`,
+          : `Slack test failed: ${publicActionError(result.reason)}`,
       )}`,
       wizard.suffix,
     ]

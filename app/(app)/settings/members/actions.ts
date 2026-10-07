@@ -1,5 +1,8 @@
 "use server";
 
+import { publicActionError } from "@/lib/security/public-action-error";
+
+
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -38,7 +41,7 @@ export async function createOrganizationAction(formData: FormData) {
   const name = String(formData.get("name") ?? "");
   const result = await createOrganizationRpc(name);
   if (!result.ok) {
-    redirect(`/settings/members?error=${encodeURIComponent(result.reason)}`);
+    redirect(`/settings/members?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
   await setActiveOrgCookie(result.orgId);
   await appendAuditEvent({
@@ -82,7 +85,7 @@ export async function addOrganizationMemberAction(formData: FormData) {
 
   const result = await addOrgMemberByEmail(orgContext.orgId, email, roleRaw);
   if (!result.ok) {
-    redirect(`/settings/members?error=${encodeURIComponent(result.reason)}`);
+    redirect(`/settings/members?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
 
   await appendAuditEvent({
@@ -111,7 +114,7 @@ export async function updateOrganizationMemberRoleAction(formData: FormData) {
 
   const result = await updateOrgMemberRole(orgContext.orgId, memberUserId, roleRaw);
   if (!result.ok) {
-    redirect(`/settings/members?error=${encodeURIComponent(result.reason)}`);
+    redirect(`/settings/members?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
 
   revalidatePath("/settings/members");
@@ -132,7 +135,7 @@ export async function removeOrganizationMemberAction(formData: FormData) {
 
   const result = await removeOrgMember(orgContext.orgId, memberUserId);
   if (!result.ok) {
-    redirect(`/settings/members?error=${encodeURIComponent(result.reason)}`);
+    redirect(`/settings/members?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
 
   revalidatePath("/settings/members");

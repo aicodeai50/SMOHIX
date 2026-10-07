@@ -1,5 +1,8 @@
 "use server";
 
+import { publicActionError } from "@/lib/security/public-action-error";
+
+
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -39,7 +42,7 @@ export async function createChangeWindowAction(formData: FormData) {
     notes: String(formData.get("notes") ?? ""),
   });
   if (!result.ok) {
-    redirect(`/changes?error=${encodeURIComponent(result.reason)}`);
+    redirect(`/changes?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
   await appendAuditEvent({
     event_type: "change.window.created",
@@ -61,7 +64,7 @@ export async function createChangeActionAction(formData: FormData) {
     executedAt: String(formData.get("executed_at") ?? ""),
   });
   if (!result.ok) {
-    redirect(`/changes?error=${encodeURIComponent(result.reason)}`);
+    redirect(`/changes?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
   await appendAuditEvent({
     event_type: "change.action.created",
@@ -84,7 +87,7 @@ export async function deleteChangeWindowAction(formData: FormData) {
   const id = String(formData.get("id") ?? "").trim();
   const result = await deleteChangeWindowForUser(user.id, id);
   if (!result.ok) {
-    redirect(`/changes?error=${encodeURIComponent(result.reason)}`);
+    redirect(`/changes?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
   await appendAuditEvent({
     event_type: "change.window.deleted",

@@ -1,5 +1,8 @@
 "use server";
 
+import { publicActionError } from "@/lib/security/public-action-error";
+
+
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -39,7 +42,7 @@ export async function createEvidenceBundleAction(formData: FormData) {
   });
 
   if (!result.ok) {
-    redirect(`/governance/compliance/bundles?error=${encodeURIComponent(result.reason)}`);
+    redirect(`/governance/compliance/bundles?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
 
   await appendAuditEvent({
@@ -84,7 +87,7 @@ export async function updateEvidenceWebhookAction(formData: FormData) {
     .eq("id", orgContext.orgId);
 
   if (error) {
-    redirect(`/governance/compliance/bundles?error=${encodeURIComponent(error.message)}`);
+    redirect(`/governance/compliance/bundles?error=${encodeURIComponent(publicActionError(error.message))}`);
   }
 
   revalidatePath("/governance/compliance/bundles");

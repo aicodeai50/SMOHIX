@@ -32,7 +32,7 @@ export async function GET() {
 
   const { data, error } = await query;
   if (error) {
-    return NextResponse.json({ error: "list_failed", message: error.message }, { status: 400 });
+    return NextResponse.json({ error: "list_failed", message: "The request could not complete. Please try again." }, { status: 400 });
   }
 
   return NextResponse.json({ policies: data ?? [] });
@@ -95,7 +95,7 @@ export async function POST(req: Request) {
 
   if (error || !data) {
     return NextResponse.json(
-      { error: "create_failed", message: error?.message ?? "insert failed" },
+      { error: "create_failed", message: "The request could not complete. Please try again." },
       { status: 400 },
     );
   }

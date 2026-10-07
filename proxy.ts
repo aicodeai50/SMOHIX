@@ -3,6 +3,7 @@ import type { NextRequest } from "next/server";
 
 import { safeNextPath } from "@/lib/auth/redirect";
 import { isProtectedPath } from "@/lib/auth/paths";
+import { requiresConfiguredProductionAuth } from "@/lib/auth/production-access";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { copyCookies, updateSupabaseSession } from "@/lib/supabase/middleware";
 import { SITE_PRIMARY_DOMAIN } from "@/lib/site-brand";
@@ -76,6 +77,20 @@ export async function proxy(request: NextRequest) {
   const method = request.method;
 
   if (!hasSupabaseAuth()) {
+    if (requiresConfiguredProductionAuth(pathname, process.env.NODE_ENV)) {
+      if (pathname.startsWith("/api/")) {
+        return NextResponse.json({ error: "account_service_unavailable" }, { status: 503, headers: { "Cache-Control": "no-store" } });
+      }
+      const url = request.nextUrl.clone();
+      url.pathname = "/auth/sign-in";
+      url.search = "";
+      url.searchParams.set("error", "auth");
+      url.searchParams.set("next", safeNextPath(pathname + request.nextUrl.search));
+      return noStoreHtml(NextResponse.redirect(url), pathname);
+    }
+    if (process.env.NODE_ENV === "production") {
+      return noStoreHtml(NextResponse.next(), pathname);
+    }
     const res = NextResponse.next();
     const existingTid =
       request.cookies.get("smohix_dev_tid")?.value ?? request.cookies.get("zentro_dev_tid")?.value;

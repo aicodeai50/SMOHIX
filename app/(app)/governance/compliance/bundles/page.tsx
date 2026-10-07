@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { ConsoleEmptyState } from "@/components/app/ConsoleEmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
 import { ConsolePanel } from "@/components/app/ConsolePanel";
-import { appBody, appLabel, appMeta, appOverline } from "@/lib/app-typography";
+import { appBody, appLabel, appMeta } from "@/lib/app-typography";
 import { listEvidenceBundlesForOrg } from "@/lib/compliance/evidence-bundle";
 import { getOrgContextForUser } from "@/lib/org/context";
 import { canManageMembers } from "@/lib/org/roles";

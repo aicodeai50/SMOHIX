@@ -1,5 +1,8 @@
 "use server";
 
+import { publicActionError } from "@/lib/security/public-action-error";
+
+
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -81,8 +84,8 @@ export async function createApprovalRequestAction(formData: FormData) {
 
   if (!result.ok) {
     const bounce = incidentId
-      ? `/approvals?incident=${encodeURIComponent(incidentId)}&error=create&message=${encodeURIComponent(result.reason)}`
-      : `/approvals?error=create&message=${encodeURIComponent(result.reason)}`;
+      ? `/approvals?incident=${encodeURIComponent(incidentId)}&error=create&message=${encodeURIComponent(publicActionError(result.reason))}`
+      : `/approvals?error=create&message=${encodeURIComponent(publicActionError(result.reason))}`;
     redirect(bounce);
   }
 

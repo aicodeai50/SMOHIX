@@ -50,7 +50,7 @@ export async function DELETE(req: NextRequest, { params }: Ctx) {
 
   if (error) {
     return NextResponse.json(
-      { error: "revoke_failed", message: error.message },
+      { error: "revoke_failed", message: "The request could not complete. Please try again." },
       { status: 400 },
     );
   }

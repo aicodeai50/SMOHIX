@@ -45,7 +45,7 @@ async function denyIfProxyUnauthenticated(
         {
           error: "Unauthorized",
           message:
-            "Sign in, or call with Authorization: Bearer <smohix_sk_…> or X-Smohix-Api-Key (see Settings → API keys). API key validation needs SUPABASE_SERVICE_ROLE_KEY on the server.",
+            "Sign in, or use a valid Smohix API key from Settings → API keys.",
         },
         { status: 401 },
       );
@@ -170,7 +170,7 @@ export async function proxyToUpstream(
   if (!base) {
     const label = kind === "reasoning" ? "Reasoning" : "Automation";
     return NextResponse.json(
-      { error: `${label} service is not connected (missing URL in environment).` },
+      { error: `${label} service is temporarily unavailable.` },
       { status: 503 },
     );
   }
@@ -202,7 +202,15 @@ export async function proxyToUpstream(
     });
 
     const resHeaders = new Headers();
-    const pass = ["content-type", "cache-control"];
+    resHeaders.set("Cache-Control", "no-store");
+    if (!upstream.ok) {
+      await upstream.body?.cancel();
+      const status = upstream.status >= 400 && upstream.status < 500 ? upstream.status : 502;
+      const retryAfter = upstream.headers.get("Retry-After");
+      if (status === 429 && retryAfter && /^\d{1,6}$/.test(retryAfter)) resHeaders.set("Retry-After", retryAfter);
+      return NextResponse.json({ error: "upstream_unavailable" }, { status, headers: resHeaders });
+    }
+    const pass = ["content-type"];
     for (const h of pass) {
       const v = upstream.headers.get(h);
       if (v) resHeaders.set(h, v);
@@ -213,8 +221,7 @@ export async function proxyToUpstream(
       statusText: upstream.statusText,
       headers: resHeaders,
     });
-  } catch (e) {
-    const msg = e instanceof Error ? e.message : String(e);
-    return NextResponse.json({ error: "upstream_fetch_failed", detail: msg }, { status: 502 });
+  } catch {
+    return NextResponse.json({ error: "upstream_fetch_failed" }, { status: 502, headers: { "Cache-Control": "no-store" } });
   }
 }

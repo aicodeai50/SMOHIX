@@ -8,6 +8,8 @@ import { safeNextPath } from "@/lib/auth/redirect";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 
+import { publicAuthError } from "@/lib/auth/public-error";
+
 import { AuthCard } from "./AuthCard";
 import { PasswordField } from "./PasswordField";
 
@@ -26,7 +28,7 @@ export function SignInForm() {
     e.preventDefault();
     setError(null);
     if (!configured) {
-      setError("Supabase is not configured. Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.");
+      setError("Account access is temporarily unavailable. Please try again later.");
       return;
     }
     setLoading(true);
@@ -37,14 +39,14 @@ export function SignInForm() {
         password,
       });
       if (signError) {
-        setError(signError.message);
+        setError(publicAuthError(signError));
         setLoading(false);
         return;
       }
       router.push(next);
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Sign-in failed");
+      setError(publicAuthError(err));
       setLoading(false);
     }
   }

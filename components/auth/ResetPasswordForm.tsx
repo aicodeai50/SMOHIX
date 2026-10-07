@@ -9,6 +9,8 @@ import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 
 import { AuthCard } from "./AuthCard";
 import { PasswordField } from "./PasswordField";
+import { publicAuthError } from "@/lib/auth/public-error";
+import { resolveRecoverySession } from "@/lib/auth/recovery-session";
 
 export function ResetPasswordForm() {
   const router = useRouter();
@@ -24,6 +26,7 @@ export function ResetPasswordForm() {
     if (!configured) return;
 
     const supabase = createBrowserSupabaseClient();
+    let active = true;
 
     const applyHashSession = async () => {
       const raw = window.location.hash.replace(/^#/, "");
@@ -41,17 +44,18 @@ export function ResetPasswordForm() {
       return true;
     };
 
-    void (async () => {
+    void resolveRecoverySession(async () => {
       const fromHash = await applyHashSession();
-      if (fromHash) {
-        setSessionReady(true);
-        return;
-      }
+      if (fromHash) return true;
       const {
         data: { session },
       } = await supabase.auth.getSession();
-      if (session) setSessionReady(true);
-    })();
+      return Boolean(session);
+    }).then(ready => {
+      if (!active) return;
+      if (ready) setSessionReady(true);
+      setCheckedSession(true);
+    });
 
     const {
       data: { subscription },
@@ -66,14 +70,14 @@ export function ResetPasswordForm() {
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => { active = false; subscription.unsubscribe(); };
   }, [configured]);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
     if (!configured) {
-      setError("Supabase is not configured.");
+      setError("Password reset is temporarily unavailable. Please try again later.");
       return;
     }
     if (password.length < 8) {
@@ -89,25 +93,23 @@ export function ResetPasswordForm() {
       const supabase = createBrowserSupabaseClient();
       const { error: updateError } = await supabase.auth.updateUser({ password });
       if (updateError) {
-        setError(updateError.message);
+        setError(publicAuthError(updateError));
         setLoading(false);
         return;
       }
       router.push("/auth/sign-in?notice=password-updated");
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not update password");
+      setError(publicAuthError(err));
       setLoading(false);
     }
   }
 
   if (!configured) {
     return (
-      <AuthCard title="Reset password" subtitle="Supabase is not configured for this environment.">
+      <AuthCard title="Reset password" subtitle="Password reset is temporarily unavailable.">
         <p className="text-sm text-muted">
-          Add <span className="font-mono text-foreground/90">NEXT_PUBLIC_SUPABASE_URL</span> and{" "}
-          <span className="font-mono text-foreground/90">NEXT_PUBLIC_SUPABASE_ANON_KEY</span> to{" "}
-          <span className="font-mono text-foreground/90">.env.local</span>.
+          Please try again later or contact Smohix support.
         </p>
       </AuthCard>
     );

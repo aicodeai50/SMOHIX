@@ -18,7 +18,7 @@ export async function enforceCopilotChatAccess(
     return NextResponse.json(
       {
         error: "auth_required",
-        message: "Cloud Copilot requires Supabase auth in production. Remove OPENAI_API_KEY or configure Supabase auth.",
+        message: "Copilot account access is temporarily unavailable. Please try again later.",
       },
       { status: 503 },
     );

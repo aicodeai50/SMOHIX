@@ -7,6 +7,8 @@ import { useRouter } from "next/navigation";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 
+import { publicAuthError } from "@/lib/auth/public-error";
+
 import { AuthCard } from "./AuthCard";
 import { PasswordField } from "./PasswordField";
 
@@ -26,7 +28,7 @@ export function SignUpForm() {
     setError(null);
     setInfo(null);
     if (!configured) {
-      setError("Supabase is not configured. Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.");
+      setError("Account access is temporarily unavailable. Please try again later.");
       return;
     }
     if (password.length < 8) {
@@ -47,7 +49,7 @@ export function SignUpForm() {
         },
       });
       if (signError) {
-        setError(signError.message);
+        setError(publicAuthError(signError));
         setLoading(false);
         return;
       }
@@ -59,7 +61,7 @@ export function SignUpForm() {
       setInfo("Check your email for a confirmation link to finish setting up your account.");
       setLoading(false);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Sign-up failed");
+      setError(publicAuthError(err));
       setLoading(false);
     }
   }
