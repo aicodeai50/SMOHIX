@@ -7,6 +7,7 @@ import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { AppIcon, type AppIconName } from "@/components/icons/AppIcon";
 import { getCommandSnapshot, commandAvailability } from "@/lib/hq/command-status";
 import type { ProductStatusResult } from "@/lib/status/types";
+import { commandChanges, newestCommandResults, type CommandChange } from "@/lib/hq/command-activity";
 
 export type CommandProduct = { id: string; name: string; href: string };
 const SERVICE_ICONS: Record<string, AppIconName> = {
@@ -21,6 +22,9 @@ export function FutureCommandCore({ products }: { products: CommandProduct[] }) 
   const [receivedAt, setReceivedAt] = useState<number | null>(null);
   const [now, setNow] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [inView, setInView] = useState(false);
+  const [changes, setChanges] = useState<CommandChange[]>([]);
+  const previous = useRef<ProductStatusResult[]>([]);
   const busy = useRef(false);
   const panel = useRef<HTMLDivElement>(null);
   const visible = useRef(false);
@@ -48,7 +52,11 @@ export function FutureCommandCore({ products }: { products: CommandProduct[] }) 
         throw new Error("Could not read service checks.");
       }
       const timestamp = Date.now();
-      setStatuses(body.products);
+      const latest = newestCommandResults(previous.current, body.products);
+      const updates = commandChanges(previous.current, latest).filter(change => products.some(product => product.id === change.productId));
+      if (updates.length) setChanges(history => [...updates.reverse(), ...history].slice(0, 4));
+      previous.current = latest;
+      setStatuses(latest);
       setReceivedAt(timestamp);
       setNow(timestamp);
       setError(null);
@@ -61,7 +69,7 @@ export function FutureCommandCore({ products }: { products: CommandProduct[] }) 
         if (!controller.signal.aborted) setPending(false);
       }
     }
-  }, []);
+  }, [products]);
 
   useEffect(() => {
     const refresh = () => {
@@ -72,6 +80,7 @@ export function FutureCommandCore({ products }: { products: CommandProduct[] }) 
     };
     const observer = new IntersectionObserver(entries => {
       visible.current = entries[0]?.isIntersecting ?? false;
+      setInView(visible.current);
       if (visible.current) refresh();
     });
     if (panel.current) observer.observe(panel.current);
@@ -95,7 +104,7 @@ export function FutureCommandCore({ products }: { products: CommandProduct[] }) 
   const { results, reachable, attention, verified, feed } = snapshot;
 
   return (
-    <div ref={panel} className="smohix-live-command hq-command-panel">
+    <div ref={panel} className="smohix-live-command hq-command-panel" data-motion={inView && !paused ? "active" : "paused"} data-checking={pending}>
       <div className="smohix-live-command__frame hq-command">
         <header className="hq-command__top">
           <div className="hq-command__identity">
@@ -107,7 +116,7 @@ export function FutureCommandCore({ products }: { products: CommandProduct[] }) 
           </div>
           <span className="hq-command__feed" data-feed={feed}>
             <span className="hq-command__live-dot" aria-hidden />
-            {feed === "live" ? "Live" : feed === "paused" ? "Paused" : feed === "stale" ? "Delayed" : "Connecting"}
+            {pending ? "Checking" : feed === "live" ? "Live" : feed === "paused" ? "Paused" : feed === "stale" ? "Delayed" : "Connecting"}
           </span>
         </header>
 
@@ -117,6 +126,10 @@ export function FutureCommandCore({ products }: { products: CommandProduct[] }) 
               <svg viewBox="0 0 160 160" aria-hidden>
                 <circle className="hq-command__dial-guide" cx="80" cy="80" r="72" />
                 <circle className="hq-command__dial-inner" cx="80" cy="80" r="51" />
+                <g className="hq-command__scan" data-feed={feed}>
+                  <circle className="hq-command__scan-trail" cx="80" cy="80" r="72" pathLength="100" strokeDasharray="7 93" transform="rotate(-90 80 80)" />
+                  <circle className="hq-command__scan-light" cx="80" cy="8" r="1.7" />
+                </g>
                 {Array.from({ length: 48 }, (_, index) => <line key={index}
                   className="hq-command__dial-tick" x1="80" y1="3" x2="80" y2={index % 4 === 0 ? "7" : "5"}
                   transform={`rotate(${index * 7.5} 80 80)`} />)}
@@ -180,6 +193,17 @@ export function FutureCommandCore({ products }: { products: CommandProduct[] }) 
             </span>
           </div>
           <p className="hq-command__status-note">Checks refresh every minute while visible. Endpoint reachability does not verify every product function.</p>
+          <section className="hq-command__activity" aria-label="Recent service changes">
+            <div className="hq-command__activity-heading"><p className="hq-command__eyebrow">Service activity</p><span>This visit</span></div>
+            <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
+              {changes[0] && `${products.find(product => product.id === changes[0].productId)?.name ?? "Service"}: ${commandAvailability(changes[0].to)}`}
+            </div>
+            {changes.length ? <ul>{changes.map(change => <li key={change.id} data-status={change.to}>
+              <i aria-hidden /><div><strong>{products.find(product => product.id === change.productId)?.name ?? "Service"}</strong>
+                <span>{commandAvailability(change.from)} <span aria-hidden>→</span> {commandAvailability(change.to)}</span></div>
+              <time dateTime={new Date(change.at).toISOString()}>{now - change.at < 60_000 ? "Just now" : `${Math.floor((now - change.at) / 60_000)}m ago`}</time>
+            </li>)}</ul> : <p className="hq-command__activity-empty">Monitoring for service changes. Updates appear when a newer check confirms a change.</p>}
+          </section>
         </div>
         <footer className="hq-command__footer">
           <Link href="/status">View full status <ArrowUpRight size={14} aria-hidden /></Link>

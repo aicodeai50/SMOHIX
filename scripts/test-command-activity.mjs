@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import { commandChanges, newestCommandResults } from '../lib/hq/command-activity.ts';
+const row=(status,time)=>({productId:'private-ai',status,lastChecked:time,label:'Smohix PRI',detail:'',href:'/products/private-ai'});
+const initial=[row('operational','2026-10-07T10:00:00Z')];
+assert.deepEqual(commandChanges([],initial),[],'first check is not an incident');
+assert.deepEqual(commandChanges(initial,initial),[],'cached checks create no duplicate activity');
+assert.deepEqual(commandChanges(initial,[row('unavailable','2026-10-07T09:59:00Z')]),[],'old checks cannot create new activity');
+assert.deepEqual(commandChanges(initial,[row('unavailable','invalid')]),[]);
+const preserved = newestCommandResults(initial,[row('unavailable','2026-10-07T09:59:00Z')]);
+assert.deepEqual(preserved,initial,'older checks cannot replace the latest baseline');
+assert.deepEqual(commandChanges(preserved,initial),[],'returning to a cached check cannot invent a recovery');
+const outage=[row('unavailable','2026-10-07T10:01:00Z')];
+assert.equal(commandChanges(initial,outage)[0].to,'unavailable');
+assert.equal(commandChanges(outage,[row('operational','2026-10-07T10:02:00Z')])[0].from,'unavailable');
+console.log('command activity: real transitions, baseline and cached/older check handling passed');
