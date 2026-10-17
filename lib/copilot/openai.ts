@@ -3,6 +3,7 @@ type ChatMessage = { role: "user" | "assistant" | "system"; content: string };
 export async function completeOpenAIChat(
   apiKey: string,
   messages: { role: string; content: string }[],
+  signal?: AbortSignal,
 ): Promise<string> {
   const model =
     process.env.OPENAI_CHAT_MODEL?.trim() ||
@@ -23,6 +24,9 @@ export async function completeOpenAIChat(
 
   const res = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
+    signal: AbortSignal.any([AbortSignal.timeout(60_000), ...(signal ? [signal] : [])]),
+    redirect: "error",
+    cache: "no-store",
     headers: {
       Authorization: `Bearer ${apiKey}`,
       "Content-Type": "application/json",
@@ -34,10 +38,11 @@ export async function completeOpenAIChat(
     }),
   });
 
-  const raw = await res.text();
   if (!res.ok) {
-    throw new Error(raw.slice(0, 400) || `openai_http_${res.status}`);
+    await res.body?.cancel();
+    throw new Error("model_unavailable");
   }
+  const raw = await res.text();
 
   let parsed: { choices?: { message?: { content?: string } }[] };
   try {
@@ -57,6 +62,7 @@ export async function completeOpenAIChat(
 export async function* streamOpenAIChatDeltas(
   apiKey: string,
   messages: { role: string; content: string }[],
+  signal?: AbortSignal,
 ): AsyncGenerator<string, void, undefined> {
   const model =
     process.env.OPENAI_CHAT_MODEL?.trim() ||
@@ -77,6 +83,9 @@ export async function* streamOpenAIChatDeltas(
 
   const res = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
+    signal: AbortSignal.any([AbortSignal.timeout(60_000), ...(signal ? [signal] : [])]),
+    redirect: "error",
+    cache: "no-store",
     headers: {
       Authorization: `Bearer ${apiKey}`,
       "Content-Type": "application/json",
@@ -90,8 +99,8 @@ export async function* streamOpenAIChatDeltas(
   });
 
   if (!res.ok) {
-    const raw = await res.text();
-    throw new Error(raw.slice(0, 400) || `openai_http_${res.status}`);
+    await res.body?.cancel();
+    throw new Error("model_unavailable");
   }
 
   const body = res.body;
@@ -102,49 +111,47 @@ export async function* streamOpenAIChatDeltas(
   const reader = body.getReader();
   const decoder = new TextDecoder();
   let buffer = "";
-
+  let finished = false;
+  let sawText = false;
+  const consume = (line: string): { done?: boolean; text?: string } => {
+    const trimmed = line.trim();
+    if (!trimmed.startsWith("data:")) return {};
+    const data = trimmed.slice(5).trim();
+    if (data === "[DONE]") {
+      if (!sawText) throw new Error("model_empty_completion");
+      return { done: true };
+    }
+    let parsed: { error?: unknown; choices?: { delta?: { content?: string; refusal?: string }; finish_reason?: string | null }[] };
+    try { parsed = JSON.parse(data); } catch { throw new Error("model_invalid_stream"); }
+    if (parsed.error) throw new Error("model_unavailable");
+    if (parsed.choices?.some(choice => choice.finish_reason)) finished = true;
+    const text = parsed.choices?.[0]?.delta?.content ?? parsed.choices?.[0]?.delta?.refusal;
+    if (typeof text === "string" && text) { sawText = true; return { text }; }
+    return {};
+  };
   try {
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
       buffer += decoder.decode(value, { stream: true });
+      if (buffer.length > 128_000) throw new Error("model_invalid_stream");
       const lines = buffer.split("\n");
       buffer = lines.pop() ?? "";
       for (const line of lines) {
-        const trimmed = line.trim();
-        if (!trimmed.startsWith("data:")) continue;
-        const data = trimmed.slice(5).trim();
-        if (data === "[DONE]") return;
-        try {
-          const parsed = JSON.parse(data) as {
-            choices?: { delta?: { content?: string } }[];
-          };
-          const delta = parsed.choices?.[0]?.delta?.content;
-          if (delta) yield delta;
-        } catch {
-          /* ignore malformed chunk */
-        }
+        const event = consume(line);
+        if (event.done) return;
+        if (event.text) yield event.text;
       }
     }
-
+    buffer += decoder.decode();
     if (buffer.trim()) {
-      const trimmed = buffer.trim();
-      if (trimmed.startsWith("data:")) {
-        const data = trimmed.slice(5).trim();
-        if (data !== "[DONE]") {
-          try {
-            const parsed = JSON.parse(data) as {
-              choices?: { delta?: { content?: string } }[];
-            };
-            const delta = parsed.choices?.[0]?.delta?.content;
-            if (delta) yield delta;
-          } catch {
-            /* ignore */
-          }
-        }
-      }
+      const event = consume(buffer);
+      if (event.done) return;
+      if (event.text) yield event.text;
     }
+    if (!finished || !sawText) throw new Error("model_stream_interrupted");
   } finally {
+    await reader.cancel().catch(() => {});
     reader.releaseLock();
   }
 }

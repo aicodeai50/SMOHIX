@@ -1,3 +1,5 @@
+import { readCopilotBody } from "@/lib/copilot/body";
+import { COPILOT_UNAVAILABLE_MESSAGE, createCopilotStream } from "@/lib/copilot/stream";
 import { NextResponse } from "next/server";
 
 import { enforceCopilotChatAccess } from "@/lib/copilot/chat-guard";
@@ -10,10 +12,6 @@ import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
-
-function sseLine(obj: unknown): Uint8Array {
-  return new TextEncoder().encode(`data: ${JSON.stringify(obj)}\n\n`);
-}
 
 /**
  * Copilot chat: OpenAI when OPENAI_API_KEY is set; else reasoning service when
@@ -32,9 +30,10 @@ export async function POST(req: Request) {
 
   let body: unknown;
   try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ error: "invalid_json" }, { status: 400 });
+    body = await readCopilotBody(req);
+  } catch (error) {
+    const tooLarge = error instanceof Error && error.message === "body_too_large";
+    return NextResponse.json({ error: tooLarge ? "conversation_too_large" : "invalid_json" }, { status: tooLarge ? 413 : 400 });
   }
 
   const input = parseCopilotInput(body);
@@ -60,41 +59,29 @@ export async function POST(req: Request) {
   const wantStream = input.stream;
 
   if (wantStream) {
-    const stream = new ReadableStream<Uint8Array>({
-      async start(controller) {
-        try {
-          if (openaiKey) {
-            for await (const delta of streamOpenAIChatDeltas(openaiKey, thread)) {
-              controller.enqueue(sseLine({ type: "delta", text: delta }));
-            }
-            controller.enqueue(sseLine({ type: "done", source: "openai" }));
-            return;
-          }
-
-          const reasoning = await completeReasoningChat(thread);
-          if (reasoning) {
-            controller.enqueue(sseLine({ type: "delta", text: reasoning.text }));
-            controller.enqueue(sseLine({ type: "done", source: "reasoning" }));
-            return;
-          }
-
-          const offline = buildOfflineReply(lastUser, thread);
-          controller.enqueue(sseLine({ type: "delta", text: offline }));
-          controller.enqueue(sseLine({ type: "done", source: "offline" }));
-        } catch (e) {
-          const msg = e instanceof Error ? e.message : "copilot_stream_failed";
-          controller.enqueue(sseLine({ type: "error", message: msg }));
-        } finally {
-          controller.close();
+    const stream = createCopilotStream(req.signal, async function* (signal) {
+      if (openaiKey) {
+        for await (const delta of streamOpenAIChatDeltas(openaiKey, thread, signal)) {
+          yield { type: "delta", text: delta };
         }
-      },
+        yield { type: "done", source: "openai" };
+        return;
+      }
+      const reasoning = await completeReasoningChat(thread, signal);
+      if (signal.aborted) return;
+      if (reasoning) {
+        yield { type: "delta", text: reasoning.text };
+        yield { type: "done", source: "reasoning" };
+        return;
+      }
+      yield { type: "delta", text: buildOfflineReply(lastUser, thread) };
+      yield { type: "done", source: "offline" };
     });
 
     return new Response(stream, {
       headers: {
         "Content-Type": "text/event-stream; charset=utf-8",
-        "Cache-Control": "no-cache, no-transform",
-        Connection: "keep-alive",
+        "Cache-Control": "no-store, no-transform",
         "X-Accel-Buffering": "no",
       },
     });
@@ -102,18 +89,17 @@ export async function POST(req: Request) {
 
   if (openaiKey) {
     try {
-      const text = await completeOpenAIChat(openaiKey, thread);
+      const text = await completeOpenAIChat(openaiKey, thread, req.signal);
       return NextResponse.json({ message: text, source: "openai" });
-    } catch (e) {
-      const msg = e instanceof Error ? e.message : "openai_error";
+    } catch {
       return NextResponse.json(
-        { error: "openai_failed", message: msg },
+        { error: "model_unavailable", message: COPILOT_UNAVAILABLE_MESSAGE },
         { status: 502 },
       );
     }
   }
 
-  const reasoning = await completeReasoningChat(thread);
+  const reasoning = await completeReasoningChat(thread, req.signal);
   if (reasoning) {
     return NextResponse.json({ message: reasoning.text, source: "reasoning" });
   }

@@ -83,7 +83,7 @@ export default async function CompliancePage({
       <PageHeader
         eyebrow="Governance"
         title="Compliance control mapping"
-        description="Representative SOC 2, ISO 27001, PCI DSS, HIPAA, NIST CSF, CIS v8, CMMC L2, and GDPR Article 32 controls tagged from audit_log events and accepted automation policies (last 30 days)."
+        description="Representative SOC 2, ISO 27001, PCI DSS, HIPAA, NIST CSF, CIS v8, CMMC L2, and GDPR Article 32 controls tagged from audit records events and accepted automation policies (last 30 days)."
       />
       <ComplianceHubLinks />
       <div className="mb-6 flex flex-wrap items-center gap-2">

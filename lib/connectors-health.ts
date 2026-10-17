@@ -3,10 +3,8 @@ import { getRobotBackendUrl, getShBackendApiUrl } from "@/lib/backend-urls";
 const TIMEOUT_MS = 8000;
 
 async function probe(
-  base: string,
   paths: string[],
-): Promise<{ ok: boolean; ms: number; pathUsed: string; snippet: string }> {
-  let lastErr = "unreachable";
+): Promise<{ ok: boolean; ms: number }> {
   for (const path of paths) {
     const start = Date.now();
     try {
@@ -17,27 +15,23 @@ async function probe(
         headers: { accept: "application/json, text/plain, */*" },
       });
       const ms = Date.now() - start;
-      const snippet = (await res.text()).slice(0, 160);
+      await res.body?.cancel();
       if (res.ok) {
-        return { ok: true, ms, pathUsed: path, snippet };
+        return { ok: true, ms };
       }
-      lastErr = `HTTP ${res.status}`;
-    } catch (e) {
-      lastErr = e instanceof Error ? e.message : String(e);
-    }
+    } catch { /* Only aggregate reachability leaves the server. */ }
   }
-  return { ok: false, ms: 0, pathUsed: paths[0] ?? base, snippet: lastErr };
+  return { ok: false, ms: 0 };
 }
 
 export type ConnectorRow = {
   id: "reasoning" | "robot";
   name: string;
   role: string;
-  baseUrl: string | null;
+  configured: boolean;
   ok: boolean | null;
   ms: number | null;
   detail: string;
-  docsPath?: string;
 };
 
 export async function getConnectorHealthRows(): Promise<ConnectorRow[]> {
@@ -48,7 +42,7 @@ export async function getConnectorHealthRows(): Promise<ConnectorRow[]> {
     id: "reasoning",
     name: "Reasoning",
     role: "AI reasoning & Copilot",
-    baseUrl: reasoningBase,
+    configured: Boolean(reasoningBase),
     ok: null,
     ms: null,
     detail: "",
@@ -58,34 +52,35 @@ export async function getConnectorHealthRows(): Promise<ConnectorRow[]> {
     id: "robot",
     name: "Automation",
     role: "Execution & workflows",
-    baseUrl: robotBase,
+    configured: Boolean(robotBase),
     ok: null,
     ms: null,
     detail: "",
-    docsPath: "/docs",
   };
 
-  if (reasoningBase) {
-    const r = await probe(reasoningBase, [
-      `${reasoningBase}/health`,
-      reasoningBase,
-    ]);
+  const [reasoningProbe, robotProbe] = await Promise.all([
+    reasoningBase ? probe([`${reasoningBase}/health`]) : null,
+    robotBase ? probe([`${robotBase}/health`]) : null,
+  ]);
+
+  if (reasoningProbe) {
+    const r = reasoningProbe;
     reasoning.ok = r.ok;
     reasoning.ms = r.ok ? r.ms : null;
-    reasoning.detail = r.snippet || r.pathUsed;
+    reasoning.detail = r.ok ? "Connection verified." : "Connection could not be verified. Contact your workspace administrator.";
   } else {
     reasoning.detail =
-      "Not connected — add the reasoning service URL in your deployment settings.";
+      "Not connected. Contact your workspace administrator.";
   }
 
-  if (robotBase) {
-    const r = await probe(robotBase, [`${robotBase}/health`, robotBase]);
+  if (robotProbe) {
+    const r = robotProbe;
     robot.ok = r.ok;
     robot.ms = r.ok ? r.ms : null;
-    robot.detail = r.snippet || r.pathUsed;
+    robot.detail = r.ok ? "Connection verified." : "Connection could not be verified. Contact your workspace administrator.";
   } else {
     robot.detail =
-      "Not connected — add the automation service URL in your deployment settings.";
+      "Not connected. Contact your workspace administrator.";
   }
 
   return [reasoning, robot];

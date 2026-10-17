@@ -22,7 +22,7 @@ export async function executeRobotAction(base: string, input: {
         message: "Execution was not confirmed by the automation service. Verify its activity before retrying." };
     }
     const result = body as { receipt?: unknown; steps?: unknown };
-    if (result.steps !== undefined && (!Array.isArray(result.steps) || result.steps.some(step => !step || typeof step !== "object" || Array.isArray(step)))) {
+    if (!Array.isArray(result.steps) || result.steps.length === 0 || result.steps.some(step => !step || typeof step !== "object" || Array.isArray(step))) {
       return { ok: false, uncertain: true, message: "The automation service returned incomplete step evidence. Verify its activity before retrying." };
     }
     const steps = Array.isArray(result.steps) ? result.steps.filter((step): step is { label?: string; status?: string; output?: unknown } =>

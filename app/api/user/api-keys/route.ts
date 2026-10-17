@@ -1,3 +1,4 @@
+import { applyUserOrOrgScope } from "@/lib/org/apply-scope-query";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
@@ -48,7 +49,7 @@ export async function GET(req: NextRequest) {
     .select("id, name, key_prefix, created_at, last_used_at, revoked_at")
     .order("created_at", { ascending: false });
 
-  query = orgContext.orgId ? query.or(`user_id.eq.${user.id},org_id.eq.${orgContext.orgId}`) : query.eq("user_id", user.id);
+  query = applyUserOrOrgScope(query, user.id, orgContext.orgId);
 
   const { data, error } = await query;
 

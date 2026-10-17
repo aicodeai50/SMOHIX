@@ -124,7 +124,7 @@ export default async function SettingsDeploymentPage({
       ) : !profile ? (
         <ConsoleEmptyState
           title="Profile unavailable"
-          description="Apply migration #21 (FedRAMP deployment profile) on Supabase, then reload."
+          description="Deployment settings are temporarily unavailable. Contact your workspace administrator."
         />
       ) : (
         <div className="grid gap-6 lg:grid-cols-2">
@@ -250,9 +250,7 @@ export default async function SettingsDeploymentPage({
           <ConsolePanel title="Data retention">
             <p className={`mb-4 ${appMeta} text-muted`}>
               Effective retention for org-scoped audit events and closed incidents. Tier defaults apply when
-              overrides are blank. Scheduled purge uses{" "}
-              <span className="font-mono text-foreground/80">apply_org_retention_policy(org_id)</span>{" "}
-              (migration #23).
+              overrides are blank. Retention changes take effect when scheduled processing runs.
             </p>
             <dl className={`mb-6 grid gap-4 sm:grid-cols-2 ${appBody}`}>
               <div>

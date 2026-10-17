@@ -44,7 +44,7 @@ export async function createOrganizationAction(formData: FormData) {
     redirect(`/settings/members?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
   await setActiveOrgCookie(result.orgId);
-  await appendAuditEvent({
+  const audit = await appendAuditEvent({
     event_type: "org.created",
     user_id: user.id,
     org_id: result.orgId,
@@ -52,7 +52,7 @@ export async function createOrganizationAction(formData: FormData) {
   });
   revalidatePath("/settings/members");
   revalidatePath("/approvals");
-  redirect("/settings/members?created=1");
+  redirect(audit.ok ? "/settings/members?created=1" : "/settings/members?created=1&audit_pending=1");
 }
 
 export async function setActiveOrganizationAction(formData: FormData) {
@@ -88,7 +88,7 @@ export async function addOrganizationMemberAction(formData: FormData) {
     redirect(`/settings/members?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
 
-  await appendAuditEvent({
+  const audit = await appendAuditEvent({
     event_type: "org.member_added",
     user_id: user.id,
     org_id: orgContext.orgId,
@@ -96,7 +96,7 @@ export async function addOrganizationMemberAction(formData: FormData) {
   });
 
   revalidatePath("/settings/members");
-  redirect("/settings/members?member_added=1");
+  redirect(audit.ok ? "/settings/members?member_added=1" : "/settings/members?member_added=1&audit_pending=1");
 }
 
 export async function updateOrganizationMemberRoleAction(formData: FormData) {
@@ -117,8 +117,15 @@ export async function updateOrganizationMemberRoleAction(formData: FormData) {
     redirect(`/settings/members?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
 
+  const audit = await appendAuditEvent({
+    event_type: "org.member_role_changed",
+    user_id: user.id,
+    org_id: orgContext.orgId,
+    details: { member_user_id: memberUserId, role: roleRaw },
+  });
+
   revalidatePath("/settings/members");
-  redirect("/settings/members");
+  redirect(audit.ok ? "/settings/members" : "/settings/members?audit_pending=1");
 }
 
 export async function removeOrganizationMemberAction(formData: FormData) {
@@ -138,6 +145,13 @@ export async function removeOrganizationMemberAction(formData: FormData) {
     redirect(`/settings/members?error=${encodeURIComponent(publicActionError(result.reason))}`);
   }
 
+  const audit = await appendAuditEvent({
+    event_type: "org.member_removed",
+    user_id: user.id,
+    org_id: orgContext.orgId,
+    details: { member_user_id: memberUserId },
+  });
+
   revalidatePath("/settings/members");
-  redirect("/settings/members");
+  redirect(audit.ok ? "/settings/members" : "/settings/members?audit_pending=1");
 }

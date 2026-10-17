@@ -66,7 +66,7 @@ export default async function KpiTrendsPage() {
       <PageHeader
         eyebrow="Governance"
         title="Compliance KPI trend dashboards"
-        description="Weekly gap remediation velocity and attestation closure from live audit_log and remediation records; per-framework readiness trends from measured period-over-period baselines."
+        description="Weekly gap remediation velocity and attestation closure from live audit records and remediation records; per-framework readiness trends from measured period-over-period baselines."
       />
       <ComplianceHubLinks className={`-mt-4 mb-6 ${appBody}`} />
       {readOnly ? (

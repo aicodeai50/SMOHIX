@@ -62,7 +62,7 @@ export default async function EvidenceLineagePage() {
       <PageHeader
         eyebrow="Governance"
         title="Compliance evidence lineage"
-        description="End-to-end trace from org audit_log and accepted policies → control mapping → tamper-evident evidence bundles → assessor workbook ZIP."
+        description="End-to-end trace from org audit records and accepted policies → control mapping → tamper-evident evidence bundles → assessor workbook ZIP."
       />
       <ComplianceHubLinks className={`-mt-4 mb-6 ${appBody}`} />
       {readOnly ? (

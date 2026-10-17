@@ -93,7 +93,7 @@ export async function listAutomationExecutionsForUser(
   if (scopeFilter) {
     query = query.or(scopeFilter);
   } else {
-    query = query.eq("user_id", userId);
+    query = query.eq("user_id", userId).is("org_id", null);
   }
 
   const { data, error } = await query;

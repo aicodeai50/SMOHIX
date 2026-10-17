@@ -72,7 +72,7 @@ export async function POST(request: Request) {
     return Response.json(
       {
         error:
-          "Database admin not configured — set SUPABASE_SERVICE_ROLE_KEY for webhook persistence",
+          "Billing service is temporarily unavailable",
       },
       { status: 503 },
     );

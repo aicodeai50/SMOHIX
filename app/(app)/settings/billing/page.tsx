@@ -1,3 +1,4 @@
+import { checkoutErrorMessage } from "@/lib/billing/checkout-safety";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -50,10 +51,10 @@ export default async function BillingPage({
       <>
         <PageHeader
           title="Billing"
-          description="Connect Supabase to manage accounts and billing."
+          description="Billing is temporarily unavailable."
         />
         <p className={`max-w-xl text-muted ${appBody}`}>
-          Set Supabase environment variables and redeploy to enable billing.
+          Please try again later or contact support for help with your account.
         </p>
       </>
     );
@@ -70,7 +71,7 @@ export default async function BillingPage({
 
   const { summary, error: queryError } = await getSubscriptionSummary(supabase, user.id);
   const plan = billingPlanFromSummary(summary);
-  const planDisplayName = paidProductDisplayName(summary, plan);
+  const planDisplayName = queryError ? "Could not verify plan" : paidProductDisplayName(summary, plan);
   const paidTier = paidProductTierFromSummary(summary, plan);
   const { balanceCents, error: balanceError } = await getBillingBalance(supabase, user.id);
   const { transactions, error: txError } = await getBillingTransactions(supabase, user.id);
@@ -101,7 +102,7 @@ export default async function BillingPage({
 
       {errorHint ? (
         <div className={`mb-6 rounded-xl border border-danger/35 bg-danger-dim px-4 py-3 ${appBody}`}>
-          {decodeURIComponent(errorHint)}
+          {checkoutErrorMessage(errorHint)}
         </div>
       ) : null}
 
@@ -119,12 +120,12 @@ export default async function BillingPage({
           <Card>
             <CardHeader title="Account balance" description="Prepaid credits for usage-based features." />
             <p className="text-3xl font-bold text-foreground">
-              {formatCents(balanceCents)}
+              {balanceError ? "Unavailable" : formatCents(balanceCents)}
             </p>
             {balanceError ? (
-              <p className={`mt-2 text-danger ${appMeta}`}>{balanceError}</p>
+              <p className={`mt-2 text-danger ${appMeta}`}>Balance could not be loaded. Please try again.</p>
             ) : null}
-            {paypalReady ? (
+            {paypalReady && !balanceError ? (
               <div className="mt-4">
                 <BillingCheckoutActions
                   tier="top_up"
@@ -134,7 +135,7 @@ export default async function BillingPage({
               </div>
             ) : (
               <p className={`mt-3 text-muted ${appMeta}`}>
-                Configure PayPal credentials to enable top-ups.
+                Top-ups are temporarily unavailable. Please try again later.
               </p>
             )}
           </Card>
@@ -169,7 +170,7 @@ export default async function BillingPage({
               </p>
             ) : null}
             {queryError ? (
-              <p className={`mt-3 text-amber-300 ${appMeta}`}>{queryError.message}</p>
+              <p className={`mt-3 text-amber-300 ${appMeta}`}>Your current subscription could not be verified. Please try again.</p>
             ) : null}
           </Card>
         </div>
@@ -178,9 +179,9 @@ export default async function BillingPage({
           <Card>
             <CardHeader
               title="Upgrade plan"
-              description="Secure checkout powered by PayPal. Subscriptions sync via webhook."
+              description="Manage your subscription through secure checkout."
             />
-            {paypalReady && isBillingConfigured() ? (
+            {paypalReady && isBillingConfigured() && !queryError ? (
               <div className="grid gap-4 sm:grid-cols-2">
                 {PRICING_TIERS.filter((t) => t.id !== "free").map((tier) => (
                   <div
@@ -213,11 +214,7 @@ export default async function BillingPage({
               </div>
             ) : (
               <p className={`text-muted ${appBody}`}>
-                Set{" "}
-                <code className="rounded bg-surface px-1 font-mono text-accent">PAYPAL_CLIENT_ID</code>,{" "}
-                <code className="rounded bg-surface px-1 font-mono text-accent">PAYPAL_CLIENT_SECRET</code>, and plan IDs{" "}
-                <code className="rounded bg-surface px-1 font-mono text-accent">PAYPAL_PLAN_ID_PRO</code> /{" "}
-                <code className="rounded bg-surface px-1 font-mono text-accent">PAYPAL_PLAN_ID_TEAM</code>.
+                Self-service checkout is temporarily unavailable. Please contact us for plan assistance.
               </p>
             )}
           </Card>
@@ -225,7 +222,7 @@ export default async function BillingPage({
           <Card>
             <CardHeader title="Transaction history" />
             {txError ? (
-              <p className={`text-muted ${appMeta}`}>{txError}</p>
+              <p className={`text-muted ${appMeta}`}>Transaction history could not be loaded. Please try again.</p>
             ) : transactions.length === 0 ? (
               <p className={`text-muted ${appBody}`}>No transactions yet.</p>
             ) : (

@@ -62,7 +62,7 @@ export async function runGuardedRemediation(input: {
   approvalId?: string | null;
 }): Promise<GuardedRemediationResult> {
   const context = await getOrgContextForUser(input.userId);
-  const subscription = await getSubscriptionSummary(input.supabase, input.userId);
+  const subscription = await getSubscriptionSummary(input.supabase, input.userId, context.orgId);
   const blockedAccess = context.role && !canCreateApprovalRequest(context.role)
     ? "Your workspace role cannot execute automations."
     : subscription.error ? "Subscription access could not be verified. Try again later."
@@ -75,14 +75,13 @@ export async function runGuardedRemediation(input: {
     if (incident.error || !incident.data) return { ok: false, blockedReason: "The linked incident could not be verified.", runId: null,
       checks: { dryRunFresh: false, changeWindow: false, blastRadiusAllowed: false } };
   }
-  const recentDryRun = await input.supabase
+  const dryRunQuery = input.supabase
     .from("automation_dry_runs")
     .select("ok, created_at")
-    .eq("user_id", input.userId)
     .eq("playbook_id", input.playbookId)
     .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+    .limit(1);
+  const recentDryRun = await applyUserOrOrgScope(dryRunQuery, input.userId, context.orgId).maybeSingle();
   const hasFreshDryRun = Boolean(
     recentDryRun.data?.ok &&
       Date.now() >= new Date(String(recentDryRun.data.created_at ?? 0)).valueOf() &&
@@ -98,6 +97,7 @@ export async function runGuardedRemediation(input: {
     input.supabase,
     input.userId,
     input.playbookId,
+    context.orgId,
   );
   const enforcement = evaluateAcceptedPolicyEnforcement({
     approvalNote: input.approvalNote,

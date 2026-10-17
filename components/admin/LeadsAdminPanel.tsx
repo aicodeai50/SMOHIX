@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/Button";
 import { INQUIRY_TYPES } from "@/lib/contact-form";
-import { LEAD_STATUSES } from "@/lib/contact/leads";
+import { LEAD_STATUSES } from "@/lib/contact/shared";
 import { mBody } from "@/lib/marketing-layout";
 
 type LeadRow = {

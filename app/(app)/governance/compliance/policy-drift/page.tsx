@@ -62,7 +62,7 @@ export default async function PolicyDriftPage() {
       <PageHeader
         eyebrow="Governance"
         title="Compliance policy drift detection"
-        description="Compare accepted automation policy guardrails against live continuous assessment gaps from your org audit_log and policy_suggestions — surfaces missing dry-run, change-window, and blast-radius enforcement."
+        description="Compare accepted automation policy guardrails against live continuous assessment gaps from your org audit records and automation policies — surfaces missing dry-run, change-window, and blast-radius enforcement."
       />
       <ComplianceHubLinks className={`-mt-4 mb-6 ${appBody}`} />
       {readOnly ? (

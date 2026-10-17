@@ -1,3 +1,4 @@
+import { findMemberAccount } from "./member-directory";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 import { createServiceSupabaseClient } from "@/lib/supabase/admin";
@@ -58,7 +59,7 @@ export async function listOrgMembers(
       .eq("org_id", orgId)
       .order("created_at", { ascending: true });
 
-    if (error || !data) return [];
+    if (error || !data) dataUnavailable("organization members", error);
 
     const admin = createServiceSupabaseClient();
     const enriched: OrgMemberRow[] = [];
@@ -87,8 +88,8 @@ export async function listOrgMembers(
     }
 
     return enriched;
-  } catch {
-    return [];
+  } catch (error) {
+    dataUnavailable("organization members", error);
   }
 }
 
@@ -108,15 +109,21 @@ export async function addOrgMemberByEmail(
     return { ok: false, reason: "Member invites require service role configuration." };
   }
 
-  const { data: listed, error: listError } = await admin.auth.admin.listUsers({
-    page: 1,
-    perPage: 200,
-  });
-  if (listError) {
-    return { ok: false, reason: listError.message };
+  const directoryLookup = await admin.rpc("find_workspace_member_account", { p_email: normalizedEmail });
+  let memberId: string | null = null;
+  if (!directoryLookup.error) {
+    memberId = typeof directoryLookup.data === "string" ? directoryLookup.data : null;
+  } else if (["PGRST202", "42883"].includes(directoryLookup.error.code)) {
+    // Compatibility until the new migration is applied; never misreport a partial scan.
+    const lookup = await findMemberAccount(normalizedEmail, (page, perPage) =>
+      admin.auth.admin.listUsers({ page, perPage }),
+    );
+    if (!lookup.complete) return { ok: false, reason: "request_failed" };
+    memberId = lookup.userId;
+  } else {
+    return { ok: false, reason: "request_failed" };
   }
-
-  const match = listed.users.find((u) => u.email?.toLowerCase() === normalizedEmail);
+  const match = memberId ? { id: memberId } : null;
   if (!match?.id) {
     return {
       ok: false,
@@ -145,21 +152,25 @@ export async function updateOrgMemberRole(
   orgId: string,
   memberUserId: string,
   role: OrgRole,
+  opts?: { supabase?: SupabaseClient },
 ): Promise<{ ok: true } | { ok: false; reason: string }> {
   if (!isOrgRole(role) || role === "owner") {
     return { ok: false, reason: "Invalid role." };
   }
 
   try {
-    const supabase = await createServerSupabaseClient();
-    const { error } = await supabase
+    const supabase = opts?.supabase ?? (await createServerSupabaseClient());
+    const { data, error } = await supabase
       .from("organization_members")
       .update({ role })
       .eq("org_id", orgId)
       .eq("user_id", memberUserId)
-      .neq("role", "owner");
+      .neq("role", "owner")
+      .select("user_id")
+      .maybeSingle();
 
     if (error) return { ok: false, reason: error.message };
+    if (!data || data.user_id !== memberUserId) return { ok: false, reason: "not_found" };
     return { ok: true };
   } catch {
     return { ok: false, reason: "Could not update role." };
@@ -169,17 +180,21 @@ export async function updateOrgMemberRole(
 export async function removeOrgMember(
   orgId: string,
   memberUserId: string,
+  opts?: { supabase?: SupabaseClient },
 ): Promise<{ ok: true } | { ok: false; reason: string }> {
   try {
-    const supabase = await createServerSupabaseClient();
-    const { error } = await supabase
+    const supabase = opts?.supabase ?? (await createServerSupabaseClient());
+    const { data, error } = await supabase
       .from("organization_members")
       .delete()
       .eq("org_id", orgId)
       .eq("user_id", memberUserId)
-      .neq("role", "owner");
+      .neq("role", "owner")
+      .select("user_id")
+      .maybeSingle();
 
     if (error) return { ok: false, reason: error.message };
+    if (!data || data.user_id !== memberUserId) return { ok: false, reason: "not_found" };
     return { ok: true };
   } catch {
     return { ok: false, reason: "Could not remove member." };

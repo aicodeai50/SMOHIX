@@ -10,8 +10,10 @@ import { getSiteUrl } from "@/lib/site";
 import type { OperationalStatus, ProductStatusResult } from "./types";
 import { healthPayloadStatus } from "./probe";
 
-const PROBE_TIMEOUT_MS = 5_000;
-const CACHE_TTL_MS = 60_000;
+// Allow public health checks to finish during cold starts; the client deadline
+// must remain longer than this parallel server probe window.
+const PROBE_TIMEOUT_MS = 15_000;
+const CACHE_TTL_MS = 30_000;
 
 let cache: { at: number; results: ProductStatusResult[] } | null = null;
 let inFlight: Promise<ProductStatusResult[]> | null = null;
@@ -60,7 +62,7 @@ async function probeUrl(url: string): Promise<OperationalStatus> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), PROBE_TIMEOUT_MS);
   try {
-    const structured = ["/api/health", "/api/ping"].includes(new URL(url).pathname);
+    const structured = ["/health", "/api/health", "/api/ping"].includes(new URL(url).pathname);
     const res = await fetch(url, {
       method: structured ? "GET" : "HEAD",
       redirect: "manual",
@@ -148,35 +150,4 @@ export async function fetchSiteHealthView(): Promise<{
   }
 }
 
-export function statusLabel(s: OperationalStatus): string {
-  switch (s) {
-    case "operational":
-      return "Operational";
-    case "degraded":
-      return "Degraded";
-    case "unavailable":
-      return "Unavailable";
-    case "unknown":
-      return "Unknown";
-    case "prototype":
-      return "Prototype";
-    case "planned":
-      return "Planned";
-  }
-}
-
-export function statusToneClass(s: OperationalStatus): string {
-  switch (s) {
-    case "operational":
-      return "border-accent/30 bg-accent-dim text-accent";
-    case "degraded":
-      return "border-warning/30 bg-warning-dim text-warning";
-    case "unavailable":
-      return "border-amber-500/30 bg-amber-500/10 text-amber-200";
-    case "prototype":
-      return "border-warning/30 bg-warning-dim text-warning";
-    case "planned":
-    case "unknown":
-      return "border-white/[0.12] bg-white/[0.03] text-muted";
-  }
-}
+export { statusLabel, statusToneClass } from "./presentation";

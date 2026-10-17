@@ -5,6 +5,35 @@ import { approvalMatchesExecution } from '../lib/automations/execution-approval.
 import { deliverAuditRecord } from '../lib/audit/delivery.ts';
 import { upsertDefaultSloForService } from '../lib/services/slo.ts';
 import { listAcceptedPolicyGuardrailsForPlaybook } from '../lib/approvals/policy-suggestions.ts';
+import { proxyRequiresConfiguredAuth, publicProxyPath } from '../lib/proxy-policy.ts';
+import { getConnectorHealthRows } from '../lib/connectors-health.ts';
+
+const originalFetch = globalThis.fetch;
+const connectorEnv = { ...process.env };
+try {
+  process.env.REACT_APP_SH_BACKEND_API = 'http://private-reasoning.railway.internal';
+  process.env.REACT_APP_ROBOT_BACKEND = 'http://private-robot.railway.internal';
+  globalThis.fetch = async () => Response.json({ password: 'private-diagnostic', database: 'private-database' });
+  const rows = await getConnectorHealthRows();
+  assert.ok(rows.every(row => row.configured && row.ok));
+  assert.doesNotMatch(JSON.stringify(rows), /railway|private-|password|database|baseUrl/);
+  globalThis.fetch = async () => { throw new Error('private-diagnostic'); };
+  const failedRows = await getConnectorHealthRows();
+  assert.ok(failedRows.every(row => row.ok === false));
+  assert.doesNotMatch(JSON.stringify(failedRows), /railway|private-|password|database|baseUrl/);
+} finally {
+  globalThis.fetch = originalFetch;
+  process.env = connectorEnv;
+}
+
+assert.equal(proxyRequiresConfiguredAuth({ NODE_ENV: 'production' }), true);
+assert.equal(proxyRequiresConfiguredAuth({ NODE_ENV: 'development', RAILWAY_ENVIRONMENT_ID: 'deployed' }), true);
+assert.equal(proxyRequiresConfiguredAuth({ NODE_ENV: 'development' }), false);
+assert.equal(publicProxyPath(['api', 'v1', 'robot', 'command']), '/api/v1/robot/command');
+assert.equal(publicProxyPath(['health']), '/health');
+for (const segments of [['admin'], ['api','v1','databases','status'], ['INTERNAL'], ['docs'], ['%2e%2e'], ['path?admin=true'], ['path#admin'], ['..'], ['a/b'], ['a\\b']]) {
+  assert.throws(() => publicProxyPath(segments));
+}
 
 const capturedLogs = [];
 const originalConsoleError = console.error;
@@ -35,7 +64,7 @@ const confirmed = await executeRobotAction('https://robot.invalid/', input, 'req
 });
 assert.equal(confirmed.ok, true);
 assert.equal(calls, 1);
-for (const [body, status] of [[{}, 200], [null, 200], [{ok:false}, 200], [{ok:true}, 202], [{ok:true}, 500], [{ok:true,steps:[{status:'failed'}]},200], [{ok:true,steps:[{status:'running'}]},200], [{ok:true,steps:[null]},200], [{ok:true,steps:{}},200]]) {
+for (const [body, status] of [[{}, 200], [null, 200], [{ok:false}, 200], [{ok:true}, 200], [{ok:true,steps:[]}, 200], [{ok:true}, 202], [{ok:true}, 500], [{ok:true,steps:[{status:'failed'}]},200], [{ok:true,steps:[{status:'running'}]},200], [{ok:true,steps:[null]},200], [{ok:true,steps:{}},200]]) {
   let attempts = 0;
   const result = await executeRobotAction('https://robot.invalid', input, 'request-2', async () => {
     attempts++;
@@ -77,8 +106,8 @@ await upsertDefaultSloForService({ from(table) {
 assert.equal(savedTarget,99.95,'Opening a service must preserve its configured SLO target');
 const storedPolicy = { id:'policy-1', playbook_id:'pb-test', suggestion_key:'pb-test-service-auto-approve', guardrails_json:['Require successful dry-run within 2h','Enforce change window'], reviewer_notes:null };
 let selectedFields=[];
-const policyQuery = { select(fields) { selectedFields=fields.split(',').map(field=>field.trim()); return this; }, eq() { return this; }, async limit() {
-  return { error:null, data:[Object.fromEntries(Object.entries(storedPolicy).filter(([field])=>selectedFields.includes(field)))] };
+const policyQuery = { is() { return this; }, or() { return this; }, select(fields) { selectedFields=fields.split(',').map(field=>field.trim()); return this; }, eq() { return this; }, limit() { return this; }, then(resolve) {
+  return Promise.resolve({ error:null, data:[Object.fromEntries(Object.entries(storedPolicy).filter(([field])=>selectedFields.includes(field)))] }).then(resolve);
 } };
 const guardrails = await listAcceptedPolicyGuardrailsForPlaybook({from() { return policyQuery; }},'user-1','pb-test');
 assert.equal(guardrails?.requireDryRunFresh,true,'Accepted policies must reach execution enforcement');

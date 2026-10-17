@@ -1,3 +1,4 @@
+import { applyUserOrOrgScope } from "@/lib/org/apply-scope-query";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 
@@ -55,7 +56,7 @@ export async function listIncidentTimelineFromAudit(
       .order("created_at", { ascending: false })
       .limit(100);
 
-    query = orgId ? query.or(`user_id.eq.${userId},org_id.eq.${orgId}`) : query.eq("user_id", userId);
+    query = applyUserOrOrgScope(query, userId, orgId);
 
     const { data, error } = await query;
 

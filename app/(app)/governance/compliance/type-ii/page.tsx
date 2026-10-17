@@ -61,7 +61,7 @@ export default async function Soc2TypeIIPage() {
         <PageHeader title="SOC 2 Type II" description="Continuous control monitoring dashboard." />
         <ConsoleEmptyState
           title="Report unavailable"
-          description="Join or create an organization and apply migrations #25–#26 to enable SOC 2 Type II monitoring."
+          description="Join or create an organization to access workspace monitoring. Contact support if monitoring remains unavailable."
           ctas={[{ href: "/settings/members", label: "Members & roles" }]}
         />
       </>

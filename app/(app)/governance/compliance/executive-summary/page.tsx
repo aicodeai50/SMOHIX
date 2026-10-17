@@ -216,7 +216,7 @@ export default async function GrcExecutiveSummaryPage() {
             </section>
 
             <footer className={`mt-6 border-t border-white/[0.08] pt-3 ${appMeta} text-muted print:border-black/20 print:text-black/60`}>
-              Live data from org audit_log, accepted policies, and vendor register. Directional
+              Live data from org audit records, accepted policies, and vendor register. Directional
               governance summary — not a contractual attestation.{" "}
               <Link href="/governance/compliance/program" className="text-accent print:hidden">
                 Program dashboard

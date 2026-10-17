@@ -31,6 +31,7 @@ export function AlertIngestPanel({
   const [origin, setOrigin] = useState("https://your-deployment");
 
   const refresh = useCallback(async () => {
+    try {
     const r = await fetch("/api/user/alert-ingest-tokens", { credentials: "include" });
     const j = (await r.json()) as {
       tokens?: AlertIngestTokenRow[];
@@ -38,12 +39,15 @@ export function AlertIngestPanel({
       error?: string;
     };
     if (!r.ok) {
-      setLoadErr(j.message ?? "Could not load ingest tokens. Refresh and try again.");
+      setLoadErr("Could not load ingest tokens. Refresh and try again.");
       setTokens([]);
       return;
     }
     setLoadErr(null);
     setTokens(j.tokens ?? []);
+    } catch {
+      setLoadErr("Could not load alert tokens. Please try again.");
+    }
   }, []);
 
   useEffect(() => {
@@ -67,12 +71,14 @@ export function AlertIngestPanel({
       });
       const j = (await r.json()) as { token?: string; message?: string };
       if (!r.ok) {
-        setErr(j.message ?? "Could not create ingest token. Verify configuration and retry.");
+        setErr("Could not create ingest token. Verify configuration and retry.");
         return;
       }
       if (j.token) setMinted(j.token);
       setLabel("");
       await refresh();
+    } catch {
+      setErr("The request could not complete. Refresh the list before retrying.");
     } finally {
       setBusy(false);
     }
@@ -89,12 +95,13 @@ export function AlertIngestPanel({
         method: "DELETE",
         credentials: "include",
       });
-      const j = (await r.json()) as { message?: string };
       if (!r.ok) {
-        setErr(j.message ?? "Could not revoke ingest token. Please retry.");
+        setErr("Could not revoke ingest token. Please retry.");
         return;
       }
       await refresh();
+    } catch {
+      setErr("The request could not complete. Refresh the list before retrying.");
     } finally {
       setBusy(false);
     }

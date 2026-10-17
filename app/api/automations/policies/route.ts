@@ -1,3 +1,4 @@
+import { applyUserOrOrgScope } from "@/lib/org/apply-scope-query";
 import { NextResponse } from "next/server";
 
 import { appendAuditEvent } from "@/lib/audit/append";
@@ -28,7 +29,7 @@ export async function GET() {
     .order("created_at", { ascending: false })
     .limit(100);
 
-  query = orgContext.orgId ? query.or(`user_id.eq.${user.id},org_id.eq.${orgContext.orgId}`) : query.eq("user_id", user.id);
+  query = applyUserOrOrgScope(query, user.id, orgContext.orgId);
 
   const { data, error } = await query;
   if (error) {

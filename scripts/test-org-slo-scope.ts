@@ -15,6 +15,10 @@ const mockQuery = {
     this.filters.push(`or:${filter}`);
     return this;
   },
+  is(column: string, value: null) {
+    this.filters.push(`is:${column}=${value}`);
+    return this;
+  },
   eq(column: string, value: string) {
     this.filters.push(`eq:${column}=${value}`);
     return this;
@@ -26,5 +30,7 @@ assert(scoped.filters[0]?.startsWith("or:org_id.eq.org-xyz"), "applyUserOrOrgSco
 
 const personal = applyUserOrOrgScope({ ...mockQuery, filters: [] as string[] }, "user-abc", null);
 assert(personal.filters[0] === "eq:user_id=user-abc", "applyUserOrOrgScope falls back to user_id");
+
+assert(personal.filters.includes("is:org_id=null"), "personal fallback excludes organization records");
 
 console.log("test-org-slo-scope: all checks passed");

@@ -178,11 +178,11 @@ function buildAttentionGroups(input: {
   groups.push(...incidentCards);
 
   const workspaceBullets: string[] = [];
-  const connectorsConfigured = connectors.filter((c) => c.baseUrl).length;
-  const down = connectors.filter((c) => c.baseUrl && c.ok === false);
+  const connectorsConfigured = connectors.filter((c) => c.configured).length;
+  const down = connectors.filter((c) => c.configured && c.ok === false);
 
   if (connectorsConfigured === 0) {
-    workspaceBullets.push("No reasoning or robot connector URLs are configured.");
+    workspaceBullets.push("Reasoning and automation services are not connected.");
   } else if (down.length > 0) {
     workspaceBullets.push(
       down.length === 1
@@ -258,7 +258,7 @@ export async function loadOverviewCommandCenterData(input: {
     recentDryRuns = listDryRuns(tid);
   }
 
-  const connectorsConfigured = input.connectors.filter((c) => c.baseUrl).length;
+  const connectorsConfigured = input.connectors.filter((c) => c.configured).length;
   const connectorsReachable = input.connectors.filter((c) => c.ok === true).length;
 
   const governance: OverviewGovernance = {

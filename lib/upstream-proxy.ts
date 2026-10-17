@@ -11,6 +11,7 @@ import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getRobotBackendUrl, getShBackendApiUrl } from "@/lib/backend-urls";
 import { clientIpFromRequest, takeToken } from "@/lib/rate-limit/memory";
+import { proxyRequiresConfiguredAuth, publicProxyPath } from "@/lib/proxy-policy";
 
 const TIMEOUT_MS = 60_000;
 const PROXY_RATE_LIMIT = 120;
@@ -124,13 +125,7 @@ function baseUrl(kind: "reasoning" | "robot"): string | null {
 
 /** Reject path traversal and odd segments. */
 function safeJoinPath(segments: string[] | undefined): string {
-  if (!segments?.length) return "";
-  for (const s of segments) {
-    if (s.includes("..") || s.includes("/") || s.includes("\\")) {
-      throw new Error("invalid_path");
-    }
-  }
-  return "/" + segments.join("/");
+  return publicProxyPath(segments);
 }
 
 function pickForwardHeaders(req: NextRequest): Headers {
@@ -156,6 +151,10 @@ export async function proxyToUpstream(
   req: NextRequest,
   pathSegments: string[] | undefined,
 ): Promise<NextResponse> {
+  if (proxyRequiresConfiguredAuth(process.env) && !hasSupabaseAuth()) {
+    return NextResponse.json({ error: "service_unavailable", message: "This service is temporarily unavailable." },
+      { status: 503, headers: { "Cache-Control": "no-store" } });
+  }
   const devOrAnon = await denyIfProxyDevOrAnon(req);
   if (devOrAnon) {
     return devOrAnon;

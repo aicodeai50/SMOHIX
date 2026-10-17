@@ -192,9 +192,7 @@ export default async function ApiKeysSettingsPage({
       ) : null}
       {listError ? (
         <p className={`mb-6 max-w-2xl rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-amber-100/90 ${appBody}`}>
-          Could not load keys: {listError}. If the table is missing, run{" "}
-          <span className="font-mono">supabase/migrations/20260418150000_api_keys.sql</span> in
-          Supabase.
+          Could not load API keys. Please try again later or contact support.
         </p>
       ) : null}
       <ApiKeysPanel

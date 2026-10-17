@@ -17,11 +17,12 @@ export async function ConnectionStatus() {
     proxyPath !== "/api/copilot/chat" && proxyPath.includes("/api/reasoning");
 
   const advancedReady = openai || (usesReasoningProxy && reasoning) || reasoning;
-  const statusLabel = advancedReady ? "Ready" : "Limited";
+  const reasoningVerified = rows.some(row => row.id === "reasoning" && row.ok === true);
+  const statusLabel = openai ? "Configured" : reasoningVerified ? "Connected" : advancedReady ? "Unverified" : "Limited";
   const beacon = copilotConnectionBeacon(statusLabel);
 
   const brainLine = openai
-    ? "Copilot can draft rich, contextual responses for incidents, services, and runbooks."
+    ? "The model connection is configured. Availability is checked when you send a message."
     : usesReasoningProxy && reasoning
       ? "Chat is routed to your workspace reasoning service."
       : reasoning

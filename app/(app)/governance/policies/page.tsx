@@ -1,3 +1,4 @@
+import { getOrgContextForUser } from "@/lib/org/context";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -63,8 +64,9 @@ export default async function GovernancePoliciesPage({
   const status = ["all", "proposed", "reviewed", "accepted", "rejected"].includes(statusRaw)
     ? (statusRaw as "all" | "proposed" | "reviewed" | "accepted" | "rejected")
     : "proposed";
-  const suggestions = await listPolicySuggestionsForUser(supabase, user.id, status);
-  const acceptedGuardrailsByPlaybook = await listAcceptedPolicyGuardrailsByPlaybook(supabase, user.id);
+  const orgContext = await getOrgContextForUser(user.id);
+  const suggestions = await listPolicySuggestionsForUser(supabase, user.id, status, orgContext.orgId);
+  const acceptedGuardrailsByPlaybook = await listAcceptedPolicyGuardrailsByPlaybook(supabase, user.id, orgContext.orgId);
   const errorCode = typeof sp.error === "string" ? sp.error.trim().toLowerCase() : "";
   const failedSuggestionId = typeof sp.sid === "string" ? sp.sid.trim() : "";
   const failedNotes = typeof sp.notes === "string" ? sp.notes : "";

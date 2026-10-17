@@ -1,3 +1,4 @@
+import { applyUserOrOrgScope } from "@/lib/org/apply-scope-query";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 import {
@@ -79,17 +80,18 @@ export async function listPolicySuggestionsForUser(
   supabase: SupabaseClient,
   userId: string,
   status?: PolicySuggestionStatus | "all",
+  orgId: string | null = null,
 ): Promise<PolicySuggestionRow[]> {
   let q = supabase
     .from("policy_suggestions")
     .select(
       "id, playbook_id, suggestion_key, label, reason, confidence_score, guardrails_json, status, reviewer_notes, promoted_at, reviewed_at, created_at",
     )
-    .eq("user_id", userId)
     .order("created_at", { ascending: false });
+  q = applyUserOrOrgScope(q, userId, orgId);
   if (status && status !== "all") q = q.eq("status", status);
   const { data, error } = await q.limit(100);
-  if (error || !data) return [];
+  if (error || !data) dataUnavailable("policy suggestions", error);
   return data.map((r) => ({
     id: String(r.id),
     playbookId: String(r.playbook_id),
@@ -122,14 +124,15 @@ export async function listAcceptedPolicyGuardrailsForPlaybook(
   supabase: SupabaseClient,
   userId: string,
   playbookId: string,
+  orgId: string | null = null,
 ): Promise<AcceptedPolicyGuardrails | null> {
-  const { data, error } = await supabase
+  const query = supabase
     .from("policy_suggestions")
     .select("id, playbook_id, suggestion_key, guardrails_json, reviewer_notes")
-    .eq("user_id", userId)
     .eq("playbook_id", playbookId)
     .eq("status", "accepted")
     .limit(20);
+  const { data, error } = await applyUserOrOrgScope(query, userId, orgId);
   if (error || !data) dataUnavailable("accepted automation policy", error);
   if (data.length === 0) return null;
   const map = aggregateAcceptedPolicyGuardrails(data as AcceptedGuardrailSourceRow[]);
@@ -178,13 +181,14 @@ export function aggregateAcceptedPolicyGuardrails(
 export async function listAcceptedPolicyGuardrailsByPlaybook(
   supabase: SupabaseClient,
   userId: string,
+  orgId: string | null = null,
 ): Promise<Record<string, AcceptedPolicyGuardrails>> {
-  const { data, error } = await supabase
+  const query = supabase
     .from("policy_suggestions")
     .select("id, playbook_id, suggestion_key, guardrails_json, reviewer_notes")
-    .eq("user_id", userId)
     .eq("status", "accepted")
     .limit(200);
+  const { data, error } = await applyUserOrOrgScope(query, userId, orgId);
   if (error || !data) dataUnavailable("accepted automation policies", error);
   if (data.length === 0) return {};
   return aggregateAcceptedPolicyGuardrails(data as AcceptedGuardrailSourceRow[]);
@@ -194,6 +198,7 @@ export async function updatePolicySuggestionStatus(
   supabase: SupabaseClient,
   input: {
     userId: string;
+    orgId?: string | null;
     id?: string;
     suggestionKey?: string;
     playbookId?: string;
@@ -208,10 +213,9 @@ export async function updatePolicySuggestionStatus(
     reviewer_notes: input.reviewerNotes?.trim() || null,
   };
   if (input.promoted) patch.promoted_at = new Date().toISOString();
-  const { data, error } = await supabase
+  const query = supabase
     .from("policy_suggestions")
     .update(patch)
-    .eq("user_id", input.userId)
     .match(
       input.id
         ? { id: input.id }
@@ -219,8 +223,8 @@ export async function updatePolicySuggestionStatus(
             suggestion_key: input.suggestionKey ?? "",
             playbook_id: input.playbookId ?? "",
           },
-    )
-    .select("id")
+    );
+  const { data, error } = await applyUserOrOrgScope(query, input.userId, input.orgId).select("id")
     .maybeSingle();
   return !error && Boolean(data?.id);
 }

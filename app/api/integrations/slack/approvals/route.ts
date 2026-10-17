@@ -110,7 +110,7 @@ export async function POST(req: Request) {
   const admin = createServiceSupabaseClient();
   if (!admin) {
     return NextResponse.json(
-      { error: "supabase_service_role_not_configured" },
+      { error: "service_unavailable" },
       { status: 503, headers: OPERATIONAL_RESPONSE_HEADERS },
     );
   }

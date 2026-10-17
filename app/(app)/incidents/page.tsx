@@ -51,7 +51,7 @@ export default async function IncidentsPage() {
           className="min-w-0 flex-1"
           eyebrow="Operations"
           title="Incidents"
-          description="Unified view of signals, ownership, and timeline entries. With Supabase configured and the incidents migration applied, rows load from your database."
+          description="Track signals, ownership, status, and timeline activity across your workspace."
         />
         <Link
           href="/incidents/new"

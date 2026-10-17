@@ -82,7 +82,7 @@ export default async function ApprovalsPage({ searchParams }: Props) {
   const pendingHighRisk = pending.filter((p) => p.decisionBrief.riskScore >= 70).length;
   let enforcedPlaybookCount = 0;
   if (supabaseClient && userId) {
-    const acceptedGuardrails = await listAcceptedPolicyGuardrailsByPlaybook(supabaseClient, userId);
+    const acceptedGuardrails = await listAcceptedPolicyGuardrailsByPlaybook(supabaseClient, userId, orgContext?.orgId ?? null);
     enforcedPlaybookCount = Object.keys(acceptedGuardrails).length;
   }
 

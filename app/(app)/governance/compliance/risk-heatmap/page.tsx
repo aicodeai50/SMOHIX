@@ -85,7 +85,7 @@ export default async function ComplianceRiskHeatmapPage() {
       <PageHeader
         eyebrow="Governance"
         title="Compliance risk heatmap"
-        description="Risk concentration across eight framework packs and your third-party vendor register — derived from live audit_log evidence, accepted policies, and vendor control inheritance, not sample scores."
+        description="Risk concentration across eight framework packs and your third-party vendor register — derived from live audit records evidence, accepted policies, and vendor control inheritance, not sample scores."
       />
       <ComplianceHubLinks className={`-mt-4 mb-6 ${appBody}`} />
       {readOnly ? (

@@ -29,6 +29,7 @@ export async function getPayPalAccessToken(): Promise<string> {
 
   const res = await fetch(`${base}/v1/oauth2/token`, {
     method: "POST",
+    signal: AbortSignal.timeout(15000),
     headers: {
       Authorization: `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString("base64")}`,
       "Content-Type": "application/x-www-form-urlencoded",
@@ -57,6 +58,7 @@ export async function paypalFetch<T>(
   const base = getPayPalApiBase();
   const res = await fetch(`${base}${path}`, {
     ...init,
+    signal: init.signal ? AbortSignal.any([init.signal, AbortSignal.timeout(15000)]) : AbortSignal.timeout(15000),
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",

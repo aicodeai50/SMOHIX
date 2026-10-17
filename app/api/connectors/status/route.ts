@@ -3,6 +3,7 @@ import { getConnectorHealthRows } from "@/lib/connectors-health";
 import { OPERATIONAL_RESPONSE_HEADERS } from "@/lib/security/operational-headers";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { proxyRequiresConfiguredAuth } from "@/lib/proxy-policy";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -12,6 +13,9 @@ export const dynamic = "force-dynamic";
  * Same-origin for browsers; secrets stay on the server.
  */
 export async function GET() {
+  if (proxyRequiresConfiguredAuth(process.env) && !hasSupabaseAuth()) {
+    return NextResponse.json({ error: "service_unavailable" }, { status: 503, headers: OPERATIONAL_RESPONSE_HEADERS });
+  }
   if (hasSupabaseAuth()) {
     const supabase = await createServerSupabaseClient();
     const {

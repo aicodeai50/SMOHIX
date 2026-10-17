@@ -149,7 +149,7 @@ export function OverviewDecisionSurface({
             </div>
           ) : (
             <p className={`mt-3 text-muted ${appBody}`}>
-              Sign in with Supabase and append audit events to see the latest trust signal here.
+              Recent workspace activity will appear here when audit records are available.
             </p>
           )}
         </section>

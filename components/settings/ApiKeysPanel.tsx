@@ -36,14 +36,18 @@ export function ApiKeysPanel({
   const [err, setErr] = useState<string | null>(null);
 
   const refresh = useCallback(async () => {
+    try {
     const r = await fetch("/api/user/api-keys", { credentials: "include" });
     const j = (await r.json()) as { keys?: ApiKeyRow[]; message?: string };
     if (!r.ok) {
-      setErr(j.message ?? "Could not refresh API keys. Please try again.");
+      setErr("Could not refresh API keys. Please try again.");
       return;
     }
     setKeys(j.keys ?? []);
     setErr(null);
+    } catch {
+      setErr("Could not load API keys. Please try again.");
+    }
   }, []);
 
   useEffect(() => {
@@ -68,7 +72,7 @@ export function ApiKeysPanel({
       });
       const j = (await r.json()) as { key?: string; message?: string };
       if (!r.ok) {
-        setErr(j.message ?? "Could not create API key. Check workspace configuration and retry.");
+        setErr("Could not create API key. Check workspace configuration and retry.");
         return;
       }
       if (j.key) {
@@ -76,6 +80,8 @@ export function ApiKeysPanel({
       }
       setLabel("");
       await refresh();
+    } catch {
+      setErr("The request could not complete. Refresh the list before retrying.");
     } finally {
       setBusy(false);
     }
@@ -92,12 +98,13 @@ export function ApiKeysPanel({
         method: "DELETE",
         credentials: "include",
       });
-      const j = (await r.json()) as { message?: string };
       if (!r.ok) {
-        setErr(j.message ?? "Could not revoke API key. Please retry.");
+        setErr("Could not revoke API key. Please retry.");
         return;
       }
       await refresh();
+    } catch {
+      setErr("The request could not complete. Refresh the list before retrying.");
     } finally {
       setBusy(false);
     }
@@ -122,14 +129,11 @@ export function ApiKeysPanel({
           server memory for this browser session and used to authenticate{" "}
           <span className="font-mono">/api/reasoning/*</span> and{" "}
           <span className="font-mono">/api/robot/*</span>. They do not survive deploy or cold start;
-          connect Supabase for durable keys.
+          contact your workspace administrator for persistent API access.
         </p>
       ) : !serviceRoleConfigured ? (
         <p className={`rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-amber-100/90 ${appBody}`}>
-          Server configuration still needs a service role so API keys can authenticate proxy
-          requests (<span className="font-mono">/api/reasoning</span>,{" "}
-          <span className="font-mono">/api/robot</span>). You can create keys now; they work for
-          proxy calls once that configuration is complete.
+          API key authentication is temporarily unavailable. Created keys will become usable once access is restored. Contact support if this continues.
         </p>
       ) : null}
 

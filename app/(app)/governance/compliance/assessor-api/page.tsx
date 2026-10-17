@@ -68,7 +68,7 @@ export default async function AssessorApiPage({
       <PageHeader
         eyebrow="Governance"
         title="Assessor-scoped compliance API"
-        description="Issue read-only tokens (smohix_ca_*) for external auditors. Tokens call live export builders against your org audit_log and policies — same data as the console, without full UI access."
+        description="Issue read-only tokens (smohix_ca_*) for external auditors. Tokens call live export builders against your org audit records and policies — same data as the console, without full UI access."
       />
       <p className={`-mt-4 mb-6 ${appBody}`}>
         <Link href="/governance/compliance/bundles" className="text-accent hover:underline">
@@ -89,8 +89,7 @@ export default async function AssessorApiPage({
           <p className={`font-medium text-emerald-200 ${appBody}`}>Token created — copy now</p>
           <p className={`mt-2 font-mono text-[11px] break-all text-foreground ${appBody}`}>{sp.key}</p>
           <p className={`mt-2 ${appMeta} text-muted`}>
-            This secret is shown once. Requires <span className="font-mono">SUPABASE_SERVICE_ROLE_KEY</span> on
-            the server to resolve hashes.
+            This secret is shown once. Copy it now and store it securely.
           </p>
         </div>
       ) : null}

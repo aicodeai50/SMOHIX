@@ -31,7 +31,7 @@ function copilotAmbientFieldsFromConnectors(
   copilotThreadCount: number,
 ) {
   const reasoningRow = connectors.find((row) => row.id === "reasoning");
-  const reasoningConfigured = Boolean(reasoningRow?.baseUrl);
+  const reasoningConfigured = Boolean(reasoningRow?.configured);
   const reasoningUp = reasoningRow?.ok ?? null;
   const metrics = copilotAmbientMetrics({
     openaiEnabled: Boolean(process.env.OPENAI_API_KEY?.trim()),
@@ -247,7 +247,7 @@ export async function loadConsoleAmbientSnapshot(options?: {
     context === "copilot" ? countCopilotThreadsForUser(supabase, user.id) : Promise.resolve(0),
   ]);
 
-  const connectorsConfigured = connectors.filter((c) => c.baseUrl).length;
+  const connectorsConfigured = connectors.filter((c) => c.configured).length;
   const connectorsUp = connectors.filter((c) => c.ok === true).length;
 
   const settingsFields =

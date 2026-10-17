@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+import { StatusHistory } from "@/components/status/StatusHistory";
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -64,6 +66,7 @@ export default async function StatusPage() {
             </div>
           </section>
 
+          <Suspense fallback={<p className="mt-8 text-sm text-muted">Loading recent checks…</p>}><StatusHistory /></Suspense>
           <p className={`mt-10 ${mBody}`}>
             <Link href="/security" className={mLinkInline}>
               Security →

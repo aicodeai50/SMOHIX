@@ -15,7 +15,7 @@ const METRICS = [
   { value: "1", label: "Incident record", detail: "Owners, status, runbooks, Copilot context, remediation, and exports stay attached." },
   { value: "4", label: "Guardrail layers", detail: "Dry-run freshness, policy checks, approval notes, and rollback evidence." },
   { value: "8", label: "Framework packs", detail: "Representative control packs mapped to audit events and evidence exports." },
-  { value: "52", label: "Database migrations", detail: "Auth, org scope, audit, compliance evidence, billing, and operational records." },
+  { value: "1", label: "Workspace", detail: "Bring incidents, service context, approvals, and audit evidence into one operational view." },
 ] as const;
 
 const PILLARS = [

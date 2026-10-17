@@ -6,6 +6,7 @@ import { SmohixHqMark } from "@/components/brand/hq/SmohixHqMark";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { AppIcon, type AppIconName } from "@/components/icons/AppIcon";
 import { getCommandSnapshot, commandAvailability } from "@/lib/hq/command-status";
+import { STATUS_REFRESH_MS } from "@/lib/status/stream-client";
 import type { ProductStatusResult } from "@/lib/status/types";
 import { commandChanges, newestCommandResults, type CommandChange } from "@/lib/hq/command-activity";
 
@@ -21,6 +22,8 @@ export function FutureCommandCore({ products }: { products: CommandProduct[] }) 
   const [error, setError] = useState<string | null>(null);
   const [receivedAt, setReceivedAt] = useState<number | null>(null);
   const [now, setNow] = useState(0);
+  const [streaming, setStreaming] = useState(false);
+  const streamConnected = useRef(false);
   const [paused, setPaused] = useState(false);
   const [inView, setInView] = useState(false);
   const [nextCheckAt, setNextCheckAt] = useState<number | null>(null);
@@ -32,38 +35,45 @@ export function FutureCommandCore({ products }: { products: CommandProduct[] }) 
   const visible = useRef(false);
   const abort = useRef<AbortController | null>(null);
 
+  const acceptSnapshot = useCallback((body: { products?: ProductStatusResult[] }) => {
+    if (!Array.isArray(body.products) || !body.products.every(result => result &&
+      typeof result.productId === "string" && typeof result.lastChecked === "string" &&
+      Number.isFinite(Date.parse(result.lastChecked)) &&
+      ["operational", "degraded", "unavailable", "unknown", "prototype", "planned"].includes(result.status))) {
+      throw new Error("Could not read service checks.");
+    }
+    const timestamp = Date.now();
+    const latest = newestCommandResults(previous.current, body.products);
+    const updates = commandChanges(previous.current, latest).filter(change => products.some(product => product.id === change.productId));
+    if (updates.length) setChanges(history => [...updates.reverse(), ...history].slice(0, 4));
+    previous.current = latest;
+    setStatuses(latest);
+    setReceivedAt(timestamp);
+    setNow(timestamp);
+    setError(null);
+    nextDue.current = timestamp + STATUS_REFRESH_MS;
+    setNextCheckAt(nextDue.current);
+  }, [products]);
+
   const checkServices = useCallback(async () => {
     if (busy.current) return;
     busy.current = true;
-    nextDue.current = Date.now() + 60_000;
+    nextDue.current = Date.now() + STATUS_REFRESH_MS;
     setNextCheckAt(nextDue.current);
     setPending(true);
     const controller = new AbortController();
     abort.current = controller;
     try {
       const response = await fetch("/api/status/products", {
-        signal: AbortSignal.any([controller.signal, AbortSignal.timeout(10_000)]),
+        signal: AbortSignal.any([controller.signal, AbortSignal.timeout(20_000)]),
         cache: "no-store",
       });
       if (!response.ok) throw new Error(response.status === 429
         ? "Checks are busy. Please wait before refreshing."
         : "Service checks are temporarily unavailable.");
       const body = await response.json() as { products?: ProductStatusResult[] };
-      if (!Array.isArray(body.products) || !body.products.every(result => result &&
-        typeof result.productId === "string" && typeof result.lastChecked === "string" &&
-        Number.isFinite(Date.parse(result.lastChecked)) &&
-        ["operational", "degraded", "unavailable", "unknown", "prototype", "planned"].includes(result.status))) {
-        throw new Error("Could not read service checks.");
-      }
-      const timestamp = Date.now();
-      const latest = newestCommandResults(previous.current, body.products);
-      const updates = commandChanges(previous.current, latest).filter(change => products.some(product => product.id === change.productId));
-      if (updates.length) setChanges(history => [...updates.reverse(), ...history].slice(0, 4));
-      previous.current = latest;
-      setStatuses(latest);
-      setReceivedAt(timestamp);
-      setNow(timestamp);
-      setError(null);
+      acceptSnapshot(body);
+
     } catch (err) {
       if (!controller.signal.aborted) setError(err instanceof Error && err.name === "TimeoutError"
         ? "Service checks timed out. Refresh to try again." : "Service status is temporarily unavailable. Please try again.");
@@ -73,7 +83,7 @@ export function FutureCommandCore({ products }: { products: CommandProduct[] }) 
         if (!controller.signal.aborted) setPending(false);
       }
     }
-  }, [products]);
+  }, [acceptSnapshot]);
 
   useEffect(() => {
     const refresh = () => {
@@ -92,7 +102,8 @@ export function FutureCommandCore({ products }: { products: CommandProduct[] }) 
       if (visible.current && document.visibilityState === "visible") {
         const timestamp = Date.now();
         setNow(timestamp);
-        if (nextDue.current !== null && timestamp >= nextDue.current) void checkServices();
+        if (nextDue.current !== null && timestamp >= nextDue.current &&
+          (!streamConnected.current || timestamp >= nextDue.current + 15_000)) void checkServices();
       }
     }, 1_000);
     document.addEventListener("visibilitychange", refresh);
@@ -105,10 +116,57 @@ export function FutureCommandCore({ products }: { products: CommandProduct[] }) 
     };
   }, [checkServices]);
 
+  useEffect(() => {
+    if (!inView || paused || typeof EventSource === "undefined") return;
+    let disposed = false;
+    let source: EventSource | null = null;
+    let retry: ReturnType<typeof setTimeout> | undefined;
+    const reconnect = (delay: number) => {
+      source?.close();
+      source = null;
+      streamConnected.current = false;
+      setStreaming(false);
+      if (!disposed) retry = setTimeout(connect, delay);
+    };
+    const connect = () => {
+      if (disposed) return;
+      source = new EventSource("/api/status/products/stream");
+      const current = source;
+      current.addEventListener("snapshot", (event) => {
+        if (disposed || source !== current) return;
+        try {
+          acceptSnapshot(JSON.parse((event as MessageEvent).data));
+          streamConnected.current = true;
+          setStreaming(true);
+        } catch { reconnect(30_000); void checkServices(); }
+      });
+      current.addEventListener("unavailable", () => {
+        if (disposed || source !== current) return;
+        reconnect(30_000);
+        void checkServices();
+      });
+      current.addEventListener("reconnect", () => {
+        if (!disposed && source === current) reconnect(1_000);
+      });
+      current.onerror = () => {
+        if (disposed || source !== current) return;
+        reconnect(30_000);
+        void checkServices();
+      };
+    };
+    connect();
+    return () => {
+      disposed = true;
+      clearTimeout(retry);
+      source?.close();
+      streamConnected.current = false;
+    };
+  }, [inView, paused, acceptSnapshot, checkServices]);
+
   const snapshot = getCommandSnapshot(products.map(product => product.id), statuses,
     { now, receivedAt, error: Boolean(error), paused });
   const { results, reachable, attention, verified, feed } = snapshot;
-  const secondsUntilCheck = nextCheckAt === null ? 60 : Math.max(0, Math.min(60, Math.ceil((nextCheckAt - now) / 1_000)));
+  const secondsUntilCheck = nextCheckAt === null ? 30 : Math.max(0, Math.min(30, Math.ceil((nextCheckAt - now) / 1_000)));
 
   return (
     <div ref={panel} className="smohix-live-command hq-command-panel" data-motion={inView && !paused ? "active" : "paused"} data-checking={pending}>
@@ -170,9 +228,9 @@ export function FutureCommandCore({ products }: { products: CommandProduct[] }) 
           </div>
 
           <div className="hq-command__monitor" data-checking={pending}>
-            <div><span className="hq-command__monitor-label" role="status">{pending ? "Checking services" : paused || !inView ? "Monitoring paused" : receivedAt === null ? "Connecting to services" : "Automatic monitoring"}</span>
-              <span className="hq-command__countdown">{pending ? "Updating availability…" : paused || !inView ? "Resumes when visible" : `Next check in ${secondsUntilCheck}s`}</span></div>
-            <progress max="60" value={pending ? 60 : 60 - secondsUntilCheck} aria-label="Progress toward next automatic service check" />
+            <div><span className="hq-command__monitor-label" role="status">{pending ? "Checking services" : paused || !inView ? "Monitoring paused" : receivedAt === null ? "Connecting to services" : streaming ? "Live service updates" : "Automatic monitoring"}</span>
+              <span className="hq-command__countdown">{pending ? "Updating availability…" : paused || !inView ? "Resumes when visible" : streaming ? "Listening for status changes" : `Next check in ${secondsUntilCheck}s`}</span></div>
+            <progress max="30" value={pending ? 30 : 30 - secondsUntilCheck} aria-label="Progress toward next automatic service check" />
           </div>
 
           <div className="hq-command__list-heading">

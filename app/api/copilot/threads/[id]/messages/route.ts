@@ -1,3 +1,4 @@
+import { applyUserOrOrgScope } from "@/lib/org/apply-scope-query";
 import { NextResponse } from "next/server";
 
 import { getOrgContextForUser } from "@/lib/org/context";
@@ -36,9 +37,7 @@ export async function GET(_req: Request, { params }: Ctx) {
       .eq("id", id)
       .limit(1);
 
-    threadQuery = orgContext.orgId
-      ? threadQuery.or(`user_id.eq.${user.id},org_id.eq.${orgContext.orgId}`)
-      : threadQuery.eq("user_id", user.id);
+    threadQuery = applyUserOrOrgScope(threadQuery, user.id, orgContext.orgId);
 
     const { data: thread, error: te } = await threadQuery.maybeSingle();
 
@@ -61,7 +60,7 @@ export async function GET(_req: Request, { params }: Ctx) {
 
     return NextResponse.json({ messages: data ?? [] });
   } catch {
-    return NextResponse.json({ messages: [] });
+    return NextResponse.json({ error: "messages_load_failed" }, { status: 503 });
   }
 }
 
@@ -104,9 +103,7 @@ export async function POST(req: Request, { params }: Ctx) {
       .eq("id", id)
       .limit(1);
 
-    threadQuery = orgContext.orgId
-      ? threadQuery.or(`user_id.eq.${user.id},org_id.eq.${orgContext.orgId}`)
-      : threadQuery.eq("user_id", user.id);
+    threadQuery = applyUserOrOrgScope(threadQuery, user.id, orgContext.orgId);
 
     const { data: thread, error: te } = await threadQuery.maybeSingle();
 
@@ -133,8 +130,7 @@ export async function POST(req: Request, { params }: Ctx) {
       .eq("id", id);
 
     return NextResponse.json({ ok: true });
-  } catch (e) {
-    const msg = e instanceof Error ? e.message : "error";
-    return NextResponse.json({ error: msg }, { status: 500 });
+  } catch {
+    return NextResponse.json({ error: "request_failed" }, { status: 500 });
   }
 }

@@ -35,7 +35,7 @@ function FlowSymbolPaths({
   const dot = micro ? HQ_MICRO_REGISTRATION_DOT : HQ_REGISTRATION_DOT;
 
   return (
-    <>
+    <g>
       <path
         d={upper}
         fill="none"
@@ -53,7 +53,7 @@ function FlowSymbolPaths({
         strokeLinejoin="round"
       />
       <circle cx={dot.cx} cy={dot.cy} r={dot.r} fill={accent} />
-    </>
+    </g>
   );
 }
 
@@ -71,12 +71,12 @@ export function HqMarkOgContent({
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <FlowSymbolPaths
-        micro={false}
-        stroke={stroke}
-        accent={accent}
-        strokeWidth={HQ_SYMBOL_STROKE}
-      />
+      {FlowSymbolPaths({
+        micro: false,
+        stroke,
+        accent,
+        strokeWidth: HQ_SYMBOL_STROKE,
+      })}
     </svg>
   );
 }
@@ -176,12 +176,7 @@ export function HqMicroMarkOgContent({
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <FlowSymbolPaths
-          micro
-          stroke={stroke}
-          accent={accent}
-          strokeWidth={HQ_MICRO_STROKE}
-        />
+        {FlowSymbolPaths({ micro: true, stroke, accent, strokeWidth: HQ_MICRO_STROKE })}
       </svg>
     </div>
   );
@@ -218,12 +213,7 @@ export function HqSymbolOgContent({
         xmlns="http://www.w3.org/2000/svg"
       >
         <path d={HQ_CONTAINER_PATH} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={1} />
-        <FlowSymbolPaths
-          micro={false}
-          stroke={stroke}
-          accent={accent}
-          strokeWidth={HQ_SYMBOL_STROKE}
-        />
+        {FlowSymbolPaths({ micro: false, stroke, accent, strokeWidth: HQ_SYMBOL_STROKE })}
       </svg>
     </div>
   );

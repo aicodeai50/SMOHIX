@@ -1,10 +1,12 @@
 import type { OperationalStatus } from './types';
-/** A reachable health endpoint can still report degraded functionality. */
+/** Explicit failure takes precedence over a contradictory ok flag. Unknown states stay unverified. */
 export function healthPayloadStatus(payload: unknown): OperationalStatus {
-  if (!payload || typeof payload !== 'object') return 'unknown';
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return 'unknown';
   const data = payload as Record<string, unknown>;
-  if (data.status === 'outage' || data.status === 'unavailable') return 'unavailable';
-  if (data.status === 'degraded' || data.ok === false) return 'degraded';
-  if (data.ok === true || ['ok', 'healthy', 'operational', 'ready'].includes(String(data.status))) return 'operational';
+  const status = typeof data.status === 'string' ? data.status.trim().toLowerCase() : null;
+  if (status && ['outage', 'unavailable', 'error', 'failed', 'down'].includes(status)) return 'unavailable';
+  if (status === 'degraded' || status === 'unhealthy' || data.ok === false) return 'degraded';
+  if (status && ['ok', 'healthy', 'operational', 'ready'].includes(status)) return 'operational';
+  if (data.status === undefined && data.ok === true) return 'operational';
   return 'unknown';
 }

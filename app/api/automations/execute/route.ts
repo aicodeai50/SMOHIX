@@ -86,7 +86,8 @@ export async function POST(req: NextRequest) {
 
   if (ctx.mode === "auth") {
     const supabase = await createServerSupabaseClient();
-    const { summary, error: subscriptionError } = await getSubscriptionSummary(supabase, ctx.userId);
+    const billingOrg = await getOrgContextForUser(ctx.userId);
+    const { summary, error: subscriptionError } = await getSubscriptionSummary(supabase, ctx.userId, billingOrg.orgId);
     if (subscriptionError) return NextResponse.json({ error: "billing_unavailable", message: "Subscription access could not be verified. Try again later." }, { status: 503 });
     if (!subscriptionError && billingPlanFromSummary(summary) === "free") {
       return NextResponse.json(
@@ -288,7 +289,7 @@ export async function POST(req: NextRequest) {
         { status: 403 },
       );
     }
-    const accepted = await listAcceptedPolicyGuardrailsForPlaybook(supabase, ctx.userId, playbookId);
+    const accepted = await listAcceptedPolicyGuardrailsForPlaybook(supabase, ctx.userId, playbookId, orgContext.orgId);
     const enforcement = evaluateAcceptedPolicyEnforcement({
       approvalNote,
       decisionBlastRadius: preDecisionBrief.blastRadius,

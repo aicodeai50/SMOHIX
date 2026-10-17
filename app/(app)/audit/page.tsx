@@ -208,8 +208,7 @@ export default async function AuditPage({
       ) : null}
       {source === "session" ? (
         <p className={`smohix-glass-subtle mb-4 rounded-xl px-4 py-3 ${appMeta}`}>
-          Sign in with Supabase auth to load your <span className="font-mono">audit_log</span>{" "}
-          entries. The log records billing sync, API key changes, approvals, and other actions.
+          Sign in to load your workspace audit history. The log records billing sync, API key changes, approvals, and other actions.
         </p>
       ) : hasSupabaseAuth() && userId && rows.length === 0 ? (
         <p className={`smohix-glass-subtle mb-4 rounded-xl px-4 py-3 ${appMeta}`}>

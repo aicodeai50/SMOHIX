@@ -21,12 +21,6 @@ const cards = [
   {
     group: "Workspace",
     href: "/settings/members",
-    title: "Organization",
-    description: "Active organization, workspace context, and membership.",
-  },
-  {
-    group: "Workspace",
-    href: "/settings/members",
     title: "Members & access",
     description: "Roles, delegated approvers, and security reviewers.",
   },
@@ -92,6 +86,7 @@ export default async function SettingsIndexPage({
   let hasIngestToken = false;
   let connectorsConfigured = 0;
   let connectorsReachable = 0;
+  let setupChecksVerified = false;
   let setupMode: "supabase" | "session" = "session";
   let notificationPrefs: Record<string, boolean> = {};
 
@@ -108,7 +103,7 @@ export default async function SettingsIndexPage({
       }
       if (user?.id) {
         setupMode = "supabase";
-        const [connectorRows, { count: apiKeysCount }, { count: ingestCount }, profileRow] =
+        const [connectorRows, { count: apiKeysCount, error: apiKeysError }, { count: ingestCount, error: ingestError }, profileRow] =
           await Promise.all([
             getConnectorHealthRows(),
             supabase
@@ -127,16 +122,16 @@ export default async function SettingsIndexPage({
               .eq("id", user.id)
               .maybeSingle(),
           ]);
+        setupChecksVerified = !apiKeysError && !ingestError && !profileRow.error;
         notificationPrefs =
           (profileRow.data?.notification_preferences as Record<string, boolean>) ?? {};
         hasApiKey = (apiKeysCount ?? 0) > 0;
         hasIngestToken = (ingestCount ?? 0) > 0;
-        connectorsConfigured = connectorRows.filter((c) => Boolean(c.baseUrl)).length;
+        connectorsConfigured = connectorRows.filter((c) => Boolean(c.configured)).length;
         connectorsReachable = connectorRows.filter((c) => c.ok === true).length;
       }
     } catch {
-      accountEmail = null;
-      initialFullName = "";
+      setupChecksVerified = false;
     }
   }
 
@@ -167,7 +162,7 @@ export default async function SettingsIndexPage({
     },
     {
       key: "connectors",
-      done: connectorsConfigured > 0,
+      done: connectorsConfigured > 0 && connectorsReachable > 0,
       title: "Configure at least one connector",
       detail: "Attach reasoning or automation endpoints for live run coverage.",
       href: "/settings/connectors?setup_step=connectors&next=/settings%3Fsetup_check%3D1%26setup_done%3Dconnectors%23setup-wizard#connectors-health",
@@ -175,11 +170,12 @@ export default async function SettingsIndexPage({
     },
   ] as const;
   const setupComplete = setupSteps.filter((s) => s.done).length;
-  const nextStep = setupSteps.find((s) => !s.done) ?? null;
+  const nextStep = setupChecksVerified ? setupSteps.find((s) => !s.done) ?? null : null;
+  const verifiedSetupDoneHint = setupChecksVerified && setupSteps.some(step => step.key === completedStepKey && step.done);
   const progressPercent = Math.round((setupComplete / setupSteps.length) * 100);
   const remainingSteps = setupSteps.length - setupComplete;
   const estimatedMinutesRemaining = remainingSteps * 2;
-  const blockingHelp = setupSteps
+  const blockingHelp = (setupChecksVerified ? setupSteps : [])
     .filter((s) => !s.done)
     .map((s) => {
       if (s.key === "profile") {
@@ -222,7 +218,7 @@ export default async function SettingsIndexPage({
     "# Smohix Setup Readiness",
     "",
     `Progress: ${setupComplete}/${setupSteps.length} (${progressPercent}%)`,
-    `Data source: ${setupMode === "supabase" ? "live Supabase workspace state" : "session mode (local/dev)"}`,
+    `Verification: ${setupChecksVerified ? "Account-connected checks completed" : "Workspace checks could not be completed"}`,
     "",
     "## Steps",
     ...setupSteps.map((s) => `- [${s.done ? "x" : " "}] ${s.title}`),
@@ -232,7 +228,7 @@ export default async function SettingsIndexPage({
           "## Current blockers",
           ...blockingHelp.map((b) => `- ${b.title}: ${b.detail}`),
         ]
-      : ["", "## Current blockers", "- None"]),
+      : ["", "## Current blockers", setupChecksVerified ? "- None found in this setup checklist; operational testing is still required" : "- Workspace checks unavailable; readiness has not been confirmed"]),
     "",
     `Generated: ${new Date().toISOString()}`,
   ].join("\n");
@@ -272,10 +268,10 @@ export default async function SettingsIndexPage({
             />
           </div>
           <p className={`mt-2 ${appMeta}`}>
-            {progressPercent}% complete ·{" "}
-            {remainingSteps > 0
+            {setupChecksVerified ? `${progressPercent}% of setup checks complete` : "Workspace checks unavailable"} ·{" "}
+            {!setupChecksVerified ? "Retry verification before continuing" : remainingSteps > 0
               ? `~${estimatedMinutesRemaining} min remaining`
-              : "ready for operations"}
+              : "setup checklist complete; validate operational workflows next"}
           </p>
         </div>
         <div className="sticky top-2 z-10 mt-3 rounded-xl border border-white/[0.08] bg-background/80 px-3 py-2 backdrop-blur">
@@ -290,7 +286,7 @@ export default async function SettingsIndexPage({
                 </span>
               ) : (
                 <span className={`rounded-full border border-success/35 bg-success-dim/40 px-2.5 py-1 text-success ${appMeta}`}>
-                  All steps complete
+                  {setupChecksVerified ? "All setup steps complete" : "Verification required"}
                 </span>
               )}
             </div>
@@ -327,7 +323,7 @@ export default async function SettingsIndexPage({
               key={step.key}
               href={step.href}
               className={`rounded-xl border bg-black/20 p-4 transition-colors hover:border-accent/35 ${
-                completedStepKey === step.key
+                verifiedSetupDoneHint && completedStepKey === step.key && step.done
                   ? "border-emerald-400/35 ring-1 ring-emerald-400/30"
                   : "border-white/[0.08]"
               }`}
@@ -335,7 +331,7 @@ export default async function SettingsIndexPage({
               <div className="flex items-center justify-between gap-2">
                 <p className={`${appBody} font-medium text-foreground/90`}>{step.title}</p>
                 <div className="flex items-center gap-2">
-                  {completedStepKey === step.key ? (
+                  {verifiedSetupDoneHint && completedStepKey === step.key && step.done ? (
                     <span className="rounded-full border border-emerald-400/35 bg-emerald-400/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-300">
                       Just completed
                     </span>
@@ -347,7 +343,7 @@ export default async function SettingsIndexPage({
                         : "border-amber-400/35 bg-amber-400/10 text-amber-300"
                     }`}
                   >
-                    {step.done ? "Done" : "Pending"}
+                    {step.done ? "Done" : !setupChecksVerified && step.key !== "profile" ? "Check unavailable" : "Pending"}
                   </span>
                 </div>
               </div>
@@ -358,7 +354,7 @@ export default async function SettingsIndexPage({
             </Link>
           ))}
         </div>
-        {setupDoneHint ? (
+        {verifiedSetupDoneHint ? (
           <div className="mt-4 rounded-xl border border-success/35 bg-success-dim/40 p-4">
             <p className={`${appBody} font-medium text-success`}>
               Step completed:{" "}
@@ -393,7 +389,7 @@ export default async function SettingsIndexPage({
           </div>
         )}
         <p className={`mt-4 ${appMeta}`}>
-          Data source: {setupMode === "supabase" ? "live Supabase workspace state" : "session mode (local/dev)"}.
+          Verification: {setupChecksVerified ? "Account-connected checks completed" : "Workspace checks unavailable"}.
         </p>
         <div className="mt-3 flex flex-wrap items-center gap-2">
           <Link
@@ -409,13 +405,13 @@ export default async function SettingsIndexPage({
           >
             Download setup report
           </a>
-          {setupMode === "supabase" ? (
+          {setupMode === "supabase" && setupChecksVerified ? (
             <span className={appMeta}>
               Connectors reachable: <span className="font-semibold text-foreground/85">{connectorsReachable}</span>{" "}
               / {connectorsConfigured}
             </span>
           ) : null}
-          {setupCheckRequested ? (
+          {setupCheckRequested && setupChecksVerified ? (
             <span className="rounded-full border border-success/35 bg-success-dim/40 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-success">
               Check refreshed
             </span>

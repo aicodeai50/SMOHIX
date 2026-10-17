@@ -39,6 +39,7 @@ export async function setActiveOrgCookie(orgId: string): Promise<void> {
   const cookieStore = await cookies();
   cookieStore.set(ACTIVE_ORG_COOKIE, orgId, {
     httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     path: "/",
     maxAge: 60 * 60 * 24 * 365,

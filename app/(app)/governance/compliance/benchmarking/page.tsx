@@ -68,7 +68,7 @@ export default async function ControlBenchmarkingPage() {
       <PageHeader
         eyebrow="Governance"
         title="Continuous control benchmarking"
-        description="Your organization's live readiness from audit_log and policy evidence, compared to anonymized industry percentile bands (p25–p90) when reference benchmarks are available."
+        description="Your organization's live readiness from audit records and policy evidence, compared to anonymized industry percentile bands (p25–p90) when reference benchmarks are available."
       />
       <ComplianceHubLinks className={`-mt-4 mb-6 ${appBody}`} />
       {readOnly ? (
@@ -211,7 +211,7 @@ export default async function ControlBenchmarkingPage() {
             <p className={`mt-4 ${appMeta} text-muted`}>
               Industry bands are anonymized aggregate reference data ({pack.benchmarkCatalogVersion}
               ), not peer-identifiable customer data. Your scores are computed from live org{" "}
-              <code className="text-foreground/80">audit_log</code> and accepted policies.
+              <code className="text-foreground/80">audit records</code> and accepted policies.
             </p>
           </ConsolePanel>
         </>

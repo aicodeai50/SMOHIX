@@ -24,7 +24,7 @@ export async function enforceCopilotChatAccess(
     );
   }
 
-  if (options.cloudModelEnabled && hasSupabaseAuth()) {
+  if (hasSupabaseAuth()) {
     try {
       const supabase = await createServerSupabaseClient();
       const {

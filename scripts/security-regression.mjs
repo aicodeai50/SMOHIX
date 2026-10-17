@@ -98,7 +98,7 @@ async function main() {
   assert(connectorsStatusRoute.includes("hasSupabaseAuth()"), "connectors status route missing auth mode check");
   assert(connectorsStatusRoute.includes('error: "unauthorized"'), "connectors status route missing unauthorized response");
   // Connectors UI should not directly expose full backend URLs.
-  assert(connectorsPage.includes("connectorOriginLabel("), "connectors page missing origin redaction helper");
+  assert(!connectorsPage.includes("c.baseUrl"), "connectors page must not receive private backend addresses");
   assert(!connectorsPage.includes("title={c.baseUrl}"), "connectors page tooltip leaks full backend URL");
   assert(!connectorsPage.includes("{c.baseUrl}"), "connectors page renders raw backend URL");
   assert(!connectorsPage.includes("href={c.baseUrl}"), "connectors page links directly to raw backend URL");

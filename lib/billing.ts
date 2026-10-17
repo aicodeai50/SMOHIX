@@ -1,3 +1,4 @@
+import { CHECKOUT_ERRORS, validTopUpCents, safePayPalApprovalUrl } from "@/lib/billing/checkout-safety";
 import { getSiteUrl } from "@/lib/site";
 import {
   createPayPalOrder,
@@ -105,7 +106,7 @@ export async function createBillingCheckout(input: {
   topUpAmountCents?: number;
 }): Promise<CreateCheckoutResult> {
   if (!isPayPalConfigured()) {
-    return { ok: false, error: "PayPal not configured" };
+    return { ok: false, error: CHECKOUT_ERRORS.unavailable };
   }
 
   const site = getSiteUrl();
@@ -115,8 +116,8 @@ export async function createBillingCheckout(input: {
 
   if (input.tier === "top_up") {
     const amountCents = input.topUpAmountCents ?? 2500;
-    if (amountCents < 500) {
-      return { ok: false, error: "Minimum top-up is $5.00" };
+    if (!validTopUpCents(amountCents)) {
+      return { ok: false, error: CHECKOUT_ERRORS.amount };
     }
     try {
       const order = await createPayPalOrder({
@@ -127,14 +128,14 @@ export async function createBillingCheckout(input: {
         cancelUrl,
       });
       const approvalUrl = approvalUrlFromLinks(order.links);
-      if (!approvalUrl) {
-        return { ok: false, error: "No PayPal approval URL returned" };
+      if (!safePayPalApprovalUrl(approvalUrl)) {
+        return { ok: false, error: CHECKOUT_ERRORS.unavailable };
       }
       return { ok: true, approvalUrl, resourceId: order.id, kind: "order" };
-    } catch (e) {
+    } catch {
       return {
         ok: false,
-        error: e instanceof Error ? e.message : "Checkout failed",
+        error: CHECKOUT_ERRORS.unavailable,
       };
     }
   }
@@ -143,7 +144,7 @@ export async function createBillingCheckout(input: {
   if (!planId) {
     return {
       ok: false,
-      error: `PayPal plan not configured for ${input.tier}`,
+      error: CHECKOUT_ERRORS.plan,
     };
   }
 
@@ -155,14 +156,14 @@ export async function createBillingCheckout(input: {
       cancelUrl,
     });
     const approvalUrl = approvalUrlFromLinks(sub.links);
-    if (!approvalUrl) {
-      return { ok: false, error: "No PayPal approval URL returned" };
+    if (!safePayPalApprovalUrl(approvalUrl)) {
+      return { ok: false, error: CHECKOUT_ERRORS.unavailable };
     }
     return { ok: true, approvalUrl, resourceId: sub.id, kind: "subscription" };
-  } catch (e) {
+  } catch {
     return {
       ok: false,
-      error: e instanceof Error ? e.message : "Checkout failed",
+      error: CHECKOUT_ERRORS.unavailable,
     };
   }
 }

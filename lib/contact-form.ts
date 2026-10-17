@@ -5,7 +5,7 @@
 
 import { SITE_EMAIL_CONTACT } from "@/lib/billing";
 
-export { MIN_SUBMIT_MS, MAX_PAYLOAD_BYTES, FIELD_LIMITS } from "@/lib/contact/leads";
+export { MIN_SUBMIT_MS, MAX_PAYLOAD_BYTES, FIELD_LIMITS } from "@/lib/contact/shared";
 
 export type InquiryType =
   | "product"

@@ -1,3 +1,5 @@
+import { getOrgContextForUser } from "@/lib/org/context";
+import { canReviewPolicy } from "@/lib/org/roles";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
@@ -28,6 +30,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
+  const orgContext = await getOrgContextForUser(user.id);
+  if (orgContext.orgId && (!orgContext.role || !canReviewPolicy(orgContext.role))) {
+    return NextResponse.json({ error: "forbidden" }, { status: 403 });
+  }
+
   let suggestionId = "";
   let playbookId = "";
   let confidence = 0;
@@ -53,6 +60,7 @@ export async function POST(req: NextRequest) {
 
   const updated = await updatePolicySuggestionStatus(supabase, {
     userId: user.id,
+    orgId: orgContext.orgId,
     suggestionKey: suggestionId,
     playbookId,
     status: "reviewed",
@@ -65,6 +73,7 @@ export async function POST(req: NextRequest) {
 
   await appendAuditEvent({
     event_type: "policy.suggestion_promoted",
+    org_id: orgContext.orgId,
     user_id: user.id,
     details: {
       suggestion_id: suggestionId,

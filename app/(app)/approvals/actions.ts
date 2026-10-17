@@ -8,13 +8,14 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { createApprovalRequest } from "@/lib/approvals/data";
+import { approvalDecisionAccess } from "@/lib/approvals/decision-access";
 import { devDecideApproval } from "@/lib/approvals/dev-store";
 import { evaluateApprovalPolicy } from "@/lib/approvals/policy";
 import { appendAuditEvent } from "@/lib/audit/append";
-import { buildDecisionBrief } from "@/lib/decision-intelligence";
+import { buildDecisionBrief, parseDecisionBrief } from "@/lib/decision-intelligence";
 import { sendSlackNotificationWithAudit } from "@/lib/integrations/slack";
 import { getOrgContextForUser } from "@/lib/org/context";
-import { canCreateApprovalRequest, canDecideApproval } from "@/lib/org/roles";
+import { canCreateApprovalRequest } from "@/lib/org/roles";
 import { getSiteUrl } from "@/lib/site";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -161,13 +162,13 @@ export async function approvalDecisionAction(formData: FormData) {
 
   const { data: existing } = orgContext.orgId
     ? await existingQuery.or(`org_id.eq.${orgContext.orgId},and(org_id.is.null,user_id.eq.${user.id})`).maybeSingle()
-    : await existingQuery.eq("user_id", user.id).maybeSingle();
+    : await existingQuery.eq("user_id", user.id).is("org_id", null).maybeSingle();
 
   if (!existing) {
     redirect("/approvals?error=not_found");
   }
 
-  const briefBase = buildDecisionBrief({
+  const briefBase = parseDecisionBrief(existing.decision_brief_json, {
     actionLabel: String(existing.action_label ?? "approval"),
     policyHint: String(existing.policy_hint ?? ""),
   });
@@ -185,13 +186,18 @@ export async function approvalDecisionAction(formData: FormData) {
     (existing.requester_id as string | null) ?? (existing.user_id as string | null);
   const orgId = existing.org_id as string | null;
 
-  if (orgId && orgContext.orgId === orgId && orgContext.role) {
-    if (!canDecideApproval(orgContext.role, briefBase.riskScore)) {
-      redirect("/approvals?error=rbac&message=Your+org+role+cannot+decide+this+request.");
-    }
-    if (requesterId === user.id) {
-      redirect("/approvals?error=self_approval");
-    }
+  const access = approvalDecisionAccess({
+    status: String(existing.status),
+    userId: user.id,
+    ownerId: existing.user_id as string | null,
+    requesterId,
+    requestOrgId: orgId,
+    activeOrgId: orgContext.orgId,
+    role: orgContext.role,
+    riskScore: briefBase.riskScore,
+  });
+  if (!access.allowed) {
+    redirect("/approvals?error=rbac");
   }
 
   const updated_at = new Date().toISOString();
@@ -209,7 +215,7 @@ export async function approvalDecisionAction(formData: FormData) {
   if (orgId) {
     updateQuery = updateQuery.eq("org_id", orgId);
   } else {
-    updateQuery = updateQuery.eq("user_id", user.id);
+    updateQuery = updateQuery.eq("user_id", user.id).is("org_id", null);
   }
 
   const { data, error } = await updateQuery.select("id").maybeSingle();

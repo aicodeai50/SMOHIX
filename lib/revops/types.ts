@@ -1,4 +1,4 @@
-import { LEAD_STATUSES, type LeadStatus } from "@/lib/contact/leads";
+import { LEAD_STATUSES, type LeadStatus } from "@/lib/contact/shared";
 
 export type { LeadStatus };
 export { LEAD_STATUSES };

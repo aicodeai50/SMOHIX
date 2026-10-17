@@ -223,7 +223,7 @@ export const DEVELOPER_EXAMPLES: readonly DeveloperExample[] = [
     response: `# Upstream JSON when the reasoning connector is configured
 # 401 when the key is missing/invalid
 # 429 when rate limited`,
-    notes: "Also accepts X-Smohix-Api-Key. Requires SUPABASE_SERVICE_ROLE_KEY on the server for key validation in production.",
+    notes: "Also accepts X-Smohix-Api-Key. API access must be enabled for your workspace.",
     usesApiKey: true,
   },
   {

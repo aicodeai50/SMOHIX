@@ -50,15 +50,15 @@ export function ProfileNameForm({
         data: { full_name: trimmed },
       });
       if (updateError) {
-        setError(updateError.message);
+        setError("Could not save your profile. Please try again.");
         setLoading(false);
         return;
       }
       setFullName(trimmed);
       setOk("Saved. Your name updates across the console.");
       router.refresh();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not save profile.");
+    } catch {
+      setError("Could not save your profile. Please try again.");
     } finally {
       setLoading(false);
     }

@@ -77,7 +77,7 @@ export async function proxy(request: NextRequest) {
   const method = request.method;
 
   if (!hasSupabaseAuth()) {
-    if (requiresConfiguredProductionAuth(pathname, process.env.NODE_ENV)) {
+    if (requiresConfiguredProductionAuth(pathname, process.env.NODE_ENV, process.env)) {
       if (pathname.startsWith("/api/")) {
         return NextResponse.json({ error: "account_service_unavailable" }, { status: 503, headers: { "Cache-Control": "no-store" } });
       }
@@ -88,7 +88,7 @@ export async function proxy(request: NextRequest) {
       url.searchParams.set("next", safeNextPath(pathname + request.nextUrl.search));
       return noStoreHtml(NextResponse.redirect(url), pathname);
     }
-    if (process.env.NODE_ENV === "production") {
+    if (process.env.NODE_ENV?.trim().toLowerCase() === "production" || process.env.RAILWAY_PROJECT_ID || process.env.RAILWAY_ENVIRONMENT_ID) {
       return noStoreHtml(NextResponse.next(), pathname);
     }
     const res = NextResponse.next();

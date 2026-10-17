@@ -23,7 +23,8 @@ export const API_GROUPS: ApiGroup[] = [
     title: "Health",
     description: "Liveness for load balancers; no auth.",
     operations: [
-      { method: "GET", path: "/api/status/products", summary: "Cached public product endpoint checks; excludes private workspace data.", notes: "Rate limited; results cached for 60 seconds. Endpoint reachability is not historical uptime." },
+      { method: "GET", path: "/api/status/products/stream", summary: "Stream public service availability using server-sent events.", notes: "Public snapshot events, heartbeats and reconnection; shared 30-second probes, bounded connections, no private workspace data." },
+      { method: "GET", path: "/api/status/products", summary: "Cached public product endpoint checks; excludes private workspace data.", notes: "Rate limited; results cached for 30 seconds. Endpoint reachability is not historical uptime." },
       { method: "GET", path: "/api/health", summary: "JSON ok, service name, and uptime seconds." },
       { method: "HEAD", path: "/api/health", summary: "Same as GET without body." },
     ],

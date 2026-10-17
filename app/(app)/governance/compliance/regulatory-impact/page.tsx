@@ -64,7 +64,7 @@ export default async function RegulatoryImpactPage() {
       <PageHeader
         eyebrow="Governance"
         title="Regulatory change impact simulator"
-        description="Models how curated regulatory updates affect your live readiness — using org audit_log and accepted policy coverage, not mock scores."
+        description="Models how curated regulatory updates affect your live readiness — using org audit records and accepted policy coverage, not mock scores."
       />
       <ComplianceHubLinks className={`-mt-4 mb-6 ${appBody}`} />
       {readOnly ? (

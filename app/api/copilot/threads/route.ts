@@ -1,3 +1,4 @@
+import { applyUserOrOrgScope } from "@/lib/org/apply-scope-query";
 import { NextResponse } from "next/server";
 
 import { getOrgContextForUser } from "@/lib/org/context";
@@ -27,7 +28,7 @@ export async function GET() {
       .order("updated_at", { ascending: false })
       .limit(40);
 
-    query = orgContext.orgId ? query.or(`user_id.eq.${user.id},org_id.eq.${orgContext.orgId}`) : query.eq("user_id", user.id);
+    query = applyUserOrOrgScope(query, user.id, orgContext.orgId);
 
     const { data, error } = await query;
 
@@ -49,7 +50,7 @@ export async function GET() {
 
     return NextResponse.json({ threads: data ?? [] });
   } catch {
-    return NextResponse.json({ threads: [] });
+    return NextResponse.json({ error: "threads_load_failed" }, { status: 503 });
   }
 }
 
@@ -80,6 +81,14 @@ export async function POST(req: Request) {
     }
 
     const orgContext = await getOrgContextForUser(user.id);
+    if (incidentId) {
+      if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(incidentId)) {
+        return NextResponse.json({ error: "invalid_incident_id" }, { status: 400 });
+      }
+      const incidentQuery = supabase.from("incidents").select("id").eq("id", incidentId);
+      const incident = await applyUserOrOrgScope(incidentQuery, user.id, orgContext.orgId).maybeSingle();
+      if (incident.error || !incident.data) return NextResponse.json({ error: "not_found" }, { status: 404 });
+    }
     const { data, error } = await supabase
       .from("copilot_threads")
       .insert({ user_id: user.id, org_id: orgContext.orgId, incident_id: incidentId, title })
@@ -94,8 +103,7 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json(data);
-  } catch (e) {
-    const msg = e instanceof Error ? e.message : "error";
-    return NextResponse.json({ error: msg }, { status: 500 });
+  } catch {
+    return NextResponse.json({ error: "request_failed" }, { status: 500 });
   }
 }

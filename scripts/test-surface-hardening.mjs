@@ -16,8 +16,10 @@ for(const url of ['/hub','/resilience/backups','/settings','/api/robot/run','/ap
  assert.equal(requiresConfiguredProductionAuth(url,'production'),true,url);
  assert.equal(requiresConfiguredProductionAuth(url,'development'),false,url);
 }
-for(const url of ['/','/platform','/docs/sdk','/auth/sign-in','/api/health','/api/health/db','/api/contact','/api/status/products']) assert.equal(requiresConfiguredProductionAuth(url,'production'),false,url);
+for(const url of ['/','/platform','/docs/sdk','/auth/sign-in','/api/health','/api/health/db','/api/contact','/api/status/products','/api/status/products/stream']) assert.equal(requiresConfiguredProductionAuth(url,'production'),false,url);
 assert.equal(requiresConfiguredProductionAuth('/api/health/private','production'),true,'public exceptions are exact paths');
+assert.equal(requiresConfiguredProductionAuth('/api/automations/execute','development',{RAILWAY_PROJECT_ID:'deployed'}),true,'Railway cannot enter anonymous development mode');
+assert.equal(requiresConfiguredProductionAuth('/hub',' Production '),true,'normalize deployed environment labels');
 for(const body of [null,[],false,'true',{incidents:'false'},{admin:true},{incidents:{enabled:true}}]) assert.equal(validNotificationPreferences(body),false);
 assert.equal(validNotificationPreferences({incidents:false,approvals:true,billing:true,compliance:false}),true);
 const db=readFileSync(new URL('../app/api/health/db/route.ts',import.meta.url),'utf8');

@@ -43,6 +43,7 @@ export async function reviewPolicySuggestionAction(formData: FormData) {
   }
   const ok = await updatePolicySuggestionStatus(supabase, {
     userId,
+    orgId: orgContext.orgId,
     id,
     status: decision,
     reviewerNotes: notes,

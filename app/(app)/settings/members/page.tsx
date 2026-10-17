@@ -1,3 +1,4 @@
+import { publicActionError } from "@/lib/security/public-action-error";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -32,16 +33,16 @@ const ASSIGNABLE_ROLES = ORG_ROLES.filter((r) => r !== "owner");
 export default async function SettingsMembersPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; created?: string; member_added?: string }>;
+  searchParams: Promise<{ error?: string; created?: string; member_added?: string; audit_pending?: string }>;
 }) {
   if (!hasSupabaseAuth()) {
     return (
       <>
         <PageHeader
           title="Members & roles"
-          description="Connect Supabase and sign in to create an organization and invite teammates."
+          description="Sign in to create an organization and invite teammates."
         />
-        <p className={`max-w-xl text-muted ${appBody}`}>Local mode does not support org RBAC.</p>
+        <p className={`max-w-xl text-muted ${appBody}`}>Shared workspaces are temporarily unavailable.</p>
       </>
     );
   }
@@ -87,9 +88,12 @@ export default async function SettingsMembersPage({
           Member added.
         </p>
       ) : null}
+      {sp.audit_pending === "1" ? (
+        <p role="status" className={`mb-4 text-muted ${appBody}`}>The workspace change completed, but its audit record could not be confirmed. Contact your workspace administrator.</p>
+      ) : null}
       {err ? (
         <p className={`mb-4 rounded-xl border border-danger/25 bg-danger-dim/50 px-4 py-3 text-danger ${appBody}`}>
-          {decodeURIComponent(err.replace(/\+/g, " "))}
+          {publicActionError(err) === "not_found" ? "The member could not be changed. Refresh the member list and try again." : "The request could not complete. Check your permissions and try again."}
         </p>
       ) : null}
 

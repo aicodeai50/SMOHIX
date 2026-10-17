@@ -39,7 +39,7 @@ export type ProductRegistryEntry = {
   productUrl?: string;
   docsUrl?: string;
   /** Same-origin path or allowlisted external health probe path. */
-  healthCheck?: { host: "smohix.run" | "ai.smohix.run" | "assistant.smohix.run" | "pri.smohix.run"; path: string };
+  healthCheck?: { host: "smohix.run" | "ai.smohix.run" | "assistant.smohix.run" | "pri.smohix.run" | "api.smohix.run" | "identity.smohix.run"; path: string };
   availableActions: readonly ProductAction[];
   capabilities: readonly string[];
   limitations: readonly string[];
@@ -217,7 +217,7 @@ export const PRODUCT_REGISTRY: readonly ProductRegistryEntry[] = [
     repository: "github.com/aicodeai50/SMOHIX (this repo) + SMOHIX-OWN-API-V2",
     productPagePath: "/products/smohix-own-api",
     docsUrl: `${SITE()}/docs/api`,
-    healthCheck: { host: "smohix.run", path: "/api/health" },
+    healthCheck: { host: "api.smohix.run", path: "/health" },
     availableActions: [
       { kind: "read_docs", label: "API reference", href: "/docs/api" },
       { kind: "view_health", label: "Service status", href: "/status" },
@@ -237,6 +237,7 @@ export const PRODUCT_REGISTRY: readonly ProductRegistryEntry[] = [
   },
   {
     id: "identity",
+    healthCheck: { host: "identity.smohix.run", path: "/health" },
     name: "Smohix Identity",
     publicName: "Smohix Identity",
     description: "Authentication, org RBAC, and API keys for the ecosystem.",

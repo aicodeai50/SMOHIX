@@ -113,7 +113,7 @@ export default async function OverviewPage() {
     reasoning: isShBackendConfigured(),
   };
 
-  const connectorsConfigured = connectors.filter((c) => c.baseUrl).length;
+  const connectorsConfigured = connectors.filter((c) => c.configured).length;
   const connectorsUp = connectors.filter((c) => c.ok === true).length;
   const approvalDecisions = approvals.recent.length;
   const approvalsPending = approvals.pending.length;
@@ -202,7 +202,7 @@ export default async function OverviewPage() {
     proposedSuggestions = (suggestionRows ?? []).filter((r) => String(r.status) === "proposed").length;
     acceptedSuggestions = (suggestionRows ?? []).filter((r) => String(r.status) === "accepted").length;
 
-    const acceptedGuardrails = await listAcceptedPolicyGuardrailsByPlaybook(supabaseClient, userId);
+    const acceptedGuardrails = await listAcceptedPolicyGuardrailsByPlaybook(supabaseClient, userId, activeOrgId);
     const acceptedByPlaybook = Object.values(acceptedGuardrails);
     enforcementPlaybookCount = acceptedByPlaybook.length;
     enforcementBlastCapCount = acceptedByPlaybook.filter((g) => Boolean(g.maxBlastRadius)).length;

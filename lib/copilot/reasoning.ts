@@ -34,6 +34,7 @@ function extractReasoningText(body: unknown): string | null {
 /** Server-side call to SH backend /v1/chat (no browser CORS). */
 export async function completeReasoningChat(
   messages: ReasoningChatMessage[],
+  signal?: AbortSignal,
 ): Promise<{ text: string } | null> {
   const base = getShBackendApiUrl();
   if (!base) {
@@ -48,7 +49,8 @@ export async function completeReasoningChat(
         Accept: "application/json, text/plain, */*",
       },
       body: JSON.stringify({ messages }),
-      signal: AbortSignal.timeout(TIMEOUT_MS),
+      signal: AbortSignal.any([AbortSignal.timeout(TIMEOUT_MS), ...(signal ? [signal] : [])]),
+      redirect: "error",
       cache: "no-store",
     });
 
@@ -63,6 +65,7 @@ export async function completeReasoningChat(
       return text ? { text } : null;
     }
 
+    if (!contentType.includes("text/plain")) { await res.body?.cancel(); return null; }
     const text = (await res.text()).trim();
     return text ? { text } : null;
   } catch {

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import { BRAND_ASSETS, getBrandMetadataIcons } from "@/lib/brand";
 import { INDEX_ROBOTS } from "@/lib/metadata";
 import {
@@ -15,17 +15,8 @@ import { getCanonicalUrl, PRODUCTION_SITE_URL } from "@/lib/site";
 import "./globals.css";
 import "./readability.css";
 
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
-  subsets: ["latin"],
-  display: "swap",
-});
+const inter = localFont({ src: "./fonts/inter-variable.ttf", weight: "100 900", variable: "--font-inter", display: "swap" });
+const jetbrainsMono = localFont({ src: "./fonts/jetbrains-mono-variable.ttf", weight: "100 800", variable: "--font-jetbrains-mono", display: "swap" });
 
 /** Always bake production apex into root SEO metadata (legacy domain env remapped in getSiteUrl). */
 const siteUrl = PRODUCTION_SITE_URL;

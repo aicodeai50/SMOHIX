@@ -143,30 +143,6 @@ function statusBadgeClass(status: string): string {
   return "border-white/[0.12] bg-white/[0.03] text-foreground/85";
 }
 
-function connectorOriginLabel(rawUrl: string): string {
-  try {
-    const u = new URL(rawUrl);
-    const parts = u.hostname.split(".");
-    const maskedHost =
-      parts.length >= 2
-        ? `${parts[0]?.slice(0, 2) || "xx"}***.${parts.slice(1).join(".")}`
-        : `${u.hostname.slice(0, 2) || "xx"}***`;
-    const port = u.port ? `:${u.port}` : "";
-    return `${u.protocol}//${maskedHost}${port}`;
-  } catch {
-    return rawUrl;
-  }
-}
-
-function connectorOriginUrl(rawUrl: string): string | null {
-  try {
-    const u = new URL(rawUrl);
-    return `${u.protocol}//${u.host}`;
-  } catch {
-    return null;
-  }
-}
-
 export default async function ConnectorsPage({
   searchParams,
 }: {
@@ -189,8 +165,8 @@ export default async function ConnectorsPage({
   }>;
 }) {
   const connectors = await getConnectorHealthRows();
-  const noneConfigured = connectors.every((c) => !c.baseUrl);
-  const configuredConnectorsCount = connectors.filter((c) => Boolean(c.baseUrl)).length;
+  const noneConfigured = connectors.every((c) => !c.configured);
+  const configuredConnectorsCount = connectors.filter((c) => Boolean(c.configured)).length;
   const siteUrl = getSiteUrl();
   const exampleToken = "smohix_ingest_xxx";
   const exampleSecret = "replace-with-signing-secret";
@@ -1002,7 +978,7 @@ export default async function ConnectorsPage({
             title={
               slackWebhookConfigured
                 ? "Send a test message to your configured Slack channel."
-                : "Set SMOHIX_SLACK_WEBHOOK_URL to enable Slack test messages."
+                : "Your workspace administrator can enable Slack notifications."
             }
           >
             Send Slack test message
@@ -1013,18 +989,11 @@ export default async function ConnectorsPage({
         <div className="mb-6">
           <ConsoleEmptyState
             title="No connectors configured"
-            description="Point Smohix at your reasoning and automation backends so Copilot, dry-runs, and guarded execution can reach your stack. Set the env vars on your deployment, redeploy, then refresh this page."
+            description="Your workspace administrator can connect reasoning and automation services. Refresh this page after setup."
             ctas={[
               { href: "/docs/api", label: "API reference", variant: "secondary" },
               { href: "/docs", label: "Platform docs", variant: "secondary" },
             ]}
-            footnote={
-              <p>
-                Set <span className="font-mono text-foreground/80">REACT_APP_SH_BACKEND_API</span>{" "}
-                and <span className="font-mono text-foreground/80">REACT_APP_ROBOT_BACKEND</span> to
-                HTTPS base URLs (no trailing slash required).
-              </p>
-            }
           />
         </div>
       ) : null}
@@ -1034,18 +1003,9 @@ export default async function ConnectorsPage({
             key={c.id}
             className="flex flex-col gap-4 rounded-xl border border-border bg-surface/80 p-5 sm:flex-row sm:items-start sm:justify-between"
           >
-            {(() => {
-              const originUrl = c.baseUrl ? connectorOriginUrl(c.baseUrl) : null;
-              return (
-                <>
             <div className="min-w-0 flex-1">
               <h2 className={appPanelTitle}>{c.name}</h2>
               <p className={`mt-1 text-muted ${appBody}`}>{c.role}</p>
-              {c.baseUrl ? (
-                <p className={`mt-2 truncate font-mono ${appMeta}`} title={connectorOriginLabel(c.baseUrl)}>
-                  {connectorOriginLabel(c.baseUrl)}
-                </p>
-              ) : null}
               <p className={`mt-2 font-mono ${appMeta}`}>{c.detail}</p>
               <p className={`mt-2 ${appBody}`}>
                 {c.ok === null && (
@@ -1061,31 +1021,6 @@ export default async function ConnectorsPage({
                 )}
               </p>
             </div>
-            <div className="flex shrink-0 flex-col gap-2 sm:items-end">
-              {originUrl && c.ok ? (
-                <a
-                  href={originUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`rounded-lg border border-border px-4 py-2 text-foreground transition-colors hover:border-accent/40 ${appBody}`}
-                >
-                  Open service
-                </a>
-              ) : null}
-              {c.id === "robot" && originUrl && c.ok ? (
-                <a
-                  href={`${originUrl}${c.docsPath ?? "/docs"}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`${appMeta} hover:text-accent`}
-                >
-                  API docs →
-                </a>
-              ) : null}
-            </div>
-                </>
-              );
-            })()}
           </div>
         ))}
       </div>
@@ -1316,10 +1251,9 @@ export default async function ConnectorsPage({
                 </tr>
                 <tr className="align-top">
                   <td className="py-2 pr-3 font-mono text-foreground/85">503</td>
-                  <td className="py-2 pr-3 text-foreground/80">Server-side ingest dependencies missing</td>
+                  <td className="py-2 pr-3 text-foreground/80">Alert ingestion temporarily unavailable</td>
                   <td className="py-2 text-foreground/75">
-                    Check Supabase env and service-role configuration in deployment variables, then
-                    redeploy.
+                    Retry later. Contact support if alert delivery remains unavailable.
                   </td>
                 </tr>
               </tbody>

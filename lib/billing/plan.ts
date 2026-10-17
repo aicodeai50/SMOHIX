@@ -1,3 +1,4 @@
+import { applyUserOrOrgScope } from "@/lib/org/apply-scope-query";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 import { notifyOwnApiBilling } from "@/lib/billing/own-api";
@@ -94,7 +95,7 @@ export async function getSubscriptionSummary(
     .order("updated_at", { ascending: false })
     .limit(1);
 
-  query = orgId ? query.or(`org_id.eq.${orgId},user_id.eq.${userId}`) : query.eq("user_id", userId);
+  query = applyUserOrOrgScope(query, userId, orgId);
 
   const { data, error } = await query.maybeSingle();
 

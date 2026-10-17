@@ -1,3 +1,5 @@
+import { applyUserOrOrgScope } from "@/lib/org/apply-scope-query";
+import { getOrgContextForUser } from "@/lib/org/context";
 import { orgScopeOrFilter } from "@/lib/org/scope";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
@@ -40,7 +42,7 @@ export async function listServicesForUser(
     if (scopeFilter) {
       query = query.or(scopeFilter);
     } else {
-      query = query.eq("user_id", userId);
+      query = query.eq("user_id", userId).is("org_id", null);
     }
 
     const { data, error } = await query;
@@ -119,11 +121,14 @@ export async function deleteServiceForUser(
 
   try {
     const supabase = await createServerSupabaseClient();
-    const { error } = await supabase.from("services").delete().eq("id", id);
+    const orgContext = await getOrgContextForUser(userId);
+    const query = supabase.from("services").delete().eq("id", id);
+    const { data, error } = await applyUserOrOrgScope(query, userId, orgContext.orgId).select("id").maybeSingle();
 
     if (error) {
       return { ok: false, reason: error.message };
     }
+    if (!data) return { ok: false, reason: "not_found" };
     return { ok: true };
   } catch (e) {
     return {

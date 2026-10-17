@@ -2,8 +2,10 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { hasSupabaseAuth } from "@/lib/supabase/env";
 import { dataUnavailable } from "@/lib/data-unavailable";
 import { buildDecisionBrief, parseDecisionBrief } from "@/lib/decision-intelligence";
-import { canDecideApproval, type OrgRole } from "@/lib/org/roles";
+import { type OrgRole } from "@/lib/org/roles";
 import { extractIncidentIdFromApprovalContext } from "@/lib/workflow/incident-links";
+
+import { approvalDecisionAccess } from "./decision-access";
 
 import { devCreateApproval, devListApprovals } from "./dev-store";
 import type { ApprovalRow, ApprovalsListResult } from "./types";
@@ -18,8 +20,9 @@ function mapRow(
     decision_brief_json?: unknown;
     requester_id?: string | null;
     user_id?: string | null;
+    org_id?: string | null;
   },
-  actor?: { userId: string; orgRole: OrgRole | null },
+  actor?: { userId: string; orgId: string | null; orgRole: OrgRole | null },
 ): ApprovalRow {
   const action = r.action_label;
   const policy = r.policy_hint ?? "—";
@@ -34,25 +37,18 @@ function mapRow(
   });
   const requesterId = (r.requester_id as string | null) ?? (r.user_id as string | null) ?? null;
 
-  let canDecide = true;
-  let decideBlockedReason: string | null = null;
-
-  if (actor && r.status === "pending") {
-    if (actor.orgRole) {
-      if (!canDecideApproval(actor.orgRole, decisionBrief.riskScore)) {
-        canDecide = false;
-        decideBlockedReason =
-          actor.orgRole === "security_reviewer"
-            ? "Security reviewers decide high-risk items only (score 70+)."
-            : "Your org role cannot approve requests.";
-      } else if (requesterId && requesterId === actor.userId) {
-        canDecide = false;
-        decideBlockedReason = "Delegated approvers cannot approve their own request.";
-      }
-    } else if (requesterId && requesterId === actor.userId) {
-      canDecide = true;
-    }
-  }
+  const access = actor ? approvalDecisionAccess({
+    status: r.status,
+    userId: actor.userId,
+    ownerId: r.user_id ?? null,
+    requesterId,
+    requestOrgId: r.org_id ?? null,
+    activeOrgId: actor.orgId,
+    role: actor.orgRole,
+    riskScore: decisionBrief.riskScore,
+  }) : { allowed: false, reason: "Sign in to decide this request." };
+  const canDecide = access.allowed;
+  const decideBlockedReason = access.reason;
 
   return {
     id: r.id,
@@ -84,7 +80,7 @@ export async function listApprovalsForUser(
   const userId = normalized.userId;
   const devTenantId = normalized.devTenantId ?? null;
   const orgId = normalized.orgId ?? null;
-  const actor = { userId, orgRole: normalized.orgRole ?? null };
+  const actor = { userId, orgId, orgRole: normalized.orgRole ?? null };
 
   if (!hasSupabaseAuth()) {
     if (devTenantId) {
@@ -134,8 +130,8 @@ export async function listApprovalsForUser(
       pendingQuery = pendingQuery.or(scopeFilter);
       recentQuery = recentQuery.or(scopeFilter);
     } else {
-      pendingQuery = pendingQuery.eq("user_id", userId);
-      recentQuery = recentQuery.eq("user_id", userId);
+      pendingQuery = pendingQuery.eq("user_id", userId).is("org_id", null);
+      recentQuery = recentQuery.eq("user_id", userId).is("org_id", null);
     }
 
     const [{ data: pendData, error: pendErr }, { data: recentData, error: recentErr }] =
@@ -156,6 +152,7 @@ export async function listApprovalsForUser(
           decision_brief_json: r.decision_brief_json,
           requester_id: r.requester_id as string | null,
           user_id: r.user_id as string | null,
+          org_id: r.org_id as string | null,
         },
         actor,
       ),
@@ -172,6 +169,7 @@ export async function listApprovalsForUser(
           decision_brief_json: r.decision_brief_json,
           requester_id: r.requester_id as string | null,
           user_id: r.user_id as string | null,
+          org_id: r.org_id as string | null,
         },
         actor,
       ),

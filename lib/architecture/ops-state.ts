@@ -62,6 +62,7 @@ export function copilotConnectionBeacon(
   status: "Ready" | "Limited" | string,
 ): { label: string; tone: StateBeaconTone } {
   if (status === "Ready") return { label: "Ready", tone: "verified" };
+  if (status === "Connected") return { label: "Connected", tone: "verified" };
   if (status === "Limited") return { label: "Limited", tone: "attention" };
   return { label: String(status), tone: "dormant" };
 }

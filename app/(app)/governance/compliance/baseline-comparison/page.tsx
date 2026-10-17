@@ -66,7 +66,7 @@ export default async function BaselineComparisonPage() {
       <PageHeader
         eyebrow="Governance"
         title="Multi-framework baseline comparison"
-        description="Live readiness scores and 30-day vs prior-30-day evidence deltas for every framework pack — built from your organization's audit_log and accepted automation policies, not sample data."
+        description="Live readiness scores and 30-day vs prior-30-day evidence deltas for every framework pack — built from your organization's audit records and accepted automation policies, not sample data."
       />
       <ComplianceHubLinks className={`-mt-4 mb-6 ${appBody}`} />
       {readOnly ? (
@@ -194,8 +194,8 @@ export default async function BaselineComparisonPage() {
               </table>
             </div>
             <p className={`mt-4 ${appMeta} text-muted`}>
-              Data source: org-scoped <span className="font-mono text-foreground/80">audit_log</span> and
-              accepted <span className="font-mono text-foreground/80">policy_suggestions</span> for window
+              Data source: org-scoped <span className="font-mono text-foreground/80">audit records</span> and
+              accepted <span className="font-mono text-foreground/80">automation policies</span> for window
               starting {pack.sinceIso.slice(0, 10)}. Prior period is the immediately preceding {pack.periodDays}{" "}
               days.
             </p>

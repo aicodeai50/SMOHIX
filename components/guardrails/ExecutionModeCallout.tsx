@@ -55,7 +55,7 @@ export function ExecutionModeCallout({
         <Row
           ok={auditLogged}
           label="Audit logged when configured"
-          detail="Signed-in runs can append immutable rows to audit_log when the service role is available."
+          detail="Signed-in runs record audit evidence when workspace audit recording is available."
         />
       </div>
     </div>

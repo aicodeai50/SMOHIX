@@ -26,14 +26,13 @@ function formatThreadDate(iso: string): string {
 }
 
 function extractAssistantText(text: string, status: number): string {
-  if (!status.toString().startsWith("2")) {
-    try {
-      const j = JSON.parse(text) as { message?: string; error?: string };
-      return j.message ?? j.error ?? (text || `HTTP ${status}`);
-    } catch {
-      return text || `HTTP ${status}`;
-    }
+  if (status < 200 || status >= 300) {
+    if (status === 401) return "Sign in to continue this conversation.";
+    if (status === 403) return "You do not have access to this conversation.";
+    if (status === 429) return "Copilot is busy. Wait briefly and try again.";
+    return "Copilot could not complete this response. Please try again.";
   }
+
   try {
     const j = JSON.parse(text) as Record<string, unknown>;
     if (Array.isArray(j.choices)) {
@@ -43,7 +42,7 @@ function extractAssistantText(text: string, status: number): string {
     if (typeof j.message === "string") return j.message;
     if (typeof j.reply === "string") return j.reply;
     if (typeof j.content === "string") return j.content;
-    return text.slice(0, 8000);
+    return "Copilot returned an unreadable response. Please try again.";
   } catch {
     return text.slice(0, 8000) || "(empty body)";
   }
@@ -68,6 +67,8 @@ export function CopilotChat({
   const creatingThreadRef = useRef(false);
   const [persistErr, setPersistErr] = useState<string | null>(null);
   const bottom = useRef<HTMLDivElement>(null);
+  const activeRequest = useRef<AbortController | null>(null);
+  useEffect(() => () => activeRequest.current?.abort(), []);
 
   useEffect(() => {
     activeThreadRef.current = activeThreadId;
@@ -84,17 +85,16 @@ export function CopilotChat({
       };
       if (!r.ok) {
         setPersistErr(
-          j.message ??
-            (j.error === "persistence_unavailable"
-              ? "Conversation history is not available yet — apply the copilot_threads migration in Supabase."
-              : j.error ?? "Could not load saved threads."),
+          j.error === "unauthorized"
+            ? "Sign in again to load your saved conversations."
+            : "Conversation history is temporarily unavailable. Please try again later.",
         );
         setThreads([]);
         return;
       }
       setThreads(j.threads ?? []);
       if (j.message && !(j.threads?.length ?? 0)) {
-        setPersistErr(j.message);
+        setPersistErr("Conversation history is temporarily unavailable. Please try again later.");
       }
     } catch {
       setPersistErr("Could not load saved threads.");
@@ -193,7 +193,9 @@ export function CopilotChat({
 
   async function send() {
     const text = input.trim();
-    if (!text || pending) return;
+    if (!text || pending || activeRequest.current) return;
+    const controller = new AbortController();
+    activeRequest.current = controller;
     setErr(null);
     setPending(true);
     const thread = [...msgs, { role: "user" as const, content: text }];
@@ -208,6 +210,7 @@ export function CopilotChat({
 
     try {
       const r = await fetch(proxyPath, {
+        signal: controller.signal,
         method: "POST",
         credentials: "include",
         headers: {
@@ -227,6 +230,7 @@ export function CopilotChat({
         let accumulated = "";
 
         const result = await consumeCopilotSse(r.body, (delta) => {
+          if (controller.signal.aborted) return;
           accumulated += delta;
           const acc = accumulated;
           setMsgs((m) => {
@@ -241,6 +245,7 @@ export function CopilotChat({
           });
         });
 
+        if (controller.signal.aborted) return;
         if (!result.ok) {
           setErr(result.message);
           setMsgs((m) => {
@@ -255,6 +260,7 @@ export function CopilotChat({
         }
       } else {
         const raw = await r.text();
+        if (controller.signal.aborted) return;
         if (!r.ok) {
           setErr(extractAssistantText(raw, r.status));
           return;
@@ -265,9 +271,10 @@ export function CopilotChat({
           void persistExchange(text, assistant);
         }
       }
-    } catch (e) {
-      setErr(e instanceof Error ? e.message : "Request failed");
+    } catch {
+      setErr(controller.signal.aborted ? "Response stopped." : "Copilot could not complete this response. Please try again.");
     } finally {
+      if (activeRequest.current === controller) activeRequest.current = null;
       setPending(false);
     }
   }
@@ -280,6 +287,7 @@ export function CopilotChat({
             <span className={`font-semibold text-foreground/90 ${appMeta}`}>Threads</span>
             <button
               type="button"
+              disabled={pending}
               onClick={newConversation}
               className={`rounded-lg border border-white/[0.1] bg-background/30 px-2.5 py-1 font-medium text-muted transition-colors hover:border-accent/35 hover:text-foreground ${appMeta}`}
             >
@@ -298,6 +306,7 @@ export function CopilotChat({
                 <li key={t.id}>
                   <button
                     type="button"
+                    disabled={pending}
                     onClick={() => void loadThread(t.id)}
                     className={`w-full rounded-lg px-2.5 py-2 text-left transition-colors ${
                       activeThreadId === t.id
@@ -411,6 +420,7 @@ export function CopilotChat({
             placeholder="Describe what you're seeing…"
             className={`min-h-[2.75rem] min-w-0 flex-1 resize-y rounded-xl border border-border bg-background/80 px-3.5 py-2.5 text-foreground placeholder:text-muted/70 outline-none transition-shadow ring-ring/40 focus:ring-2 ${appBody}`}
           />
+          {pending ? <button type="button" onClick={() => activeRequest.current?.abort()} className={`h-11 shrink-0 rounded-xl border border-border px-5 font-semibold text-foreground ${appBody}`}>Stop response</button> : null}
           <button
             type="button"
             disabled={pending || !input.trim()}
